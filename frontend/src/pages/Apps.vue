@@ -25,7 +25,7 @@
       <div>
         <div class="row no-wrap justify-end text-grey-7">
           <q-select
-            v-model="sortModel"
+            v-model="appsMainStore.sortModel"
             @update:model-value="onSortApps()"
             :options="sortOptions"
             dense
@@ -144,8 +144,6 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import Loading from 'src/components/Loading.vue'
-import { useRouter } from 'vue-router'
-const router = useRouter()
 
 import { useMainStore } from 'stores/global/main'
 const mainStore = useMainStore()
@@ -155,22 +153,36 @@ const mainFlags = computed(() => mainStore.flags)
 import { useAppsStore } from 'stores/global/apps'
 const appsStore = useAppsStore()
 
-const flags = computed(() => appsStore.flags)
-const apps = computed(() => appsStore.apps)
-const categories = computed(() => appsStore.categories)
+import { useAppsMainStore } from 'stores/pages/Apps'
+const appsMainStore = useAppsMainStore()
+
+const flags = computed(() => appsMainStore.flags)
+const apps = computed(() => appsMainStore.apps)
+const categories = computed(() => appsMainStore.categories)
+const initialCategory = computed(() => appsMainStore.initialCategory)
 
 const infinityScrollRef = ref(null)
 
-onMounted(async () => {
-  await appsStore.getCategories()
+const catalogCategories = computed(() => appsMainStore.catalogCategories)
+const currentCategory = computed(() => appsMainStore.currentCategory)
+const sortOptions = computed(() => appsMainStore.sortOptions)
+const onSortApps = () => {
+  appsMainStore.onSortApps({
+    infinityScrollRef
+  })
+}
 
-  currentCategory.value = appsStore.initialCategory
-})
+const appClicked = appsMainStore.appClicked
+const onSelectCategory = (category) => {
+  appsMainStore.onSelectCategory({
+    category,
+    infinityScrollRef
+  })
+}
+const onLoad = appsMainStore.onLoad
 
-const initialCategory = computed(() => appsStore.initialCategory)
-
-watch(initialCategory, (newCategory) => {
-  currentCategory.value = newCategory
+watch(() => initialCategory, (newCategory) => {
+  appsMainStore.setCurrentCategory(newCategory)
 })
 
 watch(() => mainFlags.value.connected, (condition) => {
@@ -181,100 +193,11 @@ watch(() => mainFlags.value.connected, (condition) => {
   }
 })
 
-const options = {
-  limit: appsStore.defaultParamsAppsShort.limit,
-  offset: 0
-}
+onMounted(async () => {
+  await appsStore.getCategories()
 
-const reLoad = async () => {
-  options.offset = 0
-
-  await infinityScrollRef.value.stop()
-  await infinityScrollRef.value.reset()
-  await infinityScrollRef.value.resume()
-}
-const onLoad = async (index, done) => {
-  if (index > 1) {
-    options.offset += options.limit
-  }
-
-  await getAppsShort(options)
-  done(flags.value.fetchEnd)
-}
-
-const getAppsShort = async (options = {}) => {
-  switch (sortModel.value) {
-    case 'New Updates':
-      options.sort_by = 'updated_at'
-      options.sort_order = -1
-      break
-    case 'Old Updates':
-      options.sort_by = 'updated_at'
-      options.sort_order = 1
-      break
-    case 'New Releases':
-      options.sort_by = 'created_at'
-      options.sort_order = -1
-      break
-    case 'Old Releases':
-      options.sort_by = 'created_at'
-      options.sort_order = 1
-      break
-  }
-
-  await appsStore.getAppsShort(options)
-}
-
-const catalogCategories = computed(() => {
-  return [{
-    // id:"64971d0f6617ba37a4bc79b3"
-    // priority:0
-    name: 'All apps',
-    color: 'EBEBEB'
-  }, ...categories.value]
+  appsMainStore.setCurrentCategory(appsStore.initialCategory)
 })
-
-const currentCategory = ref(null)
-const sortOptions = [
-  'New Updates',
-  'New Releases',
-  'Old Updates',
-  'Old Releases'
-]
-const sortModel = ref('New Updates')
-const onSortApps = () => {
-  appsStore.onClearAppsList()
-  appsStore.toggleFlag('fetchEnd', false)
-  reLoad()
-}
-
-const appClicked = (app) => {
-  if (app.action.type) {
-    return
-  }
-  appsStore.openApp(app)
-}
-
-const onSelectCategory = (category) => {
-  appsStore.onClearAppsList()
-  appsStore.toggleFlag('fetchEnd', false)
-
-  if (category.name === 'All apps') {
-    currentCategory.value = null
-    appsStore.setInitalCategory(null)
-    router.push({ name: 'Apps' })
-
-    reLoad()
-
-    return
-  }
-
-  router.push({ name: 'AppsCategory', params: { path: category.name.toLowerCase() } })
-  appsStore.setInitalCategory(category)
-  currentCategory.value = category
-
-  reLoad()
-}
 </script>
 
 <style lang="sass" scoped>
