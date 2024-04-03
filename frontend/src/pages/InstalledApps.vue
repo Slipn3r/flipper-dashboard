@@ -146,7 +146,7 @@
               color="negative"
               icon="svguse:common-icons.svg#delete"
               class="q-ml-md"
-              @click="appToDelete = app; flags.deleteConfirmationDialog = true"
+              @click="showDeleteDialog(app)"
             />
           </q-card>
         </q-intersection>
@@ -215,7 +215,7 @@
               color="negative"
               icon="svguse:common-icons.svg#delete"
               class="q-ml-md"
-              @click="appToDelete = app; flags.deleteConfirmationDialog = true"
+              @click="showDeleteDialog(app)"
             />
           </q-card>
         </q-intersection>
@@ -285,7 +285,7 @@
               color="negative"
               icon="svguse:common-icons.svg#delete"
               class="q-ml-md"
-              @click="appToDelete = app; flags.deleteConfirmationDialog = true"
+              @click="showDeleteDialog(app)"
             />
           </q-card>
         </q-intersection>
@@ -343,7 +343,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { computed, watch, onMounted } from 'vue'
 import Loading from 'src/components/Loading.vue'
 // import semver from 'semver'
 
@@ -361,10 +361,16 @@ const loadingInstalledApps = computed(() => appsStore.flags.loadingInstalledApps
 const installedApps = computed(() => appsStore.installedApps)
 const categories = computed(() => appsStore.categories)
 
-const flags = ref({
-  deleteConfirmationDialog: false
-})
-const appToDelete = ref(null)
+import { useInstalledAppsMainStore } from 'stores/pages/InstalledApps'
+const InstalledAppsMainStore = useInstalledAppsMainStore()
+
+const flags = computed(() => InstalledAppsMainStore.flags)
+const appToDelete = computed(() => InstalledAppsMainStore.appToDelete)
+
+const showDeleteDialog = (app) => {
+  InstalledAppsMainStore.appToDelete = app
+  InstalledAppsMainStore.toggleFlag('deleteConfirmationDialog', true)
+}
 
 watch(() => info.value?.storage.sdcard.status.isInstalled, () => {
   appsStore.toggleFlag('loadingInstalledApps', false)
@@ -373,7 +379,6 @@ watch(() => info.value?.storage.sdcard.status.isInstalled, () => {
 onMounted(async () => {
   if (!mainFlags.value.connected) {
     appsStore.toggleFlag('loadingInstalledApps', false)
-    return
   }
 
   if (!categories.value.length) {
