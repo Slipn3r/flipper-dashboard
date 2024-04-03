@@ -11,19 +11,24 @@
     { "mode": "auto" }
   ],
   "cSpell.words": [
-    "mfkey",
-    "Multiflipper",
-    "pixeleditor",
+    "badusb",
     "flipperzero",
     "gpio",
     "Hexbuffer",
+    "ibtn",
+    "ibutton",
+    "mfkey",
+    "Multiflipper",
     "nanoevents",
     "nfctools",
     "pbjs",
+    "pixeleditor",
     "proto",
     "protobuf",
     "protofiles",
+    "rfid",
     "rfraw",
+    "subghz",
     "subtools"
   ],
 }
