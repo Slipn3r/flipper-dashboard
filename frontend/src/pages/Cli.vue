@@ -96,7 +96,7 @@ const mainStore = useMainStore()
 
 const mainFlags = computed(() => mainStore.flags)
 
-import { useCliMainStore } from 'stores/pages/Cli/store-main'
+import { useCliMainStore } from 'stores/pages/Cli'
 const CliMainStore = useCliMainStore()
 
 const flags = computed(() => CliMainStore.flags)
