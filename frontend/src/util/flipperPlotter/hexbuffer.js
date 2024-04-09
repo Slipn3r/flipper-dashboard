@@ -11,7 +11,7 @@
 */
 
 function dec2hex (i, w = 2) {
-  return (i + 0x10000).toString(16).substr(-w).toUpperCase()
+  return (i + 0x10000).toString(16).substr(-w).toUpperCase().replaceAll('.', '')
 }
 
 export class Hexbuffer {
