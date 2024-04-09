@@ -66,7 +66,7 @@
     </div>
 
     <div class="drawing-board fit flex flex-center">
-      <div class="pe-container">
+      <div class="pe-container cursor-none">
         <div v-if="flags.checkerboard" class="checkerboard" :style="`background-size: ${zoomModel * 2}px ${zoomModel * 2}px`"></div>
       </div>
     </div>
