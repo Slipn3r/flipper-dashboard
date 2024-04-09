@@ -547,7 +547,7 @@ import RouterLink from 'components/RouterLink.vue'
 import { logger, history, log } from 'composables/useLog'
 import showNotif from 'composables/useShowNotif'
 
-import { useMainStore } from 'src/stores/main'
+import { useMainStore } from 'stores/global/main'
 const mainStore = useMainStore()
 
 const flags = computed(() => mainStore.flags)

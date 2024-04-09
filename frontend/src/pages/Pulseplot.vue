@@ -35,7 +35,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import FlipperPlotter from 'src/components/FlipperPlotter.vue'
 import { Notify } from 'quasar'
 
-import { useMainStore } from 'src/stores/main'
+import { useMainStore } from 'stores/global/main'
 const mainStore = useMainStore()
 
 const fileToPass = computed(() => mainStore.fileToPass)

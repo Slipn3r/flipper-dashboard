@@ -189,14 +189,14 @@ import SearchBar from 'components/SearchBar.vue'
 import { log } from 'composables/useLog'
 import { rpcErrorHandler } from 'composables/useRpcUtils'
 
-import { useMainStore } from 'src/stores/main'
+import { useMainStore } from 'stores/global/main'
 const mainStore = useMainStore()
 
 const mainFlags = computed(() => mainStore.flags)
 const flipper = computed(() => mainStore.flipper)
 const info = computed(() => mainStore.info)
 
-import { useAppsStore } from 'stores/apps'
+import { useAppsStore } from 'stores/global/apps'
 const appsStore = useAppsStore()
 
 const flags = computed(() => appsStore.flags)
@@ -368,4 +368,3 @@ watch(() => mainFlags.value.connected, (condition) => {
   border-radius: 17px
   padding: 5px
 </style>
-src/composables/useLog

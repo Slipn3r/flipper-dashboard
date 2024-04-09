@@ -1,7 +1,7 @@
 <template>
   <q-page class="column items-center q-pa-md full-width" :class="$q.screen.width > 960 && $q.screen.height > 500 ? 'q-mt-xl' : 'q-mt-xs'">
     <div
-      v-if="!mainFlags.connected || !flags.rpcActive || flags.rpcToggling"
+      v-if="!mainFlags.connected || !mainFlags.rpcActive || mainFlags.rpcToggling"
       class="column flex-center q-my-xl"
     >
       <q-spinner
@@ -11,7 +11,7 @@
       ></q-spinner>
       <p>Waiting for Flipper...</p>
     </div>
-    <div v-if="mainFlags.connected && flags.rpcActive" class="file-container">
+    <div v-if="mainFlags.connected && mainFlags.rpcActive" class="file-container">
       <div class="file-menu flex no-wrap q-pa-xs rounded-borders">
         <q-btn
           flat
@@ -29,7 +29,7 @@
         <q-btn flat dense icon="mdi-plus" :disabled="path === '/'">
           <q-menu auto-close self="top middle">
             <q-list style="min-width: 100px">
-              <q-item clickable @click="flags.uploadPopup = true; uploadedFiles = null">
+              <q-item clickable @click="showUploadFilePopup">
                 <q-item-section avatar>
                   <q-icon name="mdi-file-upload-outline"/>
                 </q-item-section>
@@ -37,7 +37,7 @@
                   Upload file
                 </q-item-section>
               </q-item>
-              <q-item clickable @click="flags.uploadFolderPopup = true; uploadedFiles = null">
+              <q-item clickable @click="showUploadFolderPopup">
                 <q-item-section avatar>
                   <q-icon name="mdi-folder-upload-outline"/>
                 </q-item-section>
@@ -45,7 +45,7 @@
                   Upload folder
                 </q-item-section>
               </q-item>
-              <q-item clickable @click="flags.mkdirPopup = true; editorText = ''">
+              <q-item clickable @click="showMkdirPopup">
                 <q-item-section avatar>
                   <q-icon name="mdi-folder-plus-outline"/>
                 </q-item-section>
@@ -99,7 +99,7 @@
                       Open in Pulse plotter
                     </q-item-section>
                   </q-item>
-                  <q-item clickable @click="editorText = item.name; oldName = item.name; flags.renamePopup = true">
+                  <q-item clickable @click="renameItem(item)">
                     <q-item-section avatar>
                       <q-icon name="mdi-pencil-outline"/>
                     </q-item-section>
@@ -107,7 +107,7 @@
                       Rename
                     </q-item-section>
                   </q-item>
-                  <q-item clickable class="text-negative" @click="flags.deletePopup = true; itemToDelete = item">
+                  <q-item clickable class="text-negative" @click="deleteItem(item)">
                     <q-item-section avatar>
                       <q-icon name="mdi-delete-outline"/>
                     </q-item-section>
@@ -139,7 +139,7 @@
               outlined
               multiple
               webkitdirectory
-              v-model="uploadedFiles"
+              v-model="archiveMainStore.uploadedFiles"
               label="Drop or select folder"
               class="q-pt-md folder-upload"
               :style="$q.screen.width > 380 ? 'width: 300px;' : ''"
@@ -195,7 +195,7 @@
             <q-file
               outlined
               multiple
-              v-model="uploadedFiles"
+              v-model="archiveMainStore.uploadedFiles"
               label="Drop or select files"
               class="q-pt-md"
               :style="$q.screen.width > 380 ? 'width: 300px;' : ''"
@@ -226,7 +226,7 @@
         <q-card>
           <q-card-section>
             <q-input
-              v-model="editorText"
+              v-model="archiveMainStore.editorText"
               :label="'Rename ' + oldName"
               :style="$q.screen.width > 380 ? 'width: 300px;' : ''"
             ></q-input>
@@ -244,7 +244,7 @@
               label="Cancel"
               color="negative"
               v-close-popup
-              @click="editorText = ''"
+              @click="archiveMainStore.editorText = ''"
             ></q-btn>
           </q-card-actions>
         </q-card>
@@ -253,7 +253,7 @@
         <q-card>
           <q-card-section>
             <q-input
-              v-model="editorText"
+              v-model="archiveMainStore.editorText"
               label="Folder name"
               :style="$q.screen.width > 380 ? 'width: 300px;' : ''"
             ></q-input>
@@ -271,7 +271,7 @@
               label="Cancel"
               color="negative"
               v-close-popup
-              @click="editorText = ''"
+              @click="archiveMainStore.editorText = ''"
             ></q-btn>
           </q-card-actions>
         </q-card>
@@ -294,39 +294,27 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, computed } from 'vue'
+import { watch, onMounted, computed } from 'vue'
 import ProgressBar from 'components/ProgressBar.vue'
-import { exportFile } from 'quasar'
-import { log } from 'composables/useLog'
-import { rpcErrorHandler } from 'composables/useRpcUtils'
+// import { exportFile } from 'quasar'
+// import { log } from 'composables/useLog'
+// import { rpcErrorHandler } from 'composables/useRpcUtils'
 
-import { useMainStore } from 'src/stores/main'
+import { useMainStore } from 'stores/global/main'
 const mainStore = useMainStore()
 
 const mainFlags = computed(() => mainStore.flags)
-const flipper = computed(() => mainStore.flipper)
 
-const componentName = 'Archive'
-const path = ref('/')
-const dir = ref([])
-const flags = ref({
-  rpcActive: false,
-  rpcToggling: false,
-  uploadPopup: false,
-  uploadFolderPopup: false,
-  renamePopup: false,
-  mkdirPopup: false,
-  blockingOperationPopup: false,
-  deletePopup: false
-})
-const uploadedFiles = ref(null)
-const editorText = ref('')
-const oldName = ref('')
-const file = ref({
-  name: '',
-  progress: 0
-})
-const itemToDelete = ref(null)
+import { useArchiveMainStore } from 'stores/pages/Archive'
+const archiveMainStore = useArchiveMainStore()
+
+const path = computed(() => archiveMainStore.path)
+const dir = computed(() => archiveMainStore.dir)
+const flags = computed(() => archiveMainStore.flags)
+const editorText = computed(() => archiveMainStore.editorText)
+const oldName = computed(() => archiveMainStore.oldName)
+const file = computed(() => archiveMainStore.file)
+const itemToDelete = computed(() => archiveMainStore.itemToDelete)
 
 watch(() => mainFlags.value.connected, (newStatus) => {
   if (newStatus) {
@@ -334,213 +322,45 @@ watch(() => mainFlags.value.connected, (newStatus) => {
   }
 })
 
-const startRpc = async () => {
-  flags.value.rpcToggling = true
-  await flipper.value.startRPCSession()
-    .then(() => {
-      flags.value.rpcActive = true
-      mainStore.setRpcStatus(true)
-      flags.value.rpcToggling = false
-      log({
-        level: 'info',
-        message: `${componentName}: RPC started`
-      })
-    })
-    .catch(error => {
-      console.error(error)
-      log({
-        level: 'error',
-        message: `${componentName}: Error while starting RPC: ${error.toString()}`
-      })
-    })
-}
+const remove = archiveMainStore.remove
+const rename = archiveMainStore.rename
+const mkdir = archiveMainStore.mkdir
+const upload = archiveMainStore.upload
 
-const list = async () => {
-  const list = await flipper.value.RPC('storageList', { path: path.value })
-    .then(list => {
-      log({
-        level: 'debug',
-        message: `${componentName}: storageList: ${path.value}`
-      })
-      return list
-    })
-    .catch(error => rpcErrorHandler(componentName, error, 'storageList'))
-  if (list.length === 0) {
-    dir.value = []
-    return
-  }
-
-  if (path.value === '/') {
-    dir.value = list.filter(e => e.name !== 'any')
-  } else {
-    dir.value = list
-  }
-}
-const read = async (path, preventDownload) => {
-  flags.value.blockingOperationPopup = true
-  file.value.name = path.slice(path.lastIndexOf('/') + 1)
-  const localFile = dir.value.find(e => e.name === file.value.name && !e.type)
-  const total = localFile.size
-  const unbind = flipper.value.emitter.on('storageReadRequest/progress', chunks => {
-    file.value.progress = Math.min(chunks * 512, total) / total
-  })
-
-  const res = await flipper.value.RPC('storageRead', { path })
-    .then(data => {
-      log({
-        level: 'debug',
-        message: `${componentName}: storageRead: ${path}`
-      })
-      return data
-    })
-    .catch(error => rpcErrorHandler(componentName, error, 'storageRead'))
-  const s = path.split('/')
-  if (!preventDownload) {
-    exportFile(s[s.length - 1], res)
-  }
-  unbind()
-  flags.value.blockingOperationPopup = false
-  if (preventDownload) {
-    return res
-  }
-}
-const remove = async (path, isRecursive) => {
-  await flipper.value.RPC('storageRemove', { path, recursive: isRecursive })
-    .then(() => {
-      log({
-        level: 'debug',
-        message: `${componentName}: storageRemove: ${path}, recursive: ${isRecursive}`
-      })
-    })
-    .catch(error => rpcErrorHandler(componentName, error, 'storageRemove'))
-  list()
-}
-const rename = async (path, oldName, newName) => {
-  await flipper.value.RPC('storageRename', { oldPath: path + '/' + oldName, newPath: path + '/' + newName })
-    .then(() => {
-      log({
-        level: 'debug',
-        message: `${componentName}: storageRename: ${path}, old name: ${oldName}, new name: ${newName}`
-      })
-    })
-    .catch(error => rpcErrorHandler(componentName, error, 'storageRename'))
-  list()
-}
-const mkdir = async (path) => {
-  await flipper.value.RPC('storageMkdir', { path })
-    .then(() => {
-      log({
-        level: 'debug',
-        message: `${componentName}: storageMkdir: ${path}`
-      })
-    })
-    .catch(error => rpcErrorHandler(componentName, error, 'storageMkdir'))
-  list()
-}
-const upload = async () => {
-  if (!uploadedFiles.value || uploadedFiles.value.length === 0) {
-    return
-  }
-  flags.value.blockingOperationPopup = true
-  for (const localFile of uploadedFiles.value) {
-    file.value.name = localFile.name
-    let dir = path.value
-
-    if (localFile.webkitRelativePath?.length > 0) {
-      const path = localFile.webkitRelativePath.split('/')
-      path.pop()
-      while (path.length > 0) {
-        dir += '/' + path.shift()
-        const stat = await flipper.value.RPC('storageStat', { path: dir })
-        if (!stat) {
-          await flipper.value.RPC('storageMkdir', { path: dir })
-        }
-      }
-    }
-
-    const unbind = flipper.value.emitter.on('storageWriteRequest/progress', e => {
-      file.value.progress = e.progress / e.total
-    })
-
-    await flipper.value.RPC('storageWrite', { path: dir + '/' + localFile.name, buffer: await localFile.arrayBuffer() })
-      .then(() => {
-        log({
-          level: 'debug',
-          message: `${componentName}: storageWrite: ${path.value}/${localFile.name}`
-        })
-      })
-      .catch(error => rpcErrorHandler(componentName, error, 'storageWrite'))
-    unbind()
-  }
-  file.value.name = ''
-  list()
-  flags.value.blockingOperationPopup = false
-}
-
-const itemClicked = (item) => {
-  if (item.type === 1) {
-    if (!path.value.endsWith('/')) {
-      path.value += '/'
-    }
-    path.value += item.name
-    list()
-  } else if (item.name === '..') {
-    path.value = path.value.slice(0, path.value.lastIndexOf('/'))
-    if (path.value.length === 0) {
-      path.value = '/'
-    }
-    list()
-  } else {
-    read(path.value + '/' + item.name)
-  }
-}
-const openFileIn = async (item, destination) => {
-  const res = await read(path.value + '/' + item.name, true)
-  mainStore.openFileIn({
-    path: destination,
-    file: {
-      name: item.name,
-      data: res
-    }
-  })
-}
-const itemIconSwitcher = (item) => {
-  if (path.value === '/' && item.name === 'int') {
-    return 'svguse:common-icons.svg#internal-memory'
-  } else if (path.value === '/' && item.name === 'ext') {
-    return 'svguse:common-icons.svg#sdcard-memory'
-  } else if (item.type === 1) {
-    return 'mdi-folder-outline'
-  } else if (item.name.endsWith('.badusb')) {
-    return 'svguse:file-types.svg#badusb'
-  } else if (item.name.endsWith('.ibtn')) {
-    return 'svguse:file-types.svg#ibutton'
-  } else if (item.name.endsWith('.ir')) {
-    return 'svguse:file-types.svg#infrared'
-  } else if (item.name.endsWith('.nfc')) {
-    return 'svguse:file-types.svg#nfc'
-  } else if (item.name.endsWith('.rfid')) {
-    return 'svguse:file-types.svg#rfid'
-  } else if (item.name.endsWith('.sub')) {
-    return 'svguse:file-types.svg#subghz'
-  } else if (item.name.endsWith('.u2f')) {
-    return 'svguse:file-types.svg#u2f'
-  } else {
-    return 'mdi-file-outline'
-  }
-}
-
-const start = async () => {
-  flags.value.rpcActive = mainFlags.value.rpcActive
-  if (!mainFlags.value.rpcActive) {
-    await startRpc()
-  }
-  await list()
-}
+const itemClicked = archiveMainStore.itemClicked
+const openFileIn = archiveMainStore.openFileIn
+const itemIconSwitcher = archiveMainStore.itemIconSwitcher
+const start = archiveMainStore.start
 
 onMounted(() => {
   if (mainFlags.value.connected) {
     start()
   }
 })
+
+const showUploadFilePopup = () => {
+  archiveMainStore.toggleFlag('uploadPopup', true)
+  archiveMainStore.uploadedFiles = null
+}
+
+const showUploadFolderPopup = () => {
+  archiveMainStore.toggleFlag('uploadFolderPopup', true)
+  archiveMainStore.uploadedFiles = null
+}
+
+const showMkdirPopup = () => {
+  archiveMainStore.toggleFlag('mkdirPopup', true)
+  archiveMainStore.editorText = ''
+}
+
+const renameItem = (item) => {
+  archiveMainStore.editorText = item.name
+  archiveMainStore.oldName = item.name
+  archiveMainStore.toggleFlag('renamePopup', true)
+}
+
+const deleteItem = (item) => {
+  archiveMainStore.toggleFlag('deletePopup', true)
+  archiveMainStore.itemToDelete = item
+}
 </script>

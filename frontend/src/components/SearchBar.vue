@@ -49,7 +49,7 @@
 import { ref, watch, computed } from 'vue'
 import { fetchAppsShort } from 'util/fetch'
 
-import { useAppsStore } from 'src/stores/apps'
+import { useAppsStore } from 'stores/global/apps'
 const appsStore = useAppsStore()
 
 const sdk = computed(() => appsStore.sdk)

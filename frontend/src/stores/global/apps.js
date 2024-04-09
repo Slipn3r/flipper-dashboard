@@ -12,7 +12,7 @@ import promiseQueue from 'composables/usePromiseQueue'
 const actionQueue = promiseQueue()
 import { axios } from 'boot/axios'
 
-import { useMainStore } from 'stores/main'
+import { useMainStore } from 'stores/global/main'
 
 const componentName = 'Apps'
 

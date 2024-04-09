@@ -5,7 +5,7 @@
         label="Loading app..."
       />
     </template>
-    <template v-else>
+    <template v-else-if="app">
       <div class="row items-center q-mb-lg" :class="$q.screen.width > 670 ? 'no-wrap' : ''">
         <div class="app-icon q-mr-md">
           <q-img :src="app.currentVersion.iconUri" style="image-rendering: pixelated;"/>
@@ -290,136 +290,44 @@
 
 <script setup>
 import { ref, computed, onUnmounted, onMounted, watch } from 'vue'
-import Loading from 'src/components/Loading.vue'
-import { bytesToSize } from 'util/util'
-import { submitAppReport, fetchAppById } from 'util/fetch'
+import Loading from 'components/Loading.vue'
 
-import { useRoute, useRouter } from 'vue-router'
-const router = useRouter()
+import { bytesToSize } from 'util/util'
+
+import { useRoute } from 'vue-router'
 const route = useRoute()
 
-import { useMainStore } from 'stores/main'
+const emit = defineEmits(['showDialog'])
+
+import { useMainStore } from 'stores/global/main'
 const mainStore = useMainStore()
 
 const mainFlags = computed(() => mainStore.flags)
 
-import { useAppsStore } from 'stores/apps'
+import { useAppsStore } from 'stores/global/apps'
 const appsStore = useAppsStore()
 
 const appsFlags = computed(() => appsStore.flags)
-const sdk = computed(() => appsStore.sdk)
-const app = computed(() => appsStore.currentApp)
-const categories = computed(() => appsStore.categories)
 
-const emit = defineEmits(['showDialog'])
+import { useAppMainStore } from 'stores/pages/App'
+const appMainStore = useAppMainStore()
 
-const loading = ref(true)
-const flags = ref({
-  noFreeSpaceDialog: false,
-  deleteConfirmationDialog: false,
-  reportDialog: false,
-  reportSubmitted: false
-})
-const category = ref({})
-const screenshotWidth = 256 + 4 + 8 + 8
-const position = ref(0)
+const loading = computed(() => appMainStore.loading)
+const app = computed(() => appMainStore.app)
+const flags = computed(() => appMainStore.flags)
+const category = computed(() => appMainStore.category)
 const scrollAreaRef = ref(null)
-const currentStatusHint = ref(null)
-const statusHints = ref({
-  READY: {
-    text: 'Runs on latest firmware release',
-    icon: 'mdi-check-circle-outline',
-    color: 'light-green-2'
-  },
-  BUILD_RUNNING: {
-    text: 'App is rebuilding',
-    icon: 'mdi-alert-circle-outline',
-    color: 'yellow-2',
-    tooltip: 'This may take some time, come back later'
-  },
-  FLIPPER_OUTDATED: {
-    text: 'Flipper firmware is outdated',
-    icon: 'mdi-alert-circle-outline',
-    color: 'deep-orange-2',
-    dialog: 'outdatedFirmwareDialog'
-  },
-  UNSUPPORTED_APPLICATION: {
-    text: 'Outdated app',
-    icon: 'mdi-alert-circle-outline',
-    color: 'deep-orange-2',
-    dialog: 'outdatedAppDialog'
-  },
-  UNSUPPORTED_SDK: {
-    text: 'Unsupported SDK',
-    icon: 'mdi-alert-circle-outline',
-    color: 'deep-orange-2',
-    dialog: 'outdatedFirmwareDialog'
-  }
-})
-const report = ref({
-  type: '',
-  description: ''
-})
-
-const setCategory = () => {
-  category.value = categories.value.find(category => category.id === app.value.categoryId)
-}
+const currentStatusHint = computed(() => appMainStore.currentStatusHint)
+const statusHints = computed(() => appMainStore.statusHints)
+const report = computed(() => appMainStore.report)
 
 const animateScroll = (direction) => {
-  const width = scrollAreaRef.value.$el.offsetWidth
-  const numberOfScreenshots = Object.keys(app.value.currentVersion.screenshots).length
-  const screenshotsOnScreen = Math.floor(width / screenshotWidth) || 1
-
-  if (direction === 'forward') {
-    if ((position.value + (screenshotWidth * screenshotsOnScreen)) < screenshotWidth * numberOfScreenshots) {
-      position.value = position.value + screenshotWidth
-    }
-  }
-
-  if (direction === 'backward') {
-    if (position.value < 0) {
-      position.value = 0
-    } else {
-      position.value = position.value - screenshotWidth
-    }
-  }
-
-  scrollAreaRef.value.setScrollPosition('horizontal', position.value, 300)
+  appMainStore.animateScroll({
+    direction,
+    scrollAreaRef
+  })
 }
-
-const sendReport = async () => {
-  await submitAppReport(app.value.id, { description: report.value.description, description_type: report.value.type })
-  flags.value.reportSubmitted = true
-}
-
-const start = async () => {
-  loading.value = true
-  const path = route.params.path
-  if (!path) {
-    return
-  }
-
-  const appFull = await fetchAppById(path, sdk.value)
-  if (appFull.detail && appFull.detail.status === 'error') {
-    router.push({ name: 'Apps' })
-    return
-  }
-  appsStore.setCurrentApp(appFull)
-  const status = app.value.currentVersion.status
-  if (mainFlags.value.connected && status === 'READY') {
-    currentStatusHint.value = null
-  } else {
-    currentStatusHint.value = status
-  }
-  if (!categories.value.length) {
-    await appsStore.getCategories()
-  }
-  setCategory()
-
-  appsStore.updateInstalledApps([app.value])
-
-  loading.value = false
-}
+const sendReport = appMainStore.sendReport
 
 watch(() => mainFlags.value.connected && appsFlags.value.loadingInstalledApps, () => {
   appsStore.updateInstalledApps([app.value])
@@ -432,7 +340,9 @@ watch(() => mainFlags.value.connected, (condition) => {
 })
 
 onMounted(() => {
-  start()
+  appMainStore.start({
+    route
+  })
 })
 
 onUnmounted(() => {
