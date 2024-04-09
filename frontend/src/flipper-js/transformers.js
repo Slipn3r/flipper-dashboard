@@ -36,10 +36,10 @@ export class PromptBreakTransformer {
 }
 
 export class ProtobufTransformer {
-  constructor () {
+  constructor (rpcStarted = false) {
     this.chunks = new Uint8Array(0)
     this.decoder = new TextDecoder()
-    this.rpcStarted = false
+    this.rpcStarted = rpcStarted
   }
 
   transform (chunk, controller) {

@@ -11,6 +11,7 @@
         class="q-mt-lg q-py-sm q-px-lg"
         label="Give me the keys"
         @click="mfkeyFlipperStart"
+        unelevated
       />
       <div class="q-pt-sm q-mb-xl text-subtitle-1">{{ mfkeyStatus }}</div>
     </template>
@@ -37,6 +38,7 @@
                 :loading="flags.mfkeyManualInProgress"
                 :disable="flags.mfkeyFlipperInProgress"
                 label="Run"
+                unelevated
               />
             </div>
           </div>

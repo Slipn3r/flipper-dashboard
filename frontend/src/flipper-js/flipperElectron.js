@@ -1,7 +1,6 @@
-import { LineBreakTransformer, PromptBreakTransformer, ProtobufTransformer } from './transformers'
+import { ProtobufTransformer } from './transformers'
 import { PB } from './protobufCompiled'
-import { createNanoEvents } from 'nanoevents'
-import asyncSleep from 'simple-async-sleep'
+import { encode, decode } from 'base64-arraybuffer'
 
 import * as storage from './commands/storage'
 import * as system from './commands/system'
@@ -20,169 +19,57 @@ const RPCSubSystems = {
 }
 
 export default class Flipper {
-  constructor () {
-    this.path = null
-    this.readable = null
-    this.reader = null
-    this.readingMode = {
-      type: 'text',
-      transform: 'promptBreak'
-    }
+  constructor (name, emitter) {
+    this.name = name
+    this.emitter = emitter
+
     // RPC
-    this.commandQueue = [
-      {
-        commandId: 0,
-        requestType: 'unsolicited',
-        chunks: [],
-        error: undefined
-      }
-    ]
-    this.emitter = createNanoEvents()
-  }
-
-  defaultInfo () {
-    this.path = null
-    this.readable = null
-    this.reader = null
-    this.readingMode = {
-      type: 'text',
-      transform: 'promptBreak'
-    }
-    // RPC
-    this.commandQueue = [
-      {
-        commandId: 0,
-        requestType: 'unsolicited',
-        chunks: [],
-        error: undefined
-      }
-    ]
-    this.emitter = createNanoEvents()
-  }
-
-  getReader () {
-    if (this.readingMode.type === 'text') {
-      // eslint-disable-next-line no-undef
-      const textDecoder = new TextDecoderStream()
-      this.readableStreamClosed = this.readable.pipeTo(textDecoder.writable)
-
-      if (this.readingMode.transform.length) {
-        let transformer
-        switch (this.readingMode.transform) {
-          case 'lineBreak':
-            transformer = new LineBreakTransformer()
-            break
-          case 'promptBreak':
-            transformer = new PromptBreakTransformer()
-            break
-          default:
-            throw new Error('Invalid reading mode')
-        }
-
-        this.reader = textDecoder.readable
-          .pipeThrough(new TransformStream(transformer))
-          .getReader()
-      } else {
-        this.reader = textDecoder.readable.getReader()
-      }
-    } else if (this.readingMode.type === 'raw') {
-      if (this.readingMode.transform.length) {
-        let transformer
-        switch (this.readingMode.transform) {
-          case 'protobuf':
-            transformer = new ProtobufTransformer()
-            break
-          default:
-            throw new Error('Invalid reading mode')
-        }
-
-        this.reader = this.readable
-          .pipeThrough(new TransformStream(transformer))
-          .getReader()
-      } else {
-        this.reader = this.readable.getReader()
-      }
-    } else {
-      throw new Error('Invalid reading mode')
-    }
-
-    this.read()
-  }
-
-  async setReadingMode (type, transform = '') {
-    if (!type) {
-      return
-    }
-    this.readingMode.type = type
-    this.readingMode.transform = transform
-
-    await this.disconnect()
-    await this.connect(this.path)
-  }
-
-  async connect (path) {
-    return new Promise((resolve, reject) => {
-      (async () => {
-        if (!path) {
-          const ports = await window.serial.list()
-          path = ports[0].path
-        }
-        this.path = path
-
-        this.readable = new ReadableStream({
-          start (controller) {
-            window.serial.onData(data => {
-              controller.enqueue(data)
-            })
-          }
+    this.readableRPC = new ReadableStream({
+      start (controller) {
+        emitter.on('RPCRead', data => {
+          const decoded = new Uint8Array(decode(data))
+          controller.enqueue(decoded)
         })
+      }
+    })
+    this.readerRPC = this.readableRPC
+      .pipeThrough(new TransformStream(new ProtobufTransformer(true)))
+      .getReader()
+    this.readRPC()
 
-        await window.serial.open(path)
-          .catch(async error => {
-            if (error.message.endsWith('Port is already open')) {
-              await this.disconnect()
-              resolve(window.serial.open(path))
-            }
+    this.commandQueue = [
+      {
+        commandId: 0,
+        requestType: 'unsolicited',
+        chunks: [],
+        error: undefined
+      }
+    ]
 
-            reject(error)
-          })
-
-        window.serial.onClose(path => this.emitter.emit('disconnect', path))
-
-        resolve(this.getReader())
-      })()
+    // CLI
+    this.emitter.on('CLIRead', data => {
+      const decoded = atob(data)
+      this.emitter.emit('cli/output', decoded)
     })
   }
 
-  async disconnect () {
-    if (this.reader) {
-      this.reader.cancel()
-      await this.readableStreamClosed.catch(() => {})
-    }
-    await window.serial.close(this.path)
-  }
-
-  async read () {
+  async readRPC () {
     let keepReading = true
     while (keepReading) {
       try {
-        const { value, done } = await this.reader.read()
+        const { value, done } = await this.readerRPC.read()
         if (done) {
-          this.reader.releaseLock()
+          this.readerRPC.releaseLock()
           keepReading = false
           break
         }
 
-        if (this.readingMode.transform === 'protobuf') {
-          if (value.content && value.content === 'guiScreenFrame') {
-            this.emitter.emit('screenStream/frame', value.guiScreenFrame.data, value.guiScreenFrame.orientation)
-          }
-          const command = this.commandQueue.find(c => c.commandId === value.commandId)
-          value[value.content].hasNext = value.hasNext
-          command.chunks.push(value[value.content])
-        } else {
-          this.emitter.emit('cli/output', value)
+        if (value.content && value.content === 'guiScreenFrame') {
+          this.emitter.emit('screenStream/frame', value.guiScreenFrame.data, value.guiScreenFrame.orientation)
         }
+        const command = this.commandQueue.find(c => c.commandId === value.commandId)
+        value[value.content].hasNext = value.hasNext
+        command.chunks.push(value[value.content])
       } catch (error) {
         if (!error.toString().includes('Releasing Default reader')) {
           console.error(error)
@@ -192,26 +79,20 @@ export default class Flipper {
     }
   }
 
-  write (message) {
-    return window.serial.write({ path: this.path, message })
+  write (text) {
+    const encoded = new TextEncoder().encode(text)
+    return this.writeRaw(encoded, 'cli')
   }
 
-  writeRaw (message) {
-    return window.serial.write({ path: this.path, message })
-  }
-
-  async startRPCSession (attempts = 1) {
-    await this.setReadingMode('raw', 'protobuf')
-    this.write('start_rpc_session\r')
-    await this.RPC('systemPing', { timeout: 1000 })
-      .catch(async error => {
-        if (attempts > 3) {
-          throw error
-        }
-        console.error(error)
-        await asyncSleep(500)
-        return this.startRPCSession(attempts + 1)
-      })
+  writeRaw (data, mode = 'rpc') {
+    const payload = {
+      id: 1,
+      type: 'write',
+      name: this.name,
+      data: encode(data),
+      mode
+    }
+    return window.bridge.send(payload)
   }
 
   encodeRPCRequest (requestType, args, hasNext, commandId) {

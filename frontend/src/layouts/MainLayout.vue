@@ -105,7 +105,6 @@
             </q-item>
             <q-separator style="width: 85%; margin: auto;"/>
             <q-item
-              v-if="flags.multiflipper && info"
               clickable
               class="q-px-md q-py-sm"
               @click="onSwitchFlipper"
@@ -119,68 +118,70 @@
                 </q-avatar>
               </q-item-section>
               <q-item-section>
-                <q-item-label>Switch</q-item-label>
+                <q-item-label>My Flippers</q-item-label>
               </q-item-section>
             </q-item>
-            <q-item
-              v-if="flags.portSelectRequired || !flags.connected && !flags.portSelectRequired"
-              clickable
-              class="q-px-md q-py-sm"
-              @click="flags.portSelectRequired ? selectPort(true) : start(flags.multiflipper && info, undefined, true)"
-            >
-              <q-item-section avatar class="items-center">
-                <q-avatar
-                  size="md"
-                  square
-                >
-                  <q-icon name="svguse:common-icons.svg#connect" size="32px"/>
-                </q-avatar>
+            <template v-if="!flags.isElectron">
+              <q-item
+                v-if="(flags.portSelectRequired || !flags.connected && !flags.portSelectRequired)"
+                clickable
+                class="q-px-md q-py-sm"
+                @click="flags.portSelectRequired ? selectPort(true) : start(flags.multiflipper && info, undefined, true)"
+              >
+                <q-item-section avatar class="items-center">
+                  <q-avatar
+                    size="md"
+                    square
+                  >
+                    <q-icon name="svguse:common-icons.svg#connect" size="32px"/>
+                  </q-avatar>
 
-              </q-item-section>
+                </q-item-section>
 
-              <q-item-section>
-                <q-item-label>Connect</q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item
-              v-else-if="info"
-              clickable
-              class="q-px-md q-py-sm"
-              @click="disconnect"
-            >
-              <q-item-section avatar class="items-center">
-                <q-avatar
-                  size="md"
-                  square
-                >
-                  <q-icon name="svguse:common-icons.svg#connected" size="32px"/>
-                </q-avatar>
+                <q-item-section>
+                  <q-item-label>Connect</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item
+                v-else-if="info"
+                clickable
+                class="q-px-md q-py-sm"
+                @click="disconnect"
+              >
+                <q-item-section avatar class="items-center">
+                  <q-avatar
+                    size="md"
+                    square
+                  >
+                    <q-icon name="svguse:common-icons.svg#connected" size="32px"/>
+                  </q-avatar>
 
-              </q-item-section>
+                </q-item-section>
 
-              <q-item-section>
-                <q-item-label>Disconnect</q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item
-              v-else
-              clickable
-              class="q-px-md q-py-sm"
-            >
-              <q-item-section avatar class="items-center">
-                <q-avatar
-                  size="md"
-                  square
-                >
-                  <q-icon name="svguse:common-icons.svg#connect" size="32px"/>
-                </q-avatar>
+                <q-item-section>
+                  <q-item-label>Disconnect</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item
+                v-else
+                clickable
+                class="q-px-md q-py-sm"
+              >
+                <q-item-section avatar class="items-center">
+                  <q-avatar
+                    size="md"
+                    square
+                  >
+                    <q-icon name="svguse:common-icons.svg#connect" size="32px"/>
+                  </q-avatar>
 
-              </q-item-section>
+                </q-item-section>
 
-              <q-item-section>
-                <q-item-label>Connecting...</q-item-label>
-              </q-item-section>
-            </q-item>
+                <q-item-section>
+                  <q-item-label>Connecting...</q-item-label>
+                </q-item-section>
+              </q-item>
+            </template>
           </div>
         </q-list>
         <div class="relative-position flex justify-end" style="width: 175px">
@@ -300,35 +301,57 @@
         v-if="!flags.connectionRequired || flags.updateInProgress || (flags.serialSupported && info !== null && info.doneReading)"
       />
       <q-page v-else class="flex-center column">
-        <div
-          v-if="flags.serialSupported && (!flags.connected || info == null || !flags.rpcActive || flags.rpcToggling)"
-          class="flex-center column q-my-xl"
-        >
-          <q-btn
-            v-if="flags.portSelectRequired || !flags.connected && !flags.portSelectRequired"
-            @click="flags.portSelectRequired ? selectPort(true) : start(flags.multiflipper && info, undefined, true)"
-            outline
-            class="q-mt-md"
+        <template v-if="flags.isElectron">
+          <q-card flat>
+            <q-card-section class="q-pa-none q-ma-md" align="center">
+              <template v-if="flags.isBridgeReady">
+                <q-img
+                  src="../assets/flipper_alert.svg"
+                  width="70px"
+                />
+                <div class="text-h6 q-my-sm">Flipper isn't connected</div>
+              </template>
+              <template v-else>
+                <q-spinner
+                  color="primary"
+                  size="3em"
+                  class="q-mb-md"
+                ></q-spinner>
+              </template>
+            </q-card-section>
+          </q-card>
+        </template>
+        <template v-else>
+          <div
+            v-if="flags.serialSupported && (!flags.connected || info == null || !flags.rpcActive || flags.rpcToggling)"
+            class="flex-center column q-my-xl"
           >
-            Connect
-          </q-btn>
-          <template v-else>
-            <q-spinner
-              color="primary"
-              size="3em"
-              class="q-mb-md"
-            ></q-spinner>
-            <p>Waiting for Flipper...</p>
-          </template>
-        </div>
-        <div v-if="!flags.serialSupported" class="column text-center q-px-lg q-py-lg">
-          <h5>Unsupported browser</h5>
-          <p>
-            Your browser doesn't support WebSerial API.
-            For better experience we recommend using Chrome for desktop.<br />
-            <a href="https://caniuse.com/web-serial" target="_blank">Full list of supported browsers</a>
-          </p>
-        </div>
+            <q-btn
+              v-if="flags.portSelectRequired || !flags.connected && !flags.portSelectRequired"
+              @click="flags.portSelectRequired ? selectPort(true) : start(flags.multiflipper && info, undefined, true)"
+              outline
+              class="q-mt-md"
+            >
+              Connect
+            </q-btn>
+            <template v-else>
+              <q-spinner
+                color="primary"
+                size="3em"
+                class="q-mb-md"
+              ></q-spinner>
+              <p>Waiting for Flipper...</p>
+            </template>
+          </div>
+          <div v-if="!flags.serialSupported" class="column text-center q-px-lg q-py-lg">
+            <h5>Unsupported browser</h5>
+            <p>
+              Your browser doesn't support WebSerial API.
+              For better experience we recommend using Chrome for desktop.<br />
+              <a href="https://caniuse.com/web-serial" target="_blank">Full list of supported browsers</a>
+            </p>
+          </div>
+        </template>
       </q-page>
       <q-dialog v-model="flags.logsPopup">
         <q-card>
@@ -430,33 +453,35 @@
         </q-card>
       </q-dialog>
       <q-dialog v-model="flags.dialogMultiflipper" @hide="mainStore.autoReconnectRestore()">
-        <q-card>
-          <q-card-section
-            v-if="!flags.multiflipper"
-            class="q-pa-none q-ma-md"
-            align="center"
-          >
-            <div class="q-my-sm">Your Flippers will appear here...</div>
-          </q-card-section>
-          <q-card-section v-else class="row items-center" style="min-width: 506px;">
-            <q-list class="q-gutter-y-md">
-              <q-item v-for="flipper in mainStore.availableFlippers" :key="flipper.hardware_name">
-                <q-item-section>
-                  <img v-if="flipper.hardware.color === '1'" src="../assets/flipper_black.svg" style="width: 100%"/>
-                  <img v-else-if="flipper.hardware.color === '3'" src="../assets/flipper_transparent.svg" style="width: 100%"/>
+        <q-card class="rounded-borders">
+          <q-card-section class="row items-center" style="min-width: 350px;">
+            <q-list class="q-gutter-y-md full-width">
+              <q-item
+                v-for="flipper in mainStore.availableFlippers"
+                :key="flipper.info.hardware.name"
+                class="row rounded-borders"
+                :style="`${info?.hardware?.uid === flipper.info.hardware.uid ? 'border: 2px solid ' + getCssVar('primary') : ''}`"
+                :active="info?.hardware?.uid === flipper.info.hardware.uid"
+                :clickable="info?.hardware?.uid !== flipper.info.hardware.uid"
+                @click="onConnectFlipper(flipper.name)"
+              >
+                <q-item-section class="col-5">
+                  <img v-if="flipper.info.hardware.color === '1'" src="../assets/flipper_black.svg" style="width: 100%"/>
+                  <img v-else-if="flipper.info.hardware.color === '3'" src="../assets/flipper_transparent.svg" style="width: 100%"/>
                   <img v-else src="../assets/flipper_white.svg" style="width: 100%"/>
                 </q-item-section>
-                <q-item-section>
+                <q-item-section class="col-5 q-pl-md">
                   <div>
-                    <div class="text-h6">{{ flipper.hardware.name }}</div>
-                    <div class="text-caption">Firmware {{ flipper.firmware.version }}</div>
+                    <div class="text-h6">{{ flipper.info.hardware.name }}</div>
+                    <div class="text-caption">Firmware {{ flipper.info.firmware.version }}</div>
                   </div>
                 </q-item-section>
-                <q-item-section v-if="info?.hardware?.uid === flipper.hardware.uid">
-                  <q-btn unelevated color="positive" @click="disconnect" bordered label="Disconnect" />
-                </q-item-section>
-                <q-item-section v-else>
-                  <q-btn outline @click="onConnectFlipper(true, flipper.port.path)" label="Connect" />
+                <q-item-section class="col-2">
+                  <q-icon
+                    v-if="info?.hardware?.uid === flipper.info.hardware.uid"
+                    name="mdi-check-circle-outline"
+                    size="md"
+                  />
                 </q-item-section>
               </q-item>
             </q-list>
@@ -470,9 +495,9 @@
               />
             </div>
           </q-card-section>
-          <q-card-section align="center">
+          <!--<q-card-section align="center">
             <q-btn unelevated color="primary" label="Repair" @click="recovery"/>
-          </q-card-section>
+          </q-card-section>-->
         </q-card>
       </q-dialog>
       <q-dialog v-model="flags.dialogRecovery" :persistent="flags.recovery" @hide="mainStore.resetRecovery(true)">
@@ -512,7 +537,8 @@
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
-import { useQuasar } from 'quasar'
+import { useQuasar, /* colors, */ getCssVar } from 'quasar'
+// const { lighten } = colors
 import { useRoute, useRouter } from 'vue-router'
 import ExternalLink from 'components/ExternalLink.vue'
 import Loading from 'components/Loading.vue'
@@ -648,11 +674,9 @@ watch(route, () => {
 const selectPort = async (onShowDialog) => {
   mainStore.selectPort(onShowDialog)
 }
-const onConnectFlipper = async (manual, path) => {
-  /* if (flipper.value.path && path !== flipper.value.path && window.serial.isOpen(flipper.value.path)) {
-    await disconnect()
-  } */
-  start(manual, path)
+const onConnectFlipper = async (path) => {
+  console.log('onConnectFlipper')
+  mainStore.connect(path)
 }
 const disconnect = async () => {
   await flipper.value.disconnect()
@@ -675,8 +699,9 @@ const disconnect = async () => {
     })
 }
 const onSwitchFlipper = async () => {
+  mainStore.toggleFlag('dialogMultiflipper', true)
   // mainStore.toggleFlag('dialogMultiflipper', true)
-  await mainStore.start()
+  // await mainStore.start()
 }
 
 const toggleConnectOnStart = () => {
@@ -725,6 +750,7 @@ const downloadLogs = () => {
   dl.remove()
 }
 
+// eslint-disable-next-line no-unused-vars
 const recovery = () => {
   mainStore.recovery(mainStore.logCallback)
 }

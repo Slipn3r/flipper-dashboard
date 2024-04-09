@@ -61,10 +61,10 @@
         <q-item
           v-for="item in dir"
           :key="item.name"
+          class="rounded-borders"
           v-bind="item"
           dense
           clickable
-          style="border-radius: 3px;"
         >
           <q-item-section avatar @click="itemClicked(item)">
             <q-icon :name="itemIconSwitcher(item)"/>

@@ -11,6 +11,9 @@
     { "mode": "auto" }
   ],
   "cSpell.words": [
+    "mfkey",
+    "Multiflipper",
+    "pixeleditor",
     "flipperzero",
     "gpio",
     "Hexbuffer",

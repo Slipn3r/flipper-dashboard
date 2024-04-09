@@ -55,7 +55,7 @@ const startVirtualDisplay = async () => {
     })
 
   await enableBacklight()
-  backlightInterval = setInterval(enableBacklight, 15000)
+  backlightInterval = setInterval(enableBacklight, 1000)
 
   if (autoStreaming.value.enabled) {
     autoStream()

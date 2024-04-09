@@ -8,3 +8,19 @@ $positive  : #00c853
 $negative  : #f05145
 $info      : #31ccEc
 $warning   : #f2c037
+
+$generic-border-radius: 8px
+$button-border-radius: $generic-border-radius
+$button-padding: 8px 20px
+
+.q-card
+  &.rounded-borders
+    border-radius: $generic-border-radius * 3
+
+  .q-item
+    &.rounded-borders
+      border-radius: $generic-border-radius * 2
+
+.q-item
+  &.rounded-borders
+    border-radius: $generic-border-radius

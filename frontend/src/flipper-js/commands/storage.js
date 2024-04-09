@@ -1,4 +1,5 @@
 import { createRPCPromise } from '../util'
+import asyncSleep from 'simple-async-sleep'
 
 function info ({ path }) {
   return createRPCPromise.bind(this)('storageInfoRequest', { path })
@@ -66,6 +67,7 @@ async function write ({ path, buffer }) {
       }
       resolve(this.writeRaw(data))
     })
+    await asyncSleep(7)
     await writeChunk
     this.emitter.emit(requestType + '/progress', {
       progress: Math.min(file.byteLength, (i + 512 - 1)),
