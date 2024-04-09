@@ -37,16 +37,7 @@ const routes = [
     path: '/cli',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      {
-        name: 'CLI',
-        path: '',
-        component: () => {
-          if (window.bridge) {
-            return import('pages/CliElectron.vue')
-          }
-          return import('pages/Cli.vue')
-        }
-      }
+      { name: 'CLI', path: '', component: () => import('pages/Cli.vue') }
     ]
   },
   {
