@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { Platform } from 'quasar'
 
 import { startMfkey } from 'util/mfkey32v2/mfkey'
@@ -23,6 +23,7 @@ export const useNfcMainStore = defineStore('NfcMain', () => {
     mfkeyFlipperInProgress: false,
     mfkeyManualInProgress: false
   })
+  const timeoutSeconds = ref(15)
   const mfkeyStatus = ref('')
   const args = ref({
     cuid: '2a234f80',
@@ -34,16 +35,12 @@ export const useNfcMainStore = defineStore('NfcMain', () => {
     ar1: '5fa65203'
   })
   const result = ref('')
+  const timeouts = ref([])
+  const uniqueKeys = ref([])
 
-  const mfkeyFlipperStart = async () => {
-    if (!info.value?.storage.sdcard.status.isInstalled) {
-      mainStore.toggleFlag('microSDcardMissingDialog', true)
-      return
-    }
-    flags.value.mfkeyFlipperInProgress = true
-    mfkeyStatus.value = 'Loading log'
-
-    let res = await flipper.value.RPC('storageRead', { path: '/ext/nfc/.mfkey32.log' })
+  const nonces = ref([])
+  const readNonces = async () => {
+    const res = await flipper.value.RPC('storageRead', { path: '/ext/nfc/.mfkey32.log' })
       .catch(error => {
         rpcErrorHandler(componentName, error, 'storageRead')
         mfkeyStatus.value = 'Mfkey log file not found'
@@ -60,37 +57,43 @@ export const useNfcMainStore = defineStore('NfcMain', () => {
       return
     }
 
-    mfkeyStatus.value = 'Processing log'
-    const nonces = new TextDecoder().decode(res).split('\n')
-    if (nonces[nonces.length - 1].length === 0) {
-      nonces.pop()
+    nonces.value = new TextDecoder().decode(res).split('\n')
+    if (nonces.value[nonces.value.length - 1].length === 0) {
+      nonces.value.pop()
     }
+  }
+
+  const mfkeyFlipperStart = async () => {
+    timeouts.value = []
+    flags.value.mfkeyFlipperInProgress = true
+    mfkeyStatus.value = 'Loading log'
 
     const keys = new Set()
     const errors = []
-    for (let i = 0; i < nonces.length; i++) {
-      const args = nonces[i].slice(nonces[i].indexOf('cuid')).split(' ').filter((e, i) => i % 2 === 1)
-      mfkeyStatus.value = `Attacking nonce ${i + 1} of ${nonces.length}`
+    for (let i = 0; i < nonces.value.length; i++) {
+      const args = nonces.value[i].slice(nonces.value[i].indexOf('cuid')).split(' ').filter((e, i) => i % 2 === 1)
+      mfkeyStatus.value = `Cracking nonce ${i + 1} of ${nonces.value.length}`
       try {
         const key = await mfkey(args)
-        if (!key.startsWith('Error')) {
-          keys.add(key)
+        if (key === 'timeout') {
+          timeouts.value.push(args)
+          continue
         }
-        log({
-          level: 'debug',
-          message: `${componentName}: cracked nonce: ${args}, key: ${key}`
-        })
+        if (!key.startsWith('Error') && !key.includes(' ')) {
+          keys.add(key)
+          uniqueKeys.value = Array.from(keys)
+        }
       } catch (error) {
         errors.push(error.toString())
         log({
           level: 'error',
-          message: `${componentName}: error in mfkey32v2: ${error}`
+          message: `${componentName}: error in mfkey32v2: ${error} (args: ${args})`
         })
       }
     }
 
     mfkeyStatus.value = 'Loading user dictionary'
-    res = await flipper.value.RPC('storageRead', { path: '/ext/nfc/assets/mf_classic_dict_user.nfc' })
+    const res = await flipper.value.RPC('storageRead', { path: '/ext/nfc/assets/mf_classic_dict_user.nfc' })
       .catch(error => {
         rpcErrorHandler(componentName, error, 'storageRead')
       })
@@ -112,13 +115,13 @@ export const useNfcMainStore = defineStore('NfcMain', () => {
 
     dictionary = dictionary.filter(e => e !== 'Error: mfkey run killed on timeout')
     dictionary = new Set(dictionary)
-    const dictLength = Array.from(dictionary).length
+    const oldDictLength = Array.from(dictionary).length
     for (const key of keys) {
       dictionary.add(key)
     }
 
     mfkeyStatus.value = 'Uploading user dictionary'
-    const file = new TextEncoder().encode(Array.from(keys).join('\n'))
+    const file = new TextEncoder().encode(Array.from(dictionary).join('\n'))
     const path = '/ext/nfc/assets/mf_classic_dict_user.nfc'
     await flipper.value.RPC('storageWrite', { path, buffer: file.buffer })
       .catch(error => rpcErrorHandler(componentName, error, 'storageWrite'))
@@ -129,7 +132,13 @@ export const useNfcMainStore = defineStore('NfcMain', () => {
         })
       })
 
-    mfkeyStatus.value = `Nonces: ${nonces.length} | Unique keys: ${Array.from(keys).length} | New keys: ${Array.from(dictionary).length - dictLength} | Errors: ${errors.length}`
+    mfkeyStatus.value = `Nonces: ${nonces.value.length} | Unique keys: ${uniqueKeys.value.length} | New keys: ${Array.from(dictionary).length - oldDictLength}`
+    if (errors.length > 0) {
+      mfkeyStatus.value += ` | Errors: ${errors.length} (check logs for details)`
+    }
+    if (timeouts.value.length > 0) {
+      mfkeyStatus.value += ` | Timeouts: ${timeouts.value.length}`
+    }
 
     flags.value.mfkeyFlipperInProgress = false
   }
@@ -145,26 +154,62 @@ export const useNfcMainStore = defineStore('NfcMain', () => {
     }
     let localResult
     try {
-      localResult = await startMfkey(localArgs)
-      log({
-        level: 'debug',
-        message: `${componentName}: cracked nonce: ${localArgs}, key: ${localResult}`
-      })
+      localResult = await startMfkey(localArgs, timeoutSeconds.value)
+      if (localResult) {
+        log({
+          level: 'debug',
+          message: `${componentName}: cracked nonce: ${localArgs}, key: ${localResult}`
+        })
+      }
     } catch (error) {
-      log({
-        level: 'error',
-        message: `${componentName}: error in mfkey32v2: ${error}`
-      })
-      localResult = `Error: ${error}`
+      localResult = error.message || error
     }
-    if (flags.value.mfkeyManualInProgress) {
-      result.value = localResult
+    if (localResult.includes('timeout')) {
+      return 'timeout'
     }
+    if (localResult.startsWith('Error')) {
+      throw new Error(localResult)
+    }
+    result.value = localResult
     flags.value.mfkeyManualInProgress = false
     return result.value
   }
 
   const start = platformStore.start
 
-  return { flags, mfkeyStatus, args, result, mfkeyFlipperStart, mfkeyManualStart, start }
+  const onFlipperReady = async (isConnected) => {
+    nonces.value = []
+    mfkeyStatus.value = ''
+    timeouts.value = []
+    uniqueKeys.value = []
+    if (!isConnected) {
+      return
+    }
+
+    // check for SD card
+    if (!info.value?.storage.sdcard.status.isInstalled) {
+      mainStore.toggleFlag('microSDcardMissingDialog', true)
+      return
+    }
+
+    await readNonces()
+    if (nonces.value.length === 0) {
+      const res = await flipper.value.RPC('storageStat', { path: '/ext/nfc/.mfkey32.log' })
+        .catch(error => {
+          console.error(error)
+        })
+      if (res && res.size) {
+        mfkeyStatus.value = 'No nonces found in log file'
+      } else {
+        mfkeyStatus.value = 'Log file not found'
+      }
+      flags.value.noncesNotFound = true
+    }
+  }
+
+  watch(() => mainStore.flags.connected && mainStore.info?.doneReading, onFlipperReady)
+
+  onMounted(() => onFlipperReady(mainStore.flags.connected && mainStore.info?.doneReading))
+
+  return { flags, timeoutSeconds, mfkeyStatus, args, result, timeouts, uniqueKeys, nonces, mfkeyFlipperStart, mfkeyManualStart, start }
 })
