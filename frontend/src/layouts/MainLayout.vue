@@ -773,7 +773,7 @@ onMounted(async () => {
 
     if (localStorage.getItem('connectOnStart') !== 'false') {
       mainStore.toggleFlag('connectOnStart', true)
-      if (flags.value.connectionRequired) {
+      if (flags.value.connectionRequired || flags.value.isElectron) {
         await start()
       }
     } else {
