@@ -801,7 +801,7 @@ function initRuntime() {
 
   checkStackCookie();
 
-  
+
 if (!Module["noFSInit"] && !FS.init.initialized)
   FS.init();
 FS.ignorePermissions = false;
@@ -812,7 +812,7 @@ TTY.init();
 
 function preMain() {
   checkStackCookie();
-  
+
   callRuntimeCallbacks(__ATMAIN__);
 }
 
@@ -1037,10 +1037,10 @@ function createExportWrapper(name, fixedasm) {
 }
 
 var wasmBinaryFile;
-  wasmBinaryFile = 'mfkey.wasm';
-  if (!isDataURI(wasmBinaryFile)) {
+  wasmBinaryFile = 'https://cdn.flipper.net/mfkey.wasm';
+  /*if (!isDataURI(wasmBinaryFile)) {
     wasmBinaryFile = locateFile(wasmBinaryFile);
-  }
+  }*/
 
 function getBinary(file) {
   try {
@@ -1171,7 +1171,7 @@ function createWasm() {
         //   https://github.com/emscripten-core/emscripten/pull/16917
         !ENVIRONMENT_IS_NODE &&
         typeof fetch == 'function') {
-      return fetch('https://cdn.flipperzero.one/mfkey.wasm'/*wasmBinaryFile*/, { credentials: 'same-origin' }).then(async function(response) {
+      return fetch(wasmBinaryFile, { credentials: 'same-origin' }).then(async function(response) {
         const buffer = await response.arrayBuffer()
         // Suppress closure warning here since the upstream definition for
         // instantiateStreaming only allows Promise<Repsponse> rather than
@@ -1220,7 +1220,7 @@ var tempI64;
 // === Body ===
 
 var ASM_CONSTS = {
-  
+
 };
 
 
@@ -1263,7 +1263,7 @@ var ASM_CONSTS = {
         });
     }
 
-  
+
     /**
      * @param {number} ptr
      * @param {string} type
@@ -1313,7 +1313,7 @@ var ASM_CONSTS = {
       return error.stack.toString();
     }
 
-  
+
     /**
      * @param {number} ptr
      * @param {number} value
@@ -1365,7 +1365,7 @@ var ASM_CONSTS = {
       // casing all heap size related code to treat 0 specially.
       return 2147483648;
     }
-  
+
   function emscripten_realloc_buffer(size) {
       try {
         // round size grow request up to wasm page size (fixed 64KB per spec)
@@ -1384,7 +1384,7 @@ var ASM_CONSTS = {
       // With multithreaded builds, races can happen (another thread might increase the size
       // in between), so return a failure, and let the caller retry.
       assert(requestedSize > oldSize);
-  
+
       // Memory resize rules:
       // 1.  Always increase heap size to at least the requested size, rounded up
       //     to next page multiple.
@@ -1401,7 +1401,7 @@ var ASM_CONSTS = {
       //     over-eager decision to excessively reserve due to (3) above.
       //     Hence if an allocation fails, cut down on the amount of excess
       //     growth, in an attempt to succeed to perform a smaller allocation.
-  
+
       // A limit is set for how much we can grow. We should not exceed that
       // (the wasm binary specifies it, so if we tried, we'd fail anyhow).
       var maxHeapSize = getHeapMax();
@@ -1409,9 +1409,9 @@ var ASM_CONSTS = {
         err('Cannot enlarge memory, asked to go up to ' + requestedSize + ' bytes, but the limit is ' + maxHeapSize + ' bytes!');
         return false;
       }
-  
+
       let alignUp = (x, multiple) => x + (multiple - x % multiple) % multiple;
-  
+
       // Loop through potential heap size increases. If we attempt a too eager
       // reservation that fails, cut down on the attempted size and reserve a
       // smaller bump instead. (max 3 times, chosen somewhat arbitrarily)
@@ -1419,12 +1419,12 @@ var ASM_CONSTS = {
         var overGrownHeapSize = oldSize * (1 + 0.2 / cutDown); // ensure geometric growth
         // but limit overreserving (default to capping at +96MB overgrowth at most)
         overGrownHeapSize = Math.min(overGrownHeapSize, requestedSize + 100663296 );
-  
+
         var newSize = Math.min(maxHeapSize, alignUp(Math.max(requestedSize, overGrownHeapSize), 65536));
-  
+
         var replacement = emscripten_realloc_buffer(newSize);
         if (replacement) {
-  
+
           return true;
         }
       }
@@ -1445,7 +1445,7 @@ var ASM_CONSTS = {
       }
       return ret;
     }
-  
+
   var PATH = {isAbs:(path) => path.charAt(0) === '/',splitPath:(filename) => {
         var splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
         return splitPathRe.exec(filename).slice(1);
@@ -1510,7 +1510,7 @@ var ASM_CONSTS = {
       },join2:(l, r) => {
         return PATH.normalize(l + '/' + r);
       }};
-  
+
   function getRandomDevice() {
       if (typeof crypto == 'object' && typeof crypto['getRandomValues'] == 'function') {
         // for modern web browsers
@@ -1530,7 +1530,7 @@ var ASM_CONSTS = {
       // we couldn't find a proper implementation, as Math.random() is not suitable for /dev/random, see emscripten-core/emscripten/pull/7096
       return () => abort("no cryptographic support found for randomDevice. consider polyfilling it if you want to use something insecure like Math.random(), e.g. put this in a --pre-js: var crypto = { getRandomValues: function(array) { for (var i = 0; i < array.length; i++) array[i] = (Math.random()*256)|0 } };");
     }
-  
+
   var PATH_FS = {resolve:function() {
         var resolvedPath = '',
           resolvedAbsolute = false;
@@ -1581,7 +1581,7 @@ var ASM_CONSTS = {
         outputParts = outputParts.concat(toParts.slice(samePartsLength));
         return outputParts.join('/');
       }};
-  
+
   /** @type {function(string, boolean=, number=)} */
   function intArrayFromString(stringy, dontAddNull, length) {
     var len = length > 0 ? length : lengthBytesUTF8(stringy)+1;
@@ -1670,7 +1670,7 @@ var ASM_CONSTS = {
               var BUFSIZE = 256;
               var buf = Buffer.alloc(BUFSIZE);
               var bytesRead = 0;
-  
+
               try {
                 bytesRead = fs.readSync(process.stdin.fd, buf, 0, BUFSIZE, -1);
               } catch(e) {
@@ -1679,7 +1679,7 @@ var ASM_CONSTS = {
                 if (e.toString().includes('EOF')) bytesRead = 0;
                 else throw e;
               }
-  
+
               if (bytesRead > 0) {
                 result = buf.slice(0, bytesRead).toString('utf-8');
               } else {
@@ -1731,12 +1731,12 @@ var ASM_CONSTS = {
             tty.output = [];
           }
         }}};
-  
+
   function zeroMemory(address, size) {
       HEAPU8.fill(0, address, address + size);
       return address;
     }
-  
+
   function alignMemory(size, alignment) {
       assert(alignment, "alignment argument is required");
       return Math.ceil(size / alignment) * alignment;
@@ -1812,7 +1812,7 @@ var ASM_CONSTS = {
           // When the byte data of the file is populated, this will point to either a typed array, or a normal JS array. Typed arrays are preferred
           // for performance, and used by default. However, typed arrays are not resizable like normal JS arrays are, so there is a small disk size
           // penalty involved for appending file writes that continuously grow a file similar to std::vector capacity vs used -scheme.
-          node.contents = null; 
+          node.contents = null;
         } else if (FS.isLink(node.mode)) {
           node.node_ops = MEMFS.ops_table.link.node;
           node.stream_ops = MEMFS.ops_table.link.stream;
@@ -1967,11 +1967,11 @@ var ASM_CONSTS = {
           if (buffer.buffer === HEAP8.buffer) {
             canOwn = false;
           }
-  
+
           if (!length) return 0;
           var node = stream.node;
           node.timestamp = Date.now();
-  
+
           if (buffer.subarray && (!node.contents || node.contents.subarray)) { // This write is from a typed array to a typed array?
             if (canOwn) {
               assert(position === 0, 'canOwn must imply no weird position inside the file');
@@ -1987,7 +1987,7 @@ var ASM_CONSTS = {
               return length;
             }
           }
-  
+
           // Appending to an existing file and we need to reallocate, or source data did not come as a typed array.
           MEMFS.expandFileStorage(node, position+length);
           if (node.contents.subarray && buffer.subarray) {
@@ -2051,7 +2051,7 @@ var ASM_CONSTS = {
           // should we check if bytesWritten and length are the same?
           return 0;
         }}};
-  
+
   /** @param {boolean=} noRunDep */
   function asyncLoad(url, onload, onerror, noRunDep) {
       var dep = !noRunDep ? getUniqueRunDependency('al ' + url) : '';
@@ -2068,49 +2068,49 @@ var ASM_CONSTS = {
       });
       if (dep) addRunDependency(dep);
     }
-  
+
   var ERRNO_MESSAGES = {0:"Success",1:"Arg list too long",2:"Permission denied",3:"Address already in use",4:"Address not available",5:"Address family not supported by protocol family",6:"No more processes",7:"Socket already connected",8:"Bad file number",9:"Trying to read unreadable message",10:"Mount device busy",11:"Operation canceled",12:"No children",13:"Connection aborted",14:"Connection refused",15:"Connection reset by peer",16:"File locking deadlock error",17:"Destination address required",18:"Math arg out of domain of func",19:"Quota exceeded",20:"File exists",21:"Bad address",22:"File too large",23:"Host is unreachable",24:"Identifier removed",25:"Illegal byte sequence",26:"Connection already in progress",27:"Interrupted system call",28:"Invalid argument",29:"I/O error",30:"Socket is already connected",31:"Is a directory",32:"Too many symbolic links",33:"Too many open files",34:"Too many links",35:"Message too long",36:"Multihop attempted",37:"File or path name too long",38:"Network interface is not configured",39:"Connection reset by network",40:"Network is unreachable",41:"Too many open files in system",42:"No buffer space available",43:"No such device",44:"No such file or directory",45:"Exec format error",46:"No record locks available",47:"The link has been severed",48:"Not enough core",49:"No message of desired type",50:"Protocol not available",51:"No space left on device",52:"Function not implemented",53:"Socket is not connected",54:"Not a directory",55:"Directory not empty",56:"State not recoverable",57:"Socket operation on non-socket",59:"Not a typewriter",60:"No such device or address",61:"Value too large for defined data type",62:"Previous owner died",63:"Not super-user",64:"Broken pipe",65:"Protocol error",66:"Unknown protocol",67:"Protocol wrong type for socket",68:"Math result not representable",69:"Read only file system",70:"Illegal seek",71:"No such process",72:"Stale file handle",73:"Connection timed out",74:"Text file busy",75:"Cross-device link",100:"Device not a stream",101:"Bad font file fmt",102:"Invalid slot",103:"Invalid request code",104:"No anode",105:"Block device required",106:"Channel number out of range",107:"Level 3 halted",108:"Level 3 reset",109:"Link number out of range",110:"Protocol driver not attached",111:"No CSI structure available",112:"Level 2 halted",113:"Invalid exchange",114:"Invalid request descriptor",115:"Exchange full",116:"No data (for no delay io)",117:"Timer expired",118:"Out of streams resources",119:"Machine is not on the network",120:"Package not installed",121:"The object is remote",122:"Advertise error",123:"Srmount error",124:"Communication error on send",125:"Cross mount point (not really error)",126:"Given log. name not unique",127:"f.d. invalid for this operation",128:"Remote address changed",129:"Can   access a needed shared lib",130:"Accessing a corrupted shared lib",131:".lib section in a.out corrupted",132:"Attempting to link in too many libs",133:"Attempting to exec a shared library",135:"Streams pipe error",136:"Too many users",137:"Socket type not supported",138:"Not supported",139:"Protocol family not supported",140:"Can't send after socket shutdown",141:"Too many references",142:"Host is down",148:"No medium (in tape drive)",156:"Level 2 not synchronized"};
-  
+
   var ERRNO_CODES = {};
   var FS = {root:null,mounts:[],devices:{},streams:[],nextInode:1,nameTable:null,currentPath:"/",initialized:false,ignorePermissions:true,ErrnoError:null,genericErrors:{},filesystems:null,syncFSRequests:0,lookupPath:(path, opts = {}) => {
         path = PATH_FS.resolve(FS.cwd(), path);
-  
+
         if (!path) return { path: '', node: null };
-  
+
         var defaults = {
           follow_mount: true,
           recurse_count: 0
         };
         opts = Object.assign(defaults, opts)
-  
+
         if (opts.recurse_count > 8) {  // max recursive lookup of 8
           throw new FS.ErrnoError(32);
         }
-  
+
         // split the path
         var parts = PATH.normalizeArray(path.split('/').filter((p) => !!p), false);
-  
+
         // start at the root
         var current = FS.root;
         var current_path = '/';
-  
+
         for (var i = 0; i < parts.length; i++) {
           var islast = (i === parts.length-1);
           if (islast && opts.parent) {
             // stop resolving
             break;
           }
-  
+
           current = FS.lookupNode(current, parts[i]);
           current_path = PATH.join2(current_path, parts[i]);
-  
+
           // jump to the mount's root node if this is a mountpoint
           if (FS.isMountpoint(current)) {
             if (!islast || (islast && opts.follow_mount)) {
               current = current.mounted.root;
             }
           }
-  
+
           // by default, lookupPath will not follow a symlink if it is the final path component.
           // setting opts.follow = true will override this behavior.
           if (!islast || opts.follow) {
@@ -2118,17 +2118,17 @@ var ASM_CONSTS = {
             while (FS.isLink(current.mode)) {
               var link = FS.readlink(current_path);
               current_path = PATH_FS.resolve(PATH.dirname(current_path), link);
-  
+
               var lookup = FS.lookupPath(current_path, { recurse_count: opts.recurse_count + 1 });
               current = lookup.node;
-  
+
               if (count++ > 40) {  // limit max consecutive symlinks to 40 (SYMLOOP_MAX).
                 throw new FS.ErrnoError(32);
               }
             }
           }
         }
-  
+
         return { path: current_path, node: current };
       },getPath:(node) => {
         var path;
@@ -2143,7 +2143,7 @@ var ASM_CONSTS = {
         }
       },hashName:(parentid, name) => {
         var hash = 0;
-  
+
         for (var i = 0; i < name.length; i++) {
           hash = ((hash << 5) - hash + name.charCodeAt(i)) | 0;
         }
@@ -2183,9 +2183,9 @@ var ASM_CONSTS = {
       },createNode:(parent, name, mode, rdev) => {
         assert(typeof parent == 'object')
         var node = new FS.FSNode(parent, name, mode, rdev);
-  
+
         FS.hashAddNode(node);
-  
+
         return node;
       },destroyNode:(node) => {
         FS.hashRemoveNode(node);
@@ -2350,37 +2350,37 @@ var ASM_CONSTS = {
       },getDevice:(dev) => FS.devices[dev],getMounts:(mount) => {
         var mounts = [];
         var check = [mount];
-  
+
         while (check.length) {
           var m = check.pop();
-  
+
           mounts.push(m);
-  
+
           check.push.apply(check, m.mounts);
         }
-  
+
         return mounts;
       },syncfs:(populate, callback) => {
         if (typeof populate == 'function') {
           callback = populate;
           populate = false;
         }
-  
+
         FS.syncFSRequests++;
-  
+
         if (FS.syncFSRequests > 1) {
           err('warning: ' + FS.syncFSRequests + ' FS.syncfs operations in flight at once, probably just doing extra work');
         }
-  
+
         var mounts = FS.getMounts(FS.root.mount);
         var completed = 0;
-  
+
         function doCallback(errCode) {
           assert(FS.syncFSRequests > 0);
           FS.syncFSRequests--;
           return callback(errCode);
         }
-  
+
         function done(errCode) {
           if (errCode) {
             if (!done.errored) {
@@ -2393,7 +2393,7 @@ var ASM_CONSTS = {
             doCallback(null);
           }
         };
-  
+
         // sync all mounts
         mounts.forEach((mount) => {
           if (!mount.type.syncfs) {
@@ -2410,78 +2410,78 @@ var ASM_CONSTS = {
         var root = mountpoint === '/';
         var pseudo = !mountpoint;
         var node;
-  
+
         if (root && FS.root) {
           throw new FS.ErrnoError(10);
         } else if (!root && !pseudo) {
           var lookup = FS.lookupPath(mountpoint, { follow_mount: false });
-  
+
           mountpoint = lookup.path;  // use the absolute path
           node = lookup.node;
-  
+
           if (FS.isMountpoint(node)) {
             throw new FS.ErrnoError(10);
           }
-  
+
           if (!FS.isDir(node.mode)) {
             throw new FS.ErrnoError(54);
           }
         }
-  
+
         var mount = {
           type: type,
           opts: opts,
           mountpoint: mountpoint,
           mounts: []
         };
-  
+
         // create a root node for the fs
         var mountRoot = type.mount(mount);
         mountRoot.mount = mount;
         mount.root = mountRoot;
-  
+
         if (root) {
           FS.root = mountRoot;
         } else if (node) {
           // set as a mountpoint
           node.mounted = mount;
-  
+
           // add the new mount to the current mount's children
           if (node.mount) {
             node.mount.mounts.push(mount);
           }
         }
-  
+
         return mountRoot;
       },unmount:(mountpoint) => {
         var lookup = FS.lookupPath(mountpoint, { follow_mount: false });
-  
+
         if (!FS.isMountpoint(lookup.node)) {
           throw new FS.ErrnoError(28);
         }
-  
+
         // destroy the nodes for this mount, and all its child mounts
         var node = lookup.node;
         var mount = node.mounted;
         var mounts = FS.getMounts(mount);
-  
+
         Object.keys(FS.nameTable).forEach((hash) => {
           var current = FS.nameTable[hash];
-  
+
           while (current) {
             var next = current.name_next;
-  
+
             if (mounts.includes(current.mount)) {
               FS.destroyNode(current);
             }
-  
+
             current = next;
           }
         });
-  
+
         // no longer a mountpoint
         node.mounted = null;
-  
+
         // remove this mount from the child mounts
         var idx = node.mount.mounts.indexOf(mount);
         assert(idx !== -1);
@@ -2557,13 +2557,13 @@ var ASM_CONSTS = {
         var new_name = PATH.basename(new_path);
         // parents must exist
         var lookup, old_dir, new_dir;
-  
+
         // let the errors from non existant directories percolate up
         lookup = FS.lookupPath(old_path, { parent: true });
         old_dir = lookup.node;
         lookup = FS.lookupPath(new_path, { parent: true });
         new_dir = lookup.node;
-  
+
         if (!old_dir || !new_dir) throw new FS.ErrnoError(44);
         // need to be part of the same mount
         if (old_dir.mount !== new_dir.mount) {
@@ -2854,7 +2854,7 @@ var ASM_CONSTS = {
         }
         // we've already handled these, don't pass down to the underlying vfs
         flags &= ~(128 | 512 | 131072);
-  
+
         // register the stream with the filesystem
         var stream = FS.createStream({
           node: node,
@@ -3111,7 +3111,7 @@ var ASM_CONSTS = {
         // TODO deprecate the old functionality of a single
         // input / output callback and that utilizes FS.createDevice
         // and instead require a unique set of stream ops
-  
+
         // by default, we symlink the standard streams to the
         // default tty devices. however, if the standard streams
         // have been overwritten we create a unique device for
@@ -3131,7 +3131,7 @@ var ASM_CONSTS = {
         } else {
           FS.symlink('/dev/tty1', '/dev/stderr');
         }
-  
+
         // open default streams for the stdin, stdout and stderr devices
         var stdin = FS.open('/dev/stdin', 0);
         var stdout = FS.open('/dev/stdout', 1);
@@ -3154,7 +3154,7 @@ var ASM_CONSTS = {
           };
           this.setErrno(errno);
           this.message = ERRNO_MESSAGES[errno];
-  
+
           // Try to get a maximally helpful stack trace. On Node.js, getting Error.stack
           // now ensures it shows what we want.
           if (this.stack) {
@@ -3172,29 +3172,29 @@ var ASM_CONSTS = {
         });
       },staticInit:() => {
         FS.ensureErrnoError();
-  
+
         FS.nameTable = new Array(4096);
-  
+
         FS.mount(MEMFS, {}, '/');
-  
+
         FS.createDefaultDirectories();
         FS.createDefaultDevices();
         FS.createSpecialDirectories();
-  
+
         FS.filesystems = {
           'MEMFS': MEMFS,
         };
       },init:(input, output, error) => {
         assert(!FS.init.initialized, 'FS.init was previously called. If you want to initialize later with custom parameters, remove any earlier calls (note that one is automatically added to the generated code)');
         FS.init.initialized = true;
-  
+
         FS.ensureErrnoError();
-  
+
         // Allow Module.stdin etc. to provide defaults, if none explicitly passed to us here
         Module['stdin'] = input || Module['stdin'];
         Module['stdout'] = output || Module['stdout'];
         Module['stderr'] = error || Module['stderr'];
-  
+
         FS.createStandardStreams();
       },quit:() => {
         FS.init.initialized = false;
@@ -3385,27 +3385,27 @@ var ASM_CONSTS = {
           var header;
           var hasByteServing = (header = xhr.getResponseHeader("Accept-Ranges")) && header === "bytes";
           var usesGzip = (header = xhr.getResponseHeader("Content-Encoding")) && header === "gzip";
-  
+
           var chunkSize = 1024*1024; // Chunk size in bytes
-  
+
           if (!hasByteServing) chunkSize = datalength;
-  
+
           // Function to get a range from the remote URL.
           var doXHR = (from, to) => {
             if (from > to) throw new Error("invalid range (" + from + ", " + to + ") or no bytes requested!");
             if (to > datalength-1) throw new Error("only " + datalength + " bytes available! programmer error!");
-  
+
             // TODO: Use mozResponseArrayBuffer, responseStream, etc. if available.
             var xhr = new XMLHttpRequest();
             xhr.open('GET', url, false);
             if (datalength !== chunkSize) xhr.setRequestHeader("Range", "bytes=" + from + "-" + to);
-  
+
             // Some hints to the browser that we want binary data.
             xhr.responseType = 'arraybuffer';
             if (xhr.overrideMimeType) {
               xhr.overrideMimeType('text/plain; charset=x-user-defined');
             }
-  
+
             xhr.send(null);
             if (!(xhr.status >= 200 && xhr.status < 300 || xhr.status === 304)) throw new Error("Couldn't load " + url + ". Status: " + xhr.status);
             if (xhr.response !== undefined) {
@@ -3424,7 +3424,7 @@ var ASM_CONSTS = {
             if (typeof lazyArray.chunks[chunkNum] == 'undefined') throw new Error('doXHR failed!');
             return lazyArray.chunks[chunkNum];
           });
-  
+
           if (usesGzip || !datalength) {
             // if the server uses gzip or doesn't supply the length, we have to download the whole file to get the (uncompressed) length
             chunkSize = datalength = 1; // this will force getter(0)/doXHR do download the whole file
@@ -3432,7 +3432,7 @@ var ASM_CONSTS = {
             chunkSize = datalength;
             out("LazyFiles on gzip forces download of the whole file when length is accessed");
           }
-  
+
           this._length = datalength;
           this._chunkSize = chunkSize;
           this.lengthKnown = true;
@@ -3458,12 +3458,12 @@ var ASM_CONSTS = {
               }
             }
           });
-  
+
           var properties = { isDevice: false, contents: lazyArray };
         } else {
           var properties = { isDevice: false, url: url };
         }
-  
+
         var node = FS.createFile(parent, name, properties, canRead, canWrite);
         // This is a total hack, but I want to get this lazy file code out of the
         // core of MEMFS. If we want to keep this lazy file concept I feel it should
@@ -3709,7 +3709,7 @@ var ASM_CONSTS = {
       }};
   function _fd_write(fd, iov, iovcnt, pnum) {
   try {
-  
+
       var stream = SYSCALLS.getStreamFromFD(fd);
       var num = doWritev(stream, iov, iovcnt);
       HEAPU32[((pnum)>>2)] = num;
@@ -3731,17 +3731,17 @@ var ASM_CONSTS = {
   /** @param {boolean|number=} implicit */
   function exitJS(status, implicit) {
       EXITSTATUS = status;
-  
+
       if (!keepRuntimeAlive()) {
         exitRuntime();
       }
-  
+
       // if exit() was called explicitly, warn the user if the runtime isn't actually being shut down
       if (keepRuntimeAlive() && !implicit) {
         var msg = 'program exited (with status: ' + status + '), but keepRuntimeAlive() is set (counter=' + runtimeKeepaliveCounter + ') due to an async operation, so halting execution but not exiting the runtime or preventing further async execution (you can use emscripten_force_exit, if you want to force a true shutdown)';
         err(msg);
       }
-  
+
       _proc_exit(status);
     }
 
@@ -3758,7 +3758,7 @@ var ASM_CONSTS = {
       assert(func, 'Cannot call unknown function ' + ident + ', make sure it is exported');
       return func;
     }
-  
+
     /**
      * @param {string|null=} returnType
      * @param {Array=} argTypes
@@ -3784,16 +3784,16 @@ var ASM_CONSTS = {
           return ret;
         }
       };
-  
+
       function convertReturnValue(ret) {
         if (returnType === 'string') {
-          
+
           return UTF8ToString(ret);
         }
         if (returnType === 'boolean') return Boolean(ret);
         return ret;
       }
-  
+
       var func = getCFunc(ident);
       var cArgs = [];
       var stack = 0;
@@ -3814,12 +3814,12 @@ var ASM_CONSTS = {
         if (stack !== 0) stackRestore(stack);
         return convertReturnValue(ret);
       }
-  
+
       ret = onDone(ret);
       return ret;
     }
 
-  
+
     /**
      * @param {string=} returnType
      * @param {Array=} argTypes
