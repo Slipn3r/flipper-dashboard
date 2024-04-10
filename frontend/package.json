@@ -23,7 +23,7 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
-    "@quasar/extras": "^1.16.8",
+    "@quasar/extras": "^1.16.11",
     "axios": "^1.6.2",
     "base64-arraybuffer": "^1.0.2",
     "core-js": "^3.6.5",
@@ -50,7 +50,7 @@
     "@babel/eslint-parser": "^7.13.14",
     "@quasar/app-webpack": "^3.11.3",
     "@quasar/quasar-app-extension-qmarkdown": "^2.0.0-beta.10",
-    "@vue/devtools": "^7.0.16",
+    "@vue/devtools": "^7.0.27",
     "electron": "^27.0.4",
     "electron-builder": "^24.6.4",
     "eslint": "^7.14.0",
