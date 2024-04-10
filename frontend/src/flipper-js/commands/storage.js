@@ -35,6 +35,9 @@ function read ({ path }) {
   function format (chunks) {
     let buffer = new Uint8Array(0)
     for (const chunk of chunks) {
+      if (!chunk.file) {
+        return
+      }
       const newBuffer = new Uint8Array(buffer.length + chunk.file.data.length)
       newBuffer.set(buffer)
       newBuffer.set(chunk.file.data, buffer.length)
