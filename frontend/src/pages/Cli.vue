@@ -14,7 +14,7 @@
     <div
       ref="terminalWrapper"
       v-if="mainFlags.connected && !flags.rpcActive"
-      class="full-width"
+      class="full-width full-height q-pb-md"
     >
       <div id="terminal-container" class="fit bg-black"></div>
 
