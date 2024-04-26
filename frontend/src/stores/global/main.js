@@ -727,6 +727,7 @@ export const useMainStore = defineStore('main', () => {
 
     flipper,
     availableFlippers,
+    bridgeEmitter,
 
     selectPort,
     connect,

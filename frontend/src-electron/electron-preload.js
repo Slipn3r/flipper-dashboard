@@ -10,7 +10,8 @@ contextBridge.exposeInMainWorld('bridge', {
   onList: callback => ipcRenderer.on('bridge:list', (_event, value) => callback(value)),
   onCLIRead: callback => ipcRenderer.on('bridge:read/cli', (_event, value) => callback(value)),
   onRPCRead: callback => ipcRenderer.on('bridge:read/rpc', (_event, value) => callback(value)),
-  onStatus: callback => ipcRenderer.on('bridge:status', (_event, value) => callback(value))
+  onStatus: callback => ipcRenderer.on('bridge:status', (_event, value) => callback(value)),
+  onError: callback => ipcRenderer.on('bridge:error', (_event, value) => callback(value))
 })
 
 contextBridge.exposeInMainWorld('fs', {

@@ -79,6 +79,8 @@ const bridge = {
         bridge.webContents.send('bridge:list', payload.data)
       } else if (payload.type === 'status') {
         bridge.webContents.send('bridge:status', payload.data)
+      } else if (payload.type === 'error') {
+        bridge.webContents.send('bridge:error', payload)
       } else {
         console.log(payload)
       }

@@ -59,10 +59,10 @@
         v-if="flags.updateError"
         outline
         class="q-mt-md"
-        @click="flags.updateInProgress = false; flags.updateError = false"
+        @click="flags.updateInProgress = false; flags.updateError = false; reload()"
       >Cancel</q-btn>
       <ProgressBar
-        v-if="write.filename.length > 0"
+        v-else-if="write.filename.length > 0"
         :title="write.filename"
         :progress="write.progress"
       />
@@ -117,10 +117,21 @@ import { rpcErrorHandler } from 'composables/useRpcUtils'
 import { useMainStore } from 'stores/global/main'
 const mainStore = useMainStore()
 
+const reload = () => {
+  location.reload()
+}
+
 const mainFlags = computed(() => mainStore.flags)
 const flipper = computed(() => mainStore.flipper)
 
 const info = computed(() => mainStore.info)
+
+mainStore.bridgeEmitter.on('error', e => {
+  if (flags.value.updateInProgress && info.value?.hardware?.name === e.name) {
+    flags.value.updateError = true
+    updateStage.value = 'Update error: ' + e.message
+  }
+})
 
 const componentName = 'Updater'
 const flags = ref({
@@ -198,7 +209,7 @@ const update = async (fromFile) => {
   await loadFirmware(fromFile)
     .catch(error => {
       flags.value.updateError = true
-      updateStage.value = error
+      updateStage.value = error.message || error.toString()
       showNotif({
         message: error.toString(),
         color: 'negative'
@@ -258,6 +269,10 @@ const loadFirmware = async (fromFile) => {
       message: `${componentName}: Region provisioning message: ${JSON.stringify(options)}`
     })
 
+    if (flags.value.updateError) {
+      return
+    }
+
     options.countryCode = new TextEncoder().encode(regions.country)
     const message = PB.Region.create(options)
     const encoded = new Uint8Array(PB.Region.encodeDelimited(message).finish()).slice(1)
@@ -269,6 +284,10 @@ const loadFirmware = async (fromFile) => {
       level: 'info',
       message: `${componentName}: Set Sub-GHz region: ${regions.country}`
     })
+  }
+
+  if (flags.value.updateError) {
+    return
   }
 
   if (fromFile || (channels.value[fwModel.value.value] && channels.value[fwModel.value.value].url)) {
@@ -311,6 +330,10 @@ const loadFirmware = async (fromFile) => {
       message: `${componentName}: Loading firmware files`
     })
 
+    if (flags.value.updateError) {
+      return
+    }
+
     let path = '/ext/update/'
     await flipper.value.RPC('storageStat', { path: '/ext/update' })
       .catch(async error => {
@@ -329,6 +352,9 @@ const loadFirmware = async (fromFile) => {
       })
 
     for (const file of files) {
+      if (flags.value.updateError) {
+        return
+      }
       if (file.size === 0) {
         path = '/ext/update/' + file.name
         if (file.name.endsWith('/')) {
@@ -367,6 +393,10 @@ const loadFirmware = async (fromFile) => {
       level: 'info',
       message: `${componentName}: Loading update manifest`
     })
+
+    if (flags.value.updateError) {
+      return
+    }
 
     await flipper.value.RPC('systemUpdate', { path: path + '/update.fuf' })
       .catch(error => rpcErrorHandler(componentName, error, 'systemUpdate'))

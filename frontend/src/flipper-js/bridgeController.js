@@ -66,6 +66,11 @@ const init = async () => {
     emitter.emit('exit', e)
   })
 
+  window.bridge.onError(e => {
+    console.warn('bridge error', e)
+    emitter.emit('error', e)
+  })
+
   window.bridge.spawn()
 
   return new Promise((resolve) => {
