@@ -26,8 +26,8 @@ export default class Flipper {
     // RPC
     this.readableRPC = new ReadableStream({
       start (controller) {
-        emitter.on('RPCRead', data => {
-          const decoded = new Uint8Array(decode(data))
+        emitter.on('RPCRead', buffer => {
+          const decoded = new Uint8Array(decode(buffer))
           controller.enqueue(decoded)
         })
       }
@@ -47,8 +47,8 @@ export default class Flipper {
     ]
 
     // CLI
-    this.emitter.on('CLIRead', data => {
-      const decoded = atob(data)
+    this.emitter.on('CLIRead', buffer => {
+      const decoded = atob(buffer)
       this.emitter.emit('cli/output', decoded)
     })
   }
@@ -84,13 +84,14 @@ export default class Flipper {
     return this.writeRaw(encoded, 'cli')
   }
 
-  writeRaw (data, mode = 'rpc') {
+  writeRaw (buffer, mode = 'rpc') {
     const payload = {
-      id: 1,
       type: 'write',
       name: this.name,
-      data: encode(data),
-      mode
+      data: {
+        buffer: encode(buffer),
+        mode
+      }
     }
     return window.bridge.send(payload)
   }

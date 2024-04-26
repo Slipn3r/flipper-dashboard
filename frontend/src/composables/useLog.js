@@ -1,12 +1,13 @@
 import * as loglevel from 'loglevel'
+import { ref } from 'vue'
 
 const logger = loglevel
-const history = []
+const history = ref([])
 
 const log = ({ level, message }) => {
   const timestamp = Date.now()
   const t = new Date(timestamp)
-  history.push({
+  history.value.push({
     level,
     timestamp,
     time: `${t.getHours().toString().padStart(2, 0)}:${t.getMinutes().toString().padStart(2, 0)}:${t.getSeconds().toString().padStart(2, 0)}`,

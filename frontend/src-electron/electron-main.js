@@ -1,6 +1,7 @@
 import { app, BrowserWindow, nativeTheme, utilityProcess, ipcMain } from 'electron'
 import path from 'path'
 import os from 'os'
+import fs from 'fs'
 const extraResourcesPath = process.env.WEBPACK_SERVE === 'true' ? 'extraResources' : '../extraResources'
 
 const bridge = {
@@ -73,9 +74,11 @@ const bridge = {
       }
 
       if (payload.type === 'read' && payload.data) {
-        bridge.webContents.send(`bridge:read/${payload.mode}`, payload)
+        bridge.webContents.send(`bridge:read/${payload.data.mode}`, payload)
       } else if (payload.type === 'list') {
         bridge.webContents.send('bridge:list', payload.data)
+      } else if (payload.type === 'status') {
+        bridge.webContents.send('bridge:status', payload.data)
       } else {
         console.log(payload)
       }
@@ -87,12 +90,26 @@ const bridge = {
   }
 }
 
+const filesystem = {
+  async saveToTemp (event, args) {
+    try {
+      const { filename, buffer } = args
+      const tempPath = path.join(app.getPath('temp'), filename)
+      fs.writeFileSync(tempPath, buffer)
+      return { status: 'ok', path: tempPath }
+    } catch (error) {
+      console.error(error)
+      return { status: 'error', message: error.message }
+    }
+  }
+}
+
 // needed in case process is undefined under Linux
 const platform = process.platform || os.platform()
 
 try {
   if (platform === 'win32' && nativeTheme.shouldUseDarkColors === true) {
-    require('fs').unlinkSync(path.join(app.getPath('userData'), 'DevTools Extensions'))
+    fs.unlinkSync(path.join(app.getPath('userData'), 'DevTools Extensions'))
   }
 } catch (_) { }
 
@@ -140,7 +157,6 @@ app.whenReady()
       bridge.onMessage(console.log)
       bridge.spawn()
       bridge.send({
-        id: 1,
         type: 'write',
         name: 'Amogus',
         data: btoa('led bl 128\r'),
@@ -151,17 +167,19 @@ app.whenReady()
     ipcMain.on('bridge:spawn', bridge.spawn)
     ipcMain.on('bridge:kill', bridge.kill)
     ipcMain.on('bridge:send', bridge.send)
+    ipcMain.handle('fs:saveToTemp', filesystem.saveToTemp)
 
     createWindow()
   })
 
 app.on('window-all-closed', () => {
+  bridge.kill()
   app.quit()
 })
 
-app.on('will-quit', () => {
+/* app.on('will-quit', () => {
   bridge.kill()
-})
+}) */
 
 app.on('activate', () => {
   if (mainWindow === null) {

@@ -5,11 +5,17 @@ import { log } from 'composables/useLog'
 import showNotif from 'composables/useShowNotif'
 import { rpcErrorHandler } from 'composables/useRpcUtils'
 import { useRouter } from 'vue-router'
-import asyncSleep from 'simple-async-sleep'
+import { fetchFirmwareTar } from 'src/util/fetch'
 // eslint-disable-next-line no-unused-vars
 import { Platform } from 'quasar'
 import { init as bridgeControllerInit, emitter as bridgeEmitter, getCurrentFlipper, getList, setCurrentFlipper } from 'src/flipper-js/bridgeController'
 const Flipper = await import(`src/flipper-js/${Platform.is.electron ? 'flipperElectron' : 'flipper'}`).then(m => m.default)
+
+bridgeEmitter.on('exit', () => {
+  // the safest way to restart everything, could be done rewritten to a graceful bridge respawn later
+  // basically, bridge respawn works well, but at least virtual diplay sessions need to be restarted
+  location.reload()
+})
 
 export const useMainStore = defineStore('main', () => {
   const router = useRouter()
@@ -406,9 +412,13 @@ export const useMainStore = defineStore('main', () => {
 
   const connectToFirstFlipper = () => {
     const _list = getList()
-    if (_list.length) {
-      setCurrentFlipper(_list[0].name)
+    const availableList = _list.filter(e => e.mode !== 'dfu')
+    const notAvailableList = _list.filter(e => e.mode === 'dfu')
+    if (availableList.length) {
+      setCurrentFlipper(availableList[0].name)
       flipperConnect()
+    } else if (notAvailableList.length) {
+      flags.value.dialogMultiflipper = true
     }
   }
 
@@ -456,6 +466,11 @@ export const useMainStore = defineStore('main', () => {
       flags.value.connected = true
       flags.value.rpcActive = true
 
+      log({
+        level: 'info',
+        message: `${componentName}: Flipper ${flipper.value.name} connected`
+      })
+
       await readInfo(flipper.value.name)
       await setTime()
     }
@@ -476,7 +491,7 @@ export const useMainStore = defineStore('main', () => {
       listInit()
       await bridgeControllerInit()
 
-      if (flags.value.autoReconnect) {
+      if (flags.value.autoReconnect && flipper.value?.name) {
         autoReconnectFlipperName.value = flipper.value.name
       } else {
         autoReconnectFlipperName.value = null
@@ -570,130 +585,92 @@ export const useMainStore = defineStore('main', () => {
   }
 
   const updateStage = ref('')
-  const setUpdateStage = (str) => {
-    updateStage.value = str
-  }
   const recoveryLogs = ref([])
   const recoveryProgress = ref(0)
-  const updateStages = ref([
-    {
-      name: 'Set Recovery boot mode',
-      ended: false
-    },
-    {
-      name: 'Co-Processor Firmware Download',
-      ended: false
-    },
-    {
-      name: 'Firmware Download',
-      ended: false
-    },
-    {
-      name: 'Correct Option Bytes',
-      ended: false
-    },
-    {
-      name: 'Assets Download',
-      ended: false
-    },
-    {
-      name: 'Region Provisioning',
-      ended: false
-    }
-  ])
-  const stageIndex = ref(0)
-  const recoveryRestart = ref(false)
 
-  const path = ref('')
   const resetRecovery = (clearLogs = false) => {
-    stageIndex.value = 0
+    updateStage.value = ''
     recoveryProgress.value = 0
-    updateStages.value.forEach(stage => {
-      stage.ended = false
-    })
     if (clearLogs) {
       recoveryLogs.value = []
     }
   }
-  const logCallback = async (message) => {
-    if (message.type === 'exit' && message.code === 0) {
-      flags.value.recovery = false
+  const recovery = async (info) => {
+    if (!flags.value.isElectron) {
+      return
+    }
+    flags.value.dialogMultiflipper = false
+    flags.value.dialogRecovery = true
+    flags.value.recovery = true
+    autoReconnectCondition.value = flags.value.autoReconnect
+    flags.value.autoReconnect = false
+    autoReconnectFlipperName.value = info.name
 
-      if (!recoveryRestart.value) {
-        if (!flags.value.showRecoveryLog) {
-          flags.value.dialogRecovery = false
-        }
-        flags.value.autoReconnect = autoReconnectCondition.value
-        onUpdateStage('end')
-        await asyncSleep(1000)
-        return start(false, path.value)
-      }
-
-      onUpdateStage('end')
-      recoveryRestart.value = false
+    console.log(info)
+    const firmwareTar = await fetchFirmwareTar(`https://update.flipperzero.one/firmware/release/f${info.target}/update_tgz`)
+    console.log(firmwareTar.buffer)
+    const saved = await window.fs.saveToTemp({
+      filename: 'update.tar',
+      buffer: firmwareTar
+    })
+    console.log(saved)
+    if (saved.status !== 'ok') {
+      return
     }
 
-    const lines = message.data.split('\n')
-    lines.forEach(line => {
-      let level = 'info'
+    window.bridge.send({
+      type: 'repair',
+      name: info.name,
+      data: {
+        file: saved.path
+      }
+    })
 
-      if (line.length > 0) {
+    const unbindLogs = bridgeEmitter.on('log', stderr => {
+      const logLines = stderr.data.split('\n')
+      logLines.pop()
+      logLines.forEach(line => {
         recoveryLogs.value.push(line)
-
-        if (line.includes(updateStages.value[stageIndex.value]?.name)) {
-          if (line.endsWith('START')) {
-            setUpdateStage(updateStages.value[stageIndex.value].name)
-          } else {
-            updateStages.value[stageIndex.value].ended = true
-            stageIndex.value++
-            recoveryProgress.value = stageIndex.value / updateStages.value.length
-          }
-        } else if (!recoveryRestart.value && (line.toLowerCase().includes('failed') || line.includes('ERROR'))) {
+        let level = 'debug'
+        if (line.includes('[E]')) {
           level = 'error'
-
-          recoveryRestart.value = true
-
-          resetRecovery()
-
-          recovery(logCallback)
+        } else if (line.includes('[W]')) {
+          level = 'warn'
+        } else if (line.includes('[I]')) {
+          level = 'info'
         }
-
         log({
           level,
           message: line
         })
+      })
+    })
+
+    const unbindStatus = bridgeEmitter.on('status', status => {
+      if (status.message) {
+        updateStage.value = status.message
+      }
+      if (status.progress) {
+        recoveryProgress.value = status.progress / 100
+      }
+      if (status.finished) {
+        unbindLogs()
+        unbindStatus()
+        flags.value.recovery = false
+        flags.value.dialogMultiflipper = false
+        flags.value.autoReconnect = autoReconnectCondition.value
+        updateStage.value = 'Finished'
+        setCurrentFlipper(info.name)
+        if (getList().includes(e => e.name === info.name)) {
+          setCurrentFlipper(info.name)
+          flipperConnect()
+        }
+        if (!flags.value.showRecoveryLog) {
+          flags.value.dialogRecovery = false
+        }
+        onUpdateStage('end')
       }
     })
-  }
-  const recovery = async (logCallback) => {
-    flags.value.dialogRecovery = true
-    path.value = flipper.value.path
-    flags.value.recovery = true
-    autoReconnectCondition.value = flags.value.autoReconnect
-    flags.value.autoReconnect = false
-
-    updateStage.value = updateStages.value[stageIndex.value].name
-
-    onUpdateStage('start')
-
-    if (!flags.value.isElectron) {
-      return
-    }
-    if (flags.value.connected) {
-      if (!flags.value.rpcActive) {
-        flipper.value.write('power reboot2dfu')
-      } else {
-        flipper.value.RPC('systemReboot', { mode: 'DFU' })
-      }
-      await asyncSleep(1000)
-    }
-    if (!logCallback) {
-      logCallback = (data) => {
-        console.log(data)
-      }
-    }
-    window.qFlipper.onLog(logCallback)
-    await window.qFlipper.spawn([])
   }
 
   const setRpcStatus = (s) => {
@@ -766,7 +743,6 @@ export const useMainStore = defineStore('main', () => {
 
     recoveryLogs,
     recoveryProgress,
-    logCallback,
     recovery,
     resetRecovery,
 

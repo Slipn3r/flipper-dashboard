@@ -52,23 +52,20 @@
         <span v-if="info.storage.sdcard.status">Your firmware doesn't support self-update. Install latest release with <a href="https://update.flipperzero.one" target="_blank">qFlipper desktop tool</a>.</span>
         <span v-else>Self-update is impossible without an SD card.</span>
       </template>
-      <q-btn v-if="mainFlags.isElectron" class="q-mt-md" color="primary" label="Repair" @click="recovery" unelevated/>
     </template>
     <template v-else>
-      <template v-if="!(mainFlags.isElectron && mainFlags.recovery)">
-        <p>{{ updateStage }}</p>
-        <q-btn
-          v-if="flags.updateError"
-          outline
-          class="q-mt-md"
-          @click="flags.updateInProgress = false; flags.updateError = false"
-        >Cancel</q-btn>
-        <ProgressBar
-          v-if="write.filename.length > 0"
-          :title="write.filename"
-          :progress="write.progress"
-        />
-      </template>
+      <p>{{ updateStage }}</p>
+      <q-btn
+        v-if="flags.updateError"
+        outline
+        class="q-mt-md"
+        @click="flags.updateInProgress = false; flags.updateError = false"
+      >Cancel</q-btn>
+      <ProgressBar
+        v-if="write.filename.length > 0"
+        :title="write.filename"
+        :progress="write.progress"
+      />
     </template>
     <q-dialog v-model="flags.uploadPopup">
       <q-card>
@@ -137,8 +134,7 @@ const flags = ref({
   updateError: false,
   uploadEnabled: true,
   uploadPopup: false,
-  overrideDevRegion: false,
-  recovery: false
+  overrideDevRegion: false
 })
 const channels = ref({})
 const fwOptions = ref([
@@ -214,10 +210,6 @@ const update = async (fromFile) => {
       throw error
     })
   // flags.value.updateInProgress = false
-}
-
-const recovery = () => {
-  mainStore.recovery(mainStore.logCallback)
 }
 
 const loadFirmware = async (fromFile) => {
