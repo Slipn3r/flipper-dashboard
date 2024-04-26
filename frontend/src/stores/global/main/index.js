@@ -2,16 +2,19 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import useSetProperty from 'composables/useSetProperty'
 import { log } from 'composables/useLog'
-import showNotif from 'composables/useShowNotif'
 import { rpcErrorHandler } from 'composables/useRpcUtils'
 import { useRouter } from 'vue-router'
 import asyncSleep from 'simple-async-sleep'
 // eslint-disable-next-line no-unused-vars
 import { Platform } from 'quasar'
-import { init as bridgeControllerInit, emitter as bridgeEmitter, getCurrentFlipper, getList, setCurrentFlipper } from 'src/flipper-js/bridgeController'
 const Flipper = await import(`src/flipper-js/${Platform.is.electron ? 'flipperElectron' : 'flipper'}`).then(m => m.default)
 
+import { useMainWebStore } from './store-web'
+import { useMainElectronStore } from './store-electron'
+
 export const useMainStore = defineStore('main', () => {
+  const platformStore = Platform.is.electron ? useMainElectronStore() : useMainWebStore()
+
   const router = useRouter()
 
   const flags = ref({
@@ -49,85 +52,22 @@ export const useMainStore = defineStore('main', () => {
 
   // TODO
   const flipper = ref(null)
-  const autoReconnectFlipperName = ref(null)
+  const setFlipper = (name, emitter) => {
+    flipper.value = new Flipper(name, emitter)
+  }
+
   const componentName = 'Main'
 
   const availableFlippers = ref([])
+  const setAvailableFlippers = (flippers) => {
+    availableFlippers.value = flippers
+  }
   const reconnectLoop = ref(null)
 
-  const connectionStatus = ref('Ready to connect')
-  const findKnownDevices = async () => {
-    if (!flags.value.isElectron) {
-      const filters = [
-        { usbVendorId: 0x0483, usbProductId: 0x5740 }
-      ]
-      return navigator.serial.getPorts({ filters })
-    } else {
-      return await window.serial.list()
-    }
-  }
-  // eslint-disable-next-line no-unused-vars
-  const connect = async (path) => {
-    return new Promise((resolve, reject) => {
-      (async () => {
-        if (flags.value.isElectron) {
-          try {
-            setCurrentFlipper(path)
-            flipperConnect()
+  const findKnownDevices = platformStore.findKnownDevices
+  const connect = platformStore.connect
+  const selectPort = platformStore.selectPort
 
-            resolve()
-          } catch (error) {
-            reject(error)
-          }
-        } else {
-          await flipper.value.connect(path)
-            .then(() => {
-              connectionStatus.value = 'Flipper connected'
-
-              flags.value.portSelectRequired = false
-              flags.value.connected = true
-              flags.value.flipperOccupiedDialog = false
-
-              log({
-                level: 'info',
-                message: `${componentName}: Flipper connected`
-              })
-
-              resolve()
-            })
-            .catch(error => {
-              if (error.toString() === 'Error: No known ports') {
-                flags.value.portSelectRequired = true
-
-                reject([path, { message: 'Error: No known ports' }])
-              } else if (error.toString().includes('Failed to open serial port')) {
-                flags.value.portSelectRequired = true
-                flags.value.flipperOccupiedDialog = true
-
-                reject([path, { message: 'Failed to open serial port' }])
-              } else {
-                log({
-                  level: 'error',
-                  message: `${componentName}: Failed to connect: ${error}`
-                })
-                connectionStatus.value = error.toString()
-
-                reject([path, { message: `Cannot open ${path}` }])
-              }
-            })
-        }
-      })()
-    })
-  }
-  const selectPort = async (onShowDialog) => {
-    if (!flags.value.isElectron) {
-      const filters = [
-        { usbVendorId: 0x0483, usbProductId: 0x5740 }
-      ]
-      await navigator.serial.requestPort({ filters })
-    }
-    return start(true, undefined, onShowDialog)
-  }
   const startRpc = async () => {
     if (!flags.value.connected) {
       return
@@ -351,223 +291,9 @@ export const useMainStore = defineStore('main', () => {
     autoReconnectCondition.value = null
   }
 
-  // eslint-disable-next-line no-unused-vars
-  // const getDeviceInfo = async (port) => {
-  //   let info = {
-  //     doneReading: false,
-  //     storage: {
-  //       sdcard: {
-  //         status: {}
-  //       },
-  //       databases: {},
-  //       internal: {}
-  //     }
-  //   }
-  //   await flipper.value.connect(port.path)
-  //   await flipper.value.startRPCSession()
-  //   await asyncSleep(500)
-  //   if (isOldProtobuf()) {
-  //     await flipper.value.RPC('systemDeviceInfo')
-  //       .then(devInfo => {
-  //         info = { ...info, ...devInfo }
-  //       })
-  //   } else {
-  //     await flipper.value.RPC('propertyGet', { key: 'devinfo' })
-  //       .then(devInfo => {
-  //         info = { ...info, ...devInfo }
-  //       })
-  //   }
-  //   info.port = port
+  const setReconnectTimeout = flags.value.isElectron ? platformStore.setReconnectTimeout : () => true
 
-  //   return info
-  // }
-
-  const reconnectTimeouts = ref([])
-  const setReconnectTimeout = () => {
-    reconnectTimeouts.value[reconnectTimeouts.value.length] = {
-      name: autoReconnectFlipperName.value,
-      timeout: setTimeout(() => {
-        showNotif({
-          message: 'Couldn\'t connect to Flipper after the update', // NOTE: ${this.name}
-          color: 'negative'
-        })
-        onUpdateStage('end')
-        connectToFirstFlipper()
-      }, 2 * 60 * 1000)
-    }
-  }
-
-  const clearReconnectTimeout = (name) => {
-    const currentTimeout = reconnectTimeouts.value.find(timeout => {
-      return timeout.name === name
-    })
-    clearTimeout(currentTimeout.timeout)
-  }
-
-  const connectToFirstFlipper = () => {
-    const _list = getList()
-    if (_list.length) {
-      setCurrentFlipper(_list[0].name)
-      flipperConnect()
-    }
-  }
-
-  const listInit = () => {
-    bridgeEmitter.on('list', async data => {
-      availableFlippers.value = data
-      console.log('availableFlippers', availableFlippers.value)
-
-      if (availableFlippers.value.length > 1) {
-        flags.value.multiflipper = true
-      } else {
-        flags.value.multiflipper = false
-      }
-
-      if (!flags.value.updateInProgress && !availableFlippers.value.find(item => flipper.value?.name === item.name)) {
-        flags.value.connected = false
-        flags.value.rpcActive = false
-        setInfo(null)
-        setCurrentFlipper(null)
-      }
-
-      if (flags.value.updateInProgress) {
-        const updatingFlipper = data.find(flipper => flipper.name === autoReconnectFlipperName.value)
-
-        if (updatingFlipper) {
-          clearReconnectTimeout(updatingFlipper.name)
-          setCurrentFlipper(updatingFlipper.name)
-          onUpdateStage('end')
-          flipperConnect()
-        }
-      } else {
-        const _currentFlipper = getCurrentFlipper()
-        if (!_currentFlipper) {
-          connectToFirstFlipper()
-        }
-      }
-    })
-  }
-
-  const flipperConnect = async () => {
-    const _currentFlipper = getCurrentFlipper()
-    flipper.value = new Flipper(_currentFlipper.name, _currentFlipper.emitter)
-
-    if (flipper.value) {
-      flags.value.connected = true
-      flags.value.rpcActive = true
-
-      await readInfo(flipper.value.name)
-      await setTime()
-    }
-  }
-
-  const start = async (manual, path) => {
-    toggleAutoReconnectCondition()
-
-    if (flags.value.isElectron) {
-      bridgeEmitter.on('spawn', () => {
-        setTimeout(() => {
-          flags.value.isBridgeReady = true
-        }, 1000)
-      })
-      bridgeEmitter.on('exit', e => {
-        flags.value.isBridgeReady = false
-      })
-      listInit()
-      await bridgeControllerInit()
-
-      if (flags.value.autoReconnect) {
-        autoReconnectFlipperName.value = flipper.value.name
-      } else {
-        autoReconnectFlipperName.value = null
-      }
-    } else {
-      if (!path) {
-        /* const ports = await findKnownDevices()
-        if (ports && ports.length > 0) {
-          await connect()
-          setTimeout(async () => {
-            await startRpc()
-            await readInfo()
-            await setTime()
-          }, 500)
-        } else {
-          flags.value.portSelectRequired = true
-          if (manual) {
-            return selectPort()
-          }
-        } */ // Old connection method
-
-        const ports = await findKnownDevices()
-
-        availableFlippers.value = []
-        flags.value.multiflipper = false
-
-        if (!ports || ports.length === 0) {
-          if (flags.value.autoReconnect) {
-            autoReconnect()
-          }
-
-          flags.value.portSelectRequired = true
-
-          if (manual) {
-            return selectPort()
-          }
-          return
-        }
-
-        if (ports.length === 1 || !flags.value.isElectron) {
-          path = ports[0].path
-        }
-      }
-    }
-
-    /* await connect(path)
-      .then(async () => {
-        if (reconnectLoop.value) {
-          clearInterval(reconnectLoop.value)
-          reconnectLoop.value = null
-        }
-
-        flags.value.dialogMultiflipper = false
-        autoReconnectRestore()
-
-        if (flags.value.isElectron) {
-          function onDisconnect (path) {
-            flags.value.connected = false
-            if (flags.value.autoReconnect) {
-              autoReconnect(path)
-            }
-            unbind()
-          }
-          const unbind = flipper.value.emitter.on('disconnect', path => onDisconnect(path))
-        }
-
-        await startRpc()
-        await readInfo(path)
-        await setTime()
-      })
-      .catch(([path, error]) => {
-        const index = availableFlippers.value.findIndex((flipper) => flipper.port.path === path)
-        if (index !== -1) {
-          availableFlippers.value.splice(index, 1)
-
-          flags.value.multiflipper = false
-
-          Notify.create({
-            type: 'negative',
-            message: error.message
-          })
-        }
-
-        if (availableFlippers.value.length === 1) {
-          start(false, availableFlippers.value[0].port.path)
-          return
-        }
-
-        start()
-      }) */
-  }
+  const start = platformStore.start
 
   const updateStage = ref('')
   const setUpdateStage = (str) => {
@@ -749,15 +475,22 @@ export const useMainStore = defineStore('main', () => {
     flags,
 
     flipper,
+    setFlipper,
+
     availableFlippers,
+    setAvailableFlippers,
+
+    readInfo,
 
     selectPort,
     connect,
     start,
     startRpc,
     setRpcStatus,
+    setTime,
     autoReconnect,
     autoReconnectRestore,
+    toggleAutoReconnectCondition,
 
     updateStage,
     onUpdateStage,
