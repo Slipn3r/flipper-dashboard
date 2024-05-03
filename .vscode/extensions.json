@@ -4,7 +4,17 @@
     
     "editorconfig.editorconfig",
     "johnsoncodehk.volar",
-    "wayou.vscode-todo-highlight"
+    "wayou.vscode-todo-highlight",
+    "streetsidesoftware.code-spell-checker",
+    "github.vscode-github-actions",
+    "esbenp.prettier-vscode",
+    "github.vscode-pull-request-github",
+    "streetsidesoftware.code-spell-checker-russian",
+    "vue.volar",
+    "gruntfuggly.todo-tree",
+    "syler.sass-indented",
+    "abdelaziz18003.quasar-snippets",
+    "donjayamanne.githistory"
   ],
   "unwantedRecommendations": [
     "octref.vetur",
