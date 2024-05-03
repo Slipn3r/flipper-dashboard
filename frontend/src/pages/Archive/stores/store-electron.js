@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia'
 
-export const useArchiveElectronStore = (ArchiveMainStore) => {
-  return defineStore('ArchiveElectron', () => {
-    const start = async () => {
-      await ArchiveMainStore.list()
-    }
+import { useArchiveMainStore } from './index'
 
-    return { start }
-  })()
-}
+export const useArchiveElectronStore = defineStore('ArchiveElectron', () => {
+  const ArchiveMainStore = useArchiveMainStore()
+
+  const start = async () => {
+    await ArchiveMainStore.list()
+  }
+
+  return { start }
+})

@@ -1,11 +1,9 @@
 import { defineStore } from 'pinia'
 
-export const usePaintElectronStore = (PaintMainStore) => {
-  return defineStore('PaintElectron', () => {
-    const start = async () => {
-      return true
-    }
+export const usePaintElectronStore = defineStore('PaintElectron', () => {
+  const start = async () => {
+    return true
+  }
 
-    return { start }
-  })()
-}
+  return { start }
+})

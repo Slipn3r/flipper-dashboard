@@ -2,21 +2,22 @@ import { defineStore } from 'pinia'
 import { computed } from 'vue'
 
 import { useMainStore } from 'stores/global/main'
-const mainStore = useMainStore()
+import { useDeviceMainStore } from './index'
 
-export const useDeviceElectronStore = (DeviceMainStore) => {
-  return defineStore('DeviceElectron', () => {
-    const flags = computed(() => DeviceMainStore.flags)
-    const mainFlags = computed(() => mainStore.flags)
+export const useDeviceElectronStore = defineStore('DeviceElectron', () => {
+  const DeviceMainStore = useDeviceMainStore()
+  const flags = computed(() => DeviceMainStore.flags)
 
-    const start = async () => {
-      flags.value.rpcActive = mainFlags.value.rpcActive
-      if (!mainFlags.value.rpcActive) {
-        await mainStore.startRpc()
-      }
-      await DeviceMainStore.startScreenStream()
+  const mainStore = useMainStore()
+  const mainFlags = computed(() => mainStore.flags)
+
+  const start = async () => {
+    flags.value.rpcActive = mainFlags.value.rpcActive
+    if (!mainFlags.value.rpcActive) {
+      await mainStore.startRpc()
     }
+    await DeviceMainStore.startScreenStream()
+  }
 
-    return { start }
-  })()
-}
+  return { start }
+})

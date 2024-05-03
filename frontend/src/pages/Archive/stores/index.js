@@ -11,7 +11,7 @@ import { useArchiveWebStore } from './store-web'
 import { useArchiveElectronStore } from './store-electron'
 
 export const useArchiveMainStore = defineStore('ArchiveMain', () => {
-  const platformStore = Platform.is.electron ? useArchiveElectronStore(useArchiveMainStore()) : useArchiveWebStore(useArchiveMainStore())
+  const platformStore = Platform.is.electron ? useArchiveElectronStore() : useArchiveWebStore()
 
   const mainStore = useMainStore()
   const flipper = computed(() => mainStore.flipper)

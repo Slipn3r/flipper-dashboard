@@ -6,7 +6,7 @@ import { ref } from 'vue'
 // import { useInstalledAppsElectronStore } from './store-electron'
 
 export const useInstalledAppsMainStore = defineStore('InstalledAppsMain', () => {
-  // const platformStore = Platform.is.electron ? useInstalledAppsElectronStore(useInstalledAppsMainStore()) : useInstalledAppsWebStore(useInstalledAppsMainStore())
+  // const platformStore = Platform.is.electron ? useInstalledAppsElectronStore() : useInstalledAppsWebStore()
 
   const flags = ref({
     deleteConfirmationDialog: false

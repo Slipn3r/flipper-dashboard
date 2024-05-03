@@ -13,7 +13,7 @@ import { usePaintWebStore } from './store-web'
 import { usePaintElectronStore } from './store-electron'
 
 export const usePaintMainStore = defineStore('PaintMain', () => {
-  const platformStore = Platform.is.electron ? usePaintElectronStore(usePaintMainStore()) : usePaintWebStore(usePaintMainStore())
+  const platformStore = Platform.is.electron ? usePaintElectronStore() : usePaintWebStore()
 
   const flipper = computed(() => mainStore.flipper)
 

@@ -11,7 +11,7 @@ const appsStore = useAppsStore()
 // import { useAppsElectronStore } from './store-electron'
 
 export const useAppsMainStore = defineStore('AppsMain', () => {
-  // const platformStore = Platform.is.electron ? useAppsElectronStore(useAppsMainStore()) : useAppsWebStore(useAppsMainStore())
+  // const platformStore = Platform.is.electron ? useAppsElectronStore() : useAppsWebStore()
 
   const router = useRouter()
 

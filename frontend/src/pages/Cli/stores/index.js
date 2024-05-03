@@ -17,7 +17,7 @@ import { useCliWebStore } from './store-web'
 import { useCliElectronStore } from './store-electron'
 
 export const useCliMainStore = defineStore('CliMain', () => {
-  const platformStore = Platform.is.electron ? useCliElectronStore(useCliMainStore()) : useCliWebStore(useCliMainStore())
+  const platformStore = Platform.is.electron ? useCliElectronStore() : useCliWebStore()
   const flipper = computed(() => mainStore.flipper)
   const info = computed(() => mainStore.info)
 

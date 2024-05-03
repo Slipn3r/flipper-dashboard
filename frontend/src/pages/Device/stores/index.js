@@ -13,7 +13,7 @@ import { useDeviceWebStore } from './store-web'
 import { useDeviceElectronStore } from './store-electron'
 
 export const useDeviceMainStore = defineStore('DeviceMain', () => {
-  const platformStore = Platform.is.electron ? useDeviceElectronStore(useDeviceMainStore()) : useDeviceWebStore(useDeviceMainStore())
+  const platformStore = Platform.is.electron ? useDeviceElectronStore() : useDeviceWebStore()
 
   const flipper = computed(() => mainStore.flipper)
   const info = computed(() => mainStore.info)

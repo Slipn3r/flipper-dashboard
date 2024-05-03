@@ -13,7 +13,7 @@ import { useNfcWebStore } from './store-web'
 import { useNfcElectronStore } from './store-electron'
 
 export const useNfcMainStore = defineStore('NfcMain', () => {
-  const platformStore = Platform.is.electron ? useNfcElectronStore(useNfcMainStore()) : useNfcWebStore(useNfcMainStore())
+  const platformStore = Platform.is.electron ? useNfcElectronStore() : useNfcWebStore()
 
   const flipper = computed(() => mainStore.flipper)
   const info = computed(() => mainStore.info)

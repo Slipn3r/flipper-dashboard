@@ -4,40 +4,41 @@ import { computed } from 'vue'
 import { log } from 'composables/useLog'
 
 import { useMainStore } from 'stores/global/main'
-const mainStore = useMainStore()
+import { useArchiveMainStore } from './index'
 
-export const useArchiveWebStore = (ArchiveMainStore) => {
-  return defineStore('ArchiveWeb', () => {
-    const mainFlags = computed(() => mainStore.flags)
+export const useArchiveWebStore = defineStore('ArchiveWeb', () => {
+  const ArchiveMainStore = useArchiveMainStore()
 
-    const startRpc = async () => {
-      mainFlags.value.rpcToggling = true
-      await ArchiveMainStore.flipper.value.startRPCSession()
-        .then(() => {
-          mainFlags.value.rpcActive = true
-          mainStore.setRpcStatus(true)
-          mainFlags.value.rpcToggling = false
-          log({
-            level: 'info',
-            message: `${ArchiveMainStore.componentName}: RPC started`
-          })
+  const mainStore = useMainStore()
+  const mainFlags = computed(() => mainStore.flags)
+
+  const startRpc = async () => {
+    mainFlags.value.rpcToggling = true
+    await ArchiveMainStore.flipper.value.startRPCSession()
+      .then(() => {
+        mainFlags.value.rpcActive = true
+        mainStore.setRpcStatus(true)
+        mainFlags.value.rpcToggling = false
+        log({
+          level: 'info',
+          message: `${ArchiveMainStore.componentName}: RPC started`
         })
-        .catch(error => {
-          console.error(error)
-          log({
-            level: 'error',
-            message: `${ArchiveMainStore.componentName}: Error while starting RPC: ${error.toString()}`
-          })
+      })
+      .catch(error => {
+        console.error(error)
+        log({
+          level: 'error',
+          message: `${ArchiveMainStore.componentName}: Error while starting RPC: ${error.toString()}`
         })
-    }
+      })
+  }
 
-    const start = async () => {
-      if (!mainFlags.value.rpcActive) {
-        await startRpc()
-      }
-      await ArchiveMainStore.list()
+  const start = async () => {
+    if (!mainFlags.value.rpcActive) {
+      await startRpc()
     }
+    await ArchiveMainStore.list()
+  }
 
-    return { start }
-  })()
-}
+  return { start }
+})

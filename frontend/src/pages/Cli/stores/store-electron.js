@@ -1,14 +1,16 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export const useCliElectronStore = (CliMainStore) => {
-  return defineStore('CliElectron', () => {
-    const lineSeparator = ref('\x01')
+import { useCliMainStore } from './index'
 
-    const start = async () => {
-      CliMainStore.init()
-    }
+export const useCliElectronStore = defineStore('CliElectron', () => {
+  const CliMainStore = useCliMainStore()
 
-    return { lineSeparator, start }
-  })()
-}
+  const lineSeparator = ref('\x01')
+
+  const start = async () => {
+    CliMainStore.init()
+  }
+
+  return { lineSeparator, start }
+})
