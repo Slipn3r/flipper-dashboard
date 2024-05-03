@@ -27,7 +27,7 @@ export const usePaintMainStore = defineStore('PaintMain', () => {
     interval: null,
     delay: 500
   })
-  let backlightInterval = null
+  // let backlightInterval = null
   const editor = ref(null)
 
   const setEditorRef = (ref) => {
@@ -36,6 +36,10 @@ export const usePaintMainStore = defineStore('PaintMain', () => {
 
   const startVirtualDisplay = async () => {
     await flipper.value.RPC('guiStartVirtualDisplay')
+      .then(async () => {
+        // await enableBacklight()
+        // backlightInterval = setInterval(enableBacklight, 1000)
+      })
       .catch(error => {
         rpcErrorHandler(componentName, error, 'guiStartVirtualDisplay')
         showNotif({
@@ -43,9 +47,6 @@ export const usePaintMainStore = defineStore('PaintMain', () => {
           color: 'negative'
         })
       })
-
-    await enableBacklight()
-    backlightInterval = setInterval(enableBacklight, 1000)
 
     if (autoStreaming.value.enabled) {
       autoStream()
@@ -81,5 +82,5 @@ export const usePaintMainStore = defineStore('PaintMain', () => {
 
   const start = platformStore.start
 
-  return { autoStreaming, backlightInterval, editor, setEditorRef, startVirtualDisplay, stopVirtualDisplay, enableBacklight, autoStream, start }
+  return { autoStreaming, /* backlightInterval, */ editor, setEditorRef, startVirtualDisplay, stopVirtualDisplay, enableBacklight, autoStream, start }
 })

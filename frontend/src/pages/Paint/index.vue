@@ -30,7 +30,7 @@ import { usePaintMainStore } from './stores'
 const PaintMainStore = usePaintMainStore()
 
 const autoStreaming = computed(() => PaintMainStore.autoStreaming)
-const backlightInterval = computed(() => PaintMainStore.backlightInterval)
+// const backlightInterval = computed(() => PaintMainStore.backlightInterval)
 const editor = ref(null)
 
 const startVirtualDisplay = PaintMainStore.startVirtualDisplay
@@ -52,7 +52,7 @@ const onDisconnect = (unbind) => {
   if (autoStreaming.value.interval) {
     clearInterval(autoStreaming.value.interval)
   }
-  clearInterval(backlightInterval)
+  // clearInterval(backlightInterval)
   if (unbind) {
     unbind()
   }
@@ -67,7 +67,7 @@ onBeforeUnmount(() => {
   if (autoStreaming.value.interval) {
     clearInterval(autoStreaming.value.interval)
   }
-  clearInterval(backlightInterval)
+  // clearInterval(backlightInterval)
   stopVirtualDisplay()
 })
 </script>

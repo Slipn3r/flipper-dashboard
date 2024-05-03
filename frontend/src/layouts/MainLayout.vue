@@ -115,6 +115,13 @@
                   square
                 >
                   <q-icon name="svguse:common-icons.svg#switch" size="32px"/>
+                  <q-badge
+                    v-if="mainStore.availableFlippers.length > 1"
+                    color="primary"
+                    floating
+                    style="top: 0px;right: -4px;font-size: 9px;padding: 1px 4.5px;"
+                    :label="mainStore.availableFlippers.length"
+                  />
                 </q-avatar>
               </q-item-section>
               <q-item-section>
@@ -354,7 +361,7 @@
         </template>
       </q-page>
       <q-dialog v-model="flags.logsPopup">
-        <q-card>
+        <q-card style="width: 100%; max-width: min(calc(100vw - 16px), 1000px)">
           <q-card-section class="row items-center q-pb-none">
             <div class="text-h6">Logs</div>
             <q-space />
@@ -364,15 +371,13 @@
           <q-card-section>
             <p>You can report bugs <a href="https://forum.flipperzero.one/c/web-app/22" target="blank_">here</a>. Attached logs may be helpful.</p>
             <q-scroll-area
-              style="height: 300px; min-width: 280px; width: calc(min(80vw, 500px));"
+              style="height: 300px; min-width: 280px; width: 100%;"
               class="bg-grey-12 q-px-sm q-py-xs rounded-borders"
             >
-              <code>
-                <span v-if="!history.length">Logs will appear here...</span>
-                <span v-for="line in history" :key="line.timestamp">
-                  {{ `${line.time.padEnd(8)} [${line.level.toUpperCase()}] ${line.message}` }}
-                  <br />
-                </span>
+              <code v-if="!history.length">Logs will appear here...</code>
+              <code v-for="line in history" :key="line.timestamp">
+                {{ `${line.time.padEnd(8)} [${line.level.toUpperCase()}] ${line.message}` }}
+                <br />
               </code>
             </q-scroll-area>
           </q-card-section>
@@ -452,12 +457,12 @@
           </q-card-section>
         </q-card>
       </q-dialog>
-      <q-dialog v-model="flags.dialogMultiflipper" @hide="mainStore.autoReconnectRestore()">
+      <q-dialog v-model="flags.dialogMultiflipper" v-if="!flags.dialogRecovery" @hide="mainStore.autoReconnectRestore()">
         <q-card class="rounded-borders">
           <q-card-section class="row items-center" style="min-width: 350px;">
             <q-list class="q-gutter-y-md full-width">
               <q-item
-                v-for="flipper in mainStore.availableFlippers"
+                v-for="flipper in mainStore.availableFlippers.filter(flipper => flipper.mode !== 'dfu')"
                 :key="flipper.info.hardware.name"
                 class="row rounded-borders"
                 :style="`${info?.hardware?.uid === flipper.info.hardware.uid ? 'border: 2px solid ' + getCssVar('primary') : ''}`"
@@ -484,6 +489,42 @@
                   />
                 </q-item-section>
               </q-item>
+
+              <q-item
+                v-for="flipper in mainStore.availableFlippers.filter(flipper => flipper.mode === 'dfu')"
+                :key="flipper.name"
+                class="row rounded-borders"
+              >
+                <q-item-section class="col-5">
+                  <img v-if="flipper.info.color === 1" src="~assets/flipper_black.svg" style="width: 100%"/>
+                  <img v-else-if="flipper.info.color === 3" src="~assets/flipper_transparent.svg" style="width: 100%"/>
+                  <img v-else src="~assets/flipper_white.svg" style="width: 100%"/>
+                </q-item-section>
+                <q-item-section class="col-5 q-pl-md">
+                  <div>
+                    <div class="text-h6">{{ flipper.name }}</div>
+                    <div class="text-caption text-blue-14">Recovery mode</div>
+                  </div>
+                </q-item-section>
+                <q-item-section class="col-2">
+                  <q-btn unelevated dense color="primary" label="Repair" @click="recovery(flipper.info)"/>
+                </q-item-section>
+              </q-item>
+
+              <q-item
+                v-if="!mainStore.availableFlippers?.length"
+                class="row rounded-borders"
+              >
+                <q-item-section class="col-5">
+                  <img src="~assets/flipper_white.svg" style="width: 100%; filter: opacity(0.3)"/>
+                </q-item-section>
+                <q-item-section class="col-7 q-pl-md">
+                  <div>
+                    <div class="text-h6">Waiting for connection...</div>
+                    <div class="text-caption">Your Flippers will appear here</div>
+                  </div>
+                </q-item-section>
+              </q-item>
             </q-list>
             <div
               v-if="flags.loadingMultiflipper"
@@ -495,15 +536,13 @@
               />
             </div>
           </q-card-section>
-          <!--<q-card-section align="center">
+          <!-- <q-card-section align="center">
             <q-btn unelevated color="primary" label="Repair" @click="recovery"/>
-          </q-card-section>-->
+          </q-card-section> -->
         </q-card>
       </q-dialog>
       <q-dialog v-model="flags.dialogRecovery" :persistent="flags.recovery" @hide="mainStore.resetRecovery(true)">
-        <q-card
-          style="min-width: 280px; width: calc(min(80vw, 600px));"
-        >
+        <q-card style="width: 100%; max-width: min(calc(100vw - 16px), 1000px)">
           <q-card-section class="row items-center">
             <div class="text-h6">Repair</div>
           </q-card-section>
@@ -517,14 +556,13 @@
               label="View logs"
             >
               <q-scroll-area
+                ref="scrollAreaRef"
                 style="height: 300px;"
                 class="full-width bg-grey-12 q-mt-md q-px-sm q-py-xs rounded-borders text-left"
               >
-                <code>
-                  <span v-for="line in recoveryLogs" :key="line">
-                    {{ line }}
-                    <br />
-                  </span>
+                <code v-for="line in recoveryLogs" :key="line">
+                  {{ line }}
+                  <br />
                 </code>
               </q-scroll-area>
             </q-expansion-item>
@@ -536,7 +574,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, watchEffect, onMounted } from 'vue'
 import { useQuasar, /* colors, */ getCssVar } from 'quasar'
 // const { lighten } = colors
 import { useRoute, useRouter } from 'vue-router'
@@ -554,7 +592,18 @@ const flags = computed(() => mainStore.flags)
 const flipper = computed(() => mainStore.flipper)
 const info = computed(() => mainStore.info)
 const updateStage = computed(() => mainStore.updateStage)
-const recoveryLogs = computed(() => mainStore.recoveryLogs)
+const scrollAreaRef = ref(null)
+const recoveryLogs = computed({
+  get () {
+    watchEffect(() => {
+      if (scrollAreaRef.value) {
+        console.log('get computed', scrollAreaRef.value)
+        scrollAreaRef.value.setScrollPercentage('vertical', 1)
+      }
+    })
+    return mainStore.recoveryLogs
+  }
+})
 const recoveryProgress = computed(() => mainStore.recoveryProgress)
 
 const $q = useQuasar()
@@ -751,8 +800,8 @@ const downloadLogs = () => {
 }
 
 // eslint-disable-next-line no-unused-vars
-const recovery = () => {
-  mainStore.recovery(mainStore.logCallback)
+const recovery = (info) => {
+  mainStore.recovery(info)
 }
 
 const start = async (manual, path, onShowDialog) => {

@@ -1,6 +1,6 @@
 import semver from 'semver'
 import { axios, api } from 'boot/axios'
-import { camelCaseDeep, unpack } from 'util/util'
+import { camelCaseDeep, unpack, ungzip } from 'util/util'
 import { Notify } from 'quasar'
 
 const defaultAction = {
@@ -98,7 +98,22 @@ async function fetchFirmware (url) {
       const decoder = new TextDecoder('utf-8')
       const data = JSON.parse(decoder.decode(error.response.data)).detail
       if (data.code >= 400) {
-        throw new Error('Failed to fetch resources (' + data.code + ')')
+        throw new Error('Failed to fetch firmware (' + data.code + ')')
+      }
+    })
+}
+
+async function fetchFirmwareTar (url) {
+  return await axios
+    .get(url, { responseType: 'arraybuffer' })
+    .then(({ data }) => {
+      return ungzip(data)
+    })
+    .catch((error) => {
+      const decoder = new TextDecoder('utf-8')
+      const data = JSON.parse(decoder.decode(error.response.data)).detail
+      if (data.code >= 400) {
+        throw new Error('Failed to fetch firmware (' + data.code + ')')
       }
     })
 }
@@ -244,6 +259,7 @@ async function submitAppReport (id, report) {
 export {
   fetchChannels,
   fetchFirmware,
+  fetchFirmwareTar,
   fetchRegions,
   fetchCategories,
   fetchPostAppsShort,

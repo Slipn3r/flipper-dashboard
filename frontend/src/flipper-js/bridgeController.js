@@ -13,14 +13,13 @@ const findFlipper = (name) => {
 const init = async () => {
   console.log('bridge init')
   window.bridge.onRPCRead(payload => {
-    // console.log('findFlipper', payload, findFlipper(payload.name))
     const flipper = findFlipper(payload.name)
-    flipper.emitter.emit('RPCRead', payload.data)
+    flipper.emitter.emit('RPCRead', payload.data.buffer)
   })
 
   window.bridge.onCLIRead(payload => {
     const flipper = findFlipper(payload.name)
-    flipper.emitter.emit('CLIRead', payload.data)
+    flipper.emitter.emit('CLIRead', payload.data.buffer)
   })
 
   window.bridge.onList(payload => {
@@ -29,36 +28,47 @@ const init = async () => {
     const newList = payload
 
     oldList.forEach(oldFlipper => {
-      if (newList.find(newFlipper => newFlipper.name === oldFlipper.name)) {
+      if (newList.find(newFlipper => newFlipper.name === oldFlipper.name && newFlipper.mode === oldFlipper.mode)) {
         finalList.push(oldFlipper)
       } else {
-        delete oldFlipper.emitter // here we "unbind" the emitter
+        delete oldFlipper.emitter
       }
     })
     newList.forEach(newFlipper => {
-      if (!oldList.find(oldFlipper => oldFlipper.name === newFlipper.name)) {
-        newFlipper.emitter = createNanoEvents() // here we "create" a new emitter
+      if (!oldList.find(oldFlipper => oldFlipper.name === newFlipper.name && newFlipper.mode === oldFlipper.mode)) {
+        newFlipper.emitter = createNanoEvents()
         finalList.push(newFlipper)
       }
     })
 
-    bridgeController.list = finalList
+    bridgeController.list = finalList.filter(flipper => flipper.mode !== 'offline')
 
     emitter.emit('list', bridgeController.list)
   })
 
   window.bridge.onLog(e => {
     console.log('bridge log', e)
-    emitter.emit('log')
+    emitter.emit('log', e)
+  })
+
+  window.bridge.onStatus(e => {
+    console.log('bridge status', e)
+    emitter.emit('status', e)
   })
 
   window.bridge.onSpawn(() => {
     console.log('bridge spawn')
     emitter.emit('spawn')
   })
+
   window.bridge.onExit(e => {
     console.log('bridge exit', e)
     emitter.emit('exit', e)
+  })
+
+  window.bridge.onError(e => {
+    console.warn('bridge error', e)
+    emitter.emit('error', e)
   })
 
   window.bridge.spawn()

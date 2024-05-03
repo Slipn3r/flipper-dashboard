@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
+import { log } from 'composables/useLog'
 import showNotif from 'composables/useShowNotif'
 
+import { fetchFirmwareTar } from 'src/util/fetch'
 import { init as bridgeControllerInit, emitter as bridgeEmitter, getCurrentFlipper, getList, setCurrentFlipper } from 'src/flipper-js/bridgeController'
 
 import { useMainStore } from 'stores/global/main'
@@ -53,6 +55,7 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
   }
 
   const onUpdateStage = computed(() => mainStore.onUpdateStage)
+  const setUpdateStage = computed(() => mainStore.setUpdateStage)
   const autoReconnectFlipperName = ref(null)
   const reconnectTimeouts = ref([])
   const setReconnectTimeout = () => {
@@ -123,6 +126,8 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
     })
   }
 
+  const autoReconnectCondition = computed(() => mainStore.autoReconnectCondition)
+  const setAutoReconnectCondition = computed(() => mainStore.setAutoReconnectCondition)
   const toggleAutoReconnectCondition = computed(() => mainStore.toggleAutoReconnectCondition)
   const start = async () => {
     toggleAutoReconnectCondition.value()
@@ -145,5 +150,92 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
     }
   }
 
-  return { connect, selectPort, findKnownDevices, start, setReconnectTimeout }
+  const recoveryLogs = ref([])
+  const recoveryProgress = ref(0)
+  const resetRecovery = (clearLogs = false) => {
+    setUpdateStage.value('')
+    recoveryProgress.value = 0
+    if (clearLogs) {
+      recoveryLogs.value = []
+    }
+  }
+  const recovery = async (info) => {
+    if (!flags.value.isElectron) {
+      return
+    }
+    flags.value.dialogMultiflipper = false
+    flags.value.dialogRecovery = true
+    flags.value.recovery = true
+    setAutoReconnectCondition.value(flags.value.autoReconnect)
+    flags.value.autoReconnect = false
+    autoReconnectFlipperName.value = info.name
+
+    console.log(info)
+    const firmwareTar = await fetchFirmwareTar(`https://update.flipperzero.one/firmware/release/f${info.target}/update_tgz`)
+    console.log(firmwareTar.buffer)
+    const saved = await window.fs.saveToTemp({
+      filename: 'update.tar',
+      buffer: firmwareTar
+    })
+    console.log(saved)
+    if (saved.status !== 'ok') {
+      return
+    }
+
+    window.bridge.send({
+      type: 'repair',
+      name: info.name,
+      data: {
+        file: saved.path
+      }
+    })
+
+    const unbindLogs = bridgeEmitter.on('log', stderr => {
+      const logLines = stderr.data.split('\n')
+      logLines.pop()
+      logLines.forEach(line => {
+        recoveryLogs.value.push(line)
+        let level = 'debug'
+        if (line.includes('[E]')) {
+          level = 'error'
+        } else if (line.includes('[W]')) {
+          level = 'warn'
+        } else if (line.includes('[I]')) {
+          level = 'info'
+        }
+        log({
+          level,
+          message: line
+        })
+      })
+    })
+
+    const unbindStatus = bridgeEmitter.on('status', status => {
+      if (status.message) {
+        setUpdateStage.value(status.message)
+      }
+      if (status.progress) {
+        recoveryProgress.value = status.progress / 100
+      }
+      if (status.finished) {
+        unbindLogs()
+        unbindStatus()
+        flags.value.recovery = false
+        flags.value.dialogMultiflipper = false
+        flags.value.autoReconnect = autoReconnectCondition.value
+        setUpdateStage.value('Finished')
+        setCurrentFlipper(info.name)
+        if (getList().includes(e => e.name === info.name)) {
+          setCurrentFlipper(info.name)
+          flipperConnect()
+        }
+        if (!flags.value.showRecoveryLog) {
+          flags.value.dialogRecovery = false
+        }
+        onUpdateStage('end')
+      }
+    })
+  }
+
+  return { connect, selectPort, findKnownDevices, flipperConnect, start, setReconnectTimeout, recoveryLogs, recoveryProgress, resetRecovery, recovery }
 })

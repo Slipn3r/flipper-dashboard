@@ -34,8 +34,12 @@ class Operation {
   }
 }
 
+function ungzip (buffer) {
+  return pako.ungzip(new Uint8Array(buffer))
+}
+
 function unpack (buffer) {
-  const ungzipped = pako.ungzip(new Uint8Array(buffer))
+  const ungzipped = ungzip(buffer)
   return untar(ungzipped.buffer)
 }
 
@@ -51,5 +55,6 @@ export {
   camelCaseDeep,
   Operation,
   unpack,
+  ungzip,
   bytesToSize
 }
