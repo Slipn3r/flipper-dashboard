@@ -14,7 +14,7 @@
 
         <img
           v-show="!$q.screen.xs"
-          src="../assets/flipper_lab_logo_monochrome.svg"
+          src="~assets/flipper_lab_logo_monochrome.svg"
           class="q-ml-xs"
           style="height: 36px;"
         />
@@ -188,9 +188,9 @@
           <div class="column justify-end no-wrap">
             <div class="column items-center">
               <div v-if="info && info.hardware && info.power" class="flex justify-center q-px-md">
-                <img v-if="info.hardware.color === '1'" src="../assets/flipper_black.svg" style="width: 100%"/>
-                <img v-else-if="info.hardware.color === '3'" src="../assets/flipper_transparent.svg" style="width: 100%"/>
-                <img v-else src="../assets/flipper_white.svg" style="width: 100%"/>
+                <img v-if="info.hardware.color === '1'" src="~assets/flipper_black.svg" style="width: 100%"/>
+                <img v-else-if="info.hardware.color === '3'" src="~assets/flipper_transparent.svg" style="width: 100%"/>
+                <img v-else src="~assets/flipper_white.svg" style="width: 100%"/>
                 <div class="flex full-width justify-between items-center q-mt-md q-mb-sm">
                   <div style="font-size: 1rem; font-weight: 600;">{{ info.hardware.name }}</div>
                   <div class="flex flex-center">
@@ -306,7 +306,7 @@
             <q-card-section class="q-pa-none q-ma-md" align="center">
               <template v-if="flags.isBridgeReady">
                 <q-img
-                  src="../assets/flipper_alert.svg"
+                  src="~assets/flipper_alert.svg"
                   width="70px"
                 />
                 <div class="text-h6 q-my-sm">Flipper isn't connected</div>
@@ -466,9 +466,9 @@
                 @click="onConnectFlipper(flipper.name)"
               >
                 <q-item-section class="col-5">
-                  <img v-if="flipper.info.hardware.color === '1'" src="../assets/flipper_black.svg" style="width: 100%"/>
-                  <img v-else-if="flipper.info.hardware.color === '3'" src="../assets/flipper_transparent.svg" style="width: 100%"/>
-                  <img v-else src="../assets/flipper_white.svg" style="width: 100%"/>
+                  <img v-if="flipper.info.hardware.color === '1'" src="~assets/flipper_black.svg" style="width: 100%"/>
+                  <img v-else-if="flipper.info.hardware.color === '3'" src="~assets/flipper_transparent.svg" style="width: 100%"/>
+                  <img v-else src="~assets/flipper_white.svg" style="width: 100%"/>
                 </q-item-section>
                 <q-item-section class="col-5 q-pl-md">
                   <div>
