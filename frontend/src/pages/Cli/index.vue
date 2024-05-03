@@ -96,7 +96,7 @@ const mainStore = useMainStore()
 
 const mainFlags = computed(() => mainStore.flags)
 
-import { useCliMainStore } from 'stores/pages/Cli'
+import { useCliMainStore } from './stores'
 const CliMainStore = useCliMainStore()
 
 const flags = computed(() => CliMainStore.flags)
@@ -151,3 +151,4 @@ onBeforeUnmount(() => {
   }
 })
 </script>
+src/pages/Cli/Cli

@@ -361,7 +361,7 @@ const loadingInstalledApps = computed(() => appsStore.flags.loadingInstalledApps
 const installedApps = computed(() => appsStore.installedApps)
 const categories = computed(() => appsStore.categories)
 
-import { useInstalledAppsMainStore } from 'stores/pages/InstalledApps'
+import { useInstalledAppsMainStore } from './stores'
 const InstalledAppsMainStore = useInstalledAppsMainStore()
 
 const flags = computed(() => InstalledAppsMainStore.flags)

@@ -305,7 +305,7 @@ const mainStore = useMainStore()
 
 const mainFlags = computed(() => mainStore.flags)
 
-import { useArchiveMainStore } from 'stores/pages/Archive'
+import { useArchiveMainStore } from './stores'
 const archiveMainStore = useArchiveMainStore()
 
 const path = computed(() => archiveMainStore.path)

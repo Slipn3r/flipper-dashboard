@@ -82,7 +82,7 @@ import { useMainStore } from 'stores/global/main'
 const mainStore = useMainStore()
 const mainFlags = computed(() => mainStore.flags)
 
-import { useDeviceMainStore } from 'stores/pages/Device'
+import { useDeviceMainStore } from './stores'
 const deviceMainStore = useDeviceMainStore()
 const flags = computed(() => deviceMainStore.flags)
 const radioStackType = computed(() => deviceMainStore.radioStackType)

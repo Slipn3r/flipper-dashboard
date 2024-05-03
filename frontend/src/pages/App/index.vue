@@ -309,7 +309,7 @@ const appsStore = useAppsStore()
 
 const appsFlags = computed(() => appsStore.flags)
 
-import { useAppMainStore } from 'stores/pages/App'
+import { useAppMainStore } from './stores'
 const appMainStore = useAppMainStore()
 
 const loading = computed(() => appMainStore.loading)

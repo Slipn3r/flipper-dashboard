@@ -153,7 +153,7 @@ const mainFlags = computed(() => mainStore.flags)
 import { useAppsStore } from 'stores/global/apps'
 const appsStore = useAppsStore()
 
-import { useAppsMainStore } from 'stores/pages/Apps'
+import { useAppsMainStore } from './stores'
 const appsMainStore = useAppsMainStore()
 
 const flags = computed(() => appsMainStore.flags)

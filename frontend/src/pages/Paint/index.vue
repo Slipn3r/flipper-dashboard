@@ -26,7 +26,7 @@ const mainFlags = computed(() => mainStore.flags)
 const flipper = computed(() => mainStore.flipper)
 const info = computed(() => mainStore.info)
 
-import { usePaintMainStore } from 'stores/pages/Paint'
+import { usePaintMainStore } from './stores'
 const PaintMainStore = usePaintMainStore()
 
 const autoStreaming = computed(() => PaintMainStore.autoStreaming)

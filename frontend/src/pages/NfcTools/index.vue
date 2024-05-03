@@ -70,7 +70,7 @@
             <q-card-section class="q-pa-none q-ma-md" align="center">
               <template v-if="mainFlags.isBridgeReady">
                 <q-img
-                  src="../assets/flipper_alert.svg"
+                  src="~assets/flipper_alert.svg"
                   width="70px"
                 />
                 <div class="text-h6 q-my-sm">Flipper isn't connected</div>
@@ -132,7 +132,7 @@ const mainStore = useMainStore()
 
 const mainFlags = computed(() => mainStore.flags)
 
-import { useNfcMainStore } from 'stores/pages/NFC'
+import { useNfcMainStore } from './stores'
 const NfcMainStore = useNfcMainStore()
 
 const flags = computed(() => NfcMainStore.flags)
