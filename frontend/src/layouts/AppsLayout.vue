@@ -362,4 +362,3 @@ watch(() => mainFlags.value.connected, (condition) => {
   border-radius: 17px
   padding: 5px
 </style>
-src/composables/useLog

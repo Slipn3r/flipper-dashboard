@@ -431,6 +431,12 @@ watch(() => mainFlags.value.connected, (condition) => {
   }
 })
 
+watch(() => route.fullPath, (to, from) => {
+  if (to !== from) {
+    start()
+  }
+})
+
 onMounted(() => {
   start()
 })
