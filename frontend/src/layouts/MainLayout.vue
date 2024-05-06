@@ -14,7 +14,7 @@
 
         <img
           v-show="!$q.screen.xs"
-          src="../assets/flipper_lab_logo_monochrome.svg"
+          src="~assets/flipper_lab_logo_monochrome.svg"
           class="q-ml-xs"
           style="height: 36px;"
         />
@@ -195,9 +195,9 @@
           <div class="column justify-end no-wrap">
             <div class="column items-center">
               <div v-if="info && info.hardware && info.power" class="flex justify-center q-px-md">
-                <img v-if="info.hardware.color === '1'" src="../assets/flipper_black.svg" style="width: 100%"/>
-                <img v-else-if="info.hardware.color === '3'" src="../assets/flipper_transparent.svg" style="width: 100%"/>
-                <img v-else src="../assets/flipper_white.svg" style="width: 100%"/>
+                <img v-if="info.hardware.color === '1'" src="~assets/flipper_black.svg" style="width: 100%"/>
+                <img v-else-if="info.hardware.color === '3'" src="~assets/flipper_transparent.svg" style="width: 100%"/>
+                <img v-else src="~assets/flipper_white.svg" style="width: 100%"/>
                 <div class="flex full-width justify-between items-center q-mt-md q-mb-sm">
                   <div style="font-size: 1rem; font-weight: 600;">{{ info.hardware.name }}</div>
                   <div class="flex flex-center">
@@ -313,7 +313,7 @@
             <q-card-section class="q-pa-none q-ma-md" align="center">
               <template v-if="flags.isBridgeReady">
                 <q-img
-                  src="../assets/flipper_alert.svg"
+                  src="~assets/flipper_alert.svg"
                   width="70px"
                 />
                 <div class="text-h6 q-my-sm">Flipper isn't connected</div>
@@ -471,9 +471,9 @@
                 @click="onConnectFlipper(flipper.name)"
               >
                 <q-item-section class="col-5">
-                  <img v-if="flipper.info.hardware.color === '1'" src="../assets/flipper_black.svg" style="width: 100%"/>
-                  <img v-else-if="flipper.info.hardware.color === '3'" src="../assets/flipper_transparent.svg" style="width: 100%"/>
-                  <img v-else src="../assets/flipper_white.svg" style="width: 100%"/>
+                  <img v-if="flipper.info.hardware.color === '1'" src="~assets/flipper_black.svg" style="width: 100%"/>
+                  <img v-else-if="flipper.info.hardware.color === '3'" src="~assets/flipper_transparent.svg" style="width: 100%"/>
+                  <img v-else src="~assets/flipper_white.svg" style="width: 100%"/>
                 </q-item-section>
                 <q-item-section class="col-5 q-pl-md">
                   <div>
@@ -496,9 +496,9 @@
                 class="row rounded-borders"
               >
                 <q-item-section class="col-5">
-                  <img v-if="flipper.info.color === 1" src="../assets/flipper_black.svg" style="width: 100%"/>
-                  <img v-else-if="flipper.info.color === 3" src="../assets/flipper_transparent.svg" style="width: 100%"/>
-                  <img v-else src="../assets/flipper_white.svg" style="width: 100%"/>
+                  <img v-if="flipper.info.color === 1" src="~assets/flipper_black.svg" style="width: 100%"/>
+                  <img v-else-if="flipper.info.color === 3" src="~assets/flipper_transparent.svg" style="width: 100%"/>
+                  <img v-else src="~assets/flipper_white.svg" style="width: 100%"/>
                 </q-item-section>
                 <q-item-section class="col-5 q-pl-md">
                   <div>
@@ -516,7 +516,7 @@
                 class="row rounded-borders"
               >
                 <q-item-section class="col-5">
-                  <img src="../assets/flipper_white.svg" style="width: 100%; filter: opacity(0.3)"/>
+                  <img src="~assets/flipper_white.svg" style="width: 100%; filter: opacity(0.3)"/>
                 </q-item-section>
                 <q-item-section class="col-7 q-pl-md">
                   <div>
@@ -536,9 +536,9 @@
               />
             </div>
           </q-card-section>
-          <!--<q-card-section align="center">
+          <!-- <q-card-section align="center">
             <q-btn unelevated color="primary" label="Repair" @click="recovery"/>
-          </q-card-section>-->
+          </q-card-section> -->
         </q-card>
       </q-dialog>
       <q-dialog v-model="flags.dialogRecovery" :persistent="flags.recovery" @hide="mainStore.resetRecovery(true)">
@@ -556,6 +556,7 @@
               label="View logs"
             >
               <q-scroll-area
+                ref="scrollAreaRef"
                 style="height: 300px;"
                 class="full-width bg-grey-12 q-mt-md q-px-sm q-py-xs rounded-borders text-left"
               >
@@ -573,7 +574,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, watchEffect, onMounted } from 'vue'
 import { useQuasar, /* colors, */ getCssVar } from 'quasar'
 // const { lighten } = colors
 import { useRoute, useRouter } from 'vue-router'
@@ -591,7 +592,18 @@ const flags = computed(() => mainStore.flags)
 const flipper = computed(() => mainStore.flipper)
 const info = computed(() => mainStore.info)
 const updateStage = computed(() => mainStore.updateStage)
-const recoveryLogs = computed(() => mainStore.recoveryLogs)
+const scrollAreaRef = ref(null)
+const recoveryLogs = computed({
+  get () {
+    watchEffect(() => {
+      if (scrollAreaRef.value) {
+        console.log('get computed', scrollAreaRef.value)
+        scrollAreaRef.value.setScrollPercentage('vertical', 1)
+      }
+    })
+    return mainStore.recoveryLogs
+  }
+})
 const recoveryProgress = computed(() => mainStore.recoveryProgress)
 
 const $q = useQuasar()

@@ -3,7 +3,7 @@ const routes = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { name: 'Device', path: '', component: () => import('pages/Device.vue') }
+      { name: 'Device', path: '', component: () => import('pages/Device/index.vue') }
     ]
   },
   {
@@ -15,10 +15,10 @@ const routes = [
         path: '',
         component: () => import('layouts/AppsLayout.vue'),
         children: [
-          { name: 'Apps', path: '', component: () => import('pages/Apps.vue') },
-          { name: 'AppsCategory', path: 'category/:path', component: () => import('pages/Apps.vue') },
-          { name: 'InstalledApps', path: 'installed', component: () => import('pages/InstalledApps.vue') },
-          { name: 'AppsPath', path: ':path', component: () => import('pages/App.vue') }
+          { name: 'Apps', path: '', component: () => import('pages/Apps/index.vue') },
+          { name: 'AppsCategory', path: 'category/:path', component: () => import('pages/Apps/index.vue') },
+          { name: 'InstalledApps', path: 'installed', component: () => import('pages/InstalledApps/index.vue') },
+          { name: 'AppsPath', path: ':path', component: () => import('pages/App/index.vue') }
         ]
       }
     ],
@@ -30,28 +30,28 @@ const routes = [
     path: '/archive',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { name: 'Archive', path: '', component: () => import('pages/Archive.vue') }
+      { name: 'Archive', path: '', component: () => import('pages/Archive/index.vue') }
     ]
   },
   {
     path: '/cli',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { name: 'CLI', path: '', component: () => import('pages/Cli.vue') }
+      { name: 'CLI', path: '', component: () => import('pages/Cli/index.vue') }
     ]
   },
   {
     path: '/paint',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { name: 'Paint', path: '', component: () => import('pages/Paint.vue') }
+      { name: 'Paint', path: '', component: () => import('pages/Paint/index.vue') }
     ]
   },
   {
     path: '/pulse-plotter',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { name: 'PulsePlotter', path: '', component: () => import('pages/Pulseplot.vue') }
+      { name: 'PulsePlotter', path: '', component: () => import('pages/Pulseplot/index.vue') }
     ],
     meta: {
       canLoadWithoutFlipper: true
@@ -61,7 +61,7 @@ const routes = [
     path: '/nfc-tools',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { name: 'NFCTools', path: '', component: () => import('pages/NfcTools.vue') }
+      { name: 'NFCTools', path: '', component: () => import('pages/NfcTools/index.vue') }
     ],
     meta: {
       canLoadWithoutFlipper: true
