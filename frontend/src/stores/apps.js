@@ -445,9 +445,9 @@ export const useAppsStore = defineStore('apps', () => {
     }
     const dataUri = await urlContentToDataUri(app.currentVersion.iconUri)
     const base64Icon = dataUri.split(',')[1]
-    let manifestText = `Filetype: Flipper Application Installation Manifest\r\nVersion: 1\r\nFull Name: ${app.currentVersion.name}\r\nIcon: ${base64Icon}\r\nVersion Build API: ${info.value.firmware.api.major}.${info.value.firmware.api.minor}\r\nUID: ${app.id}\r\nVersion UID: ${app.currentVersion.id}\r\nPath: ${paths.appDir}/${app.alias}.fap`
+    let manifestText = `Filetype: Flipper Application Installation Manifest\nVersion: 1\nFull Name: ${app.currentVersion.name}\nIcon: ${base64Icon}\nVersion Build API: ${info.value.firmware.api.major}.${info.value.firmware.api.minor}\nUID: ${app.id}\nVersion UID: ${app.currentVersion.id}\nPath: ${paths.appDir}/${app.alias}.fap`
     if (!mainFlags.value.catalogChannelProduction) {
-      manifestText = manifestText + '\r\nDevCatalog: true'
+      manifestText = manifestText + '\nDevCatalog: true'
     }
     const manifestFile = new TextEncoder().encode(manifestText)
     app.action.progress = 0.45
