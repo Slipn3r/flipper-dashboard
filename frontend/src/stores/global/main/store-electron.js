@@ -74,9 +74,13 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
 
   const connectToFirstFlipper = () => {
     const _list = getList()
-    if (_list.length) {
-      setCurrentFlipper(_list[0].name)
+    const availableList = _list.filter(e => e.mode !== 'dfu')
+    const notAvailableList = _list.filter(e => e.mode === 'dfu')
+    if (availableList.length) {
+      setCurrentFlipper(availableList[0].name)
       flipperConnect()
+    } else if (notAvailableList.length) {
+      flags.value.dialogMultiflipper = true
     }
   }
 
@@ -143,7 +147,7 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
     listInit()
     await bridgeControllerInit()
 
-    if (flags.value.autoReconnect) {
+    if (flags.value.autoReconnect && flipper.value?.name) {
       autoReconnectFlipperName.value = flipper.value.name
     } else {
       autoReconnectFlipperName.value = null
@@ -163,6 +167,7 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
     if (!flags.value.isElectron) {
       return
     }
+    flags.value.recoveryError = false
     flags.value.dialogMultiflipper = false
     flags.value.dialogRecovery = true
     flags.value.recovery = true
@@ -211,6 +216,64 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
     })
 
     const unbindStatus = bridgeEmitter.on('status', status => {
+      if (status.error) {
+        let messageLong = `Failed to repair ${info.name}: ${status.error.message}`
+        let messageShort = messageLong
+        switch (status.error.message) {
+          case 'UnknownError':
+            messageLong = 'Unknown error! Please try again. If the error persists, please contact support.'
+            messageShort = `Failed to repair ${info.name}: Unknown error`
+            break
+          case 'InvalidDevice':
+            messageLong = 'Error: Cannot determine device type. Please try again.'
+            messageShort = `Failed to repair ${info.name}: Invalid device`
+            break
+          case 'DiskError':
+            messageLong = 'Error: Cannot read/write to disk. The app may be missing permissions.'
+            messageShort = `Failed to repair ${info.name}: Disk error`
+            break
+          case 'DataError':
+            messageLong = 'Error: Necessary files are corrupted. Please try again.'
+            messageShort = `Failed to repair ${info.name}: Data error`
+            break
+          case 'SerialAccessError':
+            messageLong = 'Error: Cannot access device in Serial mode. Please check USB connection and permissions and try again.'
+            messageShort = `Failed to repair ${info.name}: Serial access error`
+            break
+          case 'RecoveryAccessError':
+            messageLong = 'Error: Cannot access device in Recovery mode. Please check USB connection and permissions and try again.'
+            messageShort = `Failed to repair ${info.name}: Recovery access error`
+            break
+          case 'OperationError':
+            messageLong = 'Error: Current operation was interrupted. Please try again.'
+            messageShort = `Failed to repair ${info.name}: Operation error`
+            break
+          case 'SerialError':
+            messageLong = 'Error: Serial port error. Please check USB connection and try again.'
+            messageShort = `Failed to repair ${info.name}: Serial error`
+            break
+          case 'RecoveryError':
+            messageLong = 'Error: Recovery mode error. Please check USB connection and try again.'
+            messageShort = `Failed to repair ${info.name}: Recovery error`
+            break
+          case 'ProtocolError':
+            messageLong = 'Error: Protocol error. Please try again. If the error persists, please contact support.'
+            messageShort = `Failed to repair ${info.name}: Protocol error`
+            break
+          case 'TimeoutError':
+            messageLong = 'Error: Operation timed out. Please check USB connection and try again.'
+            messageShort = `Failed to repair ${info.name}: Timeout error`
+            break
+        }
+        showNotif({
+          message: messageShort,
+          color: 'negative'
+        })
+        unbindLogs()
+        unbindStatus()
+        setUpdateStage.value(messageLong)
+        flags.value.recoveryError = true
+      }
       if (status.message) {
         setUpdateStage.value(status.message)
       }
@@ -232,7 +295,7 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
         if (!flags.value.showRecoveryLog) {
           flags.value.dialogRecovery = false
         }
-        onUpdateStage('end')
+        onUpdateStage.value('end')
       }
     })
   }

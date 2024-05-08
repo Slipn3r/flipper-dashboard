@@ -541,14 +541,23 @@
           </q-card-section> -->
         </q-card>
       </q-dialog>
-      <q-dialog v-model="flags.dialogRecovery" :persistent="flags.recovery" @hide="mainStore.resetRecovery(true)">
-        <q-card style="width: 100%; max-width: min(calc(100vw - 16px), 1000px)">
+      <q-dialog v-model="flags.dialogRecovery" :persistent="flags.recovery && !flags.recoveryError" @hide="mainStore.resetRecovery(true)">
+        <q-card class="dialog" style="width: 100%; max-width: min(calc(100vw - 16px), 1000px)">
+          <q-btn v-if="flags.recoveryError" icon="close" flat round dense v-close-popup class="dialog-close-btn"/>
           <q-card-section class="row items-center">
             <div class="text-h6">Repair</div>
           </q-card-section>
           <q-card-section class="row items-center">
-            <p>{{ updateStage }}</p>
-            <ProgressBar :progress="recoveryProgress" interpolated/>
+            <template v-if="flags.recoveryError">
+              <p class="text-bold text-negative">{{ updateStage }}</p>
+              <div class="full-width q-mb-md">
+                <q-btn unelevated color="primary" label="Retry" @click="mainStore.resetRecovery(true); flags.dialogRecovery = false; flags.dialogMultiflipper = true"/>
+              </div>
+            </template>
+            <template v-else>
+              <p>{{ updateStage }}</p>
+              <ProgressBar :progress="recoveryProgress" interpolated/>
+            </template>
             <q-expansion-item
               v-model="flags.showRecoveryLog"
               class="full-width"

@@ -32,6 +32,7 @@ export const useMainStore = defineStore('main', () => {
 
     dialogRecovery: false,
     recovery: false,
+    recoveryError: false,
     showRecoveryLog: false,
 
     serialSupported: true,

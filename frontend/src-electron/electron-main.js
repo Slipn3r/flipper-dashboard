@@ -149,6 +149,11 @@ async function createWindow () {
   mainWindow.once('ready-to-show', () => {
     mainWindow.showInactive()
   })
+
+  mainWindow.on('close', (event) => {
+    mainWindow.hide()
+    // mainWindow.destroy()
+  })
 }
 
 app.whenReady()
@@ -178,10 +183,6 @@ app.on('window-all-closed', () => {
   bridge.kill()
   app.quit()
 })
-
-/* app.on('will-quit', () => {
-  bridge.kill()
-}) */
 
 app.on('activate', () => {
   if (mainWindow === null) {
