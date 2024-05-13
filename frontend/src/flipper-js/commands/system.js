@@ -1,4 +1,4 @@
-import { createRPCPromise } from '../util'
+import { createRPCPromise, mergeDeep, expand } from '../util'
 
 function ping () {
   return createRPCPromise.bind(this)('systemPingRequest')
@@ -16,9 +16,16 @@ async function reboot ({ mode = 'OS' }) {
 
 function deviceInfo () {
   function format (chunks) {
-    const result = {}
+    const accumulator = {}
+    let result = {}
     for (const chunk of chunks) {
-      result[chunk.key] = chunk.value
+      if (chunk.key) {
+        accumulator[chunk.key] = chunk.value
+      }
+    }
+    for (const line of Object.keys(accumulator)) {
+      const expanded = expand(line, '_', accumulator[line])
+      result = mergeDeep(result, expanded)
     }
     return result
   }

@@ -100,6 +100,13 @@ export const useMainStore = defineStore('main', () => {
       message: `${componentName}: RPC started`
     })
   }
+  const getProtobufVersion = async () => {
+    return await flipper.value.RPC('systemProtobufVersion')
+  }
+  const isOldProtobuf = async () => {
+    const protobufVersion = await getProtobufVersion()
+    return protobufVersion.major === 0 && protobufVersion.minor < 14
+  }
   const readInfo = async () => {
     if (!flags.value.connected) {
       return
@@ -114,26 +121,37 @@ export const useMainStore = defineStore('main', () => {
         internal: {}
       }
     })
-    await flipper.value.RPC('propertyGet', { key: 'devinfo' })
-      .then(devInfo => {
-        log({
-          level: 'debug',
-          message: `${componentName}: propertyGet: OK`
+    const isOld = await isOldProtobuf()
+    if (isOld) {
+      await flipper.value.RPC('systemDeviceInfo')
+        .then(devInfo => {
+          log({
+            level: 'debug',
+            message: `${componentName}: deviceInfo: OK`
+          })
+          setInfo({ ...info.value, ...devInfo })
         })
-        setInfo({ ...info.value, ...devInfo })
-      })
-      .catch(error => rpcErrorHandler(componentName, error, 'propertyGet'))
-
-    await flipper.value.RPC('propertyGet', { key: 'pwrinfo' })
-      .then(powerInfo => {
-        log({
-          level: 'debug',
-          message: `${componentName}: propertyGet: OK`
+    } else {
+      await flipper.value.RPC('propertyGet', { key: 'devinfo' })
+        .then(devInfo => {
+          log({
+            level: 'debug',
+            message: `${componentName}: propertyGet: OK`
+          })
+          setInfo({ ...info.value, ...devInfo })
         })
-        setPropertyInfo({ power: powerInfo })
-      })
-      .catch(error => rpcErrorHandler(componentName, error, 'propertyGet'))
+        .catch(error => rpcErrorHandler(componentName, error, 'propertyGet'))
 
+      await flipper.value.RPC('propertyGet', { key: 'pwrinfo' })
+        .then(powerInfo => {
+          log({
+            level: 'debug',
+            message: `${componentName}: propertyGet: OK`
+          })
+          setPropertyInfo({ power: powerInfo })
+        })
+        .catch(error => rpcErrorHandler(componentName, error, 'propertyGet'))
+    }
     const ext = await flipper.value.RPC('storageList', { path: '/ext' })
       .then(list => {
         log({
@@ -217,6 +235,7 @@ export const useMainStore = defineStore('main', () => {
       })
       .catch(error => rpcErrorHandler(componentName, error, 'storageInfo'))
     setPropertyInfo({ doneReading: true })
+    console.log(info.value)
   }
   const setTime = async () => {
     if (!flags.value.connected) {
