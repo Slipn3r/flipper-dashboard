@@ -26,6 +26,8 @@ export const useMainStore = defineStore('main', () => {
   const flags = ref({
     isElectron: Platform.is.electron,
 
+    disableNavigation: false,
+
     multiflipper: false,
     loadingMultiflipper: false,
     dialogMultiflipper: false,
@@ -333,6 +335,7 @@ export const useMainStore = defineStore('main', () => {
   }
   const onUpdateStage = (stage) => {
     if (stage === 'start') {
+      flags.value.disableNavigation = true
       flags.value.updateInProgress = true
 
       stopScreenStream()
@@ -342,6 +345,7 @@ export const useMainStore = defineStore('main', () => {
         })
       }
     } else if (stage === 'end') {
+      flags.value.disableNavigation = false
       flags.value.updateInProgress = false
     }
   }

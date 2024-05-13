@@ -130,6 +130,7 @@ mainStore.bridgeEmitter.on('error', e => {
   if (flags.value.updateInProgress && info.value?.hardware?.name === e.name) {
     flags.value.updateError = true
     updateStage.value = 'Update error: ' + e.message
+    mainStore.onUpdateStage('end')
   }
 })
 
@@ -218,6 +219,7 @@ const update = async (fromFile) => {
         level: 'error',
         message: `${componentName}: ${error.toString()}`
       })
+      mainStore.onUpdateStage('end')
       throw error
     })
   // flags.value.updateInProgress = false

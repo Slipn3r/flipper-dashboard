@@ -82,6 +82,7 @@
             :key="link.title"
             v-bind="link"
             class="q-pa-md"
+            :disable="flags.disableNavigation"
           />
 
           <div :class="$q.screen.height > 545 ? 'absolute-bottom' : ''" style="width: 175px">
@@ -89,6 +90,7 @@
               clickable
               class="q-pa-md"
               @click="flags.settingsView = true"
+              :disable="flags.disableNavigation"
             >
               <q-item-section avatar class="items-center">
                 <q-avatar
