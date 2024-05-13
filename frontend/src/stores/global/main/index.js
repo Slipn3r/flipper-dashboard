@@ -29,6 +29,7 @@ export const useMainStore = defineStore('main', () => {
     multiflipper: false,
     loadingMultiflipper: false,
     dialogMultiflipper: false,
+    disableButtonMultiflipper: true,
 
     dialogRecovery: false,
     recovery: false,

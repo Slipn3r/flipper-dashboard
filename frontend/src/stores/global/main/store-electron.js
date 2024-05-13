@@ -33,6 +33,15 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
 
       await readInfo.value(flipper.value.name)
       await setTime.value()
+
+      flags.value.dialogMultiflipper = false
+      flags.value.disableButtonMultiflipper = true
+
+      setTimeout(() => {
+        flags.value.disableButtonMultiflipper = false
+      }, 2000)
+    } else {
+      flags.value.disableButtonMultiflipper = false
     }
   }
 

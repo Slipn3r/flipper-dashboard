@@ -108,6 +108,7 @@
               clickable
               class="q-px-md q-py-sm"
               @click="onSwitchFlipper"
+              :disable="flags.disableButtonMultiflipper || flags.disableNavigation"
             >
               <q-item-section avatar class="items-center">
                 <q-avatar
