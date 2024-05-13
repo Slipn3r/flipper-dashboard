@@ -100,7 +100,7 @@ export const useMainStore = defineStore('main', () => {
     return await flipper.value.RPC('systemProtobufVersion')
   }
   const isOldProtobuf = async () => {
-    const protobufVersion = getProtobufVersion()
+    const protobufVersion = await getProtobufVersion()
     return protobufVersion.major === 0 && protobufVersion.minor < 14
   }
   // eslint-disable-next-line no-unused-vars
@@ -124,7 +124,7 @@ export const useMainStore = defineStore('main', () => {
     //   }
     // }
     setInfo(defaultInfo)
-    if (isOldProtobuf()) {
+    if (await isOldProtobuf()) {
       await flipper.value.RPC('systemDeviceInfo')
         .then(devInfo => {
           log({
