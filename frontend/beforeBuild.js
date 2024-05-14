@@ -5,9 +5,12 @@ const readline = require('readline')
 
 const compileProtofiles = () => {
   return new Promise((resolve, reject) => {
-    exec('echo "compile-protofiles START" && npx pbjs -t static-module -w es6 --no-comments --lint "eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars, camelcase, default-case-last, no-mixed-operators" -o src/flipper-js/protobufCompiled.js ./flipperzero-protobuf/*.proto && npx eslint --fix src/flipper-js/protobufCompiled.js && echo "compile-protofiles END"', (err, stdout, stderr) => {
+    exec('git submodule update --remote --merge -- ./flipperzero-protobuf && echo "compile-protofiles START" && npx pbjs -t static-module -w es6 --no-comments --lint "eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars, camelcase, default-case-last, no-mixed-operators" -o src/flipper-js/protobufCompiled.js ./flipperzero-protobuf/*.proto && npx eslint --fix src/flipper-js/protobufCompiled.js && echo "compile-protofiles END"', (err, stdout, stderr) => {
       if (err) {
         reject(err)
+      }
+      if (stdout) {
+        console.log(stdout)
       }
       if (stderr) {
         console.error(stderr)
