@@ -51,7 +51,7 @@
         </template>
       </template>
       <template v-else>
-        <span v-if="info.storage.sdcard.status">Your firmware doesn't support self-update. Install latest release with <a href="https://update.flipperzero.one" target="_blank">qFlipper desktop tool</a>.</span>
+        <span v-if="info.storage.sdcard.status">Your firmware doesn't support self-update. Install latest release using <b>repair mode</b>.</span>
         <span v-else>Self-update is impossible without an SD card.</span>
       </template>
     </template>
