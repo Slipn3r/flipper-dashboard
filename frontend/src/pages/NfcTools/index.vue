@@ -33,10 +33,14 @@
             @click="mfkeyFlipperStart"
             unelevated
           />
-          <span v-if="mainStore.info?.doneReading && !mainStore.info.storage.sdcard.status.isInstalled" class="text-negative">MicroSD card not detected</span>
+          <span v-if="mainStore.info?.doneReading && !mainStore.info.storage.sdcard.status.isInstalled" class="q-pt-sm text-subtitle-1 text-negative">
+            MicroSD card not detected
+          </span>
           <div v-if="mfkeyStatus" class="q-pt-sm text-subtitle-1">
             {{ mfkeyStatus }}
           </div>
+          <q-btn v-if="(mainStore.info?.doneReading && !mainStore.info.storage.sdcard.status.isInstalled) || flags.noncesNotFound "
+            flat dense icon="mdi-reload" label="Refresh"/>
           <div v-if="uniqueKeys.length || timeouts.length" class="q-mt-sm">
             <template v-if="uniqueKeys.length">
               <div class="text-bold q-mt-md">Unique keys:</div>

@@ -46,11 +46,12 @@ export const useNfcMainStore = defineStore('NfcMain', () => {
         mfkeyStatus.value = 'Mfkey log file not found'
         flags.value.mfkeyFlipperInProgress = false
       })
-      .finally(() => {
+      .then(value => {
         log({
           level: 'debug',
           message: `${componentName}: storageRead: /ext/nfc/.mfkey32.log`
         })
+        return value
       })
 
     if (!res) {
@@ -182,6 +183,7 @@ export const useNfcMainStore = defineStore('NfcMain', () => {
     mfkeyStatus.value = ''
     timeouts.value = []
     uniqueKeys.value = []
+    flags.value.noncesNotFound = false
     if (!isConnected) {
       return
     }
