@@ -472,6 +472,7 @@
                 :active="info?.hardware?.uid === flipper.info.hardware.uid"
                 :clickable="info?.hardware?.uid !== flipper.info.hardware.uid"
                 @click="onConnectFlipper(flipper.name)"
+                v-close-popup
               >
                 <q-item-section class="col-5">
                   <img v-if="flipper.info.hardware.color === '1'" src="~assets/flipper_black.svg" style="width: 100%"/>
@@ -609,7 +610,6 @@ const recoveryLogs = computed({
   get () {
     watchEffect(() => {
       if (scrollAreaRef.value) {
-        console.log('get computed', scrollAreaRef.value)
         scrollAreaRef.value.setScrollPercentage('vertical', 1)
       }
     })

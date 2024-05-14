@@ -47,7 +47,7 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
       // await readInfo.value(flipper.value.name)
       // await setTime.value()
 
-      flags.value.dialogMultiflipper = false
+      // flags.value.dialogMultiflipper = false
       flags.value.disableButtonMultiflipper = true
 
       setTimeout(() => {
@@ -110,13 +110,13 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
     }
   }
 
-  const connectToFirstFlipper = () => {
+  const connectToFirstFlipper = async () => {
     const _list = getList()
     const availableList = _list.filter(e => e.mode !== 'dfu')
     const notAvailableList = _list.filter(e => e.mode === 'dfu')
     if (availableList.length) {
       setCurrentFlipper(availableList[0].name)
-      flipperConnect()
+      await flipperConnect()
     } else if (notAvailableList.length) {
       flags.value.dialogMultiflipper = true
     }
@@ -136,6 +136,14 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
   const dismissTimedOutSuccessUpdateNotif = ref(null)
   const listInit = () => {
     bridgeEmitter.on('list', async data => {
+      if (flags.value.recovery) {
+        flags.value.connected = false
+        flags.value.rpcActive = false
+        setInfo.value(null)
+        setCurrentFlipper(null)
+        return
+      }
+
       setAvailableFlippers.value(data)
       console.log('availableFlippers', availableFlippers.value)
 
@@ -180,11 +188,29 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
           flipperConnect()
         }
       } else {
+        if (repairedFlipperName.value) {
+          setCurrentFlipper(repairedFlipperName.value)
+          flags.value.shouldUpdateAfterRepair = true
+          repairedFlipperName.value = null
+        } else if (data.find(flipper => flipper.mode === 'dfu')) {
+          flags.value.dialogMultiflipper = true
+          return
+        }
+
         const _currentFlipper = getCurrentFlipper()
         console.log('currentFlipper', _currentFlipper)
-        if (!_currentFlipper) {
-          connectToFirstFlipper()
+        if (!_currentFlipper || _currentFlipper.mode === 'dfu') {
+          await connectToFirstFlipper()
         } else {
+          if (_currentFlipper.mode === 'cli') {
+            try {
+              console.log('Device in CLI mode, sending RPC ping...')
+              await flipper.value.RPC('systemPing', { timeout: 3000 })
+              console.log('Ping success')
+            } catch {
+              console.log('Ping failed')
+            }
+          }
           /* const _list = getList()
           const _flipper = _list.find(e => e.name === _currentFlipper.name)
           flipper.value.emitter = _flipper.emitter */
@@ -275,6 +301,7 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
 
   const recoveryLogs = ref([])
   const recoveryProgress = ref(0)
+  const repairedFlipperName = ref(null)
   const resetRecovery = (clearLogs = false) => {
     setUpdateStage.value('')
     recoveryProgress.value = 0
@@ -306,6 +333,35 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
       return
     }
 
+    let inactivityTimeout
+    const onTimeout = () => {
+      const messageLong = 'Error: Operation timed out. Please check USB connection and try again.'
+      const messageShort = `Failed to repair ${info.name}: Repair timeout`
+      showNotif({
+        message: messageShort,
+        color: 'negative'
+      })
+      log({
+        level: 'error',
+        message: messageShort
+      })
+      unbindLogs()
+      unbindStatus()
+      setUpdateStage.value(messageLong)
+      flags.value.recoveryError = true
+    }
+    const updateInactivityTimeout = (stop = false) => {
+      if (inactivityTimeout) {
+        clearTimeout(inactivityTimeout)
+      }
+
+      if (stop) {
+        return
+      }
+
+      inactivityTimeout = setTimeout(onTimeout, 60 * 1000)
+    }
+
     window.bridge.send({
       type: 'repair',
       name: info.name,
@@ -313,6 +369,8 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
         file: saved.path
       }
     })
+
+    updateInactivityTimeout()
 
     const unbindLogs = bridgeEmitter.on('log', stderr => {
       const logLines = stderr.data.split('\n')
@@ -334,8 +392,9 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
       })
     })
 
-    const unbindStatus = bridgeEmitter.on('status', status => {
+    const unbindStatus = bridgeEmitter.on('status', async status => {
       if (status.error) {
+        updateInactivityTimeout(true)
         let messageLong = `Failed to repair ${info.name}: ${status.error.message}`
         let messageShort = messageLong
         switch (status.error.message) {
@@ -394,26 +453,28 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
         flags.value.recoveryError = true
       }
       if (status.message) {
+        updateInactivityTimeout()
         setUpdateStage.value(status.message)
       }
       if (status.progress) {
+        updateInactivityTimeout()
         recoveryProgress.value = status.progress / 100
       }
       if (status.finished) {
+        updateInactivityTimeout(true)
         unbindLogs()
         unbindStatus()
         flags.value.recovery = false
         flags.value.dialogMultiflipper = false
         flags.value.autoReconnect = autoReconnectCondition.value
+        autoReconnectFlipperName.value = info.name
+        repairedFlipperName.value = info.name
+
         setUpdateStage.value('Finished')
-        setCurrentFlipper(info.name)
         if (getList().includes(e => e.name === info.name)) {
-          setCurrentFlipper(info.name)
-          flipperConnect()
+          await connect(info.name)
         }
-        if (!flags.value.showRecoveryLog) {
-          flags.value.dialogRecovery = false
-        }
+        flags.value.dialogRecovery = false
         onUpdateStage.value('end')
       }
     })

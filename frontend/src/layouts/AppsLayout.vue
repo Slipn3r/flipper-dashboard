@@ -358,7 +358,8 @@ watch(() => mainFlags.value.connected, (condition) => {
     height: 40px
 
 .outdated-badge
-  width: 17px
+  min-width: 17px
+  width: fit-content
   height: 17px !important
   position: absolute
   top: -3px

@@ -34,6 +34,7 @@ export const useMainStore = defineStore('main', () => {
     disableButtonMultiflipper: true,
 
     flipperInitializationInProgress: false,
+    shouldUpdateAfterRepair: false,
 
     dialogRecovery: false,
     recovery: false,

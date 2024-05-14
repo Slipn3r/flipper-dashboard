@@ -2,51 +2,53 @@
   <div class="updater column flex-center text-center">
     <template v-if="!mainFlags.updateInProgress">
       <template v-if="flags.ableToUpdate && info.storage.sdcard.status">
-        <template v-if="flags.outdated !== undefined">
-          <p v-if="flags.outdated">Your firmware is out of date, newest release is {{ channels.release.version }}.</p>
-          <p v-else-if="flags.aheadOfRelease">Your firmware is ahead of current release.</p>
-          <p v-else-if="info.firmware.version !== 'unknown'">Your firmware is up to date.</p>
-        </template>
-        <p v-if="channels.custom">
-          Detected custom firmware <b>"{{ channels.custom.channel }}"</b>
-          <span v-if="!channels.custom.url.endsWith('tgz')"> with <b>unsupported</b> filetype</span>
-        </p>
-        <div class="flex q-mt-sm">
-          <q-select
-            v-model="fwModel"
-            :options="fwOptions"
-            label="Choose firmware"
-            :suffix="fwOptions.find(({label}) => label === fwModel.label) ? fwOptions.find(({label}) => label === fwModel.label).version : ''"
-            id="fw-select"
-            :style="!$q.screen.xs ? 'width: 320px;' : 'width: 290px;'"
-          >
-            <template v-slot:option="scope">
-              <q-item v-bind="scope.itemProps">
-                <q-item-section class="items-start">
-                  <q-item-label v-text="scope.opt.label" />
-                </q-item-section>
-                <q-item-section class="items-end">
-                  <q-item-label v-text="scope.opt.version" :class="'fw-option-label ' + scope.opt.value"/>
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
+        <template v-if="!mainFlags.shouldUpdateAfterRepair">
+          <template v-if="flags.outdated !== undefined">
+            <p v-if="flags.outdated">Your firmware is out of date, newest release is {{ channels.release.version }}.</p>
+            <p v-else-if="flags.aheadOfRelease">Your firmware is ahead of current release.</p>
+            <p v-else-if="info.firmware.version !== 'unknown'">Your firmware is up to date.</p>
+          </template>
+          <p v-if="channels.custom">
+            Detected custom firmware <b>"{{ channels.custom.channel }}"</b>
+            <span v-if="!channels.custom.url.endsWith('tgz')"> with <b>unsupported</b> filetype</span>
+          </p>
+          <div class="flex q-mt-sm">
+            <q-select
+              v-model="fwModel"
+              :options="fwOptions"
+              label="Choose firmware"
+              :suffix="fwOptions.find(({label}) => label === fwModel.label) ? fwOptions.find(({label}) => label === fwModel.label).version : ''"
+              id="fw-select"
+              :style="!$q.screen.xs ? 'width: 320px;' : 'width: 290px;'"
+            >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section class="items-start">
+                    <q-item-label v-text="scope.opt.label" />
+                  </q-item-section>
+                  <q-item-section class="items-end">
+                    <q-item-label v-text="scope.opt.version" :class="'fw-option-label ' + scope.opt.value"/>
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+            <q-btn
+              v-if="fwModel"
+              @click="update(false)"
+              unelevated
+              color="positive"
+              padding="12px 30px"
+              :class="!$q.screen.xs ? 'q-ml-lg' : 'q-mt-sm'"
+            >{{ getTextButton }}</q-btn>
+          </div>
           <q-btn
-            v-if="fwModel"
-            @click="update(false)"
-            unelevated
-            color="positive"
-            padding="12px 30px"
-            :class="!$q.screen.xs ? 'q-ml-lg' : 'q-mt-sm'"
-          >{{ getTextButton }}</q-btn>
-        </div>
-        <q-btn
-          v-if="mainFlags.installFromFile && flags.uploadEnabled"
-          @click="flags.uploadPopup = true; uploadedFile = null"
-          class="q-mt-lg"
-          outline
-          color="grey-8"
-        >Install from file</q-btn>
+            v-if="mainFlags.installFromFile && flags.uploadEnabled"
+            @click="flags.uploadPopup = true; uploadedFile = null"
+            class="q-mt-lg"
+            outline
+            color="grey-8"
+          >Install from file</q-btn>
+        </template>
       </template>
       <template v-else>
         <span v-if="info.storage.sdcard.status">Your firmware doesn't support self-update. Install latest release with <a href="https://update.flipperzero.one" target="_blank">qFlipper desktop tool</a>.</span>
@@ -497,6 +499,12 @@ onMounted(async () => {
 
   if (new URLSearchParams(location.search).get('overrideDevRegion') === 'true') {
     flags.value.overrideDevRegion = true
+  }
+
+  if (mainFlags.value.shouldUpdateAfterRepair) {
+    fwModel.value = fwOptions.value[0]
+    mainFlags.value.shouldUpdateAfterRepair = false
+    update(false)
   }
 })
 </script>
