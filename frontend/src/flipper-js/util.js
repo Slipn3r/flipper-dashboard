@@ -1,5 +1,5 @@
-export const SERIAL_TIMEOUT = 10000
-export const RPC_TIMEOUT = 15000
+export const SERIAL_TIMEOUT = 5000
+export const RPC_TIMEOUT = 4000
 
 export function watch (callback, emitter, requestType) {
   const validator = {
