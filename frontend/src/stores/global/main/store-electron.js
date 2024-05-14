@@ -189,9 +189,11 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
         }
       } else {
         if (repairedFlipperName.value) {
-          setCurrentFlipper(repairedFlipperName.value)
-          flags.value.shouldUpdateAfterRepair = true
+          const _name = repairedFlipperName.value
           repairedFlipperName.value = null
+          flags.value.shouldUpdateAfterRepair = true
+          await connect(_name)
+          return
         } else if (data.find(flipper => flipper.mode === 'dfu')) {
           flags.value.dialogMultiflipper = true
           return
@@ -202,7 +204,7 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
         if (!_currentFlipper || _currentFlipper.mode === 'dfu') {
           await connectToFirstFlipper()
         } else {
-          if (_currentFlipper.mode === 'cli') {
+          /* if (_currentFlipper.mode === 'cli') {
             try {
               console.log('Device in CLI mode, sending RPC ping...')
               await flipper.value.RPC('systemPing', { timeout: 3000 })
@@ -210,7 +212,7 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
             } catch {
               console.log('Ping failed')
             }
-          }
+          } */
           /* const _list = getList()
           const _flipper = _list.find(e => e.name === _currentFlipper.name)
           flipper.value.emitter = _flipper.emitter */
@@ -244,9 +246,9 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
             await connect(_currentFlipper.name, true)
           } */
 
-          flags.value.connected = false
-          flags.value.rpcActive = false
-          await connect(_currentFlipper.name)
+          // flags.value.connected = false
+          // flags.value.rpcActive = false
+          // await connect(_currentFlipper.name)
         }
 
         if (timedOutAutoReconnectFlipperName.value && data.map(flipper => flipper.name).includes(timedOutAutoReconnectFlipperName.value)) {

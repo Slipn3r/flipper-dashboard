@@ -27,15 +27,17 @@ const init = async () => {
     const oldList = bridgeController.list
     const newList = payload
 
+    const interchangeableModes = ['cli', 'rpc']
     oldList.forEach(oldFlipper => {
-      if (newList.find(newFlipper => newFlipper.name === oldFlipper.name && newFlipper.mode === oldFlipper.mode)) {
+      if (newList.find(newFlipper => newFlipper.name === oldFlipper.name && interchangeableModes.includes(newFlipper.mode) && interchangeableModes.includes(oldFlipper.mode))) {
         finalList.push(oldFlipper)
       } else {
+        oldFlipper.emitter.events = {}
         delete oldFlipper.emitter
       }
     })
     newList.forEach(newFlipper => {
-      if (!oldList.find(oldFlipper => oldFlipper.name === newFlipper.name && newFlipper.mode === oldFlipper.mode)) {
+      if (!oldList.find(oldFlipper => oldFlipper.name === newFlipper.name && interchangeableModes.includes(newFlipper.mode) && interchangeableModes.includes(oldFlipper.mode))) {
         newFlipper.emitter = createNanoEvents()
         finalList.push(newFlipper)
       }

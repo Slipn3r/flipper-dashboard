@@ -75,7 +75,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import Updater from 'components/Updater.vue'
 
 import { useMainStore } from 'stores/global/main'
@@ -122,5 +122,12 @@ onMounted(() => {
   } else {
     navigator.serial.addEventListener('disconnect', () => onDisconnect())
   }
+})
+
+onBeforeUnmount(async () => {
+  await deviceMainStore.stopScreenStream()
+    .catch(error => {
+      console.error(error)
+    })
 })
 </script>

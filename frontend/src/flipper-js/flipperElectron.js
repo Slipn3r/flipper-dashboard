@@ -71,6 +71,9 @@ export default class Flipper {
         value[value.content].hasNext = value.hasNext
         if (command) {
           command.chunks.push(value[value.content])
+          // console.log(command.requestType, command.commandId, value)
+        } else {
+          // console.log(value)
         }
       } catch (error) {
         if (!error.toString().includes('Releasing Default reader')) {

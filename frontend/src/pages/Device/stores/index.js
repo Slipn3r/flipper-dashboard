@@ -109,6 +109,8 @@ export const useDeviceMainStore = defineStore('DeviceMain', () => {
     }
   })
 
+  let unbindFrame
+
   const startScreenStream = async (attempts = 0) => {
     await flipper.value.RPC('guiStartScreenStream')
       .catch(error => {
@@ -124,6 +126,8 @@ export const useDeviceMainStore = defineStore('DeviceMain', () => {
           level: 'debug',
           message: `${componentName}: guiStartScreenStream: OK`
         })
+
+        console.log('Started screen streaming')
       })
     flags.value.screenStream = true
 
@@ -135,7 +139,7 @@ export const useDeviceMainStore = defineStore('DeviceMain', () => {
     ctx.fillRect(0, 0, 128 * screenScale.value, 64 * screenScale.value)
     ctx.fillStyle = 'black'
 
-    const unbind = flipper.value.emitter.on('screenStream/frame', (data, orientation) => {
+    unbindFrame = flipper.value.emitter.on('screenStream/frame', (data, orientation) => {
       if (!data) {
         return
       }
@@ -159,16 +163,30 @@ export const useDeviceMainStore = defineStore('DeviceMain', () => {
           }
         }
       }
-
-      const unbindStop = flipper.value.emitter.on('screenStream/stop', () => {
-        flags.value.screenStream = false
-        unbind()
-        unbindStop()
-      })
     })
+  }
+
+  const stopScreenStream = async () => {
+    await flipper.value.RPC('guiStopScreenStream')
+      .catch(error => {
+        rpcErrorHandler('Device', error, 'guiStopScreenStream')
+        throw new Error(`Stop screen stream RPC error: ${error.message || error}`)
+      })
+      .then(value => {
+        log({
+          level: 'debug',
+          message: `${componentName}: guiStartScreenStream: OK`
+        })
+        if (unbindFrame) {
+          unbindFrame()
+        }
+        flags.value.screenStream = false
+
+        console.log('Stopped screen streaming')
+      })
   }
 
   const start = platformStore.start
 
-  return { flags, radioStackType, sdCardUsage, flipperBodyClass, screenScale, startScreenStream, setScreenStreamCanvas, start }
+  return { flags, radioStackType, sdCardUsage, flipperBodyClass, screenScale, startScreenStream, stopScreenStream, setScreenStreamCanvas, start }
 })

@@ -56,7 +56,7 @@ function startVirtualDisplay (firstFrame) {
 }
 
 function stopVirtualDisplay () {
-  this.emitter.emit('screenStream/stop')
+  // this.emitter.emit('screenStream/stop')
   return createRPCPromise.bind(this)('guiStopVirtualDisplayRequest')
 }
 
