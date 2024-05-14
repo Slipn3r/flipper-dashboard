@@ -23,7 +23,7 @@ export function watch (callback, emitter, requestType) {
 
 export function createRPCPromise (requestType, args, format, emitter, timeout) {
   return new Promise((resolve, reject) => {
-    setTimeout(() => reject(`RPC timeout: ${requestType}`), timeout || RPC_TIMEOUT)
+    const rejectTimeout = setTimeout(() => reject(`RPC timeout: ${requestType}`), timeout || RPC_TIMEOUT)
     function callback (chunks) {
       let result
       if (format) {
@@ -35,6 +35,7 @@ export function createRPCPromise (requestType, args, format, emitter, timeout) {
           result = chunks
         }
       }
+      clearTimeout(rejectTimeout)
       resolve(result)
     }
     const [data, command] = this.encodeRPCRequest(requestType, args)

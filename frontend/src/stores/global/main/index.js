@@ -33,6 +33,8 @@ export const useMainStore = defineStore('main', () => {
     dialogMultiflipper: false,
     disableButtonMultiflipper: true,
 
+    flipperInitializationInProgress: false,
+
     dialogRecovery: false,
     recovery: false,
     recoveryError: false,
@@ -123,11 +125,11 @@ export const useMainStore = defineStore('main', () => {
     }
     setInfo(defaultInfo)
 
-    await flipper.value.RPC('systemPing', { timeout: 2000 })
+    /* await flipper.value.RPC('systemPing', { timeout: 2000 })
       .catch(error => {
         rpcErrorHandler(componentName, error, 'systemPing')
         throw error
-      })
+      }) */
 
     if (await isOldProtobuf()) {
       await flipper.value.RPC('systemDeviceInfo')

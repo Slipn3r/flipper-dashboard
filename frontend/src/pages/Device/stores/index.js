@@ -109,10 +109,17 @@ export const useDeviceMainStore = defineStore('DeviceMain', () => {
     }
   })
 
-  const startScreenStream = async () => {
+  const startScreenStream = async (attempts = 0) => {
     await flipper.value.RPC('guiStartScreenStream')
-      .catch(error => rpcErrorHandler(componentName, error, 'guiStartScreenStream'))
-      .finally(() => {
+      .catch(error => {
+        rpcErrorHandler(componentName, error, 'guiStartScreenStream')
+        if (attempts < 3) {
+          return startScreenStream(attempts + 1)
+        } else {
+          location.reload()
+        }
+      })
+      .then(() => {
         log({
           level: 'debug',
           message: `${componentName}: guiStartScreenStream: OK`

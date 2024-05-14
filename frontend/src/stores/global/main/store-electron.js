@@ -11,6 +11,8 @@ import { useMainStore } from 'stores/global/main'
 
 import { useRouter } from 'vue-router'
 
+// import { rpcErrorHandler } from 'composables/useRpcUtils'
+
 export const useMainElectronStore = defineStore('MainElectron', () => {
   const mainStore = useMainStore()
 
@@ -27,11 +29,16 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
   const readInfo = computed(() => mainStore.readInfo)
   const setTime = computed(() => mainStore.setTime)
   const setFlipper = computed(() => mainStore.setFlipper)
-  const flipperConnect = async () => {
+  const flipperConnect = async (isReconnect = false) => {
+    if (!isReconnect) {
+      flags.value.connected = false
+      flags.value.rpcActive = false
+    }
     const _currentFlipper = getCurrentFlipper()
-    setFlipper.value(_currentFlipper.name, _currentFlipper.emitter)
 
-    if (flipper.value) {
+    if (_currentFlipper) {
+      setFlipper.value(_currentFlipper.name, _currentFlipper.emitter)
+
       flags.value.connected = true
       flags.value.rpcActive = true
 
@@ -51,15 +58,18 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
   }
 
   const initializeFlipper = async (attempts = 0) => {
+    flags.value.flipperInitializationInProgress = true
     try {
       await readInfo.value()
       await setTime.value()
+      flags.value.flipperInitializationInProgress = false
     } catch (error) {
       if (attempts < 3) {
         setTimeout(() => {
           initializeFlipper(attempts + 1)
         }, 300)
       } else {
+        flags.value.flipperInitializationInProgress = false
         showNotif({
           message: `Failed to connect to Flipper ${flipper.value.name}. Replug the device and try again.`,
           color: 'negative'
@@ -68,19 +78,9 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
     }
   }
 
-  const connect = async (path) => {
-    return new Promise((resolve, reject) => {
-      (async () => {
-        try {
-          setCurrentFlipper(path)
-          flipperConnect()
-
-          resolve()
-        } catch (error) {
-          reject(error)
-        }
-      })()
-    })
+  const connect = async (name, isReconnect) => {
+    setCurrentFlipper(name)
+    await flipperConnect(isReconnect)
   }
   const selectPort = async (onShowDialog) => {
     return start(true, undefined, onShowDialog)
@@ -131,6 +131,8 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
   const availableFlippers = computed(() => mainStore.availableFlippers)
   const setAvailableFlippers = computed(() => mainStore.setAvailableFlippers)
   const setInfo = computed(() => mainStore.setInfo)
+  const dismissSuccessUpdateNotif = ref(null)
+  const dismissTimedOutSuccessUpdateNotif = ref(null)
   const listInit = () => {
     bridgeEmitter.on('list', async data => {
       setAvailableFlippers.value(data)
@@ -157,16 +159,17 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
           clearReconnectTimeout(updatingFlipper.name)
           setCurrentFlipper(updatingFlipper.name)
           onUpdateStage.value('end')
-          showNotif({
+          dismissSuccessUpdateNotif.value = showNotif({
             message: `Flipper ${updatingFlipper.name} successfully updated. Do you want to update apps too?`,
             color: 'positive',
             actions: [
               {
                 label: 'Yes',
                 color: 'white',
-                handler: () => {
-                  if (getCurrentFlipper() !== updatingFlipper.name) {
-                    mainStore.connect(updatingFlipper.name)
+                handler: async () => {
+                  const _currentFlipper = getCurrentFlipper()
+                  if (_currentFlipper?.name !== updatingFlipper.name) {
+                    await connect(updatingFlipper.name)
                   }
                   router.push({ name: 'InstalledApps' })
                 }
@@ -176,35 +179,70 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
           flipperConnect()
         }
       } else {
-        if (timedOutAutoReconnectFlipperName.value) {
+        const _currentFlipper = getCurrentFlipper()
+        console.log('currentFlipper', _currentFlipper)
+        if (!_currentFlipper) {
+          connectToFirstFlipper()
+        } else {
+          /* const _list = getList()
+          const _flipper = _list.find(e => e.name === _currentFlipper.name)
+          flipper.value.emitter = _flipper.emitter */
+
+          flags.value.connected = true
+          flags.value.rpcActive = true
+          console.log(flipper.value)
+
+          /* try {
+            await flipper.value.write('?\r')
+            const CLIPromise = new Promise((resolve, reject) => {
+              const rejectTimeout = setTimeout(() => {
+                reject('CLI timeout')
+              }, 3000)
+              flipper.value.emitter.on('CLIRead', () => {
+                clearTimeout(rejectTimeout)
+                resolve()
+              })
+            })
+            await CLIPromise
+
+            await flipper.value.RPC('systemPing', { timeout: 3000 })
+              .catch(error => {
+                rpcErrorHandler('Main/electron', error, 'systemPing')
+                throw error
+              })
+          } catch (error) {
+            log({ level: 'error', message: `Failed to restart RPC: ${error.message || error}` })
+            flags.value.connected = false
+            flags.value.rpcActive = false
+            await connect(_currentFlipper.name, true)
+          } */
+
+          flags.value.connected = false
+          flags.value.rpcActive = false
+          await connect(_currentFlipper.name, true)
+        }
+
+        if (timedOutAutoReconnectFlipperName.value && data.map(flipper => flipper.name).includes(timedOutAutoReconnectFlipperName.value)) {
           if (dismissReconnectTimeoutNotif.value) {
             dismissReconnectTimeoutNotif.value()
           }
-          showNotif({
+          dismissTimedOutSuccessUpdateNotif.value = showNotif({
             message: `Flipper ${timedOutAutoReconnectFlipperName.value} is back online. Do you want to update apps?`,
             color: 'positive',
             actions: [
               {
                 label: 'Yes',
                 color: 'white',
-                handler: () => {
-                  if (getCurrentFlipper() !== timedOutAutoReconnectFlipperName.value) {
-                    mainStore.connect(timedOutAutoReconnectFlipperName.value)
+                handler: async () => {
+                  if (_currentFlipper?.name !== timedOutAutoReconnectFlipperName.value) {
+                    await connect(timedOutAutoReconnectFlipperName.value)
                   }
                   router.push({ name: 'InstalledApps' })
+                  timedOutAutoReconnectFlipperName.value = null
                 }
               }
             ]
           })
-          timedOutAutoReconnectFlipperName.value = ''
-        }
-
-        const _currentFlipper = getCurrentFlipper()
-        if (!_currentFlipper) {
-          connectToFirstFlipper()
-        } else {
-          flags.value.connected = true
-          flags.value.rpcActive = true
         }
       }
     })
@@ -380,5 +418,19 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
     })
   }
 
-  return { connect, connectToFirstFlipper, selectPort, findKnownDevices, flipperConnect, start, setReconnectTimeout, recoveryLogs, recoveryProgress, resetRecovery, recovery }
+  return {
+    connect,
+    connectToFirstFlipper,
+    selectPort,
+    findKnownDevices,
+    flipperConnect,
+    start,
+    setReconnectTimeout,
+    recoveryLogs,
+    recoveryProgress,
+    resetRecovery,
+    recovery,
+    dismissSuccessUpdateNotif,
+    dismissTimedOutSuccessUpdateNotif
+  }
 })

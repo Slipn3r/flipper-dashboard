@@ -13,9 +13,6 @@ export const useDeviceElectronStore = defineStore('DeviceElectron', () => {
 
   const start = async () => {
     flags.value.rpcActive = mainFlags.value.rpcActive
-    if (!mainFlags.value.rpcActive) {
-      await mainStore.startRpc()
-    }
     await DeviceMainStore.startScreenStream()
   }
 

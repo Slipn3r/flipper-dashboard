@@ -314,7 +314,7 @@
         <template v-if="flags.isElectron">
           <q-card flat>
             <q-card-section class="q-pa-none q-ma-md" align="center">
-              <template v-if="flags.isBridgeReady">
+              <template v-if="flags.isBridgeReady && !flags.flipperInitializationInProgress">
                 <q-img
                   src="~assets/flipper_alert.svg"
                   width="70px"

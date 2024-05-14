@@ -182,6 +182,12 @@ const getTextButton = computed(() => {
 })
 
 const update = async (fromFile) => {
+  if (mainStore.dismissSuccessUpdateNotif) {
+    mainStore.dismissSuccessUpdateNotif()
+  }
+  if (mainStore.dismissTimedOutSuccessUpdateNotif) {
+    mainStore.dismissTimedOutSuccessUpdateNotif()
+  }
   if (!info.value.storage.sdcard.status.isInstalled) {
     mainStore.toggleFlag('microSDcardMissingDialog', true)
     return

@@ -69,7 +69,9 @@ export default class Flipper {
         }
         const command = this.commandQueue.find(c => c.commandId === value.commandId)
         value[value.content].hasNext = value.hasNext
-        command.chunks.push(value[value.content])
+        if (command) {
+          command.chunks.push(value[value.content])
+        }
       } catch (error) {
         if (!error.toString().includes('Releasing Default reader')) {
           console.error(error)
