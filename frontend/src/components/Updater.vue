@@ -129,8 +129,11 @@ const info = computed(() => mainStore.info)
 mainStore.bridgeEmitter.on('error', e => {
   if (mainFlags.value.updateInProgress && info.value?.hardware?.name === e.name) {
     flags.value.updateError = true
+    if (!mainStore.availableFlippers.find(flipper => flipper.name === e.name)) {
+      flags.value.updateError = true
+      updateStage.value = `Update error: connection lost (${e.message})`
+    }
     updateStage.value = 'Update error: ' + e.message
-    mainStore.onUpdateStage('end')
   }
 })
 
@@ -226,6 +229,7 @@ const update = async (fromFile) => {
 
 const loadFirmware = async (fromFile) => {
   mainStore.toggleFlag('autoReconnect', true)
+  const name = info.value.hardware.name
 
   updateStage.value = 'Loading firmware bundle...'
   if (info.value.hardware.region !== '0' || flags.value.overrideDevRegion) {
@@ -414,7 +418,7 @@ const loadFirmware = async (fromFile) => {
       message: `${componentName}: Rebooting Flipper`
     })
 
-    mainStore.setReconnectTimeout()
+    mainStore.setReconnectTimeout(name)
     await flipper.value.RPC('systemReboot', { mode: 'UPDATE' })
       .catch(error => rpcErrorHandler(componentName, error, 'systemReboot'))
   } else {

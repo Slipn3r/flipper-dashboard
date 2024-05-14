@@ -85,15 +85,17 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
   const onUpdateStage = computed(() => mainStore.onUpdateStage)
   const setUpdateStage = computed(() => mainStore.setUpdateStage)
   const autoReconnectFlipperName = ref(null)
+  const timedOutAutoReconnectFlipperName = ref(null)
   const reconnectTimeouts = ref([])
-  const setReconnectTimeout = () => {
+  const setReconnectTimeout = (name) => {
     reconnectTimeouts.value[reconnectTimeouts.value.length] = {
-      name: autoReconnectFlipperName.value,
+      name,
       timeout: setTimeout(() => {
         showNotif({
-          message: `Couldn't connect to Flipper ${autoReconnectFlipperName.value} after the update`,
+          message: `Couldn't connect to Flipper ${name} after the update`,
           color: 'negative'
         })
+        timedOutAutoReconnectFlipperName.value = name
         flags.value.connected = false
         flags.value.rpcActive = false
         onUpdateStage.value('end')
@@ -143,16 +145,28 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
       }
 
       if (flags.value.updateInProgress) {
-        const updatingFlipper = data.find(flipper => flipper.name === autoReconnectFlipperName.value)
-        const updatingFlipperReconnectTimeout = reconnectTimeouts.value.find(timeout => timeout.name === updatingFlipper.name)
+        const updatingFlipper = data.find(flipper => reconnectTimeouts.value.map(timeout => timeout.name).includes(flipper.name))
+        const updatingFlipperReconnectTimeout = reconnectTimeouts.value.find(timeout => timeout.name === updatingFlipper?.name)
 
         if (updatingFlipper && updatingFlipperReconnectTimeout) {
           clearReconnectTimeout(updatingFlipper.name)
           setCurrentFlipper(updatingFlipper.name)
           onUpdateStage.value('end')
+          showNotif({
+            message: `Flipper ${updatingFlipper.name} successfully updated. Do you want to update apps too?`, // mainStore.onConnectFlipper(updatingFlipper.name)
+            color: 'positive'
+          })
           flipperConnect()
         }
       } else {
+        if (timedOutAutoReconnectFlipperName.value) {
+          showNotif({
+            message: `Flipper ${timedOutAutoReconnectFlipperName.value} is back online. Do you want to update apps?`,
+            color: 'info'
+          })
+          timedOutAutoReconnectFlipperName.value = ''
+        }
+
         const _currentFlipper = getCurrentFlipper()
         if (!_currentFlipper) {
           connectToFirstFlipper()
@@ -334,5 +348,5 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
     })
   }
 
-  return { connect, selectPort, findKnownDevices, flipperConnect, start, setReconnectTimeout, recoveryLogs, recoveryProgress, resetRecovery, recovery }
+  return { connect, connectToFirstFlipper, selectPort, findKnownDevices, flipperConnect, start, setReconnectTimeout, recoveryLogs, recoveryProgress, resetRecovery, recovery }
 })

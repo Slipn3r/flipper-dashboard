@@ -73,7 +73,7 @@
                   src="~assets/flipper_alert.svg"
                   width="70px"
                 />
-                <div class="text-h6 q-my-sm">Flipper isn't connected</div>
+                <div class="text-h6 q-my-sm">Flipper not connected</div>
               </template>
               <template v-else>
                 <q-spinner
