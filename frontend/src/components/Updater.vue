@@ -1,6 +1,6 @@
 <template>
   <div class="updater column flex-center text-center">
-    <template v-if="!flags.updateInProgress">
+    <template v-if="!mainFlags.updateInProgress">
       <template v-if="flags.ableToUpdate && info.storage.sdcard.status">
         <template v-if="flags.outdated !== undefined">
           <p v-if="flags.outdated">Your firmware is out of date, newest release is {{ channels.release.version }}.</p>
@@ -59,7 +59,7 @@
         v-if="flags.updateError"
         outline
         class="q-mt-md"
-        @click="flags.updateInProgress = false; flags.updateError = false; reload()"
+        @click="mainFlags.updateInProgress = false; flags.updateError = false; reload()"
       >Cancel</q-btn>
       <ProgressBar
         v-else-if="write.filename.length > 0"
@@ -127,7 +127,7 @@ const flipper = computed(() => mainStore.flipper)
 const info = computed(() => mainStore.info)
 
 mainStore.bridgeEmitter.on('error', e => {
-  if (flags.value.updateInProgress && info.value?.hardware?.name === e.name) {
+  if (mainFlags.value.updateInProgress && info.value?.hardware?.name === e.name) {
     flags.value.updateError = true
     updateStage.value = 'Update error: ' + e.message
     mainStore.onUpdateStage('end')
@@ -142,7 +142,6 @@ const flags = ref({
   outdated: undefined,
   aheadOfRelease: false,
   ableToUpdate: true,
-  updateInProgress: false,
   updateError: false,
   uploadEnabled: true,
   uploadPopup: false,
@@ -184,7 +183,7 @@ const update = async (fromFile) => {
     mainStore.toggleFlag('microSDcardMissingDialog', true)
     return
   }
-  flags.value.updateInProgress = true
+  mainFlags.value.updateInProgress = true
   mainStore.onUpdateStage('start')
   log({
     level: 'info',
@@ -222,7 +221,7 @@ const update = async (fromFile) => {
       mainStore.onUpdateStage('end')
       throw error
     })
-  // flags.value.updateInProgress = false
+  // mainFlags.value.updateInProgress = false
 }
 
 const loadFirmware = async (fromFile) => {

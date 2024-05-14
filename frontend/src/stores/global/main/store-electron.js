@@ -91,9 +91,11 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
       name: autoReconnectFlipperName.value,
       timeout: setTimeout(() => {
         showNotif({
-          message: 'Couldn\'t connect to Flipper after the update', // NOTE: ${this.name}
+          message: `Couldn't connect to Flipper ${autoReconnectFlipperName.value} after the update`,
           color: 'negative'
         })
+        flags.value.connected = false
+        flags.value.rpcActive = false
         onUpdateStage.value('end')
         connectToFirstFlipper()
       }, 2 * 60 * 1000)
@@ -142,8 +144,9 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
 
       if (flags.value.updateInProgress) {
         const updatingFlipper = data.find(flipper => flipper.name === autoReconnectFlipperName.value)
+        const updatingFlipperReconnectTimeout = reconnectTimeouts.value.find(timeout => timeout.name === updatingFlipper.name)
 
-        if (updatingFlipper) {
+        if (updatingFlipper && updatingFlipperReconnectTimeout) {
           clearReconnectTimeout(updatingFlipper.name)
           setCurrentFlipper(updatingFlipper.name)
           onUpdateStage.value('end')
@@ -153,6 +156,9 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
         const _currentFlipper = getCurrentFlipper()
         if (!_currentFlipper) {
           connectToFirstFlipper()
+        } else {
+          flags.value.connected = true
+          flags.value.rpcActive = true
         }
       }
     })
