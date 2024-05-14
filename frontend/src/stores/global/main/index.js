@@ -99,14 +99,14 @@ export const useMainStore = defineStore('main', () => {
       message: `${componentName}: RPC started`
     })
   }
-  const getProtobufVersion = async () => {
-    return await flipper.value.RPC('systemProtobufVersion')
-  }
   const isOldProtobuf = async () => {
-    const protobufVersion = await getProtobufVersion()
+    const protobufVersion = await flipper.value.RPC('systemProtobufVersion')
+      .catch(error => {
+        rpcErrorHandler(componentName, error, 'systemProtobufVersion')
+        throw error
+      })
     return protobufVersion.major === 0 && protobufVersion.minor < 14
   }
-  // eslint-disable-next-line no-unused-vars
   const readInfo = async () => {
     if (!flags.value.connected) {
       return
@@ -121,12 +121,14 @@ export const useMainStore = defineStore('main', () => {
         internal: {}
       }
     }
-    // if (path) {
-    //   defaultInfo.port = {
-    //     path
-    //   }
-    // }
     setInfo(defaultInfo)
+
+    await flipper.value.RPC('systemPing', { timeout: 2000 })
+      .catch(error => {
+        rpcErrorHandler(componentName, error, 'systemPing')
+        throw error
+      })
+
     if (await isOldProtobuf()) {
       await flipper.value.RPC('systemDeviceInfo')
         .then(devInfo => {
@@ -135,6 +137,10 @@ export const useMainStore = defineStore('main', () => {
             message: `${componentName}: deviceInfo: OK`
           })
           setInfo({ ...info.value, ...devInfo })
+        })
+        .catch(error => {
+          rpcErrorHandler(componentName, error, 'systemDeviceInfo')
+          throw error
         })
     } else {
       await flipper.value.RPC('propertyGet', { key: 'devinfo' })
@@ -145,7 +151,10 @@ export const useMainStore = defineStore('main', () => {
           })
           setInfo({ ...info.value, ...devInfo })
         })
-        .catch(error => rpcErrorHandler(componentName, error, 'propertyGet'))
+        .catch(error => {
+          rpcErrorHandler(componentName, error, 'propertyGet')
+          throw error
+        })
 
       await flipper.value.RPC('propertyGet', { key: 'pwrinfo' })
         .then(powerInfo => {
@@ -155,7 +164,10 @@ export const useMainStore = defineStore('main', () => {
           })
           setPropertyInfo({ power: powerInfo })
         })
-        .catch(error => rpcErrorHandler(componentName, error, 'propertyGet'))
+        .catch(error => {
+          rpcErrorHandler(componentName, error, 'propertyGet')
+          throw error
+        })
     }
 
     const ext = await flipper.value.RPC('storageList', { path: '/ext' })
@@ -166,7 +178,10 @@ export const useMainStore = defineStore('main', () => {
         })
         return list
       })
-      .catch(error => rpcErrorHandler(componentName, error, 'storageList'))
+      .catch(error => {
+        rpcErrorHandler(componentName, error, 'storageList')
+        throw error
+      })
 
     if (ext && ext.length) {
       const manifest = ext.find(e => e.name === 'Manifest')
@@ -203,7 +218,10 @@ export const useMainStore = defineStore('main', () => {
             }
           })
         })
-        .catch(error => rpcErrorHandler(componentName, error, 'storageInfo'))
+        .catch(error => {
+          rpcErrorHandler(componentName, error, 'storageInfo')
+          throw error
+        })
     } else {
       setPropertyInfo({
         storage: {
@@ -239,7 +257,10 @@ export const useMainStore = defineStore('main', () => {
           message: `${componentName}: Fetched device info`
         })
       })
-      .catch(error => rpcErrorHandler(componentName, error, 'storageInfo'))
+      .catch(error => {
+        rpcErrorHandler(componentName, error, 'storageInfo')
+        throw error
+      })
     setPropertyInfo({ doneReading: true })
   }
   // eslint-disable-next-line no-unused-vars

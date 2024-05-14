@@ -31,8 +31,9 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
       flags.value.connected = true
       flags.value.rpcActive = true
 
-      await readInfo.value(flipper.value.name)
-      await setTime.value()
+      await initializeFlipper()
+      // await readInfo.value(flipper.value.name)
+      // await setTime.value()
 
       flags.value.dialogMultiflipper = false
       flags.value.disableButtonMultiflipper = true
@@ -42,6 +43,24 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
       }, 2000)
     } else {
       flags.value.disableButtonMultiflipper = false
+    }
+  }
+
+  const initializeFlipper = async (attempts = 0) => {
+    try {
+      await readInfo.value()
+      await setTime.value()
+    } catch (error) {
+      if (attempts < 3) {
+        setTimeout(() => {
+          initializeFlipper(attempts + 1)
+        }, 300)
+      } else {
+        showNotif({
+          message: `Failed to connect to Flipper ${flipper.value.name}. Replug the device and try again.`,
+          color: 'negative'
+        })
+      }
     }
   }
 
