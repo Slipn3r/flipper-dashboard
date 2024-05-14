@@ -318,7 +318,7 @@ const start = async () => {
     }
   } else {
     appsStore.setInstalledApps([])
-    mainStore.start()
+    // mainStore.start()
   }
 
   await watchParams()

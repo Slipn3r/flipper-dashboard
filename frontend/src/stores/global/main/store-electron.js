@@ -9,8 +9,12 @@ import { init as bridgeControllerInit, emitter as bridgeEmitter, getCurrentFlipp
 
 import { useMainStore } from 'stores/global/main'
 
+import { useRouter } from 'vue-router'
+
 export const useMainElectronStore = defineStore('MainElectron', () => {
   const mainStore = useMainStore()
+
+  const router = useRouter()
 
   const flags = computed(() => mainStore.flags)
 
@@ -87,11 +91,12 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
   const autoReconnectFlipperName = ref(null)
   const timedOutAutoReconnectFlipperName = ref(null)
   const reconnectTimeouts = ref([])
+  const dismissReconnectTimeoutNotif = ref(null)
   const setReconnectTimeout = (name) => {
     reconnectTimeouts.value[reconnectTimeouts.value.length] = {
       name,
       timeout: setTimeout(() => {
-        showNotif({
+        dismissReconnectTimeoutNotif.value = showNotif({
           message: `Couldn't connect to Flipper ${name} after the update`,
           color: 'negative'
         })
@@ -153,16 +158,43 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
           setCurrentFlipper(updatingFlipper.name)
           onUpdateStage.value('end')
           showNotif({
-            message: `Flipper ${updatingFlipper.name} successfully updated. Do you want to update apps too?`, // mainStore.onConnectFlipper(updatingFlipper.name)
-            color: 'positive'
+            message: `Flipper ${updatingFlipper.name} successfully updated. Do you want to update apps too?`,
+            color: 'positive',
+            actions: [
+              {
+                label: 'Yes',
+                color: 'white',
+                handler: () => {
+                  if (getCurrentFlipper() !== updatingFlipper.name) {
+                    mainStore.connect(updatingFlipper.name)
+                  }
+                  router.push({ name: 'InstalledApps' })
+                }
+              }
+            ]
           })
           flipperConnect()
         }
       } else {
         if (timedOutAutoReconnectFlipperName.value) {
+          if (dismissReconnectTimeoutNotif.value) {
+            dismissReconnectTimeoutNotif.value()
+          }
           showNotif({
             message: `Flipper ${timedOutAutoReconnectFlipperName.value} is back online. Do you want to update apps?`,
-            color: 'info'
+            color: 'positive',
+            actions: [
+              {
+                label: 'Yes',
+                color: 'white',
+                handler: () => {
+                  if (getCurrentFlipper() !== timedOutAutoReconnectFlipperName.value) {
+                    mainStore.connect(timedOutAutoReconnectFlipperName.value)
+                  }
+                  router.push({ name: 'InstalledApps' })
+                }
+              }
+            ]
           })
           timedOutAutoReconnectFlipperName.value = ''
         }

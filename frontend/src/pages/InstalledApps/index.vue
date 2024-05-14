@@ -2,15 +2,14 @@
   <q-page class="column full-width">
     <template v-if="loadingInstalledApps">
       <Loading
-        label="Loading installed app..."
+        label="Loading installed apps..."
       />
     </template>
     <template v-else-if="!mainFlags.connected">
       <q-card flat>
         <q-card-section class="q-pa-none q-ma-md" align="center">
           <q-icon name="mdi-alert-circle" color="primary" size="64px" />
-          <div class="text-h6 q-my-sm">Flipper disconnected</div>
-          <p>Plug in your Flipper and click the button below.</p>
+          <div class="text-h6 q-my-sm">Flipper not connected</div>
         </q-card-section>
       </q-card>
     </template>

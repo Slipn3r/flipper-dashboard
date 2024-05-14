@@ -312,20 +312,22 @@ const loadFirmware = async (fromFile) => {
           })
           throw error
         })
-        .finally(() => {
+        .then(value => {
           log({
             level: 'debug',
             message: `${componentName}: Downloaded firmware from ${channels.value[fwModel.value.value].url}`
           })
+          return value
         })
     } else {
       const buffer = await uploadedFile.value.arrayBuffer()
       files = await unpack(buffer)
-        .finally(() => {
+        .then(value => {
           log({
             level: 'debug',
             message: `${componentName}: Unpacked firmware`
           })
+          return value
         })
     }
 
@@ -347,7 +349,7 @@ const loadFirmware = async (fromFile) => {
         } else {
           await flipper.value.RPC('storageMkdir', { path: '/ext/update' })
             .catch(error => rpcErrorHandler(componentName, error, 'storageMkdir'))
-            .finally(() => {
+            .then(() => {
               log({
                 level: 'debug',
                 message: `${componentName}: storageMkdir: /ext/update`
@@ -367,7 +369,7 @@ const loadFirmware = async (fromFile) => {
         }
         await flipper.value.RPC('storageMkdir', { path })
           .catch(error => rpcErrorHandler(componentName, error, 'storageMkdir'))
-          .finally(() => {
+          .then(() => {
             log({
               level: 'debug',
               message: `${componentName}: storageMkdir: ${path}`
@@ -380,7 +382,7 @@ const loadFirmware = async (fromFile) => {
         })
         await flipper.value.RPC('storageWrite', { path: '/ext/update/' + file.name, buffer: file.buffer })
           .catch(error => rpcErrorHandler(componentName, error, 'storageWrite'))
-          .finally(() => {
+          .then(() => {
             log({
               level: 'debug',
               message: `${componentName}: storageWrite: /ext/update/${file.name}`
@@ -405,7 +407,7 @@ const loadFirmware = async (fromFile) => {
 
     await flipper.value.RPC('systemUpdate', { path: path + '/update.fuf' })
       .catch(error => rpcErrorHandler(componentName, error, 'systemUpdate'))
-      .finally(() => {
+      .then(() => {
         log({
           level: 'debug',
           message: `${componentName}: systemUpdate: OK`
@@ -425,9 +427,9 @@ const loadFirmware = async (fromFile) => {
     flags.value.updateError = true
     updateStage.value = 'Failed to fetch channel'
     showNotif({
-      message: 'Unable to load firmware channel from the build server. Reload the page and try again.',
+      message: 'Unable to load firmware channel from the build server.',
       color: 'negative',
-      reloadBtn: true
+      actions: [{ label: 'Reload', color: 'white', handler: () => { location.reload() } }]
     })
     log({
       level: 'error',
@@ -460,9 +462,9 @@ onMounted(async () => {
   channels.value = await fetchChannels(info.value.hardware.target)
     .catch(error => {
       showNotif({
-        message: 'Unable to load firmware channels from the build server. Reload the page and try again.',
+        message: 'Unable to load firmware channels from the build server.',
         color: 'negative',
-        reloadBtn: true
+        actions: [{ label: 'Reload', color: 'white', handler: () => { location.reload() } }]
       })
       log({
         level: 'error',
