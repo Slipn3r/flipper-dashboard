@@ -29,14 +29,15 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
   const readInfo = computed(() => mainStore.readInfo)
   const setTime = computed(() => mainStore.setTime)
   const setFlipper = computed(() => mainStore.setFlipper)
-  const flipperConnect = async (isReconnect = false) => {
-    if (!isReconnect) {
-      flags.value.connected = false
-      flags.value.rpcActive = false
-    }
+  const flipperConnect = async () => {
+    flags.value.connected = false
+    flags.value.rpcActive = false
     const _currentFlipper = getCurrentFlipper()
 
     if (_currentFlipper) {
+      if (flipper.value?.emitter) {
+        flipper.value.emitter.events = {}
+      }
       setFlipper.value(_currentFlipper.name, _currentFlipper.emitter)
 
       flags.value.connected = true
@@ -51,7 +52,7 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
 
       setTimeout(() => {
         flags.value.disableButtonMultiflipper = false
-      }, 2000)
+      }, 1500)
     } else {
       flags.value.disableButtonMultiflipper = false
     }
@@ -78,9 +79,9 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
     }
   }
 
-  const connect = async (name, isReconnect) => {
+  const connect = async (name) => {
     setCurrentFlipper(name)
-    await flipperConnect(isReconnect)
+    await flipperConnect()
   }
   const selectPort = async (onShowDialog) => {
     return start(true, undefined, onShowDialog)
@@ -188,8 +189,8 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
           const _flipper = _list.find(e => e.name === _currentFlipper.name)
           flipper.value.emitter = _flipper.emitter */
 
-          flags.value.connected = true
-          flags.value.rpcActive = true
+          // flags.value.connected = true
+          // flags.value.rpcActive = true
           console.log(flipper.value)
 
           /* try {
@@ -219,7 +220,7 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
 
           flags.value.connected = false
           flags.value.rpcActive = false
-          await connect(_currentFlipper.name, true)
+          await connect(_currentFlipper.name)
         }
 
         if (timedOutAutoReconnectFlipperName.value && data.map(flipper => flipper.name).includes(timedOutAutoReconnectFlipperName.value)) {

@@ -27,15 +27,15 @@
           <q-list dark bordered separator style="min-width: 100px; border-width: 2px;">
             <q-item v-if="flags.foundDumpOnStartup" clickable v-close-popup @click="terminal.write(dump)">
               <q-item-section avatar><q-icon name="mdi-history" /></q-item-section>
-              <q-item-section>Restore history</q-item-section>
+              <q-item-section>Restore saved dump</q-item-section>
             </q-item>
             <q-item clickable v-close-popup @click="downloadDump">
               <q-item-section avatar><q-icon name="mdi-download" /></q-item-section>
-              <q-item-section>Download history</q-item-section>
+              <q-item-section>Download saved dump</q-item-section>
             </q-item>
             <q-item clickable v-close-popup @click="clearDump" class="text-negative">
               <q-item-section avatar><q-icon name="mdi-delete" /></q-item-section>
-              <q-item-section>Clear history</q-item-section>
+              <q-item-section>Delete saved dump</q-item-section>
             </q-item>
             <q-item class="text-center">
               <q-item-section class="col-grow">Font size</q-item-section>
