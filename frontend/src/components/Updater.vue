@@ -218,7 +218,7 @@ const update = async (fromFile) => {
     })
   }
   await loadFirmware(fromFile)
-    .catch(error => {
+    .catch(async error => {
       flags.value.updateError = true
       updateStage.value = error.message || error.toString()
       showNotif({
@@ -229,6 +229,7 @@ const update = async (fromFile) => {
         level: 'error',
         message: `${componentName}: ${error.toString()}`
       })
+      await flipper.value.RPC('guiStopVirtualDisplay')
       mainStore.onUpdateStage('end')
       throw error
     })
@@ -445,6 +446,7 @@ const loadFirmware = async (fromFile) => {
       level: 'error',
       message: `${componentName}: Failed to fetch channel`
     })
+    throw updateStage.value
   }
 }
 
@@ -506,6 +508,7 @@ onMounted(async () => {
   if (mainFlags.value.shouldUpdateAfterRepair) {
     fwModel.value = fwOptions.value[0]
     mainFlags.value.shouldUpdateAfterRepair = false
+    await flipper.value.RPC('guiStartVirtualDisplay')
     update(false)
   }
 })
