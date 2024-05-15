@@ -271,6 +271,8 @@ export const useAppsStore = defineStore('apps', () => {
         flags.value.noApplicationsInstalled = true
         flags.value.loadingInstalledApps = false
         return
+      } else {
+        flags.value.noApplicationsInstalled = false
       }
 
       installed = installed.filter(installedApp => {
