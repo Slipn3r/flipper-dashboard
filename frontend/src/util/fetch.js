@@ -169,7 +169,7 @@ async function fetchAppsShort (params) {
   }).catch((error) => {
     if (error.code !== 'ERR_CANCELED') {
       if (error.response.status >= 400) {
-        throw new Error('Failed to fetch resources (' + error.response.status + ')')
+        throw new Error('Failed to fetch applications (' + error.response.status + ')')
       }
     }
   })

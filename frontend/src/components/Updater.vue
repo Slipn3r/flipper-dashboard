@@ -245,7 +245,8 @@ const loadFirmware = async (fromFile) => {
       .catch(error => {
         showNotif({
           message: 'Failed to fetch regional update information',
-          color: 'negative'
+          color: 'negative',
+          actions: [{ label: 'Reload', color: 'white', handler: () => { location.reload() } }]
         })
         log({
           level: 'error',
@@ -312,7 +313,8 @@ const loadFirmware = async (fromFile) => {
           updateStage.value = error
           showNotif({
             message: 'Failed to fetch firmware: ' + error.toString(),
-            color: 'negative'
+            color: 'negative',
+            actions: [{ label: 'Reload', color: 'white', handler: () => { location.reload() } }]
           })
           log({
             level: 'error',

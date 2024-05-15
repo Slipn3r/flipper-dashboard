@@ -671,6 +671,11 @@ export const useAppsStore = defineStore('apps', () => {
       }).catch(() => {
         flags.value.loadingInitial = false
         flags.value.fetchEnd = true
+        showNotif({
+          message: 'Unable to load applications.',
+          color: 'negative',
+          actions: [{ label: 'Reload', color: 'white', handler: () => { location.reload() } }]
+        })
       })
     } else {
       flags.value.loadingInitial = false
@@ -693,7 +698,19 @@ export const useAppsStore = defineStore('apps', () => {
       categoryParams.target = target.value
     }
 
-    setCategories(await fetchCategories(categoryParams))
+    await fetchCategories(categoryParams)
+      .then((data) => {
+        setCategories(data)
+      })
+      .catch((error) => {
+        showNotif({
+          message: 'Unable to load categories.',
+          color: 'negative',
+          actions: [{ label: 'Reload', color: 'white', handler: () => { location.reload() } }]
+        })
+
+        throw error
+      })
 
     const path = route.params.path
     if (path) {
