@@ -115,7 +115,7 @@ export const useAppsMainStore = defineStore('AppsMain', () => {
 
     if (category.name === 'All apps') {
       currentCategory.value = null
-      appsStore.setInitalCategory(null)
+      appsStore.setInitialCategory(null)
       router.push({ name: 'Apps' })
 
       reLoad({
@@ -126,7 +126,7 @@ export const useAppsMainStore = defineStore('AppsMain', () => {
     }
 
     router.push({ name: 'AppsCategory', params: { path: category.name.toLowerCase() } })
-    appsStore.setInitalCategory(category)
+    appsStore.setInitialCategory(category)
     currentCategory.value = category
 
     reLoad({

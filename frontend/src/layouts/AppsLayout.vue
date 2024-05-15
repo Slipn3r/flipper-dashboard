@@ -286,7 +286,7 @@ const watchParams = async () => {
   const normalize = (string) => string.toLowerCase().replaceAll(' ', '-')
   const category = categories.value.find(e => normalize(e.name) === normalize(path))
   if (category) {
-    appsStore.setInitalCategory(category)
+    appsStore.setInitialCategory(category)
   }
 }
 

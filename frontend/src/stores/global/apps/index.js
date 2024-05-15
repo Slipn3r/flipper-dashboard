@@ -678,7 +678,7 @@ export const useAppsStore = defineStore('apps', () => {
   }
 
   const initialCategory = ref(null)
-  const setInitalCategory = (category) => {
+  const setInitialCategory = (category) => {
     initialCategory.value = category
   }
   const getCategories = async () => {
@@ -701,7 +701,7 @@ export const useAppsStore = defineStore('apps', () => {
 
       const category = categories.value.find(e => normalize(e.name) === normalize(path))
       if (category) {
-        setInitalCategory(category)
+        setInitialCategory(category)
       }
     }
 
@@ -767,7 +767,7 @@ export const useAppsStore = defineStore('apps', () => {
     getAppsShort,
 
     initialCategory,
-    setInitalCategory,
+    setInitialCategory,
 
     categories,
     setCategory,
