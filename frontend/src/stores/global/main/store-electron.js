@@ -59,7 +59,12 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
     }
   }
 
+  const initializeFlipperName = ref(null)
   const initializeFlipper = async (attempts = 0) => {
+    if (!initializeFlipperName.value) {
+      initializeFlipperName.value = flipper.value.name
+    }
+
     flags.value.flipperInitializationInProgress = true
     try {
       await readInfo.value()
@@ -73,9 +78,11 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
       } else {
         flags.value.flipperInitializationInProgress = false
         showNotif({
-          message: `Failed to connect to Flipper ${flipper.value.name}. Replug the device and try again.`,
+          message: `Failed to connect to Flipper ${initializeFlipperName.value}. Replug the device and try again.`,
           color: 'negative'
         })
+
+        initializeFlipperName.value = false
       }
     }
   }
