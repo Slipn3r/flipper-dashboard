@@ -51,6 +51,10 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
       // flags.value.dialogMultiflipper = false
       flags.value.disableButtonMultiflipper = true
 
+      if (availableFlippers.value.length === 1) {
+        flags.value.dialogMultiflipper = false
+      }
+
       setTimeout(() => {
         flags.value.disableButtonMultiflipper = false
       }, 1500)
