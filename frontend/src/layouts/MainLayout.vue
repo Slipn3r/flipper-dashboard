@@ -737,6 +737,9 @@ const selectPort = async (onShowDialog) => {
 }
 const onConnectFlipper = async (path) => {
   console.log('onConnectFlipper')
+  if (route.name === 'Paint') {
+    flipper.value.RPC('guiStopVirtualDisplay')
+  }
   mainStore.connect(path)
 }
 const disconnect = async () => {
