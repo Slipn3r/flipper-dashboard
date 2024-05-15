@@ -401,7 +401,7 @@ export const useAppsStore = defineStore('apps', () => {
     const paths = {
       appDir: `/ext/apps/${categories.value.find(e => e.id === app.categoryId).name}`,
       manifestDir: '/ext/apps_manifests',
-      tempDir: '/ext/.tmp/lab/'
+      tempDir: '/ext/.tmp/lab'
     }
     await ensureCategoryPaths()
 
