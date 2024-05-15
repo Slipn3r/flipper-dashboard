@@ -145,6 +145,10 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
         return
       }
 
+      if (!data.length) {
+        flags.value.disableButtonMultiflipper = false
+      }
+
       setAvailableFlippers.value(data)
       console.log('availableFlippers', availableFlippers.value)
 
