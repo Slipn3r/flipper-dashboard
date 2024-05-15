@@ -9,7 +9,7 @@ import { init as bridgeControllerInit, emitter as bridgeEmitter, getCurrentFlipp
 
 import { useMainStore } from 'stores/global/main'
 
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 // import { rpcErrorHandler } from 'composables/useRpcUtils'
 
@@ -17,6 +17,7 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
   const mainStore = useMainStore()
 
   const router = useRouter()
+  const route = useRoute()
 
   const flags = computed(() => mainStore.flags)
 
@@ -192,6 +193,9 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
           const _name = repairedFlipperName.value
           repairedFlipperName.value = null
           flags.value.shouldUpdateAfterRepair = true
+          if (route.name !== 'Device') {
+            router.push({ name: 'Device' })
+          }
           await connect(_name)
           return
         } else if (data.find(flipper => flipper.mode === 'dfu')) {
