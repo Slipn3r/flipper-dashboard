@@ -15,23 +15,7 @@
     </template>
     <template v-else-if="!info?.storage.sdcard.status.isInstalled">
       <div class="column items-center">
-        <q-card flat>
-          <q-card-section class="q-pa-none q-ma-md" align="center">
-            <q-icon name="mdi-alert-circle" color="primary" size="64px" />
-            <div class="text-h6 q-my-sm">MicroSD card not detected</div>
-            <p>It seems that the MicroSD card is not mounted or damaged. Insert the microSD card into the slot and try again.</p>
-          </q-card-section>
-
-          <q-card-section class="q-pt-none" align="center">
-            <q-btn
-              outline
-              color="primary"
-              label="Instruction manual"
-              href="https://docs.flipper.net/basics/sd-card#Hjdbt"
-              target="_blank"
-            />
-          </q-card-section>
-        </q-card>
+        <MicroSDCard flat />
       </div>
     </template>
     <template v-else-if="appsStore.flags.noApplicationsInstalled">
@@ -344,6 +328,7 @@
 <script setup>
 import { computed, watch, onMounted } from 'vue'
 import Loading from 'src/components/Loading.vue'
+import MicroSDCard from 'components/cards/MicroSDCard.vue'
 // import semver from 'semver'
 
 import { useMainStore } from 'stores/global/main'

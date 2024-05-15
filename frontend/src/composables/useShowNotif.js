@@ -2,9 +2,9 @@ import { Notify } from 'quasar'
 
 const showNotif = ({ message, color, textColor = 'white', position = 'bottom-right', timeout = 0, group = true, actions = [] }) => {
   if (actions.length === 0) {
-    actions.push({ icon: 'close', color: 'white', class: 'q-px-sm' })
+    actions.push({ icon: 'close', color: textColor, class: 'q-px-sm' })
   } else {
-    actions.push({ label: 'Dismiss', color: 'white' })
+    actions.push({ label: 'Dismiss', color: textColor })
   }
 
   return Notify.create({

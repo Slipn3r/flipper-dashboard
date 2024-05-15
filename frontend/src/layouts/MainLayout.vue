@@ -417,25 +417,9 @@
       </q-dialog>
 
       <q-dialog v-model="flags.microSDcardMissingDialog">
-        <q-card class="dialog">
-          <q-btn icon="close" flat round dense v-close-popup class="dialog-close-btn"/>
-
-          <q-card-section class="q-pa-none q-ma-md" align="center">
-            <q-icon name="mdi-alert-circle" color="primary" size="64px" />
-            <div class="text-h6 q-my-sm">MicroSD card not detected</div>
-            <p>It seems that the MicroSD card is not mounted or damaged. Insert the microSD card into the slot and try again.</p>
-          </q-card-section>
-
-          <q-card-section class="q-pt-none" align="center">
-            <q-btn
-              outline
-              color="primary"
-              label="Instruction manual"
-              href="https://docs.flipper.net/basics/sd-card#Hjdbt"
-              target="_blank"
-            />
-          </q-card-section>
-        </q-card>
+        <MicroSDCard
+          isDialog
+        />
       </q-dialog>
       <q-dialog v-model="flags.serialUnsupportedDialog">
         <q-card class="dialog">
@@ -597,6 +581,8 @@ import ProgressBar from 'components/ProgressBar.vue'
 import RouterLink from 'components/RouterLink.vue'
 import { logger, history, log } from 'composables/useLog'
 import showNotif from 'composables/useShowNotif'
+
+import MicroSDCard from 'components/cards/MicroSDCard.vue'
 
 import { useMainStore } from 'stores/global/main'
 const mainStore = useMainStore()
