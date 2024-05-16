@@ -8,6 +8,7 @@ const bridge = {
   process: null,
   queue: [],
   processingQueue: false,
+  accumulator: '',
   spawn (event) {
     if (bridge.process) {
       bridge.kill()
@@ -17,6 +18,9 @@ const bridge = {
       bridge.webContents = event.sender
       bridge.process = utilityProcess.fork(path.resolve(__dirname, extraResourcesPath, 'serial-bridge/bridgeProcess.js'))
       bridge.process.on('message', message => {
+        if (bridge.accumulator.length) {
+          message.data = bridge.accumulator + message.data
+        }
         bridge.queue.push(message)
         if (!bridge.processingQueue) {
           bridge.processQueue()
@@ -54,17 +58,22 @@ const bridge = {
 
       try {
         payload = JSON.parse(message.data)
+        bridge.accumulator = ''
       } catch (error) {
-        if (error.message.includes('Unexpected non-whitespace character after JSON')) {
-          const pos = parseInt(error.message.slice(error.message.indexOf('at position ') + 12, error.message.indexOf(' (line')))
-          if (!isNaN(pos)) {
+        const pos = parseInt(error.message.slice(error.message.indexOf('at position ') + 12, error.message.indexOf(' (line')))
+        if (!isNaN(pos)) {
+          if (error.message.includes('Unexpected non-whitespace character after JSON')) {
             const json = message.data.slice(0, pos)
             payload = JSON.parse(json)
+            bridge.accumulator = ''
             const nextMessage = {
               type: 'stdout',
               data: message.data.slice(pos)
             }
             bridge.queue.unshift(nextMessage)
+          } else {
+            bridge.accumulator += message.data.slice(0, pos)
+            return
           }
         } else {
           console.log(error.message)
@@ -74,20 +83,20 @@ const bridge = {
       }
 
       if (payload.type === 'read' && payload.data) {
-        bridge.webContents.send(`bridge:read/${payload.data.mode}`, payload)
+        bridge.webContents?.send(`bridge:read/${payload.data.mode}`, payload)
       } else if (payload.type === 'list') {
-        bridge.webContents.send('bridge:list', payload.data)
+        bridge.webContents?.send('bridge:list', payload.data)
       } else if (payload.type === 'status') {
-        bridge.webContents.send('bridge:status', payload.data)
+        bridge.webContents?.send('bridge:status', payload.data)
       } else if (payload.type === 'error') {
-        bridge.webContents.send('bridge:error', payload)
+        bridge.webContents?.send('bridge:error', payload)
       } else {
         console.log(payload)
       }
     } else if (message.type === 'stderr') {
-      bridge.webContents.send('bridge:log', message)
+      bridge.webContents?.send('bridge:log', message)
     } else if (message.type === 'exit') {
-      bridge.webContents.send('bridge:exit', message.code)
+      bridge.webContents?.send('bridge:exit', message.code)
     }
   }
 }
