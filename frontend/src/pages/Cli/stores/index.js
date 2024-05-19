@@ -56,7 +56,11 @@ export const useCliMainStore = defineStore('CliMain', () => {
     if (dump.value) {
       flags.value.foundDumpOnStartup = true
     }
-    terminal.value.open(document.getElementById('terminal-container'))
+    try {
+      terminal.value.open(document.getElementById('terminal-container'))
+    } catch {
+      return
+    }
     document.querySelector('.xterm').setAttribute('style', 'height:' + getComputedStyle(document.querySelector('.xterm')).height)
     terminal.value.focus()
     fitAddon.value.fit()

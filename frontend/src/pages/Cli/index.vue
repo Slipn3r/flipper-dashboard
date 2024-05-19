@@ -128,6 +128,9 @@ watch(fontSize, (newSize) => {
 })
 
 onMounted(() => {
+  if (unbind.value) {
+    unbind.value()
+  }
   CliMainStore.dump = localStorage.getItem('cli-dump')
   if (mainFlags.value.connected) {
     setTimeout(CliMainStore.start, 500)
@@ -151,4 +154,3 @@ onBeforeUnmount(() => {
   }
 })
 </script>
-src/pages/Cli/Cli
