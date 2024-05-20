@@ -100,9 +100,6 @@ export const useAppsMainStore = defineStore('AppsMain', () => {
   }
 
   const appClicked = (app) => {
-    if (app.action.type) {
-      return
-    }
     appsStore.openApp(app)
   }
 

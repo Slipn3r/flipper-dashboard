@@ -18,7 +18,7 @@
         <MicroSDCard flat />
       </div>
     </template>
-    <template v-else-if="appsStore.flags.noApplicationsInstalled">
+    <template v-else-if="appsFlags.noApplicationsInstalled">
       <div class="column items-center">
         <q-card flat>
           <q-card-section class="q-pa-none q-ma-md" align="center">
@@ -30,7 +30,7 @@
     </template>
     <template v-else>
       <div v-if="updatableApps.length" style="width: 140px">
-        <template v-if="batch.totalCount">
+        <template v-if="appsFlags.batchUpdate">
           <q-linear-progress
             :value="batch.doneCount / batch.totalCount + batch.action.progress / batch.totalCount"
             size="32px"
@@ -65,7 +65,7 @@
         <span v-for="app, index in batch.failed" :key="app.id">"{{ app.installedVersion.name }}"<span v-if="batch.failed[index + 1]">, </span></span>
       </div>
 
-      <div class="column full-width" :class="batch.totalCount ? 'disabled' : ''">
+      <div class="column full-width">
         <q-intersection
           v-for="app in updatableApps"
           :key="app.currentVersion.name"
@@ -129,6 +129,7 @@
               color="negative"
               icon="svguse:common-icons.svg#delete"
               class="q-ml-md"
+              :disable="appsFlags.batchUpdate"
               @click="showDeleteDialog(app)"
             />
           </q-card>
@@ -326,7 +327,7 @@
 </template>
 
 <script setup>
-import { computed, watch, onMounted } from 'vue'
+import { computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import Loading from 'src/components/Loading.vue'
 import MicroSDCard from 'components/cards/MicroSDCard.vue'
 // import semver from 'semver'
@@ -339,9 +340,10 @@ const info = computed(() => mainStore.info)
 
 import { useAppsStore } from 'stores/global/apps'
 const appsStore = useAppsStore()
+const appsFlags = computed(() => appsStore.flags)
 
 const batch = computed(() => appsStore.batch)
-const loadingInstalledApps = computed(() => appsStore.flags.loadingInstalledApps)
+const loadingInstalledApps = computed(() => appsFlags.value.loadingInstalledApps)
 const installedApps = computed(() => appsStore.installedApps)
 const categories = computed(() => appsStore.categories)
 
@@ -372,28 +374,29 @@ onMounted(async () => {
 
 const updatableApps = computed(() => {
   return installedApps.value.filter(installedApp => {
-    return installedApp.updatable === true
+    return installedApp.updatable
   })
 })
 
 const upToDateApps = computed(() => {
   return installedApps.value.filter(installedApp => {
-    return installedApp.isInstalled === true
+    return installedApp.isActualized
   })
 })
 
 const unsupportedApps = computed(() => {
   return installedApps.value.filter(installedApp => {
-    return installedApp.unsupported === true
+    return installedApp.unsupported
   })
 })
 
 const appClicked = (app) => {
-  if (app.action.type) {
-    return
-  }
   appsStore.openApp(app)
 }
+
+onBeforeUnmount(() => {
+  appsStore.toggleFlag('installedPage', false)
+})
 </script>
 
 <style lang="sass" scoped>

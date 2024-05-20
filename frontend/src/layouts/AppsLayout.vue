@@ -16,7 +16,7 @@
             name="mdi-chevron-left"
             size="56px"
             class="cursor-pointer q-mr-md"
-            @click="appsStore.toggleFlag('installedPage', false); !appsStore.initialCategory ? router.push({ name: 'Apps' }) : router.push({ name: 'AppsCategory', params: { path: appsStore.initialCategory.name.toLowerCase() } })"
+            @click="!appsStore.initialCategory ? router.push({ name: 'Apps' }) : router.push({ name: 'AppsCategory', params: { path: appsStore.initialCategory.name.toLowerCase() } })"
           ></q-icon>
           <q-icon
             v-else
@@ -46,11 +46,11 @@
                 label="Installed"
               >
                 <q-badge
-                  v-if="$q.screen.width > 365 && flags.updatabledAppsCount > 0"
+                  v-if="$q.screen.width > 365 && flags.updatableAppsCount > 0"
                   color="positive"
                   floating
                   class="outdated-badge"
-                  :label="flags.updatabledAppsCount"
+                  :label="flags.updatableAppsCount"
                 />
               </q-btn>
             </div>

@@ -34,7 +34,8 @@ export const useAppsStore = defineStore('apps', () => {
     outdatedFirmwareDialog: false,
     outdatedAppDialog: false,
     connectFlipperDialog: false,
-    updatabledAppsCount: 0,
+    updatableAppsCount: 0,
+    batchUpdate: false,
     mobileAppDialog: false,
     fetchEnd: false,
     loadingCategories: true,
@@ -150,6 +151,7 @@ export const useAppsStore = defineStore('apps', () => {
     }
   })
   const batchUpdate = async (apps) => {
+    flags.value.batchUpdate = true
     batch.value.totalCount = apps.length
     batch.value.doneCount = 0
 
@@ -158,15 +160,12 @@ export const useAppsStore = defineStore('apps', () => {
     for (const app of apps) {
       try {
         app.action.type = 'update'
-        await updateApp(app)
-        batch.value.doneCount++
+        onAction(app, 'update')
       } catch (error) {
         console.error(error)
         batch.value.failed.push(app)
       }
     }
-    batch.value.totalCount = 0
-    batch.value.doneCount = 0
   }
 
   const sdk = ref({
@@ -183,7 +182,7 @@ export const useAppsStore = defineStore('apps', () => {
   }
   const onClearInstalledAppsList = () => {
     installedApps.value = []
-    flags.value.updatabledApps = 0
+    flags.value.updatableAppsCount = 0
   }
   const getInstalledApps = async () => {
     if (!installedApps.value.length) {
@@ -287,6 +286,8 @@ export const useAppsStore = defineStore('apps', () => {
       installed = installed.map(installedApp => {
         const lastInstalledApp = installedApps.value.find(actualApp => actualApp.id === installedApp.id)
 
+        installedApp.isInstalled = true
+
         if (lastInstalledApp) {
           installedApp.action = lastInstalledApp.action
         }
@@ -318,23 +319,23 @@ export const useAppsStore = defineStore('apps', () => {
         return false
       })
 
-      flags.value.updatabledAppsCount = updatableApps.length
+      flags.value.updatableAppsCount = updatableApps.length
 
       const upToDateApps = installed.filter(installedApp => {
         const app = actualApps.find(actualApp => actualApp.id === installedApp.id)
 
         if (app) {
           if (sdk.value.api && installedApp.installedVersion.api !== sdk.value.api) {
-            installedApp.isInstalled = false
+            installedApp.isActualized = false
             return false
           }
 
           if (app.currentVersion.id === installedApp.installedVersion.id && app.currentVersion.status === 'READY') {
-            installedApp.isInstalled = true
+            installedApp.isActualized = true
             return true
           }
         }
-        installedApp.isInstalled = false
+        installedApp.isActualized = false
         return false
       })
 
@@ -357,6 +358,17 @@ export const useAppsStore = defineStore('apps', () => {
       setInstalledApps([...updatableApps, ...upToDateApps, ...unsupportedApps])
 
       updateInstalledApps()
+      if (flags.value.batchUpdate) {
+        batch.value.doneCount++
+
+        if (batch.value.totalCount === batch.value.doneCount) {
+          console.log('flags.value.batchUpdate 1', flags.value.batchUpdate)
+          batch.value.totalCount = 0
+          batch.value.doneCount = 0
+          flags.value.batchUpdate = false
+          console.log('flags.value.batchUpdate 2', flags.value.batchUpdate)
+        }
+      }
       flags.value.loadingInstalledApps = false
     } catch {
       flags.value.loadingInstalledApps = false
@@ -371,14 +383,15 @@ export const useAppsStore = defineStore('apps', () => {
       if (installed) {
         app.isInstalled = true
         app.installedVersion = installed.installedVersion
+        app.action = installed.action
+        app.actionButton = actionButton(installed)
 
         app.installedVersion.isOutdated = app.currentVersion.id !== app.installedVersion.id
       } else {
         app.isInstalled = false
         app.installedVersion = null
+        app.actionButton = actionButton(app)
       }
-
-      app.actionButton = actionButton(app)
 
       if (currentApp.value && app.id === currentApp.value.id) {
         const newCurrentApp = currentApp.value
@@ -661,7 +674,9 @@ export const useAppsStore = defineStore('apps', () => {
           }
         }
 
-        updateInstalledApps(newApps)
+        if (flipperReady.value && installedApps.value.length) {
+          updateInstalledApps(newApps)
+        }
 
         if (newApps.length < params.limit) {
           flags.value.fetchEnd = true
@@ -770,9 +785,6 @@ export const useAppsStore = defineStore('apps', () => {
     updateInstalledApps,
 
     openApp,
-    installApp,
-    updateApp,
-    deleteApp,
 
     currentApp,
     setCurrentApp,
