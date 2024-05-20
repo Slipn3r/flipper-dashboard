@@ -1,4 +1,4 @@
-import { beforeunloadActive, beforeunloadDeactivate } from 'composables/useBeforunload'
+import { beforeunloadActive, beforeunloadDeactivate } from 'composables/useBeforeunload'
 
 export default function promiseQueue () {
   const queue = []
