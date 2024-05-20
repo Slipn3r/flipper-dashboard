@@ -8,13 +8,16 @@ const showNotif = ({
   timeout = 0,
   group = true,
   actions = [],
+  isStayOpen = false,
   spinner = false,
   caption = null
 }) => {
-  if (actions.length === 0) {
-    actions.push({ icon: 'close', color: textColor, class: 'q-px-sm' })
-  } else {
-    actions.push({ label: 'Dismiss', color: textColor })
+  if (!isStayOpen) {
+    if (actions.length === 0) {
+      actions.push({ icon: 'close', color: textColor, class: 'q-px-sm' })
+    } else {
+      actions.push({ label: 'Dismiss', color: textColor })
+    }
   }
 
   return Notify.create({

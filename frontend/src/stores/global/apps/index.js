@@ -110,6 +110,7 @@ export const useAppsStore = defineStore('apps', () => {
     }
 
     appNotif.value = showNotif({
+      isStayOpen: true,
       group: false, // required to be updatable
       timeout: 0, // we want to be in control when it gets dismissed
       spinner: true,
