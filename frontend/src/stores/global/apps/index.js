@@ -95,6 +95,7 @@ export const useAppsStore = defineStore('apps', () => {
 
     actionQueue.addToQueue(action, [app, actionType])
   }
+  const appNotif = ref(null)
   const handleAction = (app, actionType) => {
     if (!info.value.storage.sdcard.status.isInstalled) {
       app.action.type = actionType
@@ -108,12 +109,29 @@ export const useAppsStore = defineStore('apps', () => {
       return
     }
 
+    appNotif.value = showNotif({
+      group: false, // required to be updatable
+      timeout: 0, // we want to be in control when it gets dismissed
+      spinner: true,
+      message: 'Processing...',
+      caption: '0%'
+    })
+
     switch (app.action.type) {
       case 'install':
+        appNotif.value({
+          message: `Installing ${app?.currentVersion?.name || 'app'}...`
+        })
         return installApp(app)
       case 'update':
+        appNotif.value({
+          message: `Uploading ${app?.currentVersion?.name || 'app'}...`
+        })
         return updateApp(app)
       case 'delete':
+        appNotif.value({
+          message: `Deleting ${app?.currentVersion?.name || 'app'}...`
+        })
         return deleteApp(app)
     }
   }
@@ -376,9 +394,14 @@ export const useAppsStore = defineStore('apps', () => {
   }
   const updateInstalledApps = (newApps) => {
     if (!newApps) {
-      newApps = apps.value
+      if (!apps.value.length) {
+        newApps = [currentApp.value]
+      } else {
+        newApps = apps.value
+      }
     }
     for (const app of newApps) {
+      console.log(installedApps.value.find(e => e.id === app.id))
       const installed = installedApps.value.find(e => e.id === app.id)
       if (installed) {
         app.isInstalled = true
@@ -443,6 +466,9 @@ export const useAppsStore = defineStore('apps', () => {
     if (app.action.type === 'update') {
       batch.value.progress = 0.33
     }
+    appNotif.value({
+      caption: '33%'
+    })
     await asyncSleep(300)
     log({
       level: 'debug',
@@ -469,6 +495,9 @@ export const useAppsStore = defineStore('apps', () => {
     if (app.action.type === 'update') {
       batch.value.progress = 0.45
     }
+    appNotif.value({
+      caption: '45%'
+    })
     await asyncSleep(300)
 
     // upload manifest to temp
@@ -499,6 +528,9 @@ export const useAppsStore = defineStore('apps', () => {
     if (app.action.type === 'update') {
       batch.value.progress = 0.75
     }
+    appNotif.value({
+      caption: '75%'
+    })
     await asyncSleep(300)
 
     // move manifest and fap
@@ -528,6 +560,9 @@ export const useAppsStore = defineStore('apps', () => {
     if (app.action.type === 'update') {
       batch.value.progress = 0.8
     }
+    appNotif.value({
+      caption: '80%'
+    })
     await asyncSleep(300)
 
     dirList = await flipper.value.RPC('storageList', { path: paths.appDir })
@@ -556,6 +591,9 @@ export const useAppsStore = defineStore('apps', () => {
     if (app.action.type === 'update') {
       batch.value.progress = 1
     }
+    appNotif.value({
+      caption: '100%'
+    })
     await asyncSleep(300)
 
     // post-install
@@ -566,6 +604,13 @@ export const useAppsStore = defineStore('apps', () => {
     if (app.action.type === 'update') {
       batch.value.progress = 0
     }
+    appNotif.value({
+      icon: 'done',
+      color: 'positive',
+      spinner: false, // we reset the spinner setting so the icon can be displayed
+      message: `${app.currentVersion?.name || 'App'} ${app.action.type === 'update' ? 'updated' : 'installed'}!`,
+      timeout: 500 // we will timeout it in 0.5s
+    })
   }
 
   const deleteApp = async (app) => {
@@ -597,6 +642,9 @@ export const useAppsStore = defineStore('apps', () => {
         .catch(error => rpcErrorHandler(componentName, error, 'storageRemove'))
     }
     app.action.progress = 0.5
+    appNotif.value({
+      caption: '50%'
+    })
 
     // remove manifest
     dirList = await flipper.value.RPC('storageList', { path: paths.manifestDir })
@@ -613,12 +661,22 @@ export const useAppsStore = defineStore('apps', () => {
         .catch(error => rpcErrorHandler(componentName, error, 'storageRemove'))
     }
     app.action.progress = 1
+    appNotif.value({
+      caption: '100%'
+    })
 
     // post-delete
     await getInstalledApps()
 
     app.action.type = ''
     app.action.progress = 0
+    appNotif.value({
+      icon: 'done',
+      color: 'positive',
+      spinner: false, // we reset the spinner setting so the icon can be displayed
+      message: `${app.currentVersion?.name || 'App'} deleted!`,
+      timeout: 500 // we will timeout it in 0.5s
+    })
   }
 
   const currentApp = ref(null)
