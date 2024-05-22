@@ -733,6 +733,13 @@ export const useAppsStore = defineStore('apps', () => {
           }
         }
 
+        if (apps.value.length && !flipperReady.value) {
+          apps.value = apps.value.map(app => {
+            app.actionButton = actionButton(app)
+            return app
+          })
+        }
+
         if (flipperReady.value && installedApps.value.length) {
           updateInstalledApps(newApps)
         }
