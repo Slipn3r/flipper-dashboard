@@ -402,7 +402,7 @@ export const useAppsStore = defineStore('apps', () => {
       }
     }
     for (const app of newApps) {
-      console.log(installedApps.value.find(e => e.id === app.id))
+      // console.log(installedApps.value.find(e => e.id === app.id))
       const installed = installedApps.value.find(e => e.id === app.id)
       if (installed) {
         app.isInstalled = true

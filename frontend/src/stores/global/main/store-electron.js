@@ -159,6 +159,9 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
 
       if (!data.length) {
         flags.value.disableButtonMultiflipper = false
+        if (!flags.value.updateInProgress && flipper.value?.name) {
+          flipper.value.name = ''
+        }
       }
 
       setAvailableFlippers.value(data)

@@ -612,11 +612,14 @@ const route = useRoute()
 
 const componentName = 'Main'
 
+const currentFlipperName = computed(() => mainStore.flipper?.name)
+
 const routes = [
   {
     title: 'My Flipper',
     icon: 'svguse:common-icons.svg#device',
-    link: '/'
+    link: '/',
+    titleOverride: currentFlipperName
   },
   {
     title: 'Apps',

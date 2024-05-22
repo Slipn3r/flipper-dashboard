@@ -1,5 +1,6 @@
 <template>
   <q-item
+    :key="titleOverride"
     clickable
     tag="router-link"
     :to="link"
@@ -19,13 +20,13 @@
     </q-item-section>
 
     <q-item-section>
-      <q-item-label>{{ title }}</q-item-label>
+      <q-item-label>{{ computedTitle }}</q-item-label>
     </q-item-section>
   </q-item>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 const props = defineProps({
@@ -40,8 +41,14 @@ const props = defineProps({
   icon: {
     type: String,
     default: ''
+  },
+  titleOverride: {
+    type: Object,
+    default: ref('')
   }
 })
+
+const computedTitle = computed(() => props.titleOverride.value || props.title)
 
 const route = useRoute()
 
