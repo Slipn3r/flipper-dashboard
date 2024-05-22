@@ -4,14 +4,14 @@ export default function promiseQueue () {
   const queue = []
   let process = false
 
-  const addToQueue = (fn, params) => {
+  const addToQueue = async (fn, params) => {
     queue.push({
       fn,
       params
     })
 
     if (!process) {
-      executeQueue()
+      await executeQueue()
     }
   }
 
@@ -44,6 +44,6 @@ export default function promiseQueue () {
 
   return {
     addToQueue,
-    executeQueue
+    getProcess: () => process
   }
 }

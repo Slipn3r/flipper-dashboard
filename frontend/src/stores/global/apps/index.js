@@ -9,7 +9,7 @@ import showNotif from 'composables/useShowNotif'
 import useSetProperty from 'composables/useSetProperty'
 import { rpcErrorHandler } from 'composables/useRpcUtils'
 import promiseQueue from 'composables/usePromiseQueue'
-const actionQueue = promiseQueue()
+const { getProcess, addToQueue } = promiseQueue()
 import { axios } from 'boot/axios'
 
 import { useMainStore } from 'stores/global/main'
@@ -68,7 +68,8 @@ export const useAppsStore = defineStore('apps', () => {
         }
     }
   }
-  const onAction = (app, value) => {
+  const onAction = async (app, value) => {
+    mainFlags.value.disableButtonMultiflipper = true
     const actionType = value === 'Installed' ? '' : value.toLowerCase()
     if (Platform.is.mobile) {
       flags.value.mobileAppDialog = true
@@ -93,7 +94,10 @@ export const useAppsStore = defineStore('apps', () => {
       return Promise.resolve()
     }
 
-    actionQueue.addToQueue(action, [app, actionType])
+    await addToQueue(action, [app, actionType])
+    if (getProcess() === false) {
+      mainFlags.value.disableButtonMultiflipper = false
+    }
   }
   const appNotif = ref(null)
   const handleAction = (app, actionType) => {
