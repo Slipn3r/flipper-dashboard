@@ -111,7 +111,8 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
       timeout: setTimeout(() => {
         dismissReconnectTimeoutNotif.value = showNotif({
           message: `Couldn't connect to Flipper ${name} after the update`,
-          color: 'negative'
+          color: 'negative',
+          timeout: 60 * 30
         })
         timedOutAutoReconnectFlipperName.value = name
         flags.value.connected = false
