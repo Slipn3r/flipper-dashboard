@@ -1037,7 +1037,7 @@ function createExportWrapper(name, fixedasm) {
 }
 
 var wasmBinaryFile;
-  wasmBinaryFile = 'https://cdn.flipper.net/mfkey.wasm';
+  wasmBinaryFile = 'https://cdn.flipper.net/mfkey.wasmm';
   /*if (!isDataURI(wasmBinaryFile)) {
     wasmBinaryFile = locateFile(wasmBinaryFile);
   }*/
@@ -1171,25 +1171,35 @@ function createWasm() {
         //   https://github.com/emscripten-core/emscripten/pull/16917
         !ENVIRONMENT_IS_NODE &&
         typeof fetch == 'function') {
-      return fetch(wasmBinaryFile, { credentials: 'same-origin' }).then(async function(response) {
-        const buffer = await response.arrayBuffer()
-        // Suppress closure warning here since the upstream definition for
-        // instantiateStreaming only allows Promise<Repsponse> rather than
-        // an actual Response.
-        // TODO(https://github.com/google/closure-compiler/pull/3913): Remove if/when upstream closure is fixed.
-        /** @suppress {checkTypes} */
-        var result = WebAssembly.instantiate(buffer, info);
+      return fetch(wasmBinaryFile, { credentials: 'same-origin' })
+        .then(async function(response) {
+          console.log(response)
+          if (!response.ok) {
+            err(`failed to load wasm binary file ${response.status}`)
+            abort(response.status)
+          }
+          const buffer = await response.arrayBuffer()
+          // Suppress closure warning here since the upstream definition for
+          // instantiateStreaming only allows Promise<Repsponse> rather than
+          // an actual Response.
+          // TODO(https://github.com/google/closure-compiler/pull/3913): Remove if/when upstream closure is fixed.
+          /** @suppress {checkTypes} */
+          var result = WebAssembly.instantiate(buffer, info);
 
-        return result.then(
-          receiveInstantiationResult,
-          function(reason) {
-            // We expect the most common failure cause to be a bad MIME type for the binary,
-            // in which case falling back to ArrayBuffer instantiation should work.
-            err('wasm streaming compile failed: ' + reason);
-            err('falling back to ArrayBuffer instantiation');
-            return instantiateArrayBuffer(receiveInstantiationResult);
-          });
-      });
+          return result.then(
+            receiveInstantiationResult,
+            function(reason) {
+              // We expect the most common failure cause to be a bad MIME type for the binary,
+              // in which case falling back to ArrayBuffer instantiation should work.
+              err('wasm streaming compile failed: ' + reason);
+              err('falling back to ArrayBuffer instantiation');
+              return instantiateArrayBuffer(receiveInstantiationResult);
+            });
+        })
+        .catch(error => {
+          err(`failed to load wasm binary file ${error}`)
+          abort(error)
+        })
     } else {
       return instantiateArrayBuffer(receiveInstantiationResult);
     }
@@ -1209,7 +1219,7 @@ function createWasm() {
     }
   }
 
-  instantiateAsync();
+  instantiateAsync()
   return {}; // no exports yet; we'll fill them in later
 }
 
