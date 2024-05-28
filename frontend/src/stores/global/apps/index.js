@@ -68,6 +68,7 @@ export const useAppsStore = defineStore('apps', () => {
         }
     }
   }
+  const installableApps = ref([])
   const onAction = async (app, value) => {
     mainFlags.value.disableButtonMultiflipper = true
     const actionType = value === 'Installed' ? '' : value.toLowerCase()
@@ -87,6 +88,10 @@ export const useAppsStore = defineStore('apps', () => {
     app.action.type = actionType
     app.action.progress = 0
     app.action.id = app.id
+
+    if (app.action.type === 'install') {
+      installableApps.value.push(app)
+    }
 
     const action = async (app, actionType) => {
       await handleAction(app, actionType)
@@ -139,6 +144,11 @@ export const useAppsStore = defineStore('apps', () => {
               message: `${app.currentVersion?.name || 'App'} didn't install!`,
               caption: ''
             })
+
+            const index = installableApps.value.findIndex((e) => e.id === app.id)
+            if (index !== -1) {
+              installableApps.value.splice(index, 1)
+            }
 
             updateInstalledApps([app])
 
@@ -467,12 +477,18 @@ export const useAppsStore = defineStore('apps', () => {
         app.isInstalled = false
         app.installedVersion = null
 
-        app.action = {
-          id: app.id,
-          progress: 0,
-          type: ''
+        const installable = installableApps.value.find(e => e.id === app.id)
+        if (installable) {
+          app.action = installable.action
+          app.actionButton = actionButton(installable)
+        } else {
+          app.action = {
+            id: app.id,
+            progress: 0,
+            type: ''
+          }
+          app.actionButton = actionButton(app)
         }
-        app.actionButton = actionButton(app)
       }
 
       if (currentApp.value && app.id === currentApp.value.id) {
@@ -702,6 +718,10 @@ export const useAppsStore = defineStore('apps', () => {
     app.action.progress = 0
     if (app.action.type === 'update') {
       batch.value.progress = 0
+    }
+    const index = installableApps.value.findIndex((e) => e.id === app.id)
+    if (index !== -1) {
+      installableApps.value.splice(index, 1)
     }
     appNotif.value({
       icon: 'done',
