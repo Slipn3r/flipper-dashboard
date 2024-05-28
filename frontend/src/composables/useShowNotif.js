@@ -16,6 +16,14 @@ const showNotif = ({
   spinner = false,
   caption = null
 }) => {
+  if (!isStayOpen) {
+    if (actions.length === 0) {
+      actions.push({ icon: 'close', color: textColor, class: 'q-px-sm' })
+    } else {
+      actions.push({ label: 'Dismiss', color: textColor })
+    }
+  }
+
   const proxiedActions = []
   for (const action of actions) {
     proxiedActions.push({
@@ -23,14 +31,6 @@ const showNotif = ({
       handler: () => isNavigationDisabled.value ? null : action.handler(),
       disable: isNavigationDisabled
     })
-  }
-
-  if (!isStayOpen) {
-    if (actions.length === 0) {
-      actions.push({ icon: 'close', color: textColor, class: 'q-px-sm' })
-    } else {
-      actions.push({ label: 'Dismiss', color: textColor })
-    }
   }
 
   return Notify.create({

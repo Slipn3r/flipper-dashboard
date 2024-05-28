@@ -100,7 +100,7 @@ export const useAppsStore = defineStore('apps', () => {
     }
   }
   const appNotif = ref(null)
-  const handleAction = (app, actionType) => {
+  const handleAction = async (app, actionType) => {
     if (!info.value.storage.sdcard.status.isInstalled) {
       app.action.type = actionType
       mainStore.toggleFlag('microSDcardMissingDialog', true)
@@ -128,16 +128,64 @@ export const useAppsStore = defineStore('apps', () => {
           message: `Installing ${app?.currentVersion?.name || 'app'}...`
         })
         return installApp(app)
+          .catch(error => {
+            appNotif.value({
+              icon: 'error_outline',
+              color: 'negative',
+              spinner: false, // we reset the spinner setting so the icon can be displayed
+              actions: [
+                { icon: 'close', color: 'white', class: 'q-px-sm' }
+              ],
+              message: `${app.currentVersion?.name || 'App'} didn't install!`,
+              caption: ''
+            })
+
+            updateInstalledApps([app])
+
+            throw error
+          })
       case 'update':
         appNotif.value({
           message: `Uploading ${app?.currentVersion?.name || 'app'}...`
         })
         return updateApp(app)
+          .catch(error => {
+            appNotif.value({
+              icon: 'error_outline',
+              color: 'negative',
+              spinner: false, // we reset the spinner setting so the icon can be displayed
+              actions: [
+                { icon: 'close', color: 'white', class: 'q-px-sm' }
+              ],
+              message: `${app.currentVersion?.name || 'App'} didn't update!`,
+              caption: ''
+            })
+
+            updateInstalledApps([app])
+
+            throw error
+          })
       case 'delete':
         appNotif.value({
           message: `Deleting ${app?.currentVersion?.name || 'app'}...`
         })
         return deleteApp(app)
+          .catch(error => {
+            appNotif.value({
+              icon: 'error_outline',
+              color: 'negative',
+              spinner: false, // we reset the spinner setting so the icon can be displayed
+              actions: [
+                { icon: 'close', color: 'white', class: 'q-px-sm' }
+              ],
+              message: `${app.currentVersion?.name || 'App'} wasn't deleted!`,
+              caption: ''
+            })
+
+            updateInstalledApps([app])
+
+            throw error
+          })
     }
   }
   const actionButton = (app) => {
@@ -418,6 +466,12 @@ export const useAppsStore = defineStore('apps', () => {
       } else {
         app.isInstalled = false
         app.installedVersion = null
+
+        app.action = {
+          id: app.id,
+          progress: 0,
+          type: ''
+        }
         app.actionButton = actionButton(app)
       }
 
@@ -425,6 +479,7 @@ export const useAppsStore = defineStore('apps', () => {
         const newCurrentApp = currentApp.value
         newCurrentApp.isInstalled = app.isInstalled
         newCurrentApp.installedVersion = app.installedVersion
+        newCurrentApp.action = app.action
         newCurrentApp.actionButton = app.actionButton
 
         setCurrentApp(newCurrentApp)
@@ -437,7 +492,9 @@ export const useAppsStore = defineStore('apps', () => {
   }
   const updateApp = async (app) => {
     return installApp(app)
+      .catch(error => error)
   }
+
   const installApp = async (app) => {
     const paths = {
       appDir: `/ext/apps/${categories.value.find(e => e.id === app.categoryId).name}`,
@@ -460,6 +517,8 @@ export const useAppsStore = defineStore('apps', () => {
         level: 'error',
         message: `${componentName}: Installing app '${app.name}' (${app.alias}): ${error}`
       })
+
+      throw error
     })
     if (!fap) {
       app.action.type = ''
@@ -488,6 +547,9 @@ export const useAppsStore = defineStore('apps', () => {
           reader.onload = function () { resolve(this.result) }
           reader.readAsDataURL(data)
         }))
+        .catch((error) => {
+          throw error
+        })
     }
     const dataUri = await urlContentToDataUri(app.currentVersion.iconUri)
     const base64Icon = dataUri.split(',')[1]
@@ -513,7 +575,11 @@ export const useAppsStore = defineStore('apps', () => {
           message: `${componentName}: Installing app '${app.name}' (${app.alias}): uploaded manifest (temp)`
         })
       })
-      .catch(error => rpcErrorHandler(componentName, error, 'storageWrite'))
+      .catch(error => {
+        rpcErrorHandler(componentName, error, 'storageWrite')
+
+        throw error
+      })
     app.action.progress = 0.5
     if (app.action.type === 'update') {
       batch.value.progress = 0.5
@@ -528,7 +594,11 @@ export const useAppsStore = defineStore('apps', () => {
           message: `${componentName}: Installing app '${app.name}' (${app.alias}): uploaded .fap (temp)`
         })
       })
-      .catch(error => rpcErrorHandler(componentName, error, 'storageWrite'))
+      .catch(error => {
+        rpcErrorHandler(componentName, error, 'storageWrite')
+
+        throw error
+      })
     app.action.progress = 0.75
     if (app.action.type === 'update') {
       batch.value.progress = 0.75
@@ -540,7 +610,11 @@ export const useAppsStore = defineStore('apps', () => {
 
     // move manifest and fap
     let dirList = await flipper.value.RPC('storageList', { path: paths.manifestDir })
-      .catch(error => rpcErrorHandler(componentName, error, 'storageList'))
+      .catch(error => {
+        rpcErrorHandler(componentName, error, 'storageList')
+
+        throw error
+      })
     const oldManifest = dirList.find(e => e.name === `${app.alias}.fim`)
     if (oldManifest) {
       await flipper.value.RPC('storageRemove', { path: `${paths.manifestDir}/${app.alias}.fim` })
@@ -550,7 +624,11 @@ export const useAppsStore = defineStore('apps', () => {
             message: `${componentName}: Installing app '${app.name}' (${app.alias}): removed old manifest`
           })
         })
-        .catch(error => rpcErrorHandler(componentName, error, 'storageRemove'))
+        .catch(error => {
+          rpcErrorHandler(componentName, error, 'storageRemove')
+
+          throw error
+        })
     }
 
     await flipper.value.RPC('storageRename', { oldPath: `${paths.tempDir}/${app.id}.fim`, newPath: `${paths.manifestDir}/${app.alias}.fim` })
@@ -560,7 +638,11 @@ export const useAppsStore = defineStore('apps', () => {
           message: `${componentName}: Installing app '${app.name}' (${app.alias}): moved new manifest`
         })
       })
-      .catch(error => rpcErrorHandler(componentName, error, 'storageRename'))
+      .catch(error => {
+        rpcErrorHandler(componentName, error, 'storageRename')
+
+        throw error
+      })
     app.action.progress = 0.8
     if (app.action.type === 'update') {
       batch.value.progress = 0.8
@@ -571,7 +653,11 @@ export const useAppsStore = defineStore('apps', () => {
     await asyncSleep(300)
 
     dirList = await flipper.value.RPC('storageList', { path: paths.appDir })
-      .catch(error => rpcErrorHandler(componentName, error, 'storageList'))
+      .catch(error => {
+        rpcErrorHandler(componentName, error, 'storageList')
+
+        throw error
+      })
     const oldFap = dirList.find(e => e.name === `${app.alias}.fap`)
     if (oldFap) {
       await flipper.value.RPC('storageRemove', { path: `${paths.appDir}/${app.alias}.fap` })
@@ -581,7 +667,11 @@ export const useAppsStore = defineStore('apps', () => {
             message: `${componentName}: Installing app '${app.name}' (${app.alias}): removed old .fap`
           })
         })
-        .catch(error => rpcErrorHandler(componentName, error, 'storageRemove'))
+        .catch(error => {
+          rpcErrorHandler(componentName, error, 'storageRemove')
+
+          throw error
+        })
     }
 
     await flipper.value.RPC('storageRename', { oldPath: `${paths.tempDir}/${app.id}.fap`, newPath: `${paths.appDir}/${app.alias}.fap` })
@@ -591,7 +681,11 @@ export const useAppsStore = defineStore('apps', () => {
           message: `${componentName}: Installing app '${app.name}' (${app.alias}): moved new .fap`
         })
       })
-      .catch(error => rpcErrorHandler(componentName, error, 'storageRename'))
+      .catch(error => {
+        rpcErrorHandler(componentName, error, 'storageRename')
+
+        throw error
+      })
     app.action.progress = 1
     if (app.action.type === 'update') {
       batch.value.progress = 1
@@ -634,7 +728,11 @@ export const useAppsStore = defineStore('apps', () => {
 
     // remove .fap
     let dirList = await flipper.value.RPC('storageList', { path: paths.appDir })
-      .catch(error => rpcErrorHandler(componentName, error, 'storageList'))
+      .catch(error => {
+        rpcErrorHandler(componentName, error, 'storageList')
+
+        throw error
+      })
     const fap = dirList.find(e => e.name === `${app.alias}.fap`)
     if (fap) {
       await flipper.value.RPC('storageRemove', { path: `${paths.appDir}/${app.alias}.fap` })
@@ -644,7 +742,11 @@ export const useAppsStore = defineStore('apps', () => {
             message: `${componentName}: Deleting app '${app.name}' (${app.alias}): removed .fap`
           })
         })
-        .catch(error => rpcErrorHandler(componentName, error, 'storageRemove'))
+        .catch(error => {
+          rpcErrorHandler(componentName, error, 'storageRemove')
+
+          throw error
+        })
     }
     app.action.progress = 0.5
     appNotif.value({
@@ -653,7 +755,11 @@ export const useAppsStore = defineStore('apps', () => {
 
     // remove manifest
     dirList = await flipper.value.RPC('storageList', { path: paths.manifestDir })
-      .catch(error => rpcErrorHandler(componentName, error, 'storageList'))
+      .catch(error => {
+        rpcErrorHandler(componentName, error, 'storageList')
+
+        throw error
+      })
     const manifest = dirList.find(e => e.name === `${app.alias}.fim`)
     if (manifest) {
       await flipper.value.RPC('storageRemove', { path: `${paths.manifestDir}/${app.alias}.fim` })
@@ -663,7 +769,11 @@ export const useAppsStore = defineStore('apps', () => {
             message: `${componentName}: Deleting app '${app.name}' (${app.alias}): removed manifest`
           })
         })
-        .catch(error => rpcErrorHandler(componentName, error, 'storageRemove'))
+        .catch(error => {
+          rpcErrorHandler(componentName, error, 'storageRemove')
+
+          throw error
+        })
     }
     app.action.progress = 1
     appNotif.value({
