@@ -182,7 +182,7 @@
 </template>
 
 <script setup>
-import { onMounted, computed, watch } from 'vue'
+import { onMounted, onUnmounted, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
 import SearchBar from 'components/SearchBar.vue'
@@ -212,6 +212,10 @@ const componentName = 'Apps'
 
 onMounted(() => {
   start()
+})
+
+onUnmounted(() => {
+  appsStore.toggleFlag('outdatedFirmwareDialogPersistent', false)
 })
 
 const startRpc = async () => {
