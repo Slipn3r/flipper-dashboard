@@ -9,7 +9,7 @@ import showNotif from 'composables/useShowNotif'
 import useSetProperty from 'composables/useSetProperty'
 import { rpcErrorHandler } from 'composables/useRpcUtils'
 import promiseQueue from 'composables/usePromiseQueue'
-const { getProcess, addToQueue } = promiseQueue()
+const { getProcess, getFlipperCurrentlyParticipating, addToQueue } = promiseQueue()
 import { axios } from 'boot/axios'
 
 import { useMainStore } from 'stores/global/main'
@@ -95,11 +95,21 @@ export const useAppsStore = defineStore('apps', () => {
 
     const action = async (app, actionType) => {
       await handleAction(app, actionType)
+        .catch(error => {
+          log({
+            level: 'error',
+            message: `${componentName}: ${error.message}`
+          })
+        })
 
       return Promise.resolve()
     }
 
-    await addToQueue(action, [app, actionType])
+    await addToQueue({
+      fn: action,
+      flipperName: flipper.value.name,
+      params: [app, actionType]
+    })
     if (getProcess() === false) {
       mainFlags.value.disableButtonMultiflipper = false
     }
@@ -134,6 +144,8 @@ export const useAppsStore = defineStore('apps', () => {
         })
         return installApp(app)
           .catch(error => {
+            const message = `${app.currentVersion?.name || 'App'} didn't install${flipper.value.name !== getFlipperCurrentlyParticipating() ? ' because ' + error.message : ''}!`
+
             appNotif.value({
               icon: 'error_outline',
               color: 'negative',
@@ -141,7 +153,7 @@ export const useAppsStore = defineStore('apps', () => {
               actions: [
                 { icon: 'close', color: 'white', class: 'q-px-sm' }
               ],
-              message: `${app.currentVersion?.name || 'App'} didn't install!`,
+              message,
               caption: ''
             })
 
@@ -152,7 +164,7 @@ export const useAppsStore = defineStore('apps', () => {
 
             updateInstalledApps([app])
 
-            throw error
+            throw new Error(message)
           })
       case 'update':
         appNotif.value({
@@ -160,6 +172,8 @@ export const useAppsStore = defineStore('apps', () => {
         })
         return updateApp(app)
           .catch(error => {
+            const message = `${app.currentVersion?.name || 'App'} didn't update${flipper.value.name !== getFlipperCurrentlyParticipating() ? ' because ' + error.message : ''}!`
+
             appNotif.value({
               icon: 'error_outline',
               color: 'negative',
@@ -167,13 +181,13 @@ export const useAppsStore = defineStore('apps', () => {
               actions: [
                 { icon: 'close', color: 'white', class: 'q-px-sm' }
               ],
-              message: `${app.currentVersion?.name || 'App'} didn't update!`,
+              message,
               caption: ''
             })
 
             updateInstalledApps([app])
 
-            throw error
+            throw new Error(message)
           })
       case 'delete':
         appNotif.value({
@@ -181,6 +195,8 @@ export const useAppsStore = defineStore('apps', () => {
         })
         return deleteApp(app)
           .catch(error => {
+            const message = `${app.currentVersion?.name || 'App'} wasn't deleted${flipper.value.name !== getFlipperCurrentlyParticipating() ? ' because ' + error.message : ''}!`
+
             appNotif.value({
               icon: 'error_outline',
               color: 'negative',
@@ -188,13 +204,13 @@ export const useAppsStore = defineStore('apps', () => {
               actions: [
                 { icon: 'close', color: 'white', class: 'q-px-sm' }
               ],
-              message: `${app.currentVersion?.name || 'App'} wasn't deleted!`,
+              message,
               caption: ''
             })
 
             updateInstalledApps([app])
 
-            throw error
+            throw new Error(message)
           })
     }
   }
@@ -443,11 +459,9 @@ export const useAppsStore = defineStore('apps', () => {
         batch.value.doneCount++
 
         if (batch.value.totalCount === batch.value.doneCount) {
-          console.log('flags.value.batchUpdate 1', flags.value.batchUpdate)
           batch.value.totalCount = 0
           batch.value.doneCount = 0
           flags.value.batchUpdate = false
-          console.log('flags.value.batchUpdate 2', flags.value.batchUpdate)
         }
       }
       flags.value.loadingInstalledApps = false
@@ -508,7 +522,6 @@ export const useAppsStore = defineStore('apps', () => {
   }
   const updateApp = async (app) => {
     return installApp(app)
-      .catch(error => error)
   }
 
   const installApp = async (app) => {
@@ -542,174 +555,201 @@ export const useAppsStore = defineStore('apps', () => {
       app.action.progress = 0
       return
     }
-    app.action.progress = 0.33
-    if (app.action.type === 'update') {
-      batch.value.progress = 0.33
+
+    if (flipper.value.name === getFlipperCurrentlyParticipating()) {
+      app.action.progress = 0.33
+      if (app.action.type === 'update') {
+        batch.value.progress = 0.33
+      }
+      appNotif.value({
+        caption: '33%'
+      })
+      await asyncSleep(300)
+      log({
+        level: 'debug',
+        message: `${componentName}: Installing app '${app.name}' (${app.alias}): fetched .fap`
+      })
+    } else {
+      throw new Error(`Flipper ${getFlipperCurrentlyParticipating()} was not found`)
     }
-    appNotif.value({
-      caption: '33%'
-    })
-    await asyncSleep(300)
-    log({
-      level: 'debug',
-      message: `${componentName}: Installing app '${app.name}' (${app.alias}): fetched .fap`
-    })
 
     // generate manifest
-    async function urlContentToDataUri (url) {
-      return await axios.get(url, { responseType: 'blob' })
-        .then(({ data }) => new Promise(resolve => {
-          const reader = new FileReader()
-          reader.onload = function () { resolve(this.result) }
-          reader.readAsDataURL(data)
-        }))
-        .catch((error) => {
-          throw error
-        })
+    let manifestFile = null
+    if (flipper.value.name === getFlipperCurrentlyParticipating()) {
+      async function urlContentToDataUri (url) {
+        return await axios.get(url, { responseType: 'blob' })
+          .then(({ data }) => new Promise(resolve => {
+            const reader = new FileReader()
+            reader.onload = function () { resolve(this.result) }
+            reader.readAsDataURL(data)
+          }))
+          .catch((error) => {
+            throw error
+          })
+      }
+      const dataUri = await urlContentToDataUri(app.currentVersion.iconUri)
+      const base64Icon = dataUri.split(',')[1]
+      let manifestText = `Filetype: Flipper Application Installation Manifest\nVersion: 1\nFull Name: ${app.currentVersion.name}\nIcon: ${base64Icon}\nVersion Build API: ${info.value.firmware.api.major}.${info.value.firmware.api.minor}\nUID: ${app.id}\nVersion UID: ${app.currentVersion.id}\nPath: ${paths.appDir}/${app.alias}.fap`
+      if (!mainFlags.value.catalogChannelProduction) {
+        manifestText = manifestText + '\nDevCatalog: true'
+      }
+      manifestFile = new TextEncoder().encode(manifestText)
+      app.action.progress = 0.45
+      if (app.action.type === 'update') {
+        batch.value.progress = 0.45
+      }
+      appNotif.value({
+        caption: '45%'
+      })
+      await asyncSleep(300)
+    } else {
+      throw new Error(`Flipper ${getFlipperCurrentlyParticipating()} was not found`)
     }
-    const dataUri = await urlContentToDataUri(app.currentVersion.iconUri)
-    const base64Icon = dataUri.split(',')[1]
-    let manifestText = `Filetype: Flipper Application Installation Manifest\nVersion: 1\nFull Name: ${app.currentVersion.name}\nIcon: ${base64Icon}\nVersion Build API: ${info.value.firmware.api.major}.${info.value.firmware.api.minor}\nUID: ${app.id}\nVersion UID: ${app.currentVersion.id}\nPath: ${paths.appDir}/${app.alias}.fap`
-    if (!mainFlags.value.catalogChannelProduction) {
-      manifestText = manifestText + '\nDevCatalog: true'
-    }
-    const manifestFile = new TextEncoder().encode(manifestText)
-    app.action.progress = 0.45
-    if (app.action.type === 'update') {
-      batch.value.progress = 0.45
-    }
-    appNotif.value({
-      caption: '45%'
-    })
-    await asyncSleep(300)
 
     // upload manifest to temp
-    await flipper.value.RPC('storageWrite', { path: `${paths.tempDir}/${app.id}.fim`, buffer: manifestFile })
-      .then(() => {
-        log({
-          level: 'debug',
-          message: `${componentName}: Installing app '${app.name}' (${app.alias}): uploaded manifest (temp)`
+    if (flipper.value.name === getFlipperCurrentlyParticipating()) {
+      await flipper.value.RPC('storageWrite', { path: `${paths.tempDir}/${app.id}.fim`, buffer: manifestFile })
+        .then(() => {
+          log({
+            level: 'debug',
+            message: `${componentName}: Installing app '${app.name}' (${app.alias}): uploaded manifest (temp)`
+          })
         })
-      })
-      .catch(error => {
-        rpcErrorHandler(componentName, error, 'storageWrite')
+        .catch(error => {
+          rpcErrorHandler(componentName, error, 'storageWrite')
 
-        throw error
-      })
-    app.action.progress = 0.5
-    if (app.action.type === 'update') {
-      batch.value.progress = 0.5
+          throw error
+        })
+      app.action.progress = 0.5
+      if (app.action.type === 'update') {
+        batch.value.progress = 0.5
+      }
+      await asyncSleep(300)
+    } else {
+      throw new Error(`Flipper ${getFlipperCurrentlyParticipating()} was not found`)
     }
-    await asyncSleep(300)
 
     // upload fap to temp
-    await flipper.value.RPC('storageWrite', { path: `${paths.tempDir}/${app.id}.fap`, buffer: fap })
-      .then(() => {
-        log({
-          level: 'debug',
-          message: `${componentName}: Installing app '${app.name}' (${app.alias}): uploaded .fap (temp)`
+    if (flipper.value.name === getFlipperCurrentlyParticipating()) {
+      await flipper.value.RPC('storageWrite', { path: `${paths.tempDir}/${app.id}.fap`, buffer: fap })
+        .then(() => {
+          log({
+            level: 'debug',
+            message: `${componentName}: Installing app '${app.name}' (${app.alias}): uploaded .fap (temp)`
+          })
         })
-      })
-      .catch(error => {
-        rpcErrorHandler(componentName, error, 'storageWrite')
+        .catch(error => {
+          rpcErrorHandler(componentName, error, 'storageWrite')
 
-        throw error
+          throw error
+        })
+      app.action.progress = 0.75
+      if (app.action.type === 'update') {
+        batch.value.progress = 0.75
+      }
+      appNotif.value({
+        caption: '75%'
       })
-    app.action.progress = 0.75
-    if (app.action.type === 'update') {
-      batch.value.progress = 0.75
+      await asyncSleep(300)
+    } else {
+      throw new Error(`Flipper ${getFlipperCurrentlyParticipating()} was not found`)
     }
-    appNotif.value({
-      caption: '75%'
-    })
-    await asyncSleep(300)
 
     // move manifest and fap
-    let dirList = await flipper.value.RPC('storageList', { path: paths.manifestDir })
-      .catch(error => {
-        rpcErrorHandler(componentName, error, 'storageList')
-
-        throw error
-      })
-    const oldManifest = dirList.find(e => e.name === `${app.alias}.fim`)
-    if (oldManifest) {
-      await flipper.value.RPC('storageRemove', { path: `${paths.manifestDir}/${app.alias}.fim` })
-        .then(() => {
-          log({
-            level: 'debug',
-            message: `${componentName}: Installing app '${app.name}' (${app.alias}): removed old manifest`
-          })
-        })
+    let dirList = null
+    if (flipper.value.name === getFlipperCurrentlyParticipating()) {
+      dirList = await flipper.value.RPC('storageList', { path: paths.manifestDir })
         .catch(error => {
-          rpcErrorHandler(componentName, error, 'storageRemove')
+          rpcErrorHandler(componentName, error, 'storageList')
 
           throw error
         })
-    }
+      const oldManifest = dirList.find(e => e.name === `${app.alias}.fim`)
+      if (oldManifest) {
+        await flipper.value.RPC('storageRemove', { path: `${paths.manifestDir}/${app.alias}.fim` })
+          .then(() => {
+            log({
+              level: 'debug',
+              message: `${componentName}: Installing app '${app.name}' (${app.alias}): removed old manifest`
+            })
+          })
+          .catch(error => {
+            rpcErrorHandler(componentName, error, 'storageRemove')
 
-    await flipper.value.RPC('storageRename', { oldPath: `${paths.tempDir}/${app.id}.fim`, newPath: `${paths.manifestDir}/${app.alias}.fim` })
-      .then(() => {
-        log({
-          level: 'debug',
-          message: `${componentName}: Installing app '${app.name}' (${app.alias}): moved new manifest`
-        })
-      })
-      .catch(error => {
-        rpcErrorHandler(componentName, error, 'storageRename')
+            throw error
+          })
+      }
 
-        throw error
-      })
-    app.action.progress = 0.8
-    if (app.action.type === 'update') {
-      batch.value.progress = 0.8
-    }
-    appNotif.value({
-      caption: '80%'
-    })
-    await asyncSleep(300)
-
-    dirList = await flipper.value.RPC('storageList', { path: paths.appDir })
-      .catch(error => {
-        rpcErrorHandler(componentName, error, 'storageList')
-
-        throw error
-      })
-    const oldFap = dirList.find(e => e.name === `${app.alias}.fap`)
-    if (oldFap) {
-      await flipper.value.RPC('storageRemove', { path: `${paths.appDir}/${app.alias}.fap` })
+      await flipper.value.RPC('storageRename', { oldPath: `${paths.tempDir}/${app.id}.fim`, newPath: `${paths.manifestDir}/${app.alias}.fim` })
         .then(() => {
           log({
             level: 'debug',
-            message: `${componentName}: Installing app '${app.name}' (${app.alias}): removed old .fap`
+            message: `${componentName}: Installing app '${app.name}' (${app.alias}): moved new manifest`
           })
         })
         .catch(error => {
-          rpcErrorHandler(componentName, error, 'storageRemove')
+          rpcErrorHandler(componentName, error, 'storageRename')
 
           throw error
         })
+      app.action.progress = 0.8
+      if (app.action.type === 'update') {
+        batch.value.progress = 0.8
+      }
+      appNotif.value({
+        caption: '80%'
+      })
+      await asyncSleep(300)
+    } else {
+      throw new Error(`Flipper ${getFlipperCurrentlyParticipating()} was not found`)
     }
 
-    await flipper.value.RPC('storageRename', { oldPath: `${paths.tempDir}/${app.id}.fap`, newPath: `${paths.appDir}/${app.alias}.fap` })
-      .then(() => {
-        log({
-          level: 'debug',
-          message: `${componentName}: Installing app '${app.name}' (${app.alias}): moved new .fap`
+    if (flipper.value.name === getFlipperCurrentlyParticipating()) {
+      dirList = await flipper.value.RPC('storageList', { path: paths.appDir })
+        .catch(error => {
+          rpcErrorHandler(componentName, error, 'storageList')
+
+          throw error
         })
-      })
-      .catch(error => {
-        rpcErrorHandler(componentName, error, 'storageRename')
+      const oldFap = dirList.find(e => e.name === `${app.alias}.fap`)
+      if (oldFap) {
+        await flipper.value.RPC('storageRemove', { path: `${paths.appDir}/${app.alias}.fap` })
+          .then(() => {
+            log({
+              level: 'debug',
+              message: `${componentName}: Installing app '${app.name}' (${app.alias}): removed old .fap`
+            })
+          })
+          .catch(error => {
+            rpcErrorHandler(componentName, error, 'storageRemove')
 
-        throw error
+            throw error
+          })
+      }
+
+      await flipper.value.RPC('storageRename', { oldPath: `${paths.tempDir}/${app.id}.fap`, newPath: `${paths.appDir}/${app.alias}.fap` })
+        .then(() => {
+          log({
+            level: 'debug',
+            message: `${componentName}: Installing app '${app.name}' (${app.alias}): moved new .fap`
+          })
+        })
+        .catch(error => {
+          rpcErrorHandler(componentName, error, 'storageRename')
+
+          throw error
+        })
+      app.action.progress = 1
+      if (app.action.type === 'update') {
+        batch.value.progress = 1
+      }
+      appNotif.value({
+        caption: '100%'
       })
-    app.action.progress = 1
-    if (app.action.type === 'update') {
-      batch.value.progress = 1
+      await asyncSleep(300)
+    } else {
+      throw new Error(`Flipper ${getFlipperCurrentlyParticipating()} was not found`)
     }
-    appNotif.value({
-      caption: '100%'
-    })
-    await asyncSleep(300)
 
     // post-install
     await getInstalledApps()
@@ -747,58 +787,67 @@ export const useAppsStore = defineStore('apps', () => {
     await ensureCategoryPaths()
 
     // remove .fap
-    let dirList = await flipper.value.RPC('storageList', { path: paths.appDir })
-      .catch(error => {
-        rpcErrorHandler(componentName, error, 'storageList')
-
-        throw error
-      })
-    const fap = dirList.find(e => e.name === `${app.alias}.fap`)
-    if (fap) {
-      await flipper.value.RPC('storageRemove', { path: `${paths.appDir}/${app.alias}.fap` })
-        .then(() => {
-          log({
-            level: 'debug',
-            message: `${componentName}: Deleting app '${app.name}' (${app.alias}): removed .fap`
-          })
-        })
+    let dirList = null
+    if (flipper.value.name === getFlipperCurrentlyParticipating()) {
+      dirList = await flipper.value.RPC('storageList', { path: paths.appDir })
         .catch(error => {
-          rpcErrorHandler(componentName, error, 'storageRemove')
+          rpcErrorHandler(componentName, error, 'storageList')
 
           throw error
         })
+      const fap = dirList.find(e => e.name === `${app.alias}.fap`)
+      if (fap) {
+        await flipper.value.RPC('storageRemove', { path: `${paths.appDir}/${app.alias}.fap` })
+          .then(() => {
+            log({
+              level: 'debug',
+              message: `${componentName}: Deleting app '${app.name}' (${app.alias}): removed .fap`
+            })
+          })
+          .catch(error => {
+            rpcErrorHandler(componentName, error, 'storageRemove')
+
+            throw error
+          })
+      }
+      app.action.progress = 0.5
+      appNotif.value({
+        caption: '50%'
+      })
+    } else {
+      throw new Error(`Flipper ${getFlipperCurrentlyParticipating()} was not found`)
     }
-    app.action.progress = 0.5
-    appNotif.value({
-      caption: '50%'
-    })
 
     // remove manifest
-    dirList = await flipper.value.RPC('storageList', { path: paths.manifestDir })
-      .catch(error => {
-        rpcErrorHandler(componentName, error, 'storageList')
-
-        throw error
-      })
-    const manifest = dirList.find(e => e.name === `${app.alias}.fim`)
-    if (manifest) {
-      await flipper.value.RPC('storageRemove', { path: `${paths.manifestDir}/${app.alias}.fim` })
-        .then(() => {
-          log({
-            level: 'debug',
-            message: `${componentName}: Deleting app '${app.name}' (${app.alias}): removed manifest`
-          })
-        })
+    if (flipper.value.name === getFlipperCurrentlyParticipating()) {
+      dirList = await flipper.value.RPC('storageList', { path: paths.manifestDir })
         .catch(error => {
-          rpcErrorHandler(componentName, error, 'storageRemove')
+          rpcErrorHandler(componentName, error, 'storageList')
 
           throw error
         })
+      const manifest = dirList.find(e => e.name === `${app.alias}.fim`)
+      if (manifest) {
+        await flipper.value.RPC('storageRemove', { path: `${paths.manifestDir}/${app.alias}.fim` })
+          .then(() => {
+            log({
+              level: 'debug',
+              message: `${componentName}: Deleting app '${app.name}' (${app.alias}): removed manifest`
+            })
+          })
+          .catch(error => {
+            rpcErrorHandler(componentName, error, 'storageRemove')
+
+            throw error
+          })
+      }
+      app.action.progress = 1
+      appNotif.value({
+        caption: '100%'
+      })
+    } else {
+      throw new Error(`Flipper ${getFlipperCurrentlyParticipating()} was not found`)
     }
-    app.action.progress = 1
-    appNotif.value({
-      caption: '100%'
-    })
 
     // post-delete
     await getInstalledApps()
@@ -867,7 +916,7 @@ export const useAppsStore = defineStore('apps', () => {
           }
         }
 
-        if (apps.value.length && !flipperReady.value) {
+        if (apps.value.length) {
           apps.value = apps.value.map(app => {
             app.actionButton = actionButton(app)
             return app

@@ -8,13 +8,18 @@ import { fetchFirmwareTar } from 'src/util/fetch'
 import { init as bridgeControllerInit, emitter as bridgeEmitter, getCurrentFlipper, getList, setCurrentFlipper } from 'src/flipper-js/bridgeController'
 
 import { useMainStore } from 'stores/global/main'
+import { useAppsStore } from 'stores/global/apps'
 
 import { useRouter, useRoute } from 'vue-router'
 
 // import { rpcErrorHandler } from 'composables/useRpcUtils'
 
+import promiseQueue from 'composables/usePromiseQueue'
+const { clearQueue } = promiseQueue()
+
 export const useMainElectronStore = defineStore('MainElectron', () => {
   const mainStore = useMainStore()
+  const appsStore = useAppsStore()
 
   const router = useRouter()
   const route = useRoute()
@@ -92,6 +97,8 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
   }
 
   const connect = async (name) => {
+    appsStore.onClearInstalledAppsList()
+    clearQueue()
     setCurrentFlipper(name)
     await flipperConnect()
   }
@@ -128,8 +135,7 @@ export const useMainElectronStore = defineStore('MainElectron', () => {
     const availableList = _list.filter(e => e.mode !== 'dfu')
     const notAvailableList = _list.filter(e => e.mode === 'dfu')
     if (availableList.length) {
-      setCurrentFlipper(availableList[0].name)
-      await flipperConnect()
+      await connect(availableList[0].name)
     } else if (notAvailableList.length) {
       flags.value.dialogMultiflipper = true
     }

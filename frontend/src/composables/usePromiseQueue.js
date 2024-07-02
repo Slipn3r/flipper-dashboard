@@ -1,18 +1,28 @@
 import { beforeunloadActive, beforeunloadDeactivate } from 'composables/useBeforeunload'
 
 export default function promiseQueue () {
-  const queue = []
+  let queue = []
   let process = false
+  let flipperCurrentlyParticipating = ''
 
-  const addToQueue = async (fn, params) => {
+  const addToQueue = async ({
+    fn,
+    flipperName,
+    params
+  }) => {
     queue.push({
       fn,
+      flipperName,
       params
     })
 
     if (!process) {
       await executeQueue()
     }
+  }
+
+  const clearQueue = () => {
+    queue = []
   }
 
   const executeQueue = () => {
@@ -22,8 +32,9 @@ export default function promiseQueue () {
     return new Promise((resolve, reject) => {
       const next = () => {
         if (queue.length) {
-          const { fn, params } = queue.shift()
+          const { fn, flipperName, params } = queue.shift()
 
+          flipperCurrentlyParticipating = flipperName
           fn(...params)
             .then(() => next())
             .catch((error) => {
@@ -44,6 +55,8 @@ export default function promiseQueue () {
 
   return {
     addToQueue,
-    getProcess: () => process
+    clearQueue,
+    getProcess: () => process,
+    getFlipperCurrentlyParticipating: () => flipperCurrentlyParticipating
   }
 }

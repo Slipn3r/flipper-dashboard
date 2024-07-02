@@ -4,9 +4,11 @@ import { ref, computed } from 'vue'
 import { log } from 'composables/useLog'
 
 import { useMainStore } from 'stores/global/main'
+import { useAppsStore } from 'stores/global/apps'
 
 export const useMainWebStore = defineStore('MainWeb', () => {
   const mainStore = useMainStore()
+  const appsStore = useAppsStore()
 
   const flags = computed(() => mainStore.flags)
 
@@ -22,6 +24,8 @@ export const useMainWebStore = defineStore('MainWeb', () => {
   const connectionStatus = ref('Ready to connect')
   const componentName = computed(() => mainStore.componentName)
   const connect = async (path) => {
+    appsStore.onClearInstalledAppsList()
+
     return new Promise((resolve, reject) => {
       (async () => {
         await flipper.value.connect()
