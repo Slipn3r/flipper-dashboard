@@ -1,0 +1,19 @@
+@font-face {
+  font-family: 'Born2bSportyV2';
+  src: url('https://cdn.flipperzero.one/Born2bSportyV2.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HaxrCorp';
+  src: url('https://cdn.flipperzero.one/haxrcorp-4089.ttf') format('truetype');
+  font-display: swap;
+}
+
+.text-h4 {
+  font-weight: 500;
+}
+
+.text-pixelated {
+  font-family: 'Born2bSportyV2', sans-serif;
+  letter-spacing: 0.035em;
+}

@@ -1,0 +1,22 @@
+.app {
+  &__icon-wrapper {
+    width: 70px;
+    height: 70px;
+    padding: 10px;
+    border: 1px solid #dbdbdb;
+    border-radius: 10px;
+  }
+
+  &__screenshot-wrapper {
+    padding: 2px 0;
+  }
+
+  &__image-wrapper {
+    border-radius: 6px;
+    border: 2px solid black;
+  }
+
+  &__image {
+    image-rendering: pixelated;
+  }
+}

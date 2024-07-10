@@ -4,6 +4,7 @@
 /src-cordova
 /.quasar
 /node_modules
-.eslintrc.js
+.eslintrc.cjs
 babel.config.js
 quasar.conf.js
+/quasar.config.*.temporary.compiled*
