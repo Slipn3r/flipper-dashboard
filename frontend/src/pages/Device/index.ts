@@ -1,1 +1,2 @@
-export { default as Device } from './ui/Device.vue'
+export * from './ui'
+

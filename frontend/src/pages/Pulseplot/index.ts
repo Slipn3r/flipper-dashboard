@@ -1,1 +1,1 @@
-export { default as Pulseplot } from './ui/Pulseplot.vue'
+export * from './ui'

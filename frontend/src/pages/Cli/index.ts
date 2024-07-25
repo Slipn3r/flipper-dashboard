@@ -1,1 +1,2 @@
-export { default as Cli } from './ui/Cli.vue'
+export * from './ui'
+

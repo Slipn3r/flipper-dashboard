@@ -1,1 +1,1 @@
-export { default as ErrorNotFound } from './ui/ErrorNotFound.vue'
+export * from './ui'

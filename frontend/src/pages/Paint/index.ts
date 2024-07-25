@@ -1,1 +1,1 @@
-export { default as Paint } from './ui/Paint.vue'
+export * from './ui'

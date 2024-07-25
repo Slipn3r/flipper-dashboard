@@ -1,4 +1,4 @@
 export { default as AppsLayout } from './AppsLayout.vue'
-export { default as App } from './App.vue'
-export { default as Apps } from './Apps.vue'
-export { default as InstalledApps } from './InstalledApps.vue'
+export { default as AppPage } from './App.vue'
+export { default as AppsPage } from './Apps.vue'
+export { default as InstalledAppsPage } from './InstalledApps.vue'

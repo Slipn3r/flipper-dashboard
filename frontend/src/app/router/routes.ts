@@ -8,7 +8,7 @@ const routes: readonly RouteRecordRaw[] = [
       {
         name: 'Device',
         path: '',
-        component: async () => (await import('pages/Device')).Device
+        component: async () => (await import('pages/Device')).DevicePage
       }
     ]
   },
@@ -24,22 +24,22 @@ const routes: readonly RouteRecordRaw[] = [
           {
             name: 'Apps',
             path: '',
-            component: async () => (await import('pages/Apps')).Apps
+            component: async () => (await import('pages/Apps')).AppsPage
           },
           {
             name: 'AppsCategory',
             path: 'category/:path',
-            component: async () => (await import('pages/Apps')).Apps
+            component: async () => (await import('pages/Apps')).AppsPage
           },
           {
             name: 'AppsPath',
             path: ':path',
-            component: async () => (await import('pages/Apps')).App
+            component: async () => (await import('pages/Apps')).AppPage
           },
           {
             name: 'InstalledApps',
             path: 'installed',
-            component: async () => (await import('pages/Apps')).InstalledApps
+            component: async () => (await import('pages/Apps')).InstalledAppsPage
           }
         ]
       }
@@ -53,7 +53,7 @@ const routes: readonly RouteRecordRaw[] = [
       {
         name: 'Archive',
         path: '',
-        component: async () => (await import('pages/Archive')).Archive
+        component: async () => (await import('pages/Archive')).ArchivePage
       }
     ]
   },
@@ -65,7 +65,7 @@ const routes: readonly RouteRecordRaw[] = [
       {
         name: 'Cli',
         path: '',
-        component: async () => (await import('pages/Cli')).Cli
+        component: async () => (await import('pages/Cli')).CliPage
       }
     ]
   },
@@ -77,7 +77,7 @@ const routes: readonly RouteRecordRaw[] = [
       {
         name: 'NfcTools',
         path: '',
-        component: async () => (await import('pages/Nfc')).Nfc
+        component: async () => (await import('pages/Nfc')).NfcPage
       }
     ]
   },
@@ -89,7 +89,7 @@ const routes: readonly RouteRecordRaw[] = [
       {
         name: 'Paint',
         path: '',
-        component: async () => (await import('pages/Paint')).Paint
+        component: async () => (await import('pages/Paint')).PaintPage
       }
     ]
   },
@@ -101,7 +101,7 @@ const routes: readonly RouteRecordRaw[] = [
       {
         name: 'Pulseplot',
         path: '',
-        component: async () => (await import('pages/Pulseplot')).Pulseplot
+        component: async () => (await import('pages/Pulseplot')).PulseplotPage
       }
     ]
   },
@@ -110,7 +110,7 @@ const routes: readonly RouteRecordRaw[] = [
   // but you can also remove it
   {
     path: '/:catchAll(.*)*',
-    component: async () => (await import('pages/ErrorNotFound')).ErrorNotFound
+    component: async () => (await import('pages/ErrorNotFound')).ErrorNotFoundPage
   }
 ]
 

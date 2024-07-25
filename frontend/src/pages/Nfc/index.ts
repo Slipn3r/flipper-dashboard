@@ -1,1 +1,1 @@
-export { default as Nfc } from './ui/Nfc.vue'
+export * from './ui'
