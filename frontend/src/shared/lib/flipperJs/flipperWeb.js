@@ -1,0 +1,294 @@
+if ('serial' in navigator) {
+  console.log('Serial API supported.')
+} else {
+  console.error('Serial API not supported.')
+}
+
+import { LineBreakTransformer, PromptBreakTransformer, ProtobufTransformer } from './transformers'
+
+import { PB } from './protobufCompiled'
+import asyncSleep from 'simple-async-sleep'
+// import { createNanoEvents } from 'nanoevents'
+
+import readInfo from './utils/readInfo'
+
+import * as storage from './commands/storage'
+import * as system from './commands/system'
+import * as application from './commands/application'
+import * as gui from './commands/gui'
+import * as gpio from './commands/gpio'
+import * as property from './commands/property'
+
+const RPCSubSystems = {
+  storage,
+  system,
+  application,
+  gui,
+  gpio,
+  property
+}
+
+export default class Flipper {
+  constructor() {
+    this.port = null
+
+    this.readingMode = {
+      type: 'text',
+      transform: 'promptBreak'
+    }
+    this.reader = null
+    this.readable = null
+
+    this.writer = null
+    this.writable = null
+
+    this.commandQueue = [
+      {
+        commandId: 0,
+        requestType: 'unsolicited',
+        chunks: [],
+        error: undefined
+      }
+    ]
+
+    this.info = null
+    this.connected = false
+
+    // this.emitter = createNanoEvents()
+  }
+
+  async connect ({
+    type = 'CLI'
+  }) {
+    this.port = await navigator.serial.requestPort({
+      filters: [
+        { usbVendorId: 0x0483, usbProductId: 0x5740 }
+      ]
+    })
+      .catch((e) => {
+        console.error(e)
+        throw e
+      })
+    // this.port = port
+
+    if (this.port) {
+      await this.openPort()
+
+      this.port.onconnect = () => {
+        console.log('connect')
+        this.connect({
+          type: 'RPC'
+        })
+      }
+
+      this.port.ondisconnect = () => {
+        console.log('disconnect')
+        this.disconnect()
+      }
+
+      console.log(this.port)
+      this.connected = true
+
+      if (type === 'RPC') {
+        await this.startRPCSession()
+        this.info = await readInfo(this)
+        console.log(this.info)
+      }
+    } else {
+      this.connected = false
+    }
+  }
+
+  async openPort () {
+    await this.port.open({ baudRate: 1 })
+
+    this.readable = this.port.readable
+    this.getReader()
+
+    this.writable = this.port.writable
+    this.getWriter()
+  }
+
+  async disconnect () {
+    await this.reader.cancel()
+    if (this.readableStreamClosed) {
+      // eslint-disable-next-line
+      await this.readableStreamClosed.catch(() => {})
+    }
+    await this.writer.close()
+
+    await this.port.close()
+
+    this.info = null
+    this.connected = false
+  }
+
+  getReader () {
+    if (this.readingMode.type === 'text') {
+      const textDecoder = new TextDecoderStream()
+      this.readableStreamClosed = this.readable.pipeTo(textDecoder.writable)
+
+      if (this.readingMode.transform.length) {
+        let transformer
+
+        switch (this.readingMode.transform) {
+          case 'lineBreak':
+            transformer = new LineBreakTransformer()
+            break
+          case 'promptBreak':
+            transformer = new PromptBreakTransformer()
+            break
+          default:
+            throw new Error('Invalid reading mode')
+        }
+
+        this.reader = textDecoder.readable
+          .pipeThrough(new TransformStream(transformer))
+          .getReader()
+      } else {
+        this.reader = textDecoder.readable.getReader()
+      }
+    } else if (this.readingMode.type === 'raw') {
+      if (this.readingMode.transform.length) {
+        let transformer
+
+        switch (this.readingMode.transform) {
+          case 'protobuf':
+            transformer = new ProtobufTransformer()
+            break;
+
+          default:
+            throw new Error('Invalid reading mode')
+        }
+
+        this.reader = this.readable
+          .pipeThrough(new TransformStream(transformer))
+          .getReader()
+      } else {
+        this.reader = this.readable.getReader()
+      }
+    } else {
+      throw new Error('Invalid reading mode')
+    }
+
+    this.read()
+  }
+
+  async read () {
+    try {
+      while (true) {
+        const { value, done } = await this.reader.read();
+        if (done) {
+          // |reader| has been canceled.
+          this.reader.releaseLock()
+          break;
+        }
+        // Do something with |value|…
+        if (this.readingMode.transform === 'protobuf') {
+          // if (value.content && value.content === 'guiScreenFrame') {
+          //   this.emitter.emit('screenStream/frame', value.guiScreenFrame.data, value.guiScreenFrame.orientation)
+          // }
+          const command = this.commandQueue.find(c => c.commandId === value.commandId)
+          // if (value.commandStatus) {
+          //   command.status = value.commandStatus
+          //   this.emitter.emit(`commandStatus_${value.commandId}`, value.commandStatus)
+          //   console.log('status', command)
+          //   return
+          // }
+          value[value.content].hasNext = value.hasNext
+          command.chunks.push(value[value.content])
+        } else {
+          console.log('value', value)
+        }
+      }
+    } catch (error) {
+      // Handle |error|…
+      console.error('test error', error)
+    }
+  }
+
+  async setReadingMode (type, transform = '') {
+    if (!type) {
+      return
+    }
+    this.readingMode.type = type
+    this.readingMode.transform = transform
+
+    await this.disconnect()
+
+    if (this.writer) {
+      this.writer.releaseLock()
+    }
+
+    await this.openPort()
+  }
+
+  getWriter () {
+    this.writer = this.writable.getWriter()
+  }
+
+  async write (message) {
+    const encoder = new TextEncoder()
+    const encoded = encoder.encode(message)
+    await this.writer.write(encoded)
+  }
+
+  async writeRaw (message) {
+    await this.writer.write(message)
+  }
+
+  async startRPCSession (attempts = 1) {
+    await this.setReadingMode('raw', 'protobuf')
+    // await asyncSleep(300)
+    await this.write('start_rpc_session\r')
+    await this.RPC('systemPing', { timeout: 1000 })
+      .catch(async error => {
+        if (attempts > 3) {
+          throw error
+        }
+        console.error(error)
+        await asyncSleep(500)
+        return this.startRPCSession(attempts + 1)
+      })
+  }
+
+  encodeRPCRequest (requestType, args, hasNext, commandId) {
+    let command
+    const options = { hasNext }
+    options[requestType] = args || {}
+    if (commandId) {
+      options.commandId = commandId
+      command = this.commandQueue.find(c => c.commandId === options.commandId)
+    } else {
+      options.commandId = this.commandQueue.length
+    }
+
+    if (!command) {
+      const i = this.commandQueue.push({
+        commandId: options.commandId,
+        requestType: requestType,
+        args: hasNext ? [args] : args
+      })
+      command = this.commandQueue[i - 1]
+    }
+
+    const message = PB.Main.create(options)
+    const data = new Uint8Array(PB.Main.encodeDelimited(message).finish())
+    return [data, command]
+  }
+
+  RPC (requestType, args) {
+    try {
+      const [subSystem, command] = splitRequestType(requestType)
+      return RPCSubSystems[subSystem][command].bind(this)(args)
+    } catch (e) {
+      console.error('test', e)
+    }
+  }
+}
+
+function splitRequestType (requestType) {
+  const index = requestType.search(/[A-Z]/g)
+  const command = requestType.slice(index)
+  return [requestType.slice(0, index), command[0].toLowerCase() + command.slice(1)]
+}

@@ -21,6 +21,7 @@
     "protobuf",
     "protofiles",
     "rfraw",
+    "scrollarea",
     "subtools"
   ],
 }

@@ -6,3 +6,12 @@ frontend/package-lock.json
 # Quasar core related directories
 frontend/.quasar
 frontend/dist
+
+# Log files
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# Lock files
+frontend/*-lock.json
+frontend/*.lock

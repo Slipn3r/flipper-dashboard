@@ -1,0 +1,49 @@
+<template>
+  <template v-if="flipperStore.info">
+    <div class="flex items-start q-gutter-x-xl">
+      <FlipperInfo class="q-mt-sm" v-bind="info" />
+      <FlipperBody v-bind="flipperBody" />
+    </div>
+
+    <FlipperUpdate />
+  </template>
+  <template v-else>
+    <FlipperConnectWebBtn />
+  </template>
+</template>
+
+<script setup>
+import { ref, computed } from 'vue'
+import { FlipperUpdate, FlipperConnectWebBtn } from 'features/Flipper'
+import { FlipperBody, FlipperInfo, FlipperModel } from 'entities/Flipper'
+const flipperStore = FlipperModel.useFlipperStore()
+
+import { bytesToSize } from 'shared/lib/utils/bytesToSize'
+
+const sdCardUsage = computed(() => {
+  return `${bytesToSize(flipperStore.info?.storage.sdcard.totalSpace - flipperStore.info?.storage.sdcard.freeSpace)} / ${bytesToSize(flipperStore.info?.storage.sdcard.totalSpace)}`
+})
+
+const hardwareVersion = computed(() => {
+  return flipperStore.info?.hardware.ver + '.F' + flipperStore.info?.hardware.target + 'B' + flipperStore.info?.hardware.body + 'C' + flipperStore.info?.hardware.connect
+})
+
+const radioVersion = computed(() => {
+  return flipperStore.info?.radio.alive !== false ? flipperStore.info?.radio.stack.major + '.' + flipperStore.info?.radio.stack.minor + '.' + flipperStore.info?.radio.stack.sub : 'corrupt'
+})
+
+const info = ref({
+  firmwareVersion: computed(() => flipperStore.info?.firmware.version),
+  buildDate: computed(() => flipperStore.info?.firmware.build.date),
+  sdCardUsage: computed(() => sdCardUsage.value),
+  databaseStatus: computed(() => flipperStore.info?.storage.databases.status),
+  hardwareVersion: computed(() => hardwareVersion.value),
+  radioVersion: computed(() => radioVersion.value),
+  radioStackType: computed(() => flipperStore.info?.radio.stack.type)
+})
+
+const flipperBody = ref({
+  flipperName: computed(() => flipperStore.info?.hardware.name),
+  flipperColor: computed(() => flipperStore.info?.hardware.color)
+})
+</script>
