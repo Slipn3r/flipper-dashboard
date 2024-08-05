@@ -72,6 +72,9 @@ import { useRoute, useRouter } from 'vue-router'
 import { AppsModel } from 'entities/Apps'
 const appsStore = AppsModel.useAppStore()
 
+import { CategoryModel } from 'entities/Category'
+const categoriesStore = CategoryModel.useCategoriesStore()
+
 const search = ref('')
 const route = useRoute()
 const router = useRouter()
@@ -81,6 +84,10 @@ const showBackButton = computed(
 )
 
 const goCatalog = () => {
-  router.push({ name: 'Apps' })
+  if (categoriesStore.currentCategory) {
+    router.push({ name: 'AppsCategory', params: { path:  categoriesStore.currentCategory.name.toLowerCase()} })
+  } else {
+    router.push({ name: 'Apps'})
+  }
 }
 </script>
