@@ -12,14 +12,14 @@
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
     "lint-fix": "eslint --fix --ext .js,.ts,.vue ./",
-    "format": "prettier --write \"**/*.{js,ts,vue,scss,sass,css,html,md,json}\" --ignore-path .eslintignore --config .prettierrc.json && npm run lint-fix",
+    "format": "prettier --write \"**/*.{js,ts,vue,scss,sass,css,html,md,json}\" --ignore-path .eslintignore --config .prettierrc.json && yarn lint-fix",
     "dev/web": "quasar dev",
     "dev/electron": "quasar dev -m electron",
     "dev/electron/devtools": "quasar dev -m electron --devtools",
-    "build": "PRODUCTION=TRUE quasar build -m spa",
-    "build/dev": "DEV=TRUE quasar build -m spa",
+    "build/web": "PRODUCTION=TRUE quasar build -m spa",
+    "build/web/dev": "DEV=TRUE quasar build -m spa",
     "build/electron": "PRODUCTION=TRUE quasar build -m electron",
-    "build/electron/dev": "quasar build -m electron",
+    "build/electron/dev": "DEV=TRUE quasar build -m electron --debug",
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
@@ -35,6 +35,7 @@
     "vue-router": "^4.0.12"
   },
   "devDependencies": {
+    "@electron/packager": "^18.3.2",
     "@quasar/app-vite": "^1.9.0",
     "@quasar/quasar-app-extension-qmarkdown": "^2.0.0-beta.10",
     "@types/lodash": "^4.17.6",
@@ -44,6 +45,7 @@
     "@typescript-eslint/parser": "^5.10.0",
     "autoprefixer": "^10.4.2",
     "electron": "^31.1.0",
+    "electron-builder": "^24.3.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-import": "^2.29.1",

@@ -190,10 +190,11 @@ module.exports = configure(function (/* ctx */) {
 
       inspectPort: 5858,
 
-      bundler: 'packager', // 'packager' or 'builder'
+      bundler: 'builder', // 'packager' or 'builder'
 
       packager: {
         // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
+        arch: ['arm64', 'x64']
         // OS X / Mac App Store
         // appBundleId: '',
         // appCategoryType: '',
@@ -206,7 +207,18 @@ module.exports = configure(function (/* ctx */) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'new-architecture'
+        appId: 'new-architecture',
+        dmg: {
+          sign: false,
+        },
+        mac: {
+          target: [
+            {
+              target: 'dmg',
+              arch: ['arm64', 'x64'],
+            },
+          ],
+        },
       }
     },
 

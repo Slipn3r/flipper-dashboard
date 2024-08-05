@@ -11,8 +11,10 @@
     { "mode": "auto" }
   ],
   "cSpell.words": [
+    "ARCHIVARIUS",
     "flipperzero",
     "gpio",
+    "Haxr",
     "Hexbuffer",
     "nanoevents",
     "nfctools",
@@ -20,6 +22,7 @@
     "proto",
     "protobuf",
     "protofiles",
+    "qmarkdown",
     "rfraw",
     "scrollarea",
     "subtools"
