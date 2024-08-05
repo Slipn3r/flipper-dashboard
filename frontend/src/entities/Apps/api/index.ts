@@ -7,19 +7,23 @@ import type { AppsShortParams, AppsPostShortParams, AppFapParams, App, GetAppPar
 
 let controller: AbortController | undefined = undefined
 async function fetchAppsShort(
-  params: AppsShortParams = {
-    limit: 50,
-    offset: 0,
-    sort_by: 'created_at',
-    sort_order: 1
-  }
+  params: Partial<AppsShortParams> = {}
 ) {
+  const defaultParams: AppsShortParams = {
+    limit: 48,
+    offset: 0,
+    sort_by: 'updated_at',
+    sort_order: -1
+  }
+
+  const mergedParams = { ...defaultParams, ...params }
+
   if (controller) controller.abort()
   controller = new AbortController()
 
   return await instance
     .get('/0/application', {
-      params,
+      params: mergedParams,
       signal: controller.signal
     })
     .then(({ data }) => {

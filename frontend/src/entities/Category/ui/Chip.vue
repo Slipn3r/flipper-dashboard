@@ -1,7 +1,7 @@
 <template>
   <q-chip
     :style="`background-color: #${color}; opacity: ${
-      isCurrentCategory ? '0.5' : '1'
+      isCurrentCategory ? '1' : '0.5'
     }`"
     :clickable="clickable"
     @click="onClick"
