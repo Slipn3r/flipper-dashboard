@@ -5,20 +5,27 @@
     dense
     color="primary"
     label="Install"
-    @click="onClick"
+    @click.stop="onClick"
+    :loading="props.loading"
   />
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { AppsModel } from 'entities/Apps'
+const appsStore = AppsModel.useAppStore()
 
-const props = defineProps({
-  app: {
-    type: AppsModel.App,
-    required: true
-  }
+interface Props {
+  app?: AppsModel.App,
+  loading?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  loading: false
 })
+
 const onClick = () => {
-  console.log('Install', props.app)
+  if (props.app) {
+    appsStore.onAction(props.app, 'install')
+  }
 }
 </script>

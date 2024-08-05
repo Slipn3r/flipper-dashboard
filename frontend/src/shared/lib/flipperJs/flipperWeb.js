@@ -11,6 +11,7 @@ import asyncSleep from 'simple-async-sleep'
 import { createNanoEvents } from 'nanoevents'
 
 import readInfo from './utils/readInfo'
+import { getInstalledApps, onClearInstalledAppsList } from './utils/getInstalledApps'
 
 import * as storage from './commands/storage'
 import * as system from './commands/system'
@@ -59,6 +60,8 @@ export default class Flipper {
     this.info = null
     this.name = null
     this.connected = false
+
+    this.installedApps = []
 
     this.emitter = createNanoEvents()
   }
@@ -134,10 +137,9 @@ export default class Flipper {
           this.connected = false
         }
 
-      if (type === 'RPC') {
-        await this.startRPCSession()
-        this.info = await readInfo(this)
-        console.log(this.info)
+        if (this.flipperReady) {
+          await this.getInstalledApps()
+        }
       }
     } else {
       this.info = null
@@ -170,6 +172,8 @@ export default class Flipper {
     this.name = null
     this.connected = false
     this.flipperReady = false
+    this.installedApps = []
+    this.commandQueue = []
 
     this.emitter.emit('disconnect')
   }
@@ -286,6 +290,11 @@ export default class Flipper {
 
   async writeRaw (message) {
     await this.writer.write(message)
+  }
+
+  async getInstalledApps () {
+    onClearInstalledAppsList()
+    this.installedApps = await getInstalledApps.bind(this)()
   }
 
   async startRPCSession (attempts = 1) {

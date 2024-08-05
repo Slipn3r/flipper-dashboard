@@ -1,3 +1,7 @@
 <template>
-  <q-page padding> Installed Apps </q-page>
+  <InstalledList />
 </template>
+
+<script setup>
+import { InstalledList } from 'widgets/Apps/InstalledList'
+</script>

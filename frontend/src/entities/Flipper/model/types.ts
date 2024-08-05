@@ -132,7 +132,29 @@ export type PowerInfo = {
   }
 }
 
-export type FlipperInfo = DeviceInfo & PowerInfo
+export type SpaceInfo = {
+  totalSpace: number
+  freeSpace: number
+}
+
+export type StorageInfo = {
+  storage: {
+    sdcard?: {
+      status: {
+        label?: string,
+        isInstalled?: boolean
+      }
+      totalSpace?: number
+      freeSpace?: number
+    }
+    databases?: {
+      status?: string
+    }
+    internal?: SpaceInfo | object
+  }
+}
+
+export type FlipperInfo = DeviceInfo & PowerInfo & StorageInfo
 
 export type File = {
   type?: number
@@ -140,7 +162,14 @@ export type File = {
   name: string
 }
 
-export type SpaceInfo = {
-  totalSpace: number
-  freeSpace: number
+export type App = {
+  id: string
+  name: string
+  icon: string
+  installedVersion: {
+    id: string
+    api: string
+  },
+  path: string
+  devCatalog?: string
 }

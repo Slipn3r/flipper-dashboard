@@ -1,7 +1,7 @@
 .card {
   width: fit-content;
   border-radius: 14px;
-  padding: 12px;
+  padding: $card-padding;
   transition-duration: 300ms;
 
   &:hover {
@@ -10,7 +10,7 @@
   }
 
   &__wrapper {
-    width: calc(256px + 4px + 8px);
+    width: calc($card-width);
   }
 
   &__image-wrapper {
@@ -24,6 +24,20 @@
 
   &__description {
     line-height: 15px;
+  }
+
+  &__button-wrapper {
+    width: 80px;
+  }
+}
+
+.installed-card {
+  &__icon-wrapper {
+    width: 60px;
+    height: 60px;
+    padding: 10px;
+    border: 1px solid #dbdbdb;
+    border-radius: 10px;
   }
 
   &__button-wrapper {

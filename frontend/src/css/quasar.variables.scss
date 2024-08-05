@@ -27,3 +27,6 @@ $warning: #f2c037;
 $generic-border-radius: 8px;
 $button-border-radius: $generic-border-radius;
 // $button-padding: 8px 20px;
+
+$card-padding: 12px !default;
+$card-width: 256px + $card-padding !default;

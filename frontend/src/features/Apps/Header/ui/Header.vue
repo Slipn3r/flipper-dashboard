@@ -42,7 +42,15 @@
         icon="flipper:installed"
         label="Installed"
         :to="{ name: 'InstalledApps' }"
-      />
+      >
+        <q-badge
+          v-if="$q.screen.width > 365 && appsStore.appsUpdateCount > 0"
+          color="positive"
+          floating
+          class="outdated-badge"
+          :label="appsStore.appsUpdateCount"
+        />
+      </q-btn>
       <q-btn
         class="text-weight-regular"
         flat
@@ -58,9 +66,11 @@
   </q-header>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { AppsModel } from 'entities/Apps'
+const appsStore = AppsModel.useAppStore()
 
 const search = ref('')
 const route = useRoute()

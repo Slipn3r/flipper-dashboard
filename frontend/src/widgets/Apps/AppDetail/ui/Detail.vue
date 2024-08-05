@@ -1,59 +1,109 @@
 <template>
   <div class="app">
     <div class="row items-center q-mb-lg">
-      <div class="app__icon-wrapper q-mr-md">
-        <q-img
-          :src="currentApp?.currentVersion.iconUri"
-          style="image-rendering: pixelated"
-        />
-      </div>
-      <div>
-        <h2 class="text-h6 q-ma-none q-mb-xs">
-          {{ currentApp?.currentVersion.name }}
-        </h2>
-        <div class="row items-center q-gutter-md">
-          <div>
-            <CategoryChip
-              v-if="category"
-              v-bind="category"
-              @click="goCategory"
-            />
+      <div class="row">
+        <div class="app__icon-wrapper q-mr-md">
+          <q-img
+            :src="currentApp?.currentVersion.iconUri"
+            style="image-rendering: pixelated"
+          />
+        </div>
+        <div>
+          <h2 class="text-h6 q-ma-none q-mb-xs">
+            {{ currentApp?.currentVersion.name }}
+          </h2>
+          <div class="row items-center q-gutter-md">
+            <div>
+              <CategoryChip
+                v-if="category"
+                v-bind="category"
+                @click="goCategory"
+              />
+            </div>
+            <p class="q-mb-none">
+              <span class="text-grey-7 q-mr-xs">Version:</span>
+              <span class="text-bold">
+                {{ currentApp?.currentVersion.version }}
+              </span>
+            </p>
+            <p class="q-mb-none">
+              <span class="text-grey-7 q-mr-xs">Size:</span>
+              <span class="text-bold">
+                {{
+                  bytesToSize(
+                    currentApp?.currentVersion.currentBuild.metadata.length
+                  )
+                }}
+              </span>
+            </p>
+            <template v-if="getStatusHint">
+              <q-chip
+                :class="{ 'no-pointer-events': !getStatusHint.dialog }"
+                :color="getStatusHint.color"
+                :icon="getStatusHint.icon"
+                :label="getStatusHint.text"
+                :clickable="!!getStatusHint.dialog"
+                @click="showDialog(getStatusHint.dialog)"
+              >
+                <q-tooltip v-if="getStatusHint.tooltip">
+                  {{ getStatusHint.tooltip }}
+                </q-tooltip>
+              </q-chip>
+            </template>
           </div>
-          <p class="q-mb-none">
-            <span class="text-grey-7 q-mr-xs">Version:</span>
-            <span class="text-bold">
-              {{ currentApp?.currentVersion.version }}
-            </span>
-          </p>
-          <p class="q-mb-none">
-            <span class="text-grey-7 q-mr-xs">Size:</span>
-            <span class="text-bold">
-              {{
-                bytesToSize(
-                  currentApp?.currentVersion.currentBuild.metadata.length
-                )
-              }}
-            </span>
-          </p>
-          <template v-if="getStatusHint">
-            <q-chip
-              :class="{ 'no-pointer-events': !getStatusHint.dialog }"
-              :color="getStatusHint.color"
-              :icon="getStatusHint.icon"
-              :label="getStatusHint.text"
-              :clickable="!!getStatusHint.dialog"
-              @click="showDialog(getStatusHint.dialog)"
-            >
-              <q-tooltip v-if="getStatusHint.tooltip">
-                {{ getStatusHint.tooltip }}
-              </q-tooltip>
-            </q-chip>
-          </template>
         </div>
       </div>
       <q-space />
-      <div class="q-py-sm">
-        <AppInstallBtn :app="currentApp" size="22px" padding="15px 60px" />
+      <div class="q-py-sm row no-wrap">
+        <template v-if="currentApp?.action?.type">
+          <div class="col-auto fit">
+            <ProgressBar
+              style="width: 188px;"
+              :title="currentApp.action.progress * 100 + '%'"
+              titleSize="40px"
+              :progress="currentApp.action.progress"
+              :color="appsStore.progressColors(currentApp.action.type).bar"
+              :track-color="appsStore.progressColors(currentApp.action.type).track"
+              no-badge
+              size="54px"
+            />
+          </div>
+        </template>
+        <template v-else>
+          <div class="col-auto" :class="{'q-mr-md': isInstalledOrUpdate}">
+            <template v-if="currentApp && appsStore.getButtonState(currentApp) === 'installed'">
+              <AppInstalledBtn
+                size="22px"
+                padding="15px 60px"
+              />
+            </template>
+            <template v-else-if="currentApp && appsStore.getButtonState(currentApp) === 'update'">
+              <AppUpdateBtn
+                :app="currentApp"
+                :loading="appsStore.loadingInstalledApps"
+                size="22px"
+                padding="15px 60px"
+              />
+            </template>
+            <template v-else>
+              <AppInstallBtn
+                :app="currentApp"
+                :loading="appsStore.loadingInstalledApps"
+                size="22px"
+                padding="15px 60px"
+              />
+            </template>
+          </div>
+          <template v-if="currentApp && isInstalledOrUpdate">
+            <div class="col-auto">
+              <AppDeleteBtn
+                :app="currentApp"
+                size="16px"
+                padding="15px"
+              />
+            </div>
+          </template>
+        </template>
       </div>
     </div>
     <div class="row q-mb-lg" style="height: 140px">
@@ -145,28 +195,53 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, type Ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { AppInstallBtn } from 'features/Apps/InstallButton'
-import { AppsApi, AppsModel } from 'entities/Apps'
+import { AppUpdateBtn } from 'features/Apps/UpdateButton'
+import { AppDeleteBtn } from 'features/Apps/DeleteButton'
+import { ProgressBar } from 'shared/components/ProgressBar'
+import { AppInstalledBtn, AppsApi, AppsModel } from 'entities/Apps'
+const appsStore = AppsModel.useAppStore()
+
 import { CategoryChip, CategoryModel } from 'entities/Category'
 import { bytesToSize } from 'shared/lib/utils/bytesToSize'
+import { FlipperModel } from 'entities/Flipper'
+const flipperStore = FlipperModel.useFlipperStore()
 
 const { fetchAppById } = AppsApi
 
 const route = useRoute()
-const currentApp: Ref<AppsModel.AppDetail | undefined> = ref(undefined)
+const currentApp = ref<AppsModel.AppDetail | undefined>(undefined)
 const categoryStore = CategoryModel.useCategoriesStore()
 const categories = computed(() => categoryStore.categories)
 
 onMounted(async () => {
-  currentApp.value = await fetchAppById({
-    id: route.params.path as string
-  })
+  if (flipperStore.flipperReady) {
+    await appsStore.getInstalledApps()
+  }
+
+  await getCurrentApp()
 
   if (!categories.value.length) {
     categoryStore.getCategories()
   }
+})
+
+const getCurrentApp = async () => {
+  currentApp.value = await fetchAppById({
+    id: route.params.path as string,
+    api: flipperStore.api,
+    target: flipperStore.target
+  })
+}
+
+watch(() => flipperStore.flipperReady, () => {
+  getCurrentApp()
+})
+
+const isInstalledOrUpdate = computed(() => {
+  return currentApp.value && (appsStore.getButtonState(currentApp.value) === 'installed' || appsStore.getButtonState(currentApp.value) === 'update')
 })
 
 type StatusHint = {
@@ -236,5 +311,5 @@ const goCategory = () => {
 </script>
 
 <style lang="scss">
-@import './styles.scss';
+@import './styles';
 </style>

@@ -1,5 +1,8 @@
-type Primitive = string | number | boolean;
-type AnyObject = { [key: string]: AnyObject | Primitive };
+// type Primitive = string | number | boolean;
+// type AnyObject = { [key: string]: AnyObject | Primitive };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyObject = Record<string, any>;
 
 const setProperty = (obj: AnyObject, options: AnyObject): AnyObject => {
   const keys = Object.keys(options)

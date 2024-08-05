@@ -3,7 +3,7 @@ import { Notify } from 'quasar'
 import { instance } from 'boot/axios'
 import { camelCaseDeep } from 'shared/lib/utils/camelCaseDeep'
 
-import type { AppsShortParams, App, GetAppParams } from '../model'
+import type { AppsShortParams, AppsPostShortParams, AppFapParams, App, GetAppParams, AppVersion } from '../model'
 
 let controller: AbortController | undefined = undefined
 async function fetchAppsShort(
@@ -39,6 +39,20 @@ async function fetchAppsShort(
     })
 }
 
+async function fetchPostAppsShort (
+  params: AppsPostShortParams
+) {
+  return await instance.post('/1/application', params)
+    .then(({ data }) => data.map((app: App) => {
+      // app.action = {
+      //   type: '',
+      //   progress: 0,
+      //   id: app.id
+      // }
+      return camelCaseDeep(app)
+    }))
+}
+
 async function fetchAppById(params: GetAppParams) {
   const _params = {
     is_latest_release_version: params.is_latest_release_version,
@@ -70,7 +84,84 @@ async function fetchAppById(params: GetAppParams) {
     })
 }
 
+async function fetchAppsVersions(
+  uids: string[]
+) {
+  const allVersions: AppVersion[] = []
+  uids = uids.filter(u => u)
+
+  if (uids) {
+    const size = 100
+    const subUids = []
+
+    for (let i = 0; i < Math.ceil(uids.length / size); i++) {
+      subUids[i] = uids.slice(i * size, i * size + size)
+    }
+
+    for (const sliceUids of subUids) {
+      await instance
+        .post('/1/application/versions', {
+          application_versions: sliceUids,
+          limit: size
+        })
+        .then(({ data }) => allVersions.push(...data))
+        .catch((err) => {
+          const data = err.response.data
+
+          Notify.create({
+            type: 'negative',
+            message: data.detail.details
+          })
+
+          return data
+        })
+    }
+  } else {
+    await instance
+      .post('/1/application/versions', {
+        limit: 500
+      })
+      .then(({ data }) => allVersions.push(...data))
+      .catch((err) => {
+        const data = err.response.data
+
+        Notify.create({
+          type: 'negative',
+          message: data.detail.details
+        })
+
+        return data
+      })
+  }
+
+  return allVersions.map((version) => camelCaseDeep(version))
+}
+
+async function fetchAppFap (params: AppFapParams) {
+  return await instance
+    .get(`/application/version/${params.versionId}/build/compatible`, {
+      params: {
+        target: params.target,
+        api: params.api
+      },
+      responseType: 'arraybuffer'
+    })
+    .then(({ data }) => {
+      return data
+    })
+    .catch((error) => {
+      const decoder = new TextDecoder('utf-8')
+      const data = JSON.parse(decoder.decode(error.response.data)).detail
+      if (data.code >= 400) {
+        throw new Error('Failed to fetch application build (' + data.code + ')')
+      }
+    })
+}
+
 export const api = {
   fetchAppsShort,
-  fetchAppById
+  fetchPostAppsShort,
+  fetchAppById,
+  fetchAppsVersions,
+  fetchAppFap
 }

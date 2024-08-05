@@ -1,3 +1,5 @@
+import { FlipperModel } from 'entities/Flipper'
+
 export type AppsShortParams = {
   limit: number
   offset: number
@@ -12,11 +14,25 @@ export type AppsShortParams = {
   target?: string
 }
 
+export type AppsPostShortParams = {
+  limit: number
+  is_latest_release_version?: boolean
+  applications?: string[]
+  api?: string
+  target?: string
+}
+
 export type GetAppParams = {
   id: string
   is_latest_release_version?: boolean
   api?: string
   target?: string
+}
+
+export type AppFapParams = {
+  versionId: string,
+  api: string
+  target: string
 }
 
 export type App = {
@@ -49,6 +65,27 @@ export type App = {
     iconUri: string
     screenshots: string[]
   }
+  action: {
+    progress: number
+    type: ActionType | ''
+  }
+}
+
+export type AppVersion = {
+  applicationId: string
+  bundleId: string
+  currentBuildId: string
+  iconUri: string
+  name: string
+  screenshots: string[] | null[]
+  shortDescription: string
+  version: string
+  _id: string
+}
+
+export type InstalledApp = FlipperModel.App & Pick<App, 'alias' | 'currentVersion' | 'categoryId' | 'action'> & {
+  installedVersion: AppVersion
+  path: string
 }
 
 export type AppDetail = App & {
@@ -72,3 +109,5 @@ export type AppDetail = App & {
     }
   }
 }
+
+export type ActionType = 'install' | 'update' | 'delete'

@@ -5,19 +5,27 @@
     dense
     color="positive"
     label="Update"
-    @click="onClick"
+    @click.stop="onClick"
+    :loading="props.loading"
   />
 </template>
 
-<script setup>
-const props = defineProps({
-  app: {
-    type: Number,
-    required: true
-  }
+<script setup lang="ts">
+import { AppsModel } from 'entities/Apps'
+const appsStore = AppsModel.useAppStore()
+
+interface Props {
+  app: AppsModel.InstalledApp | AppsModel.App,
+  loading?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  loading: false
 })
 
 const onClick = () => {
-  console.log('Update', props.app)
+  if (props.app) {
+    appsStore.onAction(props.app, 'update')
+  }
 }
 </script>

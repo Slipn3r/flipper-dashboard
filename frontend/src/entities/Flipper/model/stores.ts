@@ -1,9 +1,13 @@
 import { ref, computed, reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { FlipperWeb } from 'shared/lib/flipperJs'
+import { AppsModel } from 'entities/Apps'
 import { FlipperInfo } from './types'
 
 export const useFlipperStore = defineStore('flipper', () => {
+  const appsStore = AppsModel.useAppStore()
+  const { getInstalledApps, onClearInstalledAppsList } = appsStore
+
   const flags = reactive({
     connected: computed(() => flipper.value.connected)
   })
@@ -43,6 +47,11 @@ export const useFlipperStore = defineStore('flipper', () => {
     })
       .then(async () => {
         // flags.connected = true
+        await getInstalledApps()
+        const unbind = flipper.value.emitter.on('disconnect', () => {
+          onClearInstalledAppsList()
+          unbind()
+        })
       })
       .catch(() => {
         // flags.connected = false
@@ -51,7 +60,8 @@ export const useFlipperStore = defineStore('flipper', () => {
 
   const disconnect = async () => {
     await flipper.value.disconnect()
-    flags.value.connected = false
+    // flags.connected = false
+    onClearInstalledAppsList()
   }
 
   return {
