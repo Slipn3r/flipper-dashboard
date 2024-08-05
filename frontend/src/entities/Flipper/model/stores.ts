@@ -1,16 +1,25 @@
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import { defineStore } from 'pinia'
-// import { FlipperModel } from 'entities/Flipper'
 import { FlipperWeb } from 'shared/lib/flipperJs'
+import { FlipperInfo } from './types'
 
 export const useFlipperStore = defineStore('flipper', () => {
-  const flags = ref({
-    connected: false
+  const flags = reactive({
+    connected: computed(() => flipper.value.connected)
   })
 
   const flipper = ref(new FlipperWeb())
+  const flipperReady = computed(() => flipper.value.flipperReady)
   // const flippers: Ref<FlipperWeb[]> = ref([])
-  const info = computed(() => flipper.value.info)
+  const info = computed(() => (flipper.value.info as FlipperInfo))
+  const api = computed(() => {
+    const firmware = info?.value?.firmware
+    return firmware ? `${firmware.api.major}.${firmware.api.minor}` : ''
+  })
+  const target = computed(() => {
+    const firmware = info?.value?.firmware
+    return firmware ? `f${firmware.target}` : ''
+  })
 
   const connect = async () => {
     // const ports = await navigator.serial.getPorts()
@@ -32,11 +41,11 @@ export const useFlipperStore = defineStore('flipper', () => {
     await flipper.value.connect({
       type: 'RPC'
     })
-      .then(() => {
-        flags.value.connected = true
+      .then(async () => {
+        // flags.connected = true
       })
       .catch(() => {
-        flags.value.connected = false
+        // flags.connected = false
       })
   }
 
@@ -47,10 +56,13 @@ export const useFlipperStore = defineStore('flipper', () => {
 
   return {
     flags,
-    flipper,
-    info,
     connect,
-    disconnect
+    disconnect,
+    flipper,
+    flipperReady,
+    info,
+    api,
+    target
   }
 })
 

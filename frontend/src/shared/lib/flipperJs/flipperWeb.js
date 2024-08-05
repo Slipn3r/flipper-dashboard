@@ -8,7 +8,7 @@ import { LineBreakTransformer, PromptBreakTransformer, ProtobufTransformer } fro
 
 import { PB } from './protobufCompiled'
 import asyncSleep from 'simple-async-sleep'
-// import { createNanoEvents } from 'nanoevents'
+import { createNanoEvents } from 'nanoevents'
 
 import readInfo from './utils/readInfo'
 
@@ -31,6 +31,9 @@ const RPCSubSystems = {
 export default class Flipper {
   constructor() {
     this.port = null
+    this.filters = [
+      { usbVendorId: 0x0483, usbProductId: 0x5740 }
+    ]
 
     this.readingMode = {
       type: 'text',
@@ -51,25 +54,53 @@ export default class Flipper {
       }
     ]
 
+    this.flipperReady = false
+
     this.info = null
+    this.name = null
     this.connected = false
 
-    // this.emitter = createNanoEvents()
+    this.emitter = createNanoEvents()
+  }
+
+  async findKnownDevices () {
+    return navigator.serial.getPorts()
+      .then((ports) => {
+        const filteredPorts = ports.filter(port => {
+          const info = port.getInfo()
+
+          return info.usbVendorId === this.filters[0].usbVendorId &&
+            info.usbProductId === this.filters[0].usbProductId;
+        })
+
+        return filteredPorts
+      })
+      .catch((e) => {
+        console.error(e)
+
+        throw e
+      })
   }
 
   async connect ({
     type = 'CLI'
-  }) {
-    this.port = await navigator.serial.requestPort({
-      filters: [
-        { usbVendorId: 0x0483, usbProductId: 0x5740 }
-      ]
-    })
-      .catch((e) => {
-        console.error(e)
-        throw e
+  } = {}) {
+    const ports = await this.findKnownDevices()
+
+
+    if (ports.length > 1) {
+      this.port = await navigator.serial.requestPort({
+        filters: this.filters
       })
-    // this.port = port
+        .catch((e) => {
+          console.error(e)
+          throw e
+        })
+    } else if (ports.length === 1) {
+      this.port = ports[0]
+    } else {
+      this.port = null
+    }
 
     if (this.port) {
       await this.openPort()
@@ -86,8 +117,22 @@ export default class Flipper {
         this.disconnect()
       }
 
-      console.log(this.port)
-      this.connected = true
+      if (type === 'RPC') {
+        await this.startRPCSession()
+        this.info = await readInfo.bind(this)()
+
+        if (this.info &&
+          this.info.doneReading &&
+          this.readingMode.type === 'raw' &&
+          this.readingMode.transform === 'protobuf') {
+          this.name = this.info.hardware.name
+          this.flipperReady = true
+          this.connected = true
+        } else {
+          this.name = null
+          this.flipperReady = false
+          this.connected = false
+        }
 
       if (type === 'RPC') {
         await this.startRPCSession()
@@ -95,6 +140,8 @@ export default class Flipper {
         console.log(this.info)
       }
     } else {
+      this.info = null
+      this.name = null
       this.connected = false
     }
   }
@@ -120,7 +167,11 @@ export default class Flipper {
     await this.port.close()
 
     this.info = null
+    this.name = null
     this.connected = false
+    this.flipperReady = false
+
+    this.emitter.emit('disconnect')
   }
 
   getReader () {
