@@ -19,7 +19,7 @@ export type DeviceInfo = {
       region: {
           builtin: string
           provisioned: string
-      }
+      } | '0'
       name: string
   }
   firmware: {
@@ -172,4 +172,45 @@ export type App = {
   },
   path: string
   devCatalog?: string
+}
+
+type FirmwareFile = {
+  sha256: string
+  target: string
+  type: string
+  url: string
+}
+
+type FirmwareVersion = {
+  changelog: string
+  files: FirmwareFile[]
+  timestamp: number
+  version: string
+}
+
+export type Channel = {
+  id: string
+  title: string
+  description: string
+  versions: FirmwareVersion[]
+}
+
+type Band = {
+  [key: string]: {
+    duty_cycle: number,
+    end: number,
+    max_power: number,
+    start: number
+  }
+}
+
+type Country = {
+  [key: string]: string[]
+}
+
+export type Regions = {
+  bands: Band
+  countries: Country
+  country: string
+  default: string[]
 }

@@ -9,7 +9,9 @@ export const useFlipperStore = defineStore('flipper', () => {
   const { getInstalledApps, onClearInstalledAppsList } = appsStore
 
   const flags = reactive({
-    connected: computed(() => flipper.value.connected)
+    connected: computed(() => flipper.value.connected),
+    updateInProgress: ref(false),
+    microSDcardMissingDialog: ref(false)
   })
 
   const flipper = ref(new FlipperWeb())
@@ -64,6 +66,18 @@ export const useFlipperStore = defineStore('flipper', () => {
     onClearInstalledAppsList()
   }
 
+  const onUpdateStage = (stage: string) => {
+    if (stage === 'start') {
+      // flags.disableNavigation = true
+      flags.updateInProgress = true
+
+      // stopScreenStream()
+    } else if (stage === 'end') {
+      // flags.disableNavigation = false
+      flags.updateInProgress = false
+    }
+  }
+
   return {
     flags,
     connect,
@@ -72,7 +86,8 @@ export const useFlipperStore = defineStore('flipper', () => {
     flipperReady,
     info,
     api,
-    target
+    target,
+    onUpdateStage
   }
 })
 

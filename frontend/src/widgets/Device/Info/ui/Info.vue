@@ -1,11 +1,16 @@
 <template>
   <template v-if="flipperStore.info">
-    <div class="flex items-start q-gutter-x-xl">
-      <FlipperInfo class="q-mt-sm" v-bind="info" />
-      <FlipperBody v-bind="flipperBody" />
-    </div>
+    <div class="column items-center">
+      <div class="flex items-start q-gutter-x-xl q-mb-md">
+        <FlipperInfo class="q-mt-sm" v-bind="info" />
+        <FlipperBody
+          v-bind="flipperBody"
+          :showScreenUpdating="flipperStore.flags.updateInProgress"
+        />
+      </div>
 
-    <FlipperUpdate />
+      <FlipperUpdate />
+    </div>
   </template>
   <template v-else>
     <FlipperConnectWebBtn />

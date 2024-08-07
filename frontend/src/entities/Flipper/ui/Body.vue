@@ -10,11 +10,13 @@
         :style="`rotate: ${flags.leftHanded ? 180 : 0}deg`"
         ref="screenStreamCanvas"
       ></canvas>
+      -->
       <img
-        v-if="mainFlags.updateInProgress"
+        v-if="showScreenUpdating"
+        class="flipper__image"
         src="~/assets/flipper-screen-updating.png"
-        style="image-rendering: pixelated;position: absolute;top: 25px;left: 96px;"
-      /> -->
+        style=""
+      />
     </div>
   </div>
 </template>
@@ -22,15 +24,15 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-const props = defineProps({
-  flipperName: {
-    type: String,
-    required: true
-  },
-  flipperColor: {
-    type: String,
-    default: '2'
-  }
+type Props = {
+  flipperName: string
+  flipperColor: string
+  showScreenUpdating: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  flipperColor: '2',
+  showScreenUpdating: false
 })
 
 const flipperBodyClass = computed(() => {
@@ -46,22 +48,5 @@ const flipperBodyClass = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-.flipper {
-  width: 370px;
-  height: 165px;
-  padding: 26px 0 0 97px;
-  background-size: 370px;
-  background-repeat: no-repeat;
-  background-position: center;
-
-  &.body-black {
-    background-image: url(assets/flipper_black.svg);
-  }
-  &.body-transparent {
-    background-image: url(assets/flipper_transparent.svg);
-  }
-  &.body-white {
-    background-image: url(assets/flipper_white.svg);
-  }
-}
+@import 'styles';
 </style>

@@ -6,13 +6,21 @@
 
     <q-page-container>
       <router-view />
+
+      <q-dialog v-model="flipperStore.flags.microSDcardMissingDialog">
+        <FlipperMicroSDCard isDialog />
+      </q-dialog>
     </q-page-container>
   </q-layout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { AppHeader, AppDrawer } from './components'
+
+import { FlipperMicroSDCard } from 'widgets/Flipper'
+import { FlipperModel } from 'entities/Flipper'
+const flipperStore = FlipperModel.useFlipperStore()
 
 defineOptions({
   name: 'MainLayout'

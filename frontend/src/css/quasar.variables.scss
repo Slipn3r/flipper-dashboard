@@ -30,3 +30,21 @@ $button-border-radius: $generic-border-radius;
 
 $card-padding: 12px !default;
 $card-width: 256px + $card-padding !default;
+
+.q-card {
+  &.rounded-borders {
+    border-radius: $generic-border-radius * 3;
+  }
+
+  .q-item {
+    &.rounded-borders {
+      border-radius: $generic-border-radius * 2;
+    }
+  }
+}
+
+.q-item {
+  &.rounded-borders {
+    border-radius: $generic-border-radius;
+  }
+}

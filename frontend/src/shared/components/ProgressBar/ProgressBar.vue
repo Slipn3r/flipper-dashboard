@@ -56,5 +56,5 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <style lang="scss" scoped>
-@import 'styles'
+@import 'styles';
 </style>
