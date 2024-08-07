@@ -34,17 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
 import { AppUpdateBtn } from 'features/Apps/UpdateButton'
 import { AppInstalledCard, AppInstalledBtn, AppsModel } from 'entities/Apps'
 const appsStore = AppsModel.useAppStore()
-
-import { FlipperModel } from 'entities/Flipper'
-const flipperStore = FlipperModel.useFlipperStore()
-
-onMounted(async () => {
-  if (flipperStore.flipperReady) {
-    await appsStore.getInstalledApps()
-  }
-})
 </script>

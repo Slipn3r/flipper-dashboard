@@ -238,11 +238,6 @@ const categoryStore = CategoryModel.useCategoriesStore()
 const categories = computed(() => categoryStore.categories)
 
 onMounted(async () => {
-  if (flipperStore.flipperReady) {
-    await appsStore.getInstalledApps()
-  }
-
-
   await getCurrentApp()
 
   if (!categories.value.length) {

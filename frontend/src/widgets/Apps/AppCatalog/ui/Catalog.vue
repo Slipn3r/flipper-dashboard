@@ -81,7 +81,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch, nextTick } from 'vue'
+import { ref, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { ProgressBar } from 'shared/components/ProgressBar'
@@ -104,12 +104,6 @@ const { fetchAppsShort } = AppsApi
 
 const appsLoading = ref(false)
 const apps = ref<AppsModel.App[]>([])
-
-onMounted(async () => {
-  if (flipperStore.flipperReady) {
-    await appsStore.getInstalledApps()
-  }
-})
 
 const limit = ref(48)
 const offset = ref(0)
