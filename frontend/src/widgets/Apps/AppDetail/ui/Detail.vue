@@ -71,7 +71,6 @@
                 :progress="currentApp.action.progress"
                 :color="appsStore.progressColors(currentApp.action.type).bar"
                 :track-color="appsStore.progressColors(currentApp.action.type).track"
-                no-badge
                 size="54px"
               />
             </div>

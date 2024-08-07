@@ -98,34 +98,15 @@ export const useAppStore = defineStore('apps', () => {
       // HACK: Bind the past action state to the new list
       if (actionAppList.value.length) {
         installed = installed.map(installedApp => {
-          let appIndex: number | null = null
-          const lastInstalledApp = actionAppList.value.find((actualApp, index) => {
-            appIndex = index
-            return actualApp.id === installedApp.id
-          })
+          const lastInstalledApp = actionAppList.value.find(actualApp => actualApp.id === installedApp.id)
 
           if (lastInstalledApp) {
             installedApp.action = lastInstalledApp.action
-
-            if (appIndex !== null) {
-              actionAppList.value.splice(appIndex, 1)
-
-              appIndex = null
-            }
           }
 
           return installedApp
         })
       }
-      // installed = installed.map(installedApp => {
-      //   const lastInstalledApp = flipperInstalledApps.value.find(actualApp => actualApp.id === installedApp.id)
-
-      //   if (lastInstalledApp) {
-      //     installedApp.action = lastInstalledApp.action
-      //   }
-
-      //   return installedApp
-      // })
 
       updatableApps.value = installed.filter(installedApp => {
         const app = actualApps.find(actualApp => actualApp.id === installedApp.id)
@@ -186,6 +167,16 @@ export const useAppStore = defineStore('apps', () => {
         return false
       })
 
+      if (batch.value.inProcess) {
+        batch.value.doneCount++
+
+        if (batch.value.totalCount === batch.value.doneCount) {
+          batch.value.totalCount = 0
+          batch.value.doneCount = 0
+          batch.value.inProcess = false
+        }
+      }
+
       loadingInstalledApps.value = false
     } catch {
       loadingInstalledApps.value = false
@@ -224,6 +215,39 @@ export const useAppStore = defineStore('apps', () => {
     }
   }
 
+  const batch = ref<{
+    inProcess: boolean
+    totalCount: number
+    doneCount: number
+    failed: {
+      id: string
+      name: string
+    }[]
+    progress: number
+  }>({
+    inProcess: false,
+    totalCount: 0,
+    doneCount: 0,
+    failed: [],
+    progress: 0
+  })
+  const batchUpdate = async (apps: InstalledApp[]) => {
+    batch.value.inProcess = true
+    batch.value.totalCount = apps.length
+    batch.value.doneCount = 0
+
+    for (const app of apps) {
+      try {
+        onAction(app, 'update')
+      } catch (error) {
+        console.error(error)
+        batch.value.failed.push({
+          id: app.id,
+          name: app.installedVersion.name
+        })
+      }
+    }
+  }
   const actionAppList = ref<Array<App | InstalledApp>>([])
   const onAction = async (app: App | InstalledApp, actionType: ActionType) => {
     // TODO: validation check //
@@ -243,7 +267,21 @@ export const useAppStore = defineStore('apps', () => {
         //     message: `${componentName}: ${error.message}`
         //   })
         // })
+        if (actionAppList.value.length) {
+          let appIndex: number | null = null
+          const lastInstalledApp = actionAppList.value.find((actualApp, index) => {
+            appIndex = index
+            return actualApp.id === app.id
+          })
 
+          if (lastInstalledApp) {
+            if (appIndex !== null) {
+              actionAppList.value.splice(appIndex, 1)
+
+              appIndex = null
+            }
+          }
+        }
       return Promise.resolve()
     }
 
@@ -727,6 +765,8 @@ export const useAppStore = defineStore('apps', () => {
     appsUpdateCount,
     loadingInstalledApps,
     onAction,
-    actionAppList
+    actionAppList,
+    batch,
+    batchUpdate
   }
 })

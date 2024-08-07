@@ -1,6 +1,5 @@
-function UntarWorker () {
-
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+function UntarWorker () {}
 
 UntarWorker.prototype = {
   onmessage: function (msg) {
@@ -181,9 +180,8 @@ LongFieldHeader.prototype = {
   }
 }
 
-function TarFile () {
-
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+function TarFile () {}
 
 function UntarStream (arrayBuffer) {
   this._bufferView = new DataView(arrayBuffer)

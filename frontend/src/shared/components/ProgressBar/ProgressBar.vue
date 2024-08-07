@@ -11,7 +11,7 @@
       v-if="title"
       class="absolute-full flex flex-center text-HaxrCorp rounded-borders bordered"
     >
-      <template v-if="!noBadge">
+      <template v-if="badge">
         <q-badge
           class="text badge"
           :color="badgeColor"
@@ -41,7 +41,7 @@ type Props = {
   titleSize?: string
   titleColor?: string
   progress: number
-  noBadge?: boolean
+  badge?: boolean
   interpolated?: boolean
 }
 withDefaults(defineProps<Props>(), {
@@ -50,7 +50,7 @@ withDefaults(defineProps<Props>(), {
   trackColor: 'grey-4',
   badgeColor: 'white',
   titleSize: '24px',
-  noBadge: false,
+  badge: false,
   interpolated: false
 })
 </script>
