@@ -73,7 +73,6 @@
         :title="write.filename"
         :progress="write.progress"
         size="56px"
-        titleSize="24px"
       />
     </template>
 

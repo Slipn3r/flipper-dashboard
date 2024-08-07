@@ -96,6 +96,27 @@ export const useAppStore = defineStore('apps', () => {
       })
 
       // HACK: Bind the past action state to the new list
+      if (actionAppList.value.length) {
+        installed = installed.map(installedApp => {
+          let appIndex: number | null = null
+          const lastInstalledApp = actionAppList.value.find((actualApp, index) => {
+            appIndex = index
+            return actualApp.id === installedApp.id
+          })
+
+          if (lastInstalledApp) {
+            installedApp.action = lastInstalledApp.action
+
+            if (appIndex !== null) {
+              actionAppList.value.splice(appIndex, 1)
+
+              appIndex = null
+            }
+          }
+
+          return installedApp
+        })
+      }
       // installed = installed.map(installedApp => {
       //   const lastInstalledApp = flipperInstalledApps.value.find(actualApp => actualApp.id === installedApp.id)
 
@@ -203,8 +224,16 @@ export const useAppStore = defineStore('apps', () => {
     }
   }
 
+  const actionAppList = ref<Array<App | InstalledApp>>([])
   const onAction = async (app: App | InstalledApp, actionType: ActionType) => {
     // TODO: validation check //
+
+    app.action = {
+      progress: 0,
+      type: actionType
+    }
+
+    actionAppList.value.push(app)
 
     const action = async (app: App | InstalledApp, actionType: ActionType) => {
       await handleAction(app, actionType)
@@ -236,11 +265,6 @@ export const useAppStore = defineStore('apps', () => {
     // }
     if (!actionType) {
       return
-    }
-
-    app.action = {
-      progress: 0,
-      type: actionType
     }
 
     // appNotif.value = showNotif({
@@ -702,6 +726,7 @@ export const useAppStore = defineStore('apps', () => {
     unsupportedApps,
     appsUpdateCount,
     loadingInstalledApps,
-    onAction
+    onAction,
+    actionAppList
   }
 })

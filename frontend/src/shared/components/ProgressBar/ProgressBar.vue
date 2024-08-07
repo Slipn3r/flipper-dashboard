@@ -49,7 +49,7 @@ withDefaults(defineProps<Props>(), {
   color: 'positive',
   trackColor: 'grey-4',
   badgeColor: 'white',
-  titleSize: '28px',
+  titleSize: '24px',
   noBadge: false,
   interpolated: false
 })

@@ -32,24 +32,37 @@
       </div>
     </q-card-section>
     <q-card-section class="row no-wrap">
-      <div class="installed-card__button-wrapper q-mr-sm">
-        <slot name="button" />
-      </div>
-      <div class="col-auto">
-        <AppDeleteBtn
-          :app="app"
+      <template v-if="app.action?.type">
+        <ProgressBar
+          style="width: 120px"
+          :title="app.action.progress * 100 + '%'"
+          :progress="app.action.progress"
+          :color="appsStore.progressColors(app.action.type).bar"
+          :trackColor="appsStore.progressColors(app.action.type).track"
         />
-      </div>
+      </template>
+      <template v-else>
+        <div class="installed-card__button-wrapper q-mr-sm">
+          <slot name="button" />
+        </div>
+        <div class="col-auto">
+          <AppDeleteBtn
+            :app="app"
+          />
+        </div>
+      </template>
     </q-card-section>
   </q-card>
 </template>
 
 <script setup lang="ts">
 import { AppDeleteBtn } from 'features/Apps/DeleteButton'
-import { InstalledApp } from '../model/types'
+import { ProgressBar } from 'shared/components/ProgressBar'
+import { AppsModel } from 'entities/Apps'
+const appsStore = AppsModel.useAppStore()
 
 interface Props {
-  app: InstalledApp,
+  app: AppsModel.InstalledApp,
   unsupported?: boolean
 }
 

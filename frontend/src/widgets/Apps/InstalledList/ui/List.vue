@@ -35,6 +35,7 @@
 
 <script setup lang="ts">
 import { AppUpdateBtn } from 'features/Apps/UpdateButton'
-import { AppInstalledCard, AppInstalledBtn, AppsModel } from 'entities/Apps'
+import { AppInstalledCard } from 'features/Apps/InstalledCard'
+import { AppInstalledBtn, AppsModel } from 'entities/Apps'
 const appsStore = AppsModel.useAppStore()
 </script>
