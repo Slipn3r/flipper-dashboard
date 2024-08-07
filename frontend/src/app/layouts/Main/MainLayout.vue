@@ -18,7 +18,7 @@
 import { ref, onMounted } from 'vue'
 import { AppHeader, AppDrawer } from './components'
 
-import { FlipperMicroSDCard } from 'widgets/Flipper'
+import { FlipperMicroSDCard } from 'widgets/Flipper/Dialogs'
 import { FlipperModel } from 'entities/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 
