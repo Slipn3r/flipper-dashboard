@@ -60,6 +60,7 @@ export default class Flipper {
     this.info = null
     this.name = null
     this.connected = false
+    this.updating = false
 
     this.installedApps = []
 
@@ -116,8 +117,11 @@ export default class Flipper {
       }
 
       this.port.ondisconnect = () => {
-        console.log('disconnect')
-        this.disconnect()
+        if (this.flipperReady) {
+          this.disconnect()
+        } else {
+          this.emitter.emit('disconnect')
+        }
       }
 
       if (type === 'RPC') {
@@ -136,15 +140,15 @@ export default class Flipper {
           this.flipperReady = false
           this.connected = false
         }
-
-        if (this.flipperReady) {
-          await this.getInstalledApps()
-        }
       }
     } else {
-      this.info = null
-      this.name = null
+      if (!this.updating) {
+        this.info = null
+        this.name = null
+      }
       this.connected = false
+
+      throw new Error('No available port')
     }
   }
 
@@ -158,24 +162,34 @@ export default class Flipper {
     this.getWriter()
   }
 
-  async disconnect () {
-    await this.reader.cancel()
-    if (this.readableStreamClosed) {
-      // eslint-disable-next-line
-      await this.readableStreamClosed.catch(() => {})
+  async disconnect ({
+    isUserAction = false
+  } = {}) {
+    if (!this.updating) {
+      this.info = null
+      this.name = null
+      this.installedApps = []
     }
-    await this.writer.close()
-
-    await this.port.close()
-
-    this.info = null
-    this.name = null
-    this.connected = false
     this.flipperReady = false
-    this.installedApps = []
+    this.connected = false
     this.commandQueue = []
 
-    this.emitter.emit('disconnect')
+    try {
+      await this.reader.cancel()
+      if (this.readableStreamClosed) {
+        // eslint-disable-next-line
+        await this.readableStreamClosed.catch(() => {})
+      }
+      await this.writer.close()
+
+      await this.port.close()
+    } catch (error) {
+      console.error('disconnect', error)
+    }
+
+    this.emitter.emit('disconnect', {
+      isUserAction
+    })
   }
 
   getReader () {
@@ -230,8 +244,9 @@ export default class Flipper {
   }
 
   async read () {
-    try {
-      while (true) {
+    let keepReading = true
+    while (keepReading) {
+      try {
         const { value, done } = await this.reader.read();
         if (done) {
           // |reader| has been canceled.
@@ -255,10 +270,11 @@ export default class Flipper {
         } else {
           console.log('value', value)
         }
+      } catch (error) {
+        // Handle |error|…
+        console.error('read error', error)
+        keepReading = false
       }
-    } catch (error) {
-      // Handle |error|…
-      console.error('test error', error)
     }
   }
 
@@ -299,7 +315,7 @@ export default class Flipper {
 
   async startRPCSession (attempts = 1) {
     await this.setReadingMode('raw', 'protobuf')
-    // await asyncSleep(300)
+    await asyncSleep(300)
     await this.write('start_rpc_session\r')
     await this.RPC('systemPing', { timeout: 1000 })
       .catch(async error => {

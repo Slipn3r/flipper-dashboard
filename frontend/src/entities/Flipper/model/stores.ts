@@ -1,4 +1,4 @@
-import { ref, computed, reactive } from 'vue'
+import { ref, unref, computed, reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { FlipperWeb } from 'shared/lib/flipperJs'
 import { AppsModel } from 'entities/Apps'
@@ -11,7 +11,8 @@ export const useFlipperStore = defineStore('flipper', () => {
   const flags = reactive({
     connected: computed(() => flipper.value.connected),
     updateInProgress: ref(false),
-    microSDcardMissingDialog: ref(false)
+    microSDcardMissingDialog: ref(false),
+    autoReconnect: ref(false)
   })
 
   const flipper = ref(new FlipperWeb())
@@ -44,15 +45,34 @@ export const useFlipperStore = defineStore('flipper', () => {
     //   console.log(flippers.value)
     // })
 
+    const currentAutoReconnectFlag = unref(flags.autoReconnect)
     await flipper.value.connect({
       type: 'RPC'
     })
       .then(async () => {
         // flags.connected = true
-        await getInstalledApps()
-        const unbind = flipper.value.emitter.on('disconnect', () => {
+        const unbind = flipper.value.emitter.on('disconnect', (e) => {
           onClearInstalledAppsList()
+
+          if (flags.autoReconnect && !e.isUserAction) {
+            onAutoReconnect()
+
+            flags.autoReconnect = currentAutoReconnectFlag
+          }
+
           unbind()
+        })
+
+        if (reconnectInterval.value) {
+          clearInterval(reconnectInterval.value)
+        }
+
+        if (flags.updateInProgress) {
+          onUpdateStage('end')
+        }
+
+        await getInstalledApps({
+          refreshInstalledApps: true
         })
       })
       .catch(() => {
@@ -60,8 +80,14 @@ export const useFlipperStore = defineStore('flipper', () => {
       })
   }
 
-  const disconnect = async () => {
-    await flipper.value.disconnect()
+  const disconnect = async ({
+    isUserAction = false
+  }: {
+    isUserAction?: boolean
+  } = {}) => {
+    await flipper.value.disconnect({
+      isUserAction
+    })
     // flags.connected = false
     onClearInstalledAppsList()
   }
@@ -70,12 +96,21 @@ export const useFlipperStore = defineStore('flipper', () => {
     if (stage === 'start') {
       // flags.disableNavigation = true
       flags.updateInProgress = true
+      flipper.value.updating = true
 
       // stopScreenStream()
     } else if (stage === 'end') {
       // flags.disableNavigation = false
       flags.updateInProgress = false
+      flipper.value.updating = false
     }
+  }
+
+  const reconnectInterval = ref<NodeJS.Timeout>()
+  const onAutoReconnect = () => {
+    reconnectInterval.value = setInterval(() => {
+      connect()
+    }, 1000)
   }
 
   return {
@@ -87,7 +122,8 @@ export const useFlipperStore = defineStore('flipper', () => {
     info,
     api,
     target,
-    onUpdateStage
+    onUpdateStage,
+    onAutoReconnect
   }
 })
 

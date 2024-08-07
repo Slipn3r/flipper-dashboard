@@ -218,7 +218,6 @@ const update = async () => {
 
   flipperStore.onUpdateStage('start')
   await loadFirmware()
-  flipperStore.onUpdateStage('end')
 }
 
 const updateStage = ref('')
@@ -409,6 +408,8 @@ const loadFirmware = async () => {
 
     await flipperStore.flipper.RPC('systemReboot', { mode: 'UPDATE' })
       // .catch(error => rpcErrorHandler(componentName, error, 'systemReboot'))
+
+    flipperStore.flags.autoReconnect = true
   } else {
     updateError.value = true
 

@@ -2,7 +2,7 @@
   <template v-if="type === 'item'">
     <q-item
       clickable
-      @click="flags.connected ? disconnect() : connect()"
+      @click="onClick"
     >
       <q-item-section avatar>
         <q-avatar
@@ -25,7 +25,7 @@
       color="black"
       icon="cable"
       label="Connect"
-      @click="flags.connected ? disconnect() : connect()"
+      @click="onClick"
     />
   </template>
 </template>
@@ -33,7 +33,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { FlipperModel } from 'entities/Flipper'
-const store = FlipperModel.useFlipperStore()
+const flipperStore = FlipperModel.useFlipperStore()
 
 defineProps({
   type: {
@@ -41,8 +41,13 @@ defineProps({
   }
 })
 
-const flags = computed(() => store.flags)
+const flags = computed(() => flipperStore.flags)
 
-const connect = store.connect
-const disconnect = store.disconnect
+const onClick = () => {
+  flipperStore.flags.connected ? disconnect({
+    isUserAction: true
+  }) : connect()
+}
+const connect = flipperStore.connect
+const disconnect = flipperStore.disconnect
 </script>

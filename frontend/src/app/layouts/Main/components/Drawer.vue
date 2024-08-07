@@ -26,6 +26,14 @@
         <q-tab-panel class="no-padding" name="settings">
           <q-list class="column fit justify-between no-wrap">
             <q-space />
+            <q-item>
+              <q-toggle
+                v-model="flipperStore.flags.autoReconnect"
+                dense
+                label="Auto reconnect"
+                @click="toggleAutoReconnect"
+              />
+            </q-item>
             <q-item
               clickable
               @click="showHomeMenu"
@@ -48,6 +56,9 @@
 import { ref } from 'vue';
 import { RouterLink } from 'shared/components/RouterLink'
 import { FlipperConnectWebBtn } from 'features/Flipper';
+
+import { FlipperModel } from 'entities/Flipper'
+const flipperStore = FlipperModel.useFlipperStore()
 
 const tab = ref('home')
 
@@ -97,6 +108,10 @@ const linksList = [
     name: 'Pulseplot'
   }
 ]
+
+const toggleAutoReconnect = () => {
+  localStorage.setItem('autoReconnect', flipperStore.flags.autoReconnect)
+}
 </script>
 
 <style lang="scss" scoped>

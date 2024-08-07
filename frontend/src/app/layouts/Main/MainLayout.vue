@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { AppHeader, AppDrawer } from './components'
 
 import { FlipperMicroSDCard } from 'widgets/Flipper'
@@ -28,7 +28,15 @@ defineOptions({
 
 const leftDrawerOpen = ref(false)
 
-function toggleLeftDrawer() {
+const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
+
+onMounted(() => {
+  if (localStorage.getItem('autoReconnect') !== 'false') {
+    flipperStore.flags.autoReconnect = true
+  } else {
+    flipperStore.flags.autoReconnect = false
+  }
+})
 </script>
