@@ -236,11 +236,29 @@ const currentApp = ref<AppsModel.AppDetail | undefined>(undefined)
 const categoryStore = CategoryModel.useCategoriesStore()
 const categories = computed(() => categoryStore.categories)
 
-onMounted(async () => {
+const init = async () => {
   await getCurrentApp()
 
   if (!categories.value.length) {
     categoryStore.getCategories()
+  }
+}
+
+onMounted(async () => {
+  if (flipperStore.flipperReady) {
+    if (!flipperStore.rpcActive) {
+      await flipperStore.flipper.startRPCSession()
+    }
+
+    if (flipperStore.flipper.readingMode.type === 'raw') {
+      if (!flipperStore.info) {
+        await flipperStore.flipper.getInfo()
+      }
+
+      await init()
+    }
+  } else {
+    await init()
   }
 })
 

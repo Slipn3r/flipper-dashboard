@@ -3,8 +3,11 @@ import { defineStore } from 'pinia'
 import { FlipperWeb } from 'shared/lib/flipperJs'
 import { AppsModel } from 'entities/Apps'
 import { FlipperInfo } from './types'
+import { useRoute } from 'vue-router'
 
 export const useFlipperStore = defineStore('flipper', () => {
+  const route = useRoute()
+
   const appsStore = AppsModel.useAppStore()
   const { getInstalledApps, onClearInstalledAppsList } = appsStore
 
@@ -17,6 +20,7 @@ export const useFlipperStore = defineStore('flipper', () => {
 
   const flipper = ref(new FlipperWeb())
   const flipperReady = computed(() => flipper.value.flipperReady)
+  const rpcActive = computed(() => flipper.value.rpcActive)
   // const flippers: Ref<FlipperWeb[]> = ref([])
   const info = computed(() => (flipper.value.info as FlipperInfo))
   const api = computed(() => {
@@ -28,7 +32,11 @@ export const useFlipperStore = defineStore('flipper', () => {
     return firmware ? `f${firmware.target}` : ''
   })
 
-  const connect = async () => {
+  const connect = async ({
+    mode
+  }: {
+    mode?: string
+  } = {}) => {
     // const ports = await navigator.serial.getPorts()
 
     // console.log(ports)
@@ -47,7 +55,7 @@ export const useFlipperStore = defineStore('flipper', () => {
 
     const currentAutoReconnectFlag = unref(flags.autoReconnect)
     await flipper.value.connect({
-      type: 'RPC'
+      type: mode || route.name === 'Cli' ? 'CLI' : 'RPC'
     })
       .then(async () => {
         // flags.connected = true
@@ -71,9 +79,11 @@ export const useFlipperStore = defineStore('flipper', () => {
           onUpdateStage('end')
         }
 
-        await getInstalledApps({
-          refreshInstalledApps: true
-        })
+        if (mode !== 'CLI') {
+          await getInstalledApps({
+            refreshInstalledApps: true
+          })
+        }
       })
       .catch(() => {
         // flags.connected = false
@@ -119,6 +129,7 @@ export const useFlipperStore = defineStore('flipper', () => {
     disconnect,
     flipper,
     flipperReady,
+    rpcActive,
     info,
     api,
     target,

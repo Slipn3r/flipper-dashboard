@@ -759,6 +759,7 @@ export const useAppStore = defineStore('apps', () => {
     getInstalledApps,
     getButtonState,
     progressColors,
+    flipperInstalledApps,
     updatableApps,
     upToDateApps,
     unsupportedApps,

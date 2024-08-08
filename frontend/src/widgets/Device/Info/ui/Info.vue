@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { FlipperUpdate, FlipperConnectWebBtn } from 'features/Flipper'
 import { FlipperBody, FlipperInfo, FlipperModel } from 'entities/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
@@ -50,5 +50,17 @@ const info = ref({
 const flipperBody = ref({
   flipperName: computed(() => flipperStore.info?.hardware.name),
   flipperColor: computed(() => flipperStore.info?.hardware.color)
+})
+
+onMounted(async () => {
+  if (flipperStore.flipperReady) {
+    if (!flipperStore.rpcActive) {
+      await flipperStore.flipper.startRPCSession()
+    }
+
+    if (!flipperStore.info) {
+      await flipperStore.flipper.getInfo()
+    }
+  }
 })
 </script>

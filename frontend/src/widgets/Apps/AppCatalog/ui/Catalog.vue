@@ -81,7 +81,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, nextTick } from 'vue'
+import { ref, watch, nextTick, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { ProgressBar } from 'shared/components/ProgressBar'
@@ -151,6 +151,28 @@ const getApps = async () => {
 
   appsLoading.value = false
 }
+
+onMounted(async () => {
+  if (flipperStore.flipperReady) {
+    if (!flipperStore.rpcActive) {
+      await flipperStore.flipper.startRPCSession()
+    }
+
+    if (flipperStore.flipper.readingMode.type === 'raw') {
+      if (!flipperStore.info) {
+        await flipperStore.flipper.getInfo()
+      }
+
+      reLoad()
+
+      if (!appsStore.flipperInstalledApps.length) {
+        await appsStore.getInstalledApps({
+          refreshInstalledApps: true
+        })
+      }
+    }
+  }
+})
 
 watch(() => flipperStore.flipperReady, () => {
   reLoad()

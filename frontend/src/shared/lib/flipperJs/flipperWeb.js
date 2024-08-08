@@ -61,6 +61,7 @@ export default class Flipper {
     this.name = null
     this.connected = false
     this.updating = false
+    this.rpcActive = false
 
     this.installedApps = []
 
@@ -109,38 +110,26 @@ export default class Flipper {
     if (this.port) {
       await this.openPort()
 
-      this.port.onconnect = () => {
-        console.log('connect')
-        this.connect({
-          type: 'RPC'
-        })
-      }
-
-      this.port.ondisconnect = () => {
-        if (this.flipperReady) {
-          this.disconnect()
-        } else {
-          this.emitter.emit('disconnect')
-        }
-      }
-
       if (type === 'RPC') {
         await this.startRPCSession()
-        this.info = await readInfo.bind(this)()
+        await this.getInfo()
 
         if (this.info &&
           this.info.doneReading &&
           this.readingMode.type === 'raw' &&
           this.readingMode.transform === 'protobuf') {
           this.name = this.info.hardware.name
-          this.flipperReady = true
-          this.connected = true
+          this.rpcActive = true
         } else {
           this.name = null
-          this.flipperReady = false
-          this.connected = false
+          this.rpcActive = false
         }
+      } else {
+        this.rpcActive = false
       }
+
+      this.flipperReady = true
+      this.connected = true
     } else {
       if (!this.updating) {
         this.info = null
@@ -155,6 +144,21 @@ export default class Flipper {
   async openPort () {
     await this.port.open({ baudRate: 1 })
 
+    this.port.onconnect = () => {
+      console.log('connect')
+      this.connect({
+        type: 'RPC'
+      })
+    }
+
+    this.port.ondisconnect = () => {
+      if (this.flipperReady) {
+        this.disconnect()
+      } else {
+        this.emitter.emit('disconnect')
+      }
+    }
+
     this.readable = this.port.readable
     this.getReader()
 
@@ -165,14 +169,18 @@ export default class Flipper {
   async disconnect ({
     isUserAction = false
   } = {}) {
-    if (!this.updating) {
-      this.info = null
-      this.name = null
-      this.installedApps = []
+    if (isUserAction) {
+      if (!this.updating) {
+        this.info = null
+        this.name = null
+        this.installedApps = []
+      }
+      this.flipperReady = false
+      this.connected = false
+      this.commandQueue = []
     }
-    this.flipperReady = false
-    this.connected = false
-    this.commandQueue = []
+
+    this.rpcActive = false
 
     try {
       await this.reader.cancel()
@@ -180,7 +188,9 @@ export default class Flipper {
         // eslint-disable-next-line
         await this.readableStreamClosed.catch(() => {})
       }
+
       await this.writer.close()
+      this.writer.releaseLock()
 
       await this.port.close()
     } catch (error) {
@@ -243,36 +253,66 @@ export default class Flipper {
     this.read()
   }
 
+  // async read () {
+  //   let keepReading = true
+  //   while (keepReading) {
+  //     try {
+  //       const { value, done } = await this.reader.read();
+  //       console.log('flipper read', value, done)
+  //       if (done) {
+  //         // |reader| has been canceled.
+  //         this.reader.releaseLock()
+  //         break;
+  //       }
+  //       // Do something with |value|…
+  //       if (this.readingMode.transform === 'protobuf') {
+  //         // if (value.content && value.content === 'guiScreenFrame') {
+  //         //   this.emitter.emit('screenStream/frame', value.guiScreenFrame.data, value.guiScreenFrame.orientation)
+  //         // }
+  //         const command = this.commandQueue.find(c => c.commandId === value.commandId)
+  //         // if (value.commandStatus) {
+  //         //   command.status = value.commandStatus
+  //         //   this.emitter.emit(`commandStatus_${value.commandId}`, value.commandStatus)
+  //         //   console.log('status', command)
+  //         //   return
+  //         // }
+  //         value[value.content].hasNext = value.hasNext
+  //         command.chunks.push(value[value.content])
+  //       } else {
+  //         // console.log('value', value)
+  //         this.emitter.emit('cli/output', value)
+  //       }
+  //     } catch (error) {
+  //       // Handle |error|…
+  //       console.error('read error', error)
+  //       keepReading = false
+  //     }
+  //   }
+  // }
   async read () {
     let keepReading = true
     while (keepReading) {
       try {
-        const { value, done } = await this.reader.read();
+        const { value, done } = await this.reader.read()
         if (done) {
-          // |reader| has been canceled.
           this.reader.releaseLock()
-          break;
+          break
         }
-        // Do something with |value|…
+
         if (this.readingMode.transform === 'protobuf') {
-          // if (value.content && value.content === 'guiScreenFrame') {
-          //   this.emitter.emit('screenStream/frame', value.guiScreenFrame.data, value.guiScreenFrame.orientation)
-          // }
+          if (value.content && value.content === 'guiScreenFrame') {
+            this.emitter.emit('screenStream/frame', value.guiScreenFrame.data, value.guiScreenFrame.orientation)
+          }
           const command = this.commandQueue.find(c => c.commandId === value.commandId)
-          // if (value.commandStatus) {
-          //   command.status = value.commandStatus
-          //   this.emitter.emit(`commandStatus_${value.commandId}`, value.commandStatus)
-          //   console.log('status', command)
-          //   return
-          // }
           value[value.content].hasNext = value.hasNext
           command.chunks.push(value[value.content])
         } else {
-          console.log('value', value)
+          this.emitter.emit('cli/output', value)
         }
       } catch (error) {
-        // Handle |error|…
-        console.error('read error', error)
+        if (!error.toString().includes('device has been lost')) {
+          console.error(error)
+        }
         keepReading = false
       }
     }
@@ -287,11 +327,17 @@ export default class Flipper {
 
     await this.disconnect()
 
-    if (this.writer) {
-      this.writer.releaseLock()
+    await this.openPort()
+
+    if (this.readingMode.type === 'raw' &&
+          this.readingMode.transform === 'protobuf') {
+      this.rpcActive = true
+    } else {
+      this.rpcActive = false
     }
 
-    await this.openPort()
+    // this.flipperReady = true
+    // this.connected = true
   }
 
   getWriter () {
@@ -301,6 +347,7 @@ export default class Flipper {
   async write (message) {
     const encoder = new TextEncoder()
     const encoded = encoder.encode(message)
+
     await this.writer.write(encoded)
   }
 
@@ -308,6 +355,9 @@ export default class Flipper {
     await this.writer.write(message)
   }
 
+  async getInfo () {
+    this.info = await readInfo.bind(this)()
+  }
   async getInstalledApps () {
     onClearInstalledAppsList()
     this.installedApps = await getInstalledApps.bind(this)()

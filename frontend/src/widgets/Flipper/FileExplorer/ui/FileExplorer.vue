@@ -491,11 +491,21 @@ const mkdir = async ({
   })
 }
 
-onMounted(() => {
+onMounted(async () => {
   if (flipperStore.flipperReady) {
-    list({
-      path: fullPath.value
-    })
+    if (!flipperStore.rpcActive) {
+      await flipperStore.flipper.startRPCSession()
+
+      if (!flipperStore.info) {
+        await flipperStore.flipper.getInfo()
+      }
+    }
+
+    if (flipperStore.flipper.readingMode.type === 'raw') {
+      list({
+        path: fullPath.value
+      })
+    }
   }
 })
 
