@@ -12,10 +12,13 @@
   ],
   "cSpell.words": [
     "ARCHIVARIUS",
+    "badusb",
     "flipperzero",
     "gpio",
     "Haxr",
     "Hexbuffer",
+    "ibtn",
+    "ibutton",
     "nanoevents",
     "nfctools",
     "pbjs",
@@ -23,8 +26,11 @@
     "protobuf",
     "protofiles",
     "qmarkdown",
+    "rfid",
     "rfraw",
     "scrollarea",
-    "subtools"
+    "subghz",
+    "subtools",
+    "unref"
   ],
 }
