@@ -15,7 +15,29 @@ type Icons = {
 }
 
 const getPathToIcon = (path: string) => {
-  return `svguse:${Platform.is.electron ? '' : '/'}common-icons.svg#${path}`
+  return `svguse:${Platform.is.electron ? '' : '/'}${isType(path) ? 'file-types' : 'common-icons'}.svg#${path}`
+}
+
+const isType = (path: string) => {
+  switch (path) {
+    case 'badusb':
+      return true;
+    case 'ibutton':
+      return true;
+    case 'infrared':
+      return true;
+    case 'nfc':
+      return true;
+    case 'rfid':
+      return true;
+    case 'subghz':
+      return true;
+    case 'u2f':
+      return true;
+
+    default:
+      return false;
+  }
 }
 
 const myIcons: Icons = {
