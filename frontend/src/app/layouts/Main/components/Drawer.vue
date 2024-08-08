@@ -105,7 +105,7 @@ const linksList = [
   {
     title: 'Pulse Plotter',
     icon: 'flipper:subtools',
-    name: 'Pulseplot'
+    name: 'PulsePlotter'
   }
 ]
 

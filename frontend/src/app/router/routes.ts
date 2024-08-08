@@ -99,9 +99,9 @@ const routes: readonly RouteRecordRaw[] = [
     component: async () => (await import('src/app/layouts/Main')).MainLayout,
     children: [
       {
-        name: 'Pulseplot',
+        name: 'PulsePlotter',
         path: '',
-        component: async () => (await import('pages/Pulseplot')).PulseplotPage
+        component: async () => (await import('pages/PulsePlotter')).PulsePlotterPage
       }
     ]
   },
