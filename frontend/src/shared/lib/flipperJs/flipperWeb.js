@@ -58,6 +58,8 @@ export default class Flipper {
     this.flipperReady = false
 
     this.info = null
+    this.loadingInfo = false
+
     this.name = null
     this.connected = false
     this.updating = false
@@ -91,7 +93,6 @@ export default class Flipper {
     type = 'CLI'
   } = {}) {
     const ports = await this.findKnownDevices()
-
 
     if (ports.length > 1) {
       this.port = await navigator.serial.requestPort({
@@ -356,7 +357,9 @@ export default class Flipper {
   }
 
   async getInfo () {
+    this.loadingInfo = true
     this.info = await readInfo.bind(this)()
+    this.loadingInfo = false
   }
   async getInstalledApps () {
     onClearInstalledAppsList()

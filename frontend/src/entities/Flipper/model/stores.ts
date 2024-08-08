@@ -23,6 +23,8 @@ export const useFlipperStore = defineStore('flipper', () => {
   const rpcActive = computed(() => flipper.value.rpcActive)
   // const flippers: Ref<FlipperWeb[]> = ref([])
   const info = computed(() => (flipper.value.info as FlipperInfo))
+  const loadingInfo = computed(() => (flipper.value.loadingInfo))
+
   const api = computed(() => {
     const firmware = info?.value?.firmware
     return firmware ? `${firmware.api.major}.${firmware.api.minor}` : ''
@@ -131,6 +133,7 @@ export const useFlipperStore = defineStore('flipper', () => {
     flipperReady,
     rpcActive,
     info,
+    loadingInfo,
     api,
     target,
     onUpdateStage,

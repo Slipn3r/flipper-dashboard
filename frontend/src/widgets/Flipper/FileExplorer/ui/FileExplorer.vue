@@ -173,7 +173,7 @@
       </template>
       <q-item
         v-if="dirs.length === 0 && fullPath !== '/'"
-        class="text-grey-7"
+        class="text-grey-7 full-width"
       >
         <q-item-section avatar class="q-ml-xs">
           <q-icon name="mdi-folder-outline"/>

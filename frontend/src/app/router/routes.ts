@@ -43,7 +43,10 @@ const routes: readonly RouteRecordRaw[] = [
           }
         ]
       }
-    ]
+    ],
+    meta: {
+      canLoadWithoutFlipper: true
+    }
   },
 
   {
@@ -79,7 +82,10 @@ const routes: readonly RouteRecordRaw[] = [
         path: '',
         component: async () => (await import('pages/Nfc')).NfcPage
       }
-    ]
+    ],
+    meta: {
+      canLoadWithoutFlipper: true
+    }
   },
 
   {
@@ -103,14 +109,20 @@ const routes: readonly RouteRecordRaw[] = [
         path: '',
         component: async () => (await import('pages/PulsePlotter')).PulsePlotterPage
       }
-    ]
+    ],
+    meta: {
+      canLoadWithoutFlipper: true
+    }
   },
 
   // Always leave this as last one,
   // but you can also remove it
   {
     path: '/:catchAll(.*)*',
-    component: async () => (await import('pages/ErrorNotFound')).ErrorNotFoundPage
+    component: async () => (await import('pages/ErrorNotFound')).ErrorNotFoundPage,
+    meta: {
+      canLoadWithoutFlipper: true
+    }
   }
 ]
 

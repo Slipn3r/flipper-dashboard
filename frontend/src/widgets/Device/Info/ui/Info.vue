@@ -1,25 +1,32 @@
 <template>
-  <template v-if="flipperStore.info">
-    <div class="column items-center">
-      <div class="flex items-start q-gutter-x-xl q-mb-md">
-        <FlipperInfo class="q-mt-sm" v-bind="info" />
-        <FlipperBody
-          v-bind="flipperBody"
-          :showScreenUpdating="flipperStore.flags.updateInProgress"
-        />
-      </div>
+  <template v-if="!flipperStore.loadingInfo">
+    <template v-if="flipperStore.info">
+      <div class="column items-center">
+        <div class="flex items-start q-gutter-x-xl q-mb-md">
+          <FlipperInfo class="q-mt-sm" v-bind="info" />
+          <FlipperBody
+            v-bind="flipperBody"
+            :showScreenUpdating="flipperStore.flags.updateInProgress"
+          />
+        </div>
 
-      <FlipperUpdate />
-    </div>
+        <FlipperUpdate />
+      </div>
+    </template>
   </template>
   <template v-else>
-    <FlipperConnectWebBtn />
+    <div class="row justify-center q-my-md">
+      <Loading
+        label="Loading info..."
+      />
+    </div>
   </template>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { FlipperUpdate, FlipperConnectWebBtn } from 'features/Flipper'
+import { Loading } from 'shared/components/Loading'
+import { FlipperUpdate } from 'features/Flipper'
 import { FlipperBody, FlipperInfo, FlipperModel } from 'entities/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 
