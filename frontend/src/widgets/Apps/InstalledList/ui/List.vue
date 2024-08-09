@@ -30,7 +30,12 @@
         </q-btn>
       </template>
     </div>
-    <template v-for="updatableApp in appsStore.updatableApps" :key="updatableApp.id">
+    <q-intersection
+      v-for="updatableApp in appsStore.updatableApps"
+      :key="updatableApp.id"
+      once
+      transition="scale"
+    >
       <AppInstalledCard :app="updatableApp">
         <template v-slot:button>
           <AppUpdateBtn
@@ -38,37 +43,74 @@
           />
         </template>
       </AppInstalledCard>
-    </template>
+    </q-intersection>
 
     <q-separator
       v-if="appsStore.updatableApps.length && appsStore.upToDateApps.length"
       class="q-my-lg"
     />
 
-    <template v-for="upToDateApp in appsStore.upToDateApps" :key="upToDateApp.id">
+    <q-intersection
+      v-for="upToDateApp in appsStore.upToDateApps"
+      :key="upToDateApp.id"
+      once
+      transition="scale"
+    >
       <AppInstalledCard :app="upToDateApp">
         <template v-slot:button>
           <AppInstalledBtn />
         </template>
       </AppInstalledCard>
-    </template>
+    </q-intersection>
 
-    <template v-for="unsupportedApp in appsStore.unsupportedApps" :key="unsupportedApp.id">
+    <q-intersection
+      v-for="unsupportedApp in appsStore.unsupportedApps"
+      :key="unsupportedApp.id"
+      once
+      transition="scale"
+    >
       <AppInstalledCard :app="unsupportedApp" unsupported>
         <template v-slot:button>
           <AppInstalledBtn />
         </template>
       </AppInstalledCard>
-    </template>
+    </q-intersection>
   </q-page>
 </template>
 
 <script setup lang="ts">
+import { onMounted, watch } from 'vue'
 import { ProgressBar } from 'shared/components/ProgressBar'
 import { AppUpdateBtn } from 'features/Apps/UpdateButton'
 import { AppInstalledCard } from 'features/Apps/InstalledCard'
 import { AppInstalledBtn, AppsModel } from 'entities/Apps'
 const appsStore = AppsModel.useAppStore()
+
+import { FlipperModel } from 'entities/Flipper'
+const flipperStore = FlipperModel.useFlipperStore()
+
+import { CategoryModel } from 'entities/Category'
+const categoriesStore = CategoryModel.useCategoriesStore()
+
+const getCategories = async () => {
+  if (!categoriesStore.categories.length ||
+    flipperStore.api !== categoriesStore.lastApi ||
+    flipperStore.target !== categoriesStore.lastTarget
+  ) {
+    await categoriesStore.getCategories({
+      api: flipperStore.api,
+      target: flipperStore.target
+    })
+  }
+}
+
+onMounted(async () => {
+  await getCategories()
+})
+
+watch(() => flipperStore.flipperReady, async () => {
+  await getCategories()
+})
 </script>
 
 <style lang="scss" scoped>

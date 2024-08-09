@@ -18,17 +18,36 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
+
+import { FlipperModel } from 'entities/Flipper'
+const flipperStore = FlipperModel.useFlipperStore()
 
 import { CategoryModel, CategoryChip } from 'entities/Category'
 const categoriesStore = CategoryModel.useCategoriesStore()
 
 const emit = defineEmits(['categorySelected'])
 
+const getCategories = async () => {
+  if (!categoriesStore.categories.length ||
+    flipperStore.api !== categoriesStore.lastApi ||
+    flipperStore.target !== categoriesStore.lastTarget
+  ) {
+    await categoriesStore.getCategories({
+      api: flipperStore.api,
+      target: flipperStore.target
+    })
+  }
+}
+
 onMounted(async () => {
-  await categoriesStore.getCategories()
+  await getCategories()
+})
+
+watch(() => flipperStore.flipperReady, async () => {
+  await getCategories()
 })
 
 const onClick = (category: CategoryModel.CategoryData) => {

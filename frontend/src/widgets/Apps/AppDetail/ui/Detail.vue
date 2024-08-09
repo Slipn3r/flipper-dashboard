@@ -233,15 +233,27 @@ const route = useRoute()
 const router = useRouter()
 
 const currentApp = ref<AppsModel.AppDetail | undefined>(undefined)
-const categoryStore = CategoryModel.useCategoriesStore()
-const categories = computed(() => categoryStore.categories)
+const categoriesStore = CategoryModel.useCategoriesStore()
+
+const getCategories = async () => {
+  if (!categoriesStore.categories.length ||
+    flipperStore.api !== categoriesStore.lastApi ||
+    flipperStore.target !== categoriesStore.lastTarget
+  ) {
+    await categoriesStore.getCategories({
+      api: flipperStore.api,
+      target: flipperStore.target
+    })
+  }
+}
+
+watch(() => flipperStore.flipperReady, async () => {
+  await getCategories()
+})
 
 const init = async () => {
   await getCurrentApp()
-
-  if (!categories.value.length) {
-    categoryStore.getCategories()
-  }
+  await getCategories()
 }
 
 onMounted(async () => {
@@ -340,7 +352,7 @@ const showDialog = (dialog: string | undefined) => {
 }
 
 const category = computed(() =>
-  categories.value?.find((e) => e.id === currentApp.value?.categoryId)
+  categoriesStore.categories?.find((e) => e.id === currentApp.value?.categoryId)
 )
 const goCategory = () => {
   if (category.value) {

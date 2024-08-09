@@ -17,8 +17,21 @@ export const useCategoriesStore = defineStore('categories', () => {
 
   const route = useRoute()
 
+  const lastApi = ref<string>()
+  const lastTarget = ref<string>()
   const getCategories = async (params: CategoryParams = {}) => {
     categoriesLoading.value = true
+
+    lastApi.value = params.api
+    lastTarget.value = params.target
+
+    if (!params.api) {
+      delete params.api
+    }
+
+    if (!params.target) {
+      delete params.target
+    }
 
     try {
       const data = await api.fetchCategories(params)
@@ -53,6 +66,8 @@ export const useCategoriesStore = defineStore('categories', () => {
   }
 
   return {
+    lastApi,
+    lastTarget,
     getCategories,
     categoriesLoading,
     categories,
