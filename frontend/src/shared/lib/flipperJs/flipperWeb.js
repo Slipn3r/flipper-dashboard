@@ -31,6 +31,37 @@ const RPCSubSystems = {
 
 export default class Flipper {
   constructor() {
+    this.serialWorker = new Worker(new URL('./worker.ts', import.meta.url))
+    this.serialWorker.onmessage = (e) => {
+      switch (e.data.message) {
+        case 'connectionStatus':
+          if (e.data.error) {
+            this.emitter.emit(e.data.operation + 'Status', e.data.error)
+          } else if (e.data.status) {
+            this.emitter.emit(e.data.operation + 'Status', e.data.status)
+          }
+          break
+
+        case 'error':
+          if (e.data.error) {
+            console.error(e.data.error)
+          }
+          break
+
+        case 'getReadableStream':
+          this.readable = e.data.stream
+          this.getReader()
+          this.emitter.emit('getReadableStream')
+          break
+
+        case 'getWritableStream':
+          this.writable = e.data.stream
+          this.getWriter()
+          this.emitter.emit('getWritableStream')
+          break
+      }
+    }
+
     this.port = null
     this.filters = [
       { usbVendorId: 0x0483, usbProductId: 0x5740 }
@@ -90,47 +121,87 @@ export default class Flipper {
   }
 
   async connect ({
-    type = 'CLI'
-  } = {}) {
+    type = 'CLI',
+    autoReconnect = false
+  }) {
     const ports = await this.findKnownDevices()
 
-    if (ports.length > 1) {
-      this.port = await navigator.serial.requestPort({
+    if (ports.length) {
+      this.serialWorker.postMessage({
+        operation: 'connect'
+      })
+    } else if (!autoReconnect) {
+      await navigator.serial.requestPort({
         filters: this.filters
       })
         .catch((e) => {
           console.error(e)
           throw e
         })
-    } else if (ports.length === 1) {
-      this.port = ports[0]
-    } else {
-      this.port = null
+
+      this.serialWorker.postMessage({
+        operation: 'connect'
+      })
     }
 
-    if (this.port) {
-      await this.openPort()
+    if (ports.length) {
+      return new Promise((resolve, reject) => {
+        const unbind = this.emitter.on('connectStatus', status => {
+          unbind()
+          if (status === 'success') {
+            const unbindReadable = this.emitter.on('getReadableStream', () => {
+              unbindReadable()
+              const unbindWritable = this.emitter.on('getWritableStream', async () => {
+                unbindWritable()
 
-      if (type === 'RPC') {
-        await this.startRPCSession()
-        await this.getInfo()
+                if (type === 'RPC') {
+                  await this.startRPCSession()
+                  await this.getInfo()
 
-        if (this.info &&
-          this.info.doneReading &&
-          this.readingMode.type === 'raw' &&
-          this.readingMode.transform === 'protobuf') {
-          this.name = this.info.hardware.name
-          this.rpcActive = true
-        } else {
-          this.name = null
-          this.rpcActive = false
-        }
-      } else {
-        this.rpcActive = false
-      }
+                  if (this.info &&
+                    this.info.doneReading &&
+                    this.readingMode.type === 'raw' &&
+                    this.readingMode.transform === 'protobuf') {
+                    this.name = this.info.hardware.name
+                    this.rpcActive = true
+                  } else {
+                    this.name = null
+                    this.rpcActive = false
+                  }
+                } else {
+                  this.rpcActive = false
+                }
 
-      this.flipperReady = true
-      this.connected = true
+                this.flipperReady = true
+                this.connected = true
+
+                this.emitter.on('portDisconnectStatus', () => {
+                  if (this.flipperReady) {
+                    this.disconnect({
+                      portDisconnect: true
+                    })
+                    this.serialWorker.postMessage({
+                      operation: 'disconnect'
+                    })
+                  } else {
+                    this.emitter.emit('disconnect')
+                  }
+                })
+
+                resolve(true)
+              })
+            })
+          } else {
+            if (!this.updating) {
+              this.info = null
+              this.name = null
+            }
+            this.connected = false
+
+            reject(status)
+          }
+        })
+      })
     } else {
       if (!this.updating) {
         this.info = null
@@ -138,45 +209,22 @@ export default class Flipper {
       }
       this.connected = false
 
-      throw new Error('No available port')
+      return Promise.reject('No available port')
     }
-  }
-
-  async openPort () {
-    await this.port.open({ baudRate: 1 })
-
-    this.port.onconnect = () => {
-      console.log('connect')
-      this.connect({
-        type: 'RPC'
-      })
-    }
-
-    this.port.ondisconnect = () => {
-      if (this.flipperReady) {
-        this.disconnect()
-      } else {
-        this.emitter.emit('disconnect')
-      }
-    }
-
-    this.readable = this.port.readable
-    this.getReader()
-
-    this.writable = this.port.writable
-    this.getWriter()
   }
 
   async disconnect ({
-    isUserAction = false
-  } = {}) {
-    if (isUserAction) {
+    isUserAction = false,
+    reopenPort = false,
+    portDisconnect = false
+  }) {
+    if (isUserAction || portDisconnect) {
       if (!this.updating) {
         this.info = null
         this.name = null
         this.installedApps = []
+        this.flipperReady = false
       }
-      this.flipperReady = false
       this.connected = false
       this.commandQueue = []
     }
@@ -184,16 +232,73 @@ export default class Flipper {
     this.rpcActive = false
 
     try {
-      await this.reader.cancel()
+      if (this.reader) {
+        await this.reader.cancel()
+      }
       if (this.readableStreamClosed) {
         // eslint-disable-next-line
         await this.readableStreamClosed.catch(() => {})
       }
 
-      await this.writer.close()
-      this.writer.releaseLock()
+      if (this.writer) {
+        this.writer.ready
+          .then(async () => {
+            await this.writer.close()
+            await this.writer.releaseLock()
+          })
+          .catch((err) => {
+            console.log('Stream error:', err);
+          })
+        }
 
-      await this.port.close()
+      if (reopenPort) {
+        setTimeout(() => {
+          this.serialWorker.postMessage({
+            operation: 'reopenPort'
+          })
+        }, 5)
+
+        return new Promise((resolve, reject) => {
+          setTimeout(() => reject('Serial connection timeout'), 4000)
+          const unbindDisconnect = this.emitter.on('reopenDisconnectStatus', status => {
+            unbindDisconnect()
+            if (status === 'success') {
+              const unbindConnect = this.emitter.on('reopenConnectStatus', status => {
+                unbindConnect()
+                if (status === 'success') {
+                  resolve(true)
+                } else {
+                  reject(status)
+                }
+              })
+            } else {
+              reject(status)
+            }
+          })
+        })
+      }
+
+      if (!portDisconnect) {
+        this.serialWorker.postMessage({
+          operation: 'disconnect'
+        })
+
+        return new Promise((resolve, reject) => {
+          setTimeout(() => reject('Serial disconnection timeout'), 4000)
+          const unbind = this.emitter.on('disconnectStatus', status => {
+            unbind()
+            if (status === 'success') {
+              this.readingMode = {
+                type: 'text',
+                transform: 'promptBreak'
+              }
+              resolve(true)
+            } else {
+              reject(status)
+            }
+          })
+        })
+      }
     } catch (error) {
       console.error('disconnect', error)
     }
@@ -323,12 +428,13 @@ export default class Flipper {
     if (!type) {
       return
     }
+
     this.readingMode.type = type
     this.readingMode.transform = transform
 
-    await this.disconnect()
-
-    await this.openPort()
+    await this.disconnect({
+      reopenPort: true
+    })
 
     if (this.readingMode.type === 'raw' &&
           this.readingMode.transform === 'protobuf') {
@@ -336,9 +442,6 @@ export default class Flipper {
     } else {
       this.rpcActive = false
     }
-
-    // this.flipperReady = true
-    // this.connected = true
   }
 
   getWriter () {
@@ -347,7 +450,7 @@ export default class Flipper {
 
   async write (message) {
     const encoder = new TextEncoder()
-    const encoded = encoder.encode(message)
+    const encoded = encoder.encode(message, { stream: true })
 
     await this.writer.write(encoded)
   }

@@ -135,6 +135,7 @@ const init = async () => {
 
     document.querySelector('.xterm')?.setAttribute('style', 'height: 100%')
 
+    await asyncSleep(50)
     await write('\r\n\x01\r\n')
 
     term.onData(async data => {
@@ -144,7 +145,7 @@ const init = async () => {
     term.focus()
   }
 
-  await asyncSleep(1000)
+  await asyncSleep(500)
   await flipperStore.flipper.setReadingMode('text')
 
   unbind.value = flipperStore.flipper.emitter.on('cli/output', data => {

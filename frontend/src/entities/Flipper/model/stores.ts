@@ -35,9 +35,11 @@ export const useFlipperStore = defineStore('flipper', () => {
   })
 
   const connect = async ({
-    mode
+    mode,
+    autoReconnect
   }: {
     mode?: string
+    autoReconnect?: boolean
   } = {}) => {
     // const ports = await navigator.serial.getPorts()
 
@@ -57,7 +59,8 @@ export const useFlipperStore = defineStore('flipper', () => {
 
     const currentAutoReconnectFlag = unref(flags.autoReconnect)
     await flipper.value.connect({
-      type: mode || route.name === 'Cli' ? 'CLI' : 'RPC'
+      type: mode || route.name === 'Cli' ? 'CLI' : 'RPC',
+      autoReconnect
     })
       .then(async () => {
         // flags.connected = true
@@ -121,7 +124,9 @@ export const useFlipperStore = defineStore('flipper', () => {
   const reconnectInterval = ref<NodeJS.Timeout>()
   const onAutoReconnect = () => {
     reconnectInterval.value = setInterval(() => {
-      connect()
+      connect({
+        autoReconnect: true
+      })
     }, 1000)
   }
 
