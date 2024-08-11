@@ -47,6 +47,7 @@
             v-bind="link"
             :href="link.link"
             class="q-mx-sm"
+            :target="link.blank ? '_blank' : '_self'"
           >
             {{ link.title }}
           </a>
