@@ -2,11 +2,12 @@ import { ref, unref, computed, reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { FlipperWeb } from 'shared/lib/flipperJs'
 import { AppsModel } from 'entities/Apps'
-import { FlipperInfo } from './types'
-import { useRoute } from 'vue-router'
+import { FlipperInfo, PulseFile } from './types'
+import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router'
 
 export const useFlipperStore = defineStore('flipper', () => {
   const route = useRoute()
+  const router = useRouter()
 
   const appsStore = AppsModel.useAppStore()
   const { getInstalledApps, onClearInstalledAppsList } = appsStore
@@ -130,6 +131,22 @@ export const useFlipperStore = defineStore('flipper', () => {
     }, 1000)
   }
 
+  const fileToPass = ref<PulseFile>()
+  const openFileIn = ({
+    path,
+    file
+  }: {
+    path: RouteLocationRaw
+    file: PulseFile
+  }) => {
+    // log({
+    //   level: 'info',
+    //   message: `${componentName}: Passing file ${file.name} to ${path}`
+    // })
+    fileToPass.value = file
+    router.push(path)
+  }
+
   return {
     flags,
     connect,
@@ -142,7 +159,10 @@ export const useFlipperStore = defineStore('flipper', () => {
     api,
     target,
     onUpdateStage,
-    onAutoReconnect
+    onAutoReconnect,
+
+    fileToPass,
+    openFileIn
   }
 })
 

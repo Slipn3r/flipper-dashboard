@@ -360,8 +360,7 @@
 <script setup lang="ts">
 import { ref, unref, onMounted, watch } from 'vue'
 import { exportFile } from 'quasar'
-import { useRouter, type RouteLocationRaw } from 'vue-router'
-const router = useRouter()
+import { type RouteLocationRaw } from 'vue-router'
 
 import { ProgressBar } from 'shared/components/ProgressBar'
 
@@ -624,8 +623,8 @@ const read = async ({
     }
   }
 
-  const res = await flipperStore.flipper.RPC('storageRead', { path: filePath })
-    .then((data: object) => {
+  const res: Uint8Array = await flipperStore.flipper.RPC('storageRead', { path: filePath })
+    .then((data: Uint8Array) => {
       // log({
       //   level: 'debug',
       //   message: `${componentName.value}: storageRead: ${path}`
@@ -633,10 +632,11 @@ const read = async ({
       return data
     })
     .catch(/* error => rpcErrorHandler(componentName, error, 'storageRead') */)
-    const s = filePath.split('/')
-    if (!preventDownload) {
-      exportFile(s[s.length - 1], res)
-    }
+
+  const s = filePath.split('/')
+  if (!preventDownload) {
+    exportFile(s[s.length - 1], res)
+  }
   if (unbind) {
     unbind()
   }
@@ -657,21 +657,16 @@ const openFileIn = async ({
     filePath: fullPath.value + '/' + item.name,
     preventDownload: true
   })
-  // openFileIn({
-  //   path: destination,
-  //   file: {
-  //     name: item.name,
-  //     data: res
-  //   }
-  // })
-  console.log({
-    path: destination,
-    file: {
-      name: item.name,
-      data: res
-    }
-  })
-  router.push(destination)
+
+  if (res) {
+    flipperStore.openFileIn({
+      path: destination,
+      file: {
+        name: item.name,
+        data: res
+      }
+    })
+  }
 }
 
 const renameDialog = ref(false)

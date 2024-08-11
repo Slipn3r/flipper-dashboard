@@ -11,8 +11,11 @@
     { "mode": "auto" }
   ],
   "cSpell.words": [
+    "Сanvas",
     "ARCHIVARIUS",
+    "autorange",
     "badusb",
+    "centerfreq",
     "ditherpunk",
     "flipperzero",
     "gpio",
@@ -30,9 +33,13 @@
     "qmarkdown",
     "rfid",
     "rfraw",
+    "RIFL",
     "scrollarea",
     "subghz",
     "subtools",
-    "unref"
+    "unref",
+    "varint",
+    "varints",
+    "viebox"
   ],
 }

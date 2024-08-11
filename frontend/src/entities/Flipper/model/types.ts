@@ -214,3 +214,8 @@ export type Regions = {
   country: string
   default: string[]
 }
+
+export type PulseFile = {
+  data: Uint8Array
+  name: string
+}
