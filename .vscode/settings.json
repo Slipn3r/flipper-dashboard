@@ -42,4 +42,8 @@
     "varints",
     "viebox"
   ],
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "prettier.configPath": "./frontend/.prettierrc.json"
 }
