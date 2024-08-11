@@ -1,0 +1,68 @@
+.pE, .pE * {
+  box-sizing: border-box;
+}
+.pE {
+  border: 1px solid #888;
+  display: inline-grid;
+  overflow: hidden;
+  grid-template: 'menu canvas' 'menu palette';
+  padding: 16px;
+  grid-gap: 12px;
+  background: #eee;
+}
+.pE__palette {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 18px);
+  justify-content: stretch;
+  grid-gap: 4px;
+  grid-area: palette;
+}
+.pE__color {
+  border: 1px solid #888;
+  height: 18px;
+  border-radius: 2px;
+}
+.pE__color.pE--selected {
+  box-shadow: 0 0 0 2px black;
+  border-color: white;
+}
+.pE__canvas {
+  border: 1px solid black;
+  overflow: auto;
+  position: relative;
+  grid-area: canvas;
+}
+.pE__drawing {
+  display: block;
+  image-rendering: pixelated;
+}
+.pE__menu {
+  display: grid;
+  grid-template-rows: auto;
+  grid-gap: 8px;
+  grid-area: menu;
+  align-content: start;
+}
+.pE__tool input {
+  display: none;
+}
+.pE__menu-item, .pE__tool-icon {
+  display: block;
+  border: 0 none;
+  text-align: center;
+  font-size: .75em;
+  font-family: sans-serif;
+  border-radius: 6px;
+  background: #666;
+  color: #fff;
+  padding: 4px 6px;
+  cursor: pointer;
+}
+.pE__menu-item:hover, .pE__tool-icon:hover {
+  box-shadow: 0 0 0 1px black;
+}
+.pE__tool input:checked + .pE__tool-icon {
+  box-shadow: 0 0 0 1px black;
+  background: #fff;
+  color: #000
+}

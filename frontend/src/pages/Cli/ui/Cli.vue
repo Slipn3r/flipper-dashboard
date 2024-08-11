@@ -156,6 +156,7 @@ const init = async () => {
 onMounted(async () => {
   if (flipperStore.flipperReady) {
     if (flipperStore.rpcActive) {
+      await asyncSleep(500)
       await flipperStore.flipper.setReadingMode('text', 'promptBreak')
     }
 
