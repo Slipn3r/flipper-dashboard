@@ -1,0 +1,109 @@
+{
+    "name": "Flipper Lab",
+    "short_name": "Flipper Lab",
+    "display": "standalone",
+    "start_url": "/",
+    "background_color": "#fff",
+    "theme_color": "#ff8200",
+    "lang": "en",
+    "orientation": "any",
+    "description": "Flipper Zero is a fanatic's portable multi-tool in a toy-like body. This app helps you manage your device data, organize your keys and share it with other Flipper Zero users",
+    "categories": [
+        "developer tools",
+        "developer",
+        "development",
+        "utilities"
+    ],
+    "launch_handler": {
+        "client_mode": ["focus-existing", "auto"]
+    },
+    "related_applications": [
+        {
+            "platform": "play",
+            "id": "com.flipperdevices.app",
+            "url": "https://play.google.com/store/apps/details?id=com.flipperdevices.app"
+        },
+        {
+            "platform": "itunes",
+            "url": "https://apps.apple.com/app/flipper-mobile-app/id1534655259"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Apps",
+            "url": "/apps"
+        },
+        {
+            "name": "Files",
+            "url": "/archive"
+        },
+        {
+            "name": "Cli",
+            "url": "/cli"
+        },
+        {
+            "name": "NFC tools",
+            "url": "/nfc-tools"
+        },
+        {
+            "name": "Pulse plotter",
+            "url": "/pulse-plotter"
+        }
+    ],
+    "icons": [
+        {
+            "src": "/icons/icon-192.png",
+            "type": "image/png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "/icons/icon-512.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/screenshots/screenshot1.png",
+            "type": "image/png",
+            "sizes": "540x720",
+            "form_factor": "narrow",
+            "label": "View informations and update your Flipper Zero"
+        },
+        {
+            "src": "/screenshots/screenshot2.jpg",
+            "type": "image/jpeg",
+            "sizes": "540x720",
+            "form_factor": "narrow",
+            "label": "Find new applications in the Flipper Catalogue"
+        },
+        {
+            "src": "/screenshots/screenshot3.jpg",
+            "type": "image/jpeg",
+            "sizes": "540x720",
+            "form_factor": "narrow",
+            "label": "Explore and upload files on your device"
+        },
+        {
+            "src": "/screenshots/screenshot4.png",
+            "type": "image/jpeg",
+            "sizes": "1024x593",
+            "form_factor": "wide",
+            "label": "View informations and update your Flipper Zero"
+        },
+        {
+            "src": "/screenshots/screenshot5.jpg",
+            "type": "image/jpeg",
+            "sizes": "1024x593",
+            "form_factor": "wide",
+            "label": "Find new applications in the Flipper Catalogue"
+        },
+        {
+            "src": "/screenshots/screenshot6.jpg",
+            "type": "image/jpeg",
+            "sizes": "1024x593",
+            "form_factor": "wide",
+            "label": "Explore and upload files on your device"
+        }
+    ]
+}
