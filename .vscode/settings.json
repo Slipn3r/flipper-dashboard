@@ -2,20 +2,17 @@
   "editor.bracketPairColorization.enabled": true,
   "editor.guides.bracketPairs": true,
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-  "editor.codeActionsOnSave": [
-    "source.fixAll.eslint"
-  ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": ["source.fixAll.eslint"],
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "vue"],
-  "eslint.workingDirectories": [
-    { "mode": "auto" }
-  ],
+  "eslint.workingDirectories": [{ "mode": "auto" }],
   "cSpell.words": [
     "Сanvas",
     "ARCHIVARIUS",
     "autorange",
     "badusb",
     "centerfreq",
+    "cuid",
     "ditherpunk",
     "flipperzero",
     "gpio",
@@ -23,6 +20,7 @@
     "Hexbuffer",
     "ibtn",
     "ibutton",
+    "Mfkey",
     "nanoevents",
     "nfctools",
     "pbjs",
@@ -42,8 +40,5 @@
     "varints",
     "viebox"
   ],
-  "[vue]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
   "prettier.configPath": "./frontend/.prettierrc.json"
 }

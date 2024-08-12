@@ -1,11 +1,23 @@
 <template>
   <div class="column flex-center text-center full-width">
     <template v-if="!flipperStore.flags.updateInProgress">
-      <template v-if="ableToUpdate && flipperStore.info.storage.sdcard?.status">
+      <template
+        v-if="ableToUpdate && flipperStore.info?.storage.sdcard?.status"
+      >
         <template v-if="outdated !== undefined">
-          <p class="q-mb-sm" v-if="outdated">Your firmware is out of date, newest release is {{ getChannel('release')?.versions[0].version }}.</p>
-          <p class="q-mb-sm" v-else-if="aheadOfRelease">Your firmware is ahead of current release.</p>
-          <p class="q-mb-sm" v-else-if="flipperStore.info.firmware.version !== 'unknown'">Your firmware is up to date.</p>
+          <p class="q-mb-sm" v-if="outdated">
+            Your firmware is out of date, newest release is
+            {{ getChannel('release')?.versions[0].version }}.
+          </p>
+          <p class="q-mb-sm" v-else-if="aheadOfRelease">
+            Your firmware is ahead of current release.
+          </p>
+          <p
+            class="q-mb-sm"
+            v-else-if="flipperStore.info.firmware.version !== 'unknown'"
+          >
+            Your firmware is up to date.
+          </p>
         </template>
         <!-- <p v-if="channels.custom">
           Detected custom firmware <b>"{{ channels.custom.channel }}"</b>
@@ -16,9 +28,14 @@
             v-model="fwModel"
             :options="fwOptions"
             label="Choose firmware"
-            :suffix="fwOptions.find(({label}) => label === fwModel.label) ? fwOptions.find(({label}) => label === fwModel.label)?.version : ''"
+            :suffix="
+              fwOptions.find(({ label }) => label === fwModel.label)
+                ? fwOptions.find(({ label }) => label === fwModel.label)
+                    ?.version
+                : ''
+            "
             :style="!$q.screen.xs ? 'width: 320px;' : 'width: 290px;'"
-            >
+          >
             <template v-slot:option="scope">
               <q-item v-bind="scope.itemProps">
                 <q-item-section class="items-start">
@@ -41,11 +58,17 @@
             color="positive"
             padding="12px 30px"
             :class="!$q.screen.xs ? 'q-ml-lg' : 'q-mt-sm'"
-          >{{ getTextButton }}</q-btn>
+            >{{ getTextButton }}</q-btn
+          >
         </div>
         <q-btn
           v-if="installFromFile"
-          @click="uploadPopup = true; uploadedFile = undefined"
+          @click="
+            () => {
+              uploadPopup = true
+              uploadedFile = undefined
+            }
+          "
           class="q-mt-lg"
           outline
           color="grey-8"
@@ -54,19 +77,19 @@
         </q-btn>
       </template>
       <template v-else>
-        <span v-if="flipperStore.info.storage.sdcard?.status">Your firmware doesn't support self-update. Install latest release using <b>repair mode</b>.</span>
+        <span v-if="flipperStore.info?.storage.sdcard?.status"
+          >Your firmware doesn't support self-update. Install latest release
+          using <b>repair mode</b>.</span
+        >
         <span v-else>Self-update is impossible without an SD card.</span>
       </template>
     </template>
 
     <template v-else>
       <p>{{ updateStage }}</p>
-      <q-btn
-        v-if="updateError"
-        outline
-        class="q-mt-md"
-        @click="cancelUpdate()"
-      >Cancel</q-btn>
+      <q-btn v-if="updateError" outline class="q-mt-md" @click="cancelUpdate()"
+        >Cancel</q-btn
+      >
       <ProgressBar
         v-else-if="write.filename.length > 0"
         class="full-width"
@@ -93,18 +116,8 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn
-            flat
-            label="Upload"
-            v-close-popup
-            @click="update()"
-          ></q-btn>
-          <q-btn
-            flat
-            label="Cancel"
-            color="negative"
-            v-close-popup
-          ></q-btn>
+          <q-btn flat label="Upload" v-close-popup @click="update()"></q-btn>
+          <q-btn flat label="Cancel" color="negative" v-close-popup></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -146,14 +159,23 @@ const getChannel = (channelId: string) => {
 
 const fwOptions = ref([
   {
-    label: 'Release', value: 'release', version: '', color: 'positive'
+    label: 'Release',
+    value: 'release',
+    version: '',
+    color: 'positive'
   },
   {
-    label: 'Release-candidate', value: 'rc', version: '', color: 'accent'
+    label: 'Release-candidate',
+    value: 'rc',
+    version: '',
+    color: 'accent'
   },
   {
-    label: 'Dev (unstable)', value: 'dev', version: '', color: 'negative'
-  },
+    label: 'Dev (unstable)',
+    value: 'dev',
+    version: '',
+    color: 'negative'
+  }
   // {
   //   label: 'Custom', value: 'custom', version: '', color: 'dark'
   // }
@@ -164,30 +186,48 @@ onMounted(async () => {
   channels.value = await fetchChannels()
 
   if (channels.value.length) {
-    fwOptions.value[0].version = getChannel('release')?.versions[0].version || ''
-    fwOptions.value[1].version = getChannel('release-candidate')?.versions[0].version || ''
-    fwOptions.value[2].version = getChannel('development')?.versions[0].version || ''
+    fwOptions.value[0].version =
+      getChannel('release')?.versions[0].version || ''
+    fwOptions.value[1].version =
+      getChannel('release-candidate')?.versions[0].version || ''
+    fwOptions.value[2].version =
+      getChannel('development')?.versions[0].version || ''
   }
 
   compareVersions()
 
-  if (new URLSearchParams(location.search).get('overrideDevRegion') === 'true') {
+  if (
+    new URLSearchParams(location.search).get('overrideDevRegion') === 'true'
+  ) {
     overrideDevRegion.value = true
   }
 })
 
 const compareVersions = () => {
-  if (semver.lt((flipperStore.info.protobuf.version.major + '.' + flipperStore.info.protobuf.version.minor) + '.0', '0.6.0')) {
+  if (
+    semver.lt(
+      flipperStore.info?.protobuf.version.major +
+        '.' +
+        flipperStore.info?.protobuf.version.minor +
+        '.0',
+      '0.6.0'
+    )
+  ) {
     ableToUpdate.value = false
   }
-  if (flipperStore.info.firmware.version) {
-    if (flipperStore.info.firmware.version !== 'unknown' && semver.valid(flipperStore.info.firmware.version)) {
+  if (flipperStore.info?.firmware.version) {
+    if (
+      flipperStore.info.firmware.version !== 'unknown' &&
+      semver.valid(flipperStore.info.firmware.version)
+    ) {
       const releaseVersion = getChannel('release')?.versions[0].version
 
       if (releaseVersion) {
         if (semver.eq(flipperStore.info.firmware.version, releaseVersion)) {
           outdated.value = false
-        } else if (semver.gt(flipperStore.info.firmware.version, releaseVersion)) {
+        } else if (
+          semver.gt(flipperStore.info.firmware.version, releaseVersion)
+        ) {
           outdated.value = false
           aheadOfRelease.value = true
         } else {
@@ -203,14 +243,14 @@ const compareVersions = () => {
 }
 
 const getTextButton = computed(() => {
-  if (fwModel.value.version === flipperStore.info.firmware.version) {
+  if (fwModel.value.version === flipperStore.info?.firmware.version) {
     return 'Reinstall'
   }
   return 'Install'
 })
 
 const update = async () => {
-  if (!flipperStore.info.storage.sdcard?.status.isInstalled) {
+  if (!flipperStore.info?.storage.sdcard?.status.isInstalled) {
     flipperStore.flags.microSDcardMissingDialog = true
     return
   }
@@ -227,9 +267,9 @@ const write = ref({
 const loadFirmware = async () => {
   updateStage.value = 'Loading firmware bundle...'
 
-  if (flipperStore.info.hardware.region !== '0' || overrideDevRegion.value) {
-    const regions: FlipperModel.Regions = await fetchRegions()
-      .catch(error => {
+  if (flipperStore.info?.hardware.region !== '0' || overrideDevRegion.value) {
+    const regions: FlipperModel.Regions = await fetchRegions().catch(
+      (error) => {
         // showNotif({
         //   message: 'Failed to fetch regional update information',
         //   color: 'negative',
@@ -240,13 +280,14 @@ const loadFirmware = async () => {
         //   message: `${componentName}: Failed to fetch regional update information: ${error.toString()}`
         // })
         throw error
-      })
+      }
+    )
 
     let bands
     if (regions.countries[regions.country]) {
-      bands = regions.countries[regions.country].map(e => regions.bands[e])
+      bands = regions.countries[regions.country].map((e) => regions.bands[e])
     } else {
-      bands = regions.default.map(e => regions.bands[e])
+      bands = regions.default.map((e) => regions.bands[e])
       regions.country = 'JP'
     }
     const options: {
@@ -274,10 +315,15 @@ const loadFirmware = async () => {
 
     options.countryCode = new TextEncoder().encode(regions.country)
     const message = PB.Region.create(options)
-    const encoded = new Uint8Array(PB.Region.encodeDelimited(message).finish()).slice(1)
+    const encoded = new Uint8Array(
+      PB.Region.encodeDelimited(message).finish()
+    ).slice(1)
 
-    await flipperStore.flipper.RPC('storageWrite', { path: '/int/.region_data', buffer: encoded })
-      // .catch(error => rpcErrorHandler(error, 'storageWrite'))
+    await flipperStore.flipper.RPC('storageWrite', {
+      path: '/int/.region_data',
+      buffer: encoded
+    })
+    // .catch(error => rpcErrorHandler(error, 'storageWrite'))
   }
 
   if (updateError.value) {
@@ -290,20 +336,22 @@ const loadFirmware = async () => {
     let files
     if (uploadedFile.value) {
       const buffer = await uploadedFile.value.arrayBuffer()
-      files = await unpack(buffer)
-        .then((value: object) => {
-          // log({
-          //   level: 'debug',
-          //   message: `${componentName}: Unpacked firmware`
-          // })
-          return value
-        })
+      files = await unpack(buffer).then((value: object) => {
+        // log({
+        //   level: 'debug',
+        //   message: `${componentName}: Unpacked firmware`
+        // })
+        return value
+      })
     } else {
-      const file = channel?.versions[0].files.find((_file) => _file.target === flipperStore.target && _file.type === 'update_tgz')
+      const file = channel?.versions[0].files.find(
+        (_file) =>
+          _file.target === flipperStore.target && _file.type === 'update_tgz'
+      )
 
       if (file) {
         files = await fetchFirmware(file.url)
-          .catch(error => {
+          .catch((error) => {
             updateError.value = true
             updateStage.value = error
             // showNotif({
@@ -317,7 +365,7 @@ const loadFirmware = async () => {
             // })
             throw error
           })
-          .then(value => {
+          .then((value) => {
             // log({
             //   level: 'debug',
             //   message: `${componentName}: Downloaded firmware from ${channels.value[fwModel.value.value].url}`
@@ -334,12 +382,14 @@ const loadFirmware = async () => {
     }
 
     let path = '/ext/update/'
-    await flipperStore.flipper.RPC('storageStat', { path: '/ext/update' })
+    await flipperStore.flipper
+      .RPC('storageStat', { path: '/ext/update' })
       .catch(async (error: string) => {
         if (error.toString() !== 'ERROR_STORAGE_NOT_EXIST') {
           // rpcErrorHandler(componentName, error, 'storageStat')
         } else {
-          await flipperStore.flipper.RPC('storageMkdir', { path: '/ext/update' })
+          await flipperStore.flipper
+            .RPC('storageMkdir', { path: '/ext/update' })
             // .catch(error => rpcErrorHandler(componentName, error, 'storageMkdir'))
             .then(() => {
               // log({
@@ -359,7 +409,8 @@ const loadFirmware = async () => {
         if (file.name.endsWith('/')) {
           path = path.slice(0, -1)
         }
-        await flipperStore.flipper.RPC('storageMkdir', { path })
+        await flipperStore.flipper
+          .RPC('storageMkdir', { path })
           // .catch(error => rpcErrorHandler(componentName, error, 'storageMkdir'))
           .then(() => {
             // log({
@@ -369,10 +420,17 @@ const loadFirmware = async () => {
           })
       } else {
         write.value.filename = file.name.slice(file.name.lastIndexOf('/') + 1)
-        const unbind = flipperStore.flipper.emitter.on('storageWriteRequest/progress', e => {
-          write.value.progress = e.progress / e.total
-        })
-        await flipperStore.flipper.RPC('storageWrite', { path: '/ext/update/' + file.name, buffer: file.buffer })
+        const unbind = flipperStore.flipper.emitter.on(
+          'storageWriteRequest/progress',
+          (e) => {
+            write.value.progress = e.progress / e.total
+          }
+        )
+        await flipperStore.flipper
+          .RPC('storageWrite', {
+            path: '/ext/update/' + file.name,
+            buffer: file.buffer
+          })
           // .catch(error => rpcErrorHandler(componentName, error, 'storageWrite'))
           .then(() => {
             // log({
@@ -394,7 +452,8 @@ const loadFirmware = async () => {
       return
     }
 
-    await flipperStore.flipper.RPC('systemUpdate', { path: path + '/update.fuf' })
+    await flipperStore.flipper
+      .RPC('systemUpdate', { path: path + '/update.fuf' })
       // .catch(error => rpcErrorHandler(componentName, error, 'systemUpdate'))
       .then(() => {
         // log({
@@ -406,7 +465,7 @@ const loadFirmware = async () => {
     updateStage.value = 'Update in progress, pay attention to your Flipper'
 
     await flipperStore.flipper.RPC('systemReboot', { mode: 'UPDATE' })
-      // .catch(error => rpcErrorHandler(componentName, error, 'systemReboot'))
+    // .catch(error => rpcErrorHandler(componentName, error, 'systemReboot'))
 
     flipperStore.flags.autoReconnect = true
   } else {

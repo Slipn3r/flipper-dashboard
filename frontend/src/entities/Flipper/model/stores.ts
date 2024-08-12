@@ -23,8 +23,8 @@ export const useFlipperStore = defineStore('flipper', () => {
   const flipperReady = computed(() => flipper.value.flipperReady)
   const rpcActive = computed(() => flipper.value.rpcActive)
   // const flippers: Ref<FlipperWeb[]> = ref([])
-  const info = computed(() => (flipper.value.info as FlipperInfo))
-  const loadingInfo = computed(() => (flipper.value.loadingInfo))
+  const info = computed(() => flipper.value.info as FlipperInfo | undefined)
+  const loadingInfo = computed(() => flipper.value.loadingInfo)
 
   const api = computed(() => {
     const firmware = info?.value?.firmware
@@ -59,10 +59,11 @@ export const useFlipperStore = defineStore('flipper', () => {
     // })
 
     const currentAutoReconnectFlag = unref(flags.autoReconnect)
-    await flipper.value.connect({
-      type: mode || route.name === 'Cli' ? 'CLI' : 'RPC',
-      autoReconnect
-    })
+    await flipper.value
+      .connect({
+        type: mode || route.name === 'Cli' ? 'CLI' : 'RPC',
+        autoReconnect
+      })
       .then(async () => {
         // flags.connected = true
         const unbind = flipper.value.emitter.on('disconnect', (e) => {

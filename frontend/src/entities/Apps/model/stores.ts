@@ -3,7 +3,10 @@ import { defineStore } from 'pinia'
 import asyncSleep from 'simple-async-sleep'
 import { FlipperModel } from 'entities/Flipper'
 import { CategoryModel } from 'entities/Category'
-import { addToQueue, getFlipperCurrentlyParticipating } from 'shared/lib/utils/usePromiseQueue'
+import {
+  addToQueue,
+  getFlipperCurrentlyParticipating
+} from 'shared/lib/utils/usePromiseQueue'
 import { instance } from 'boot/axios'
 import { App, InstalledApp, AppsPostShortParams, ActionType } from './types'
 import { api } from '../api'
@@ -37,9 +40,7 @@ export const useAppStore = defineStore('apps', () => {
     unsupportedApps.value = []
     appsUpdateCount.value = 0
   }
-  const getInstalledApps = async ({
-    refreshInstalledApps = false
-  } = {}) => {
+  const getInstalledApps = async ({ refreshInstalledApps = false } = {}) => {
     if (!installedApps.value.length) {
       loadingInstalledApps.value = true
     }
@@ -50,7 +51,8 @@ export const useAppStore = defineStore('apps', () => {
     }
 
     try {
-      let installed: InstalledApp[] = installedApps.value = flipperStore.flipper.installedApps
+      let installed: InstalledApp[] = (installedApps.value =
+        flipperStore.flipper.installedApps)
 
       // if (!installed.length) {
       //   flags.value.noApplicationsInstalled = true
@@ -58,9 +60,13 @@ export const useAppStore = defineStore('apps', () => {
       //   return
       // }
 
-      const versions = await fetchAppsVersions(flipperInstalledApps.value.map(app => app.installedVersion.id))
+      const versions = await fetchAppsVersions(
+        flipperInstalledApps.value.map((app) => app.installedVersion.id)
+      )
       for (const version of versions) {
-        const app = flipperInstalledApps.value.find(app => app.id === version.applicationId)
+        const app = flipperInstalledApps.value.find(
+          (app) => app.id === version.applicationId
+        )
         if (app) {
           app.installedVersion = { ...app.installedVersion, ...version }
         }
@@ -82,11 +88,11 @@ export const useAppStore = defineStore('apps', () => {
       do {
         actualApps = await fetchPostAppsShort({
           ...params,
-          applications: installed.map(app => app.id)
+          applications: installed.map((app) => app.id)
         })
       } while (actualApps.length === params.limit)
 
-      installed = installed.filter(installedApp => {
+      installed = installed.filter((installedApp) => {
         // if (installedApp.devCatalog && mainFlags.value.catalogChannelProduction) {
         if (installedApp.devCatalog) {
           return false
@@ -97,8 +103,10 @@ export const useAppStore = defineStore('apps', () => {
 
       // HACK: Bind the past action state to the new list
       if (actionAppList.value.length) {
-        installed = installed.map(installedApp => {
-          const lastInstalledApp = actionAppList.value.find(actualApp => actualApp.id === installedApp.id)
+        installed = installed.map((installedApp) => {
+          const lastInstalledApp = actionAppList.value.find(
+            (actualApp) => actualApp.id === installedApp.id
+          )
 
           if (lastInstalledApp) {
             installedApp.action = lastInstalledApp.action
@@ -108,8 +116,10 @@ export const useAppStore = defineStore('apps', () => {
         })
       }
 
-      updatableApps.value = installed.filter(installedApp => {
-        const app = actualApps.find(actualApp => actualApp.id === installedApp.id)
+      updatableApps.value = installed.filter((installedApp) => {
+        const app = actualApps.find(
+          (actualApp) => actualApp.id === installedApp.id
+        )
 
         if (app) {
           const currentApp = installedApp as InstalledApp
@@ -133,8 +143,10 @@ export const useAppStore = defineStore('apps', () => {
 
       appsUpdateCount.value = updatableApps.value.length
 
-      upToDateApps.value = installed.filter(installedApp => {
-        const app = actualApps.find(actualApp => actualApp.id === installedApp.id)
+      upToDateApps.value = installed.filter((installedApp) => {
+        const app = actualApps.find(
+          (actualApp) => actualApp.id === installedApp.id
+        )
 
         if (app) {
           if (api.value && installedApp.installedVersion.api !== api.value) {
@@ -142,7 +154,10 @@ export const useAppStore = defineStore('apps', () => {
             return false
           }
 
-          if (app.currentVersion.id === installedApp.installedVersion.id && app.currentVersion.status === 'READY') {
+          if (
+            app.currentVersion.id === installedApp.installedVersion.id &&
+            app.currentVersion.status === 'READY'
+          ) {
             // installedApp.isInstalled = true
             return true
           }
@@ -151,7 +166,7 @@ export const useAppStore = defineStore('apps', () => {
         return false
       })
 
-      unsupportedApps.value = installed.filter(installedApp => {
+      unsupportedApps.value = installed.filter((installedApp) => {
         // if (!installedApp.action) {
         //   installedApp.action = {
         //     type: '',
@@ -159,7 +174,7 @@ export const useAppStore = defineStore('apps', () => {
         //     id: installedApp.id
         //   }
         // }
-        if (!actualApps.find(app => app.id === installedApp.id)) {
+        if (!actualApps.find((app) => app.id === installedApp.id)) {
           // installedApp.unsupported = true
           return true
         }
@@ -184,11 +199,13 @@ export const useAppStore = defineStore('apps', () => {
   }
 
   const getButtonState = (app: App) => {
-    if (updatableApps.value.find(updatableApp => updatableApp.id === app.id)) {
+    if (
+      updatableApps.value.find((updatableApp) => updatableApp.id === app.id)
+    ) {
       return 'update'
     }
 
-    if (upToDateApps.value.find(upToDateApp => upToDateApp.id === app.id)) {
+    if (upToDateApps.value.find((upToDateApp) => upToDateApp.id === app.id)) {
       return 'installed'
     }
 
@@ -261,27 +278,29 @@ export const useAppStore = defineStore('apps', () => {
 
     const action = async (app: App | InstalledApp, actionType: ActionType) => {
       await handleAction(app, actionType)
-        // .catch(error => {
-        //   log({
-        //     level: 'error',
-        //     message: `${componentName}: ${error.message}`
-        //   })
-        // })
-        if (actionAppList.value.length) {
-          let appIndex: number | null = null
-          const lastInstalledApp = actionAppList.value.find((actualApp, index) => {
+      // .catch(error => {
+      //   log({
+      //     level: 'error',
+      //     message: `${componentName}: ${error.message}`
+      //   })
+      // })
+      if (actionAppList.value.length) {
+        let appIndex: number | null = null
+        const lastInstalledApp = actionAppList.value.find(
+          (actualApp, index) => {
             appIndex = index
             return actualApp.id === app.id
-          })
+          }
+        )
 
-          if (lastInstalledApp) {
-            if (appIndex !== null) {
-              actionAppList.value.splice(appIndex, 1)
+        if (lastInstalledApp) {
+          if (appIndex !== null) {
+            actionAppList.value.splice(appIndex, 1)
 
-              appIndex = null
-            }
+            appIndex = null
           }
         }
+      }
       return Promise.resolve()
     }
 
@@ -292,7 +311,10 @@ export const useAppStore = defineStore('apps', () => {
     })
   }
 
-  const handleAction = async (app: App | InstalledApp, actionType: ActionType) => {
+  const handleAction = async (
+    app: App | InstalledApp,
+    actionType: ActionType
+  ) => {
     // if (info?.value.storage.sdcard) {
     //   app.action.type = actionType
     //   mainStore.toggleFlag('microSDcardMissingDialog', true)
@@ -319,85 +341,74 @@ export const useAppStore = defineStore('apps', () => {
         // appNotif.value({
         //   message: `Installing ${app?.currentVersion?.name || 'app'}...`
         // })
-        return installApp(app)
-          .catch((/* error */) => {
-            // const message = `${app.currentVersion?.name || 'App'} didn't install${flipper.value.name !== getFlipperCurrentlyParticipating() ? ' because ' + error.message : ''}!`
-
-            // appNotif.value({
-            //   icon: 'error_outline',
-            //   color: 'negative',
-            //   spinner: false, // we reset the spinner setting so the icon can be displayed
-            //   actions: [
-            //     { icon: 'close', color: 'white', class: 'q-px-sm' }
-            //   ],
-            //   message,
-            //   caption: ''
-            // })
-
-            // const index = installableApps.value.findIndex((e) => e.id === app.id)
-            // if (index !== -1) {
-            //   installableApps.value.splice(index, 1)
-            // }
-
-            // updateInstalledApps([app])
-
-            // throw new Error(message)
-          })
+        return installApp(app).catch((/* error */) => {
+          // const message = `${app.currentVersion?.name || 'App'} didn't install${flipper.value.name !== getFlipperCurrentlyParticipating() ? ' because ' + error.message : ''}!`
+          // appNotif.value({
+          //   icon: 'error_outline',
+          //   color: 'negative',
+          //   spinner: false, // we reset the spinner setting so the icon can be displayed
+          //   actions: [
+          //     { icon: 'close', color: 'white', class: 'q-px-sm' }
+          //   ],
+          //   message,
+          //   caption: ''
+          // })
+          // const index = installableApps.value.findIndex((e) => e.id === app.id)
+          // if (index !== -1) {
+          //   installableApps.value.splice(index, 1)
+          // }
+          // updateInstalledApps([app])
+          // throw new Error(message)
+        })
       case 'update':
         // appNotif.value({
         //   message: `Uploading ${app?.currentVersion?.name || 'app'}...`
         // })
-        return updateApp(app)
-          .catch((/* error */) => {
-            // const message = `${app.currentVersion?.name || 'App'} didn't update${flipper.value.name !== getFlipperCurrentlyParticipating() ? ' because ' + error.message : ''}!`
-
-            // appNotif.value({
-            //   icon: 'error_outline',
-            //   color: 'negative',
-            //   spinner: false, // we reset the spinner setting so the icon can be displayed
-            //   actions: [
-            //     { icon: 'close', color: 'white', class: 'q-px-sm' }
-            //   ],
-            //   message,
-            //   caption: ''
-            // })
-
-            // updateInstalledApps([app])
-
-            // throw new Error(message)
-          })
+        return updateApp(app).catch((/* error */) => {
+          // const message = `${app.currentVersion?.name || 'App'} didn't update${flipper.value.name !== getFlipperCurrentlyParticipating() ? ' because ' + error.message : ''}!`
+          // appNotif.value({
+          //   icon: 'error_outline',
+          //   color: 'negative',
+          //   spinner: false, // we reset the spinner setting so the icon can be displayed
+          //   actions: [
+          //     { icon: 'close', color: 'white', class: 'q-px-sm' }
+          //   ],
+          //   message,
+          //   caption: ''
+          // })
+          // updateInstalledApps([app])
+          // throw new Error(message)
+        })
       case 'delete':
         // appNotif.value({
         //   message: `Deleting ${app?.currentVersion?.name || 'app'}...`
         // })
-        return deleteApp(app as InstalledApp)
-          .catch((/* error */) => {
-            // const message = `${app.currentVersion?.name || 'App'} wasn't deleted${flipper.value.name !== getFlipperCurrentlyParticipating() ? ' because ' + error.message : ''}!`
-
-            // appNotif.value({
-            //   icon: 'error_outline',
-            //   color: 'negative',
-            //   spinner: false, // we reset the spinner setting so the icon can be displayed
-            //   actions: [
-            //     { icon: 'close', color: 'white', class: 'q-px-sm' }
-            //   ],
-            //   message,
-            //   caption: ''
-            // })
-
-            // updateInstalledApps([app])
-
-            // throw new Error(message)
-          })
+        return deleteApp(app as InstalledApp).catch((/* error */) => {
+          // const message = `${app.currentVersion?.name || 'App'} wasn't deleted${flipper.value.name !== getFlipperCurrentlyParticipating() ? ' because ' + error.message : ''}!`
+          // appNotif.value({
+          //   icon: 'error_outline',
+          //   color: 'negative',
+          //   spinner: false, // we reset the spinner setting so the icon can be displayed
+          //   actions: [
+          //     { icon: 'close', color: 'white', class: 'q-px-sm' }
+          //   ],
+          //   message,
+          //   caption: ''
+          // })
+          // updateInstalledApps([app])
+          // throw new Error(message)
+        })
     }
   }
 
   const ensureCategoryPaths = async () => {
     for (const category of categories.value) {
-      const dir = await flipper.value.RPC('storageStat', { path: `/ext/apps/${category.name}` })
+      const dir = await flipper.value
+        .RPC('storageStat', { path: `/ext/apps/${category.name}` })
         .catch(/* error => rpcErrorHandler(componentName, error, 'storageStat') */)
       if (!dir) {
-        await flipper.value.RPC('storageMkdir', { path: `/ext/apps/${category.name}` })
+        await flipper.value
+          .RPC('storageMkdir', { path: `/ext/apps/${category.name}` })
           .catch(/* error => rpcErrorHandler(componentName, error, 'storageMkdir') */)
       }
     }
@@ -409,7 +420,9 @@ export const useAppStore = defineStore('apps', () => {
 
   const installApp = async (app: App | InstalledApp) => {
     const paths = {
-      appDir: `/ext/apps/${categories.value.find(e => e.id === app.categoryId)?.name}`,
+      appDir: `/ext/apps/${
+        categories.value.find((e) => e.id === app.categoryId)?.name
+      }`,
       manifestDir: '/ext/apps_manifests',
       tempDir: '/ext/.tmp/lab'
     }
@@ -418,9 +431,9 @@ export const useAppStore = defineStore('apps', () => {
     // fetch fap
     const fap = await fetchAppFap({
       versionId: app.currentVersion.id,
-      target: `f${info.value.firmware.target}`,
-      api: `${info.value.firmware.api.major}.${info.value.firmware.api.minor}`
-    }).catch(error => {
+      target: `f${info.value?.firmware.target}`,
+      api: `${info.value?.firmware.api.major}.${info.value?.firmware.api.minor}`
+    }).catch((error) => {
       // showNotif({
       //   message: error.toString(),
       //   color: 'negative'
@@ -457,26 +470,34 @@ export const useAppStore = defineStore('apps', () => {
       //   message: `${componentName}: Installing app '${app.name}' (${app.alias}): fetched .fap`
       // })
     } else {
-      throw new Error(`Flipper ${getFlipperCurrentlyParticipating()} was not found`)
+      throw new Error(
+        `Flipper ${getFlipperCurrentlyParticipating()} was not found`
+      )
     }
 
     // generate manifest
     let manifestFile = null
     if (flipper.value.name === getFlipperCurrentlyParticipating()) {
-      async function urlContentToDataUri (url: string) {
-        return await instance.get(url, { responseType: 'blob' })
-          .then(({ data }: { data: Blob }) => new Promise<string>(resolve => {
-            const reader = new FileReader()
-            reader.onload = function () { resolve(this.result as string) }
-            reader.readAsDataURL(data)
-          }))
+      async function urlContentToDataUri(url: string) {
+        return await instance
+          .get(url, { responseType: 'blob' })
+          .then(
+            ({ data }: { data: Blob }) =>
+              new Promise<string>((resolve) => {
+                const reader = new FileReader()
+                reader.onload = function () {
+                  resolve(this.result as string)
+                }
+                reader.readAsDataURL(data)
+              })
+          )
           .catch((error) => {
             throw error
           })
       }
       const dataUri = await urlContentToDataUri(app.currentVersion.iconUri)
       const base64Icon = dataUri.split(',')[1]
-      const manifestText = `Filetype: Flipper Application Installation Manifest\nVersion: 1\nFull Name: ${app.currentVersion.name}\nIcon: ${base64Icon}\nVersion Build API: ${info.value.firmware.api.major}.${info.value.firmware.api.minor}\nUID: ${app.id}\nVersion UID: ${app.currentVersion.id}\nPath: ${paths.appDir}/${app.alias}.fap`
+      const manifestText = `Filetype: Flipper Application Installation Manifest\nVersion: 1\nFull Name: ${app.currentVersion.name}\nIcon: ${base64Icon}\nVersion Build API: ${info.value?.firmware.api.major}.${info.value?.firmware.api.minor}\nUID: ${app.id}\nVersion UID: ${app.currentVersion.id}\nPath: ${paths.appDir}/${app.alias}.fap`
       // if (!mainFlags.value.catalogChannelProduction) {
       //   manifestText = manifestText + '\nDevCatalog: true'
       // }
@@ -490,12 +511,18 @@ export const useAppStore = defineStore('apps', () => {
       // })
       // await asyncSleep(300)
     } else {
-      throw new Error(`Flipper ${getFlipperCurrentlyParticipating()} was not found`)
+      throw new Error(
+        `Flipper ${getFlipperCurrentlyParticipating()} was not found`
+      )
     }
 
     // upload manifest to temp
     if (flipper.value.name === getFlipperCurrentlyParticipating()) {
-      await flipper.value.RPC('storageWrite', { path: `${paths.tempDir}/${app.id}.fim`, buffer: manifestFile })
+      await flipper.value
+        .RPC('storageWrite', {
+          path: `${paths.tempDir}/${app.id}.fim`,
+          buffer: manifestFile
+        })
         .then(() => {
           // log({
           //   level: 'debug',
@@ -513,12 +540,18 @@ export const useAppStore = defineStore('apps', () => {
       // }
       // await asyncSleep(300)
     } else {
-      throw new Error(`Flipper ${getFlipperCurrentlyParticipating()} was not found`)
+      throw new Error(
+        `Flipper ${getFlipperCurrentlyParticipating()} was not found`
+      )
     }
 
     // upload fap to temp
     if (flipper.value.name === getFlipperCurrentlyParticipating()) {
-      await flipper.value.RPC('storageWrite', { path: `${paths.tempDir}/${app.id}.fap`, buffer: fap })
+      await flipper.value
+        .RPC('storageWrite', {
+          path: `${paths.tempDir}/${app.id}.fap`,
+          buffer: fap
+        })
         .then(() => {
           // log({
           //   level: 'debug',
@@ -539,21 +572,29 @@ export const useAppStore = defineStore('apps', () => {
       // })
       // await asyncSleep(300)
     } else {
-      throw new Error(`Flipper ${getFlipperCurrentlyParticipating()} was not found`)
+      throw new Error(
+        `Flipper ${getFlipperCurrentlyParticipating()} was not found`
+      )
     }
 
     // move manifest and fap
     let dirList = null
     if (flipper.value.name === getFlipperCurrentlyParticipating()) {
-      dirList = await flipper.value.RPC('storageList', { path: paths.manifestDir })
+      dirList = await flipper.value
+        .RPC('storageList', { path: paths.manifestDir })
         .catch((error: ErrorEvent) => {
           // rpcErrorHandler(componentName, error, 'storageList')
 
           throw error
         })
-      const oldManifest = dirList.find((e: FlipperModel.File) => e.name === `${app.alias}.fim`)
+      const oldManifest = dirList.find(
+        (e: FlipperModel.File) => e.name === `${app.alias}.fim`
+      )
       if (oldManifest) {
-        await flipper.value.RPC('storageRemove', { path: `${paths.manifestDir}/${app.alias}.fim` })
+        await flipper.value
+          .RPC('storageRemove', {
+            path: `${paths.manifestDir}/${app.alias}.fim`
+          })
           .then(() => {
             // log({
             //   level: 'debug',
@@ -567,7 +608,11 @@ export const useAppStore = defineStore('apps', () => {
           })
       }
 
-      await flipper.value.RPC('storageRename', { oldPath: `${paths.tempDir}/${app.id}.fim`, newPath: `${paths.manifestDir}/${app.alias}.fim` })
+      await flipper.value
+        .RPC('storageRename', {
+          oldPath: `${paths.tempDir}/${app.id}.fim`,
+          newPath: `${paths.manifestDir}/${app.alias}.fim`
+        })
         .then(() => {
           // log({
           //   level: 'debug',
@@ -588,19 +633,25 @@ export const useAppStore = defineStore('apps', () => {
       // })
       // await asyncSleep(300)
     } else {
-      throw new Error(`Flipper ${getFlipperCurrentlyParticipating()} was not found`)
+      throw new Error(
+        `Flipper ${getFlipperCurrentlyParticipating()} was not found`
+      )
     }
 
     if (flipper.value.name === getFlipperCurrentlyParticipating()) {
-      dirList = await flipper.value.RPC('storageList', { path: paths.appDir })
+      dirList = await flipper.value
+        .RPC('storageList', { path: paths.appDir })
         .catch((error: ErrorEvent) => {
           // rpcErrorHandler(componentName, error, 'storageList')
 
           throw error
         })
-      const oldFap = dirList.find((e: FlipperModel.File) => e.name === `${app.alias}.fap`)
+      const oldFap = dirList.find(
+        (e: FlipperModel.File) => e.name === `${app.alias}.fap`
+      )
       if (oldFap) {
-        await flipper.value.RPC('storageRemove', { path: `${paths.appDir}/${app.alias}.fap` })
+        await flipper.value
+          .RPC('storageRemove', { path: `${paths.appDir}/${app.alias}.fap` })
           .then(() => {
             // log({
             //   level: 'debug',
@@ -614,7 +665,11 @@ export const useAppStore = defineStore('apps', () => {
           })
       }
 
-      await flipper.value.RPC('storageRename', { oldPath: `${paths.tempDir}/${app.id}.fap`, newPath: `${paths.appDir}/${app.alias}.fap` })
+      await flipper.value
+        .RPC('storageRename', {
+          oldPath: `${paths.tempDir}/${app.id}.fap`,
+          newPath: `${paths.appDir}/${app.alias}.fap`
+        })
         .then(() => {
           // log({
           //   level: 'debug',
@@ -635,7 +690,9 @@ export const useAppStore = defineStore('apps', () => {
       // })
       // await asyncSleep(300)
     } else {
-      throw new Error(`Flipper ${getFlipperCurrentlyParticipating()} was not found`)
+      throw new Error(
+        `Flipper ${getFlipperCurrentlyParticipating()} was not found`
+      )
     }
 
     // post-install
@@ -667,7 +724,9 @@ export const useAppStore = defineStore('apps', () => {
       manifestDir: '/ext/apps_manifests'
     }
     if (app.categoryId) {
-      paths.appDir = `/ext/apps/${categories.value.find(e => e.id === app.categoryId)?.name}`
+      paths.appDir = `/ext/apps/${
+        categories.value.find((e) => e.id === app.categoryId)?.name
+      }`
     } else {
       paths.appDir = app.path.slice(0, app.path.lastIndexOf('/'))
       app.alias = app.path.slice(app.path.lastIndexOf('/') + 1, -4)
@@ -678,15 +737,19 @@ export const useAppStore = defineStore('apps', () => {
     // remove .fap
     let dirList = null
     if (flipper.value.name === getFlipperCurrentlyParticipating()) {
-      dirList = await flipper.value.RPC('storageList', { path: paths.appDir })
+      dirList = await flipper.value
+        .RPC('storageList', { path: paths.appDir })
         .catch((error: ErrorEvent) => {
           // rpcErrorHandler(componentName, error, 'storageList')
 
           throw error
         })
-      const fap = dirList.find((e: FlipperModel.File) => e.name === `${app.alias}.fap`)
+      const fap = dirList.find(
+        (e: FlipperModel.File) => e.name === `${app.alias}.fap`
+      )
       if (fap) {
-        await flipper.value.RPC('storageRemove', { path: `${paths.appDir}/${app.alias}.fap` })
+        await flipper.value
+          .RPC('storageRemove', { path: `${paths.appDir}/${app.alias}.fap` })
           .then(() => {
             // log({
             //   level: 'debug',
@@ -704,20 +767,28 @@ export const useAppStore = defineStore('apps', () => {
       //   caption: '50%'
       // })
     } else {
-      throw new Error(`Flipper ${getFlipperCurrentlyParticipating()} was not found`)
+      throw new Error(
+        `Flipper ${getFlipperCurrentlyParticipating()} was not found`
+      )
     }
 
     // remove manifest
     if (flipper.value.name === getFlipperCurrentlyParticipating()) {
-      dirList = await flipper.value.RPC('storageList', { path: paths.manifestDir })
+      dirList = await flipper.value
+        .RPC('storageList', { path: paths.manifestDir })
         .catch((error: ErrorEvent) => {
           // rpcErrorHandler(componentName, error, 'storageList')
 
           throw error
         })
-      const manifest = dirList.find((e: FlipperModel.File) => e.name === `${app.alias}.fim`)
+      const manifest = dirList.find(
+        (e: FlipperModel.File) => e.name === `${app.alias}.fim`
+      )
       if (manifest) {
-        await flipper.value.RPC('storageRemove', { path: `${paths.manifestDir}/${app.alias}.fim` })
+        await flipper.value
+          .RPC('storageRemove', {
+            path: `${paths.manifestDir}/${app.alias}.fim`
+          })
           .then(() => {
             // log({
             //   level: 'debug',
@@ -735,7 +806,9 @@ export const useAppStore = defineStore('apps', () => {
       //   caption: '100%'
       // })
     } else {
-      throw new Error(`Flipper ${getFlipperCurrentlyParticipating()} was not found`)
+      throw new Error(
+        `Flipper ${getFlipperCurrentlyParticipating()} was not found`
+      )
     }
 
     // post-delete
