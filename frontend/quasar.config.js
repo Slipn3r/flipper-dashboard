@@ -12,6 +12,8 @@ const { configure } = require('quasar/wrappers')
 
 const path = require('path')
 
+const { compileProtofiles } = require('./beforeBuild.js')
+
 module.exports = configure(function (/* ctx */) {
   return {
     // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
@@ -57,6 +59,10 @@ module.exports = configure(function (/* ctx */) {
         node: 'node20'
       },
 
+      beforeBuild: async () => {
+        await compileProtofiles()
+      },
+
       vueRouterMode: 'history', // available values: 'hash', 'history'
       // vueRouterBase,
       // vueDevtools,
@@ -66,7 +72,7 @@ module.exports = configure(function (/* ctx */) {
 
       // publicPath: '/',
       // analyze: true,
-      // env: {},
+      env: process.env,
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,
@@ -211,7 +217,11 @@ module.exports = configure(function (/* ctx */) {
         dmg: {
           sign: false
         },
-        extraResources: [
+        publish: {
+          provider: 'github',
+          publishAutoUpdate: false
+        },
+        extraFiles: [
           {
             from: 'src-electron/extraResources/',
             to: 'extraResources',

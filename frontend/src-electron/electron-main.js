@@ -1,10 +1,12 @@
 import { app, BrowserWindow, shell, utilityProcess, ipcMain } from 'electron'
 import path from 'path'
-import os from 'os'
+// import os from 'os'
 import fs from 'fs'
 
-// const extraResourcesPath = process.env.VITE_SERVE === 'true' ? 'extraResources' : '../extraResources'
-// const extraResourcesPath = '../../extraResources'
+const extraResourcesPath =
+  process.env.NODE_ENV === 'production'
+    ? '../../extraResources'
+    : '../../src-electron/extraResources'
 
 const bridge = {
   process: null,
@@ -22,8 +24,9 @@ const bridge = {
       bridge.webContents = event.sender
       bridge.process = utilityProcess.fork(
         path.resolve(
-          process.cwd(),
-          'src-electron/extraResources/serial-bridge/bridgeProcess.js'
+          __dirname,
+          extraResourcesPath,
+          'serial-bridge/bridgeProcess.js'
         )
       )
       bridge.process.on('message', (message) => {
@@ -133,8 +136,8 @@ const filesystem = {
   }
 }
 
-// needed in case process is undefined under Linux
-const platform = process.platform || os.platform()
+// NOTE: needed in case process is undefined under Linux
+// const platform = process.platform || os.platform()
 
 // let mainWindow: BrowserWindow | undefined;
 let mainWindow
@@ -202,9 +205,10 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   bridge.kill()
 
-  if (platform !== 'darwin') {
-    app.quit()
-  }
+  // NOTE: If is needed to replicate the behavior on macOS
+  // if (platform !== 'darwin') {
+  app.quit()
+  // }
 })
 
 app.on('activate', () => {
