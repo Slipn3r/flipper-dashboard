@@ -25,6 +25,8 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 
+import { showNotif } from 'shared/lib/utils/useShowNotif'
+
 import { imageDataToXBM } from 'shared/lib/utils/pixeleditor/xbm'
 
 import {
@@ -93,11 +95,11 @@ const startVirtualDisplay = async () => {
       console.log('guiStartVirtualDisplay enable')
     })
     .catch((error: object) => {
-      /* rpcErrorHandler(componentName, error, 'guiStartVirtualDisplay')
+      /* rpcErrorHandler(componentName, error, 'guiStartVirtualDisplay') */
       showNotif({
-        message: 'Couldn\'t start virtual display session',
+        message: "Couldn't start virtual display session",
         color: 'negative'
-      }) */
+      })
       throw error
     })
 

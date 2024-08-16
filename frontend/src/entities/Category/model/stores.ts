@@ -3,6 +3,8 @@ import type { Ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useRoute } from 'vue-router'
 
+import { showNotif } from 'shared/lib/utils/useShowNotif'
+
 import { CategoryParams, CategoryData } from './types'
 import { api } from '../api'
 
@@ -47,9 +49,12 @@ export const useCategoriesStore = defineStore('categories', () => {
 
       const path = route.params.path
       if (path) {
-        const normalize = (string: string) => string.toLowerCase().replaceAll(' ', '-')
+        const normalize = (string: string) =>
+          string.toLowerCase().replaceAll(' ', '-')
 
-        const category = categories.value.find(e => normalize(e.name) === normalize(path as string))
+        const category = categories.value.find(
+          (e) => normalize(e.name) === normalize(path as string)
+        )
         if (category) {
           setCurrentCategory(category)
         }
@@ -59,7 +64,19 @@ export const useCategoriesStore = defineStore('categories', () => {
         setCurrentCategory(undefined)
       }
     } catch (error) {
-      console.error(error)
+      showNotif({
+        message: 'Unable to load categories.',
+        color: 'negative',
+        actions: [
+          {
+            label: 'Reload',
+            color: 'white',
+            handler: () => {
+              getCategories()
+            }
+          }
+        ]
+      })
     }
 
     categoriesLoading.value = false

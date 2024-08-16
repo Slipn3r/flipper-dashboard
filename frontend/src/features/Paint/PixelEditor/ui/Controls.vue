@@ -5,33 +5,70 @@
       flat
       dense
       :options="[
-        { value: 'pencil', slot: 'pencil', attrs: {
-          'aria-mode': 'draw'
-        }},
-        { value: 'eraser', slot: 'eraser', attrs: {
-          'aria-mode': 'erase'
-        }},
-        { value: 'line', slot: 'line', attrs: {
-          'aria-mode': 'line'
-        }},
-        { value: 'rectangle', slot: 'rectangle', attrs: {
-          'aria-mode': 'rect'
-        }},
-        { value: 'fill', slot: 'fill', attrs: {
-          'aria-mode': 'fill'
-        }},
+        {
+          value: 'pencil',
+          slot: 'pencil',
+          attrs: {
+            'aria-mode': 'draw'
+          }
+        },
+        {
+          value: 'eraser',
+          slot: 'eraser',
+          attrs: {
+            'aria-mode': 'erase'
+          }
+        },
+        {
+          value: 'line',
+          slot: 'line',
+          attrs: {
+            'aria-mode': 'line'
+          }
+        },
+        {
+          value: 'rectangle',
+          slot: 'rectangle',
+          attrs: {
+            'aria-mode': 'rect'
+          }
+        },
+        {
+          value: 'fill',
+          slot: 'fill',
+          attrs: {
+            'aria-mode': 'fill'
+          }
+        }
       ]"
       @update:model-value="changeMode"
     >
-      <template v-slot:pencil><q-icon name="mdi-pencil" class="q-px-sm"/></template>
-      <template v-slot:eraser><q-icon name="mdi-eraser" class="q-px-sm"/></template>
-      <template v-slot:line><q-icon name="mdi-vector-line" class="q-px-sm"/></template>
-      <template v-slot:rectangle><q-icon name="mdi-vector-rectangle" class="q-px-sm"/></template>
-      <template v-slot:fill><q-icon name="mdi-format-color-fill" class="q-px-sm q-pt-xs"/></template>
+      <template v-slot:pencil
+        ><q-icon name="mdi-pencil" class="q-px-sm"
+      /></template>
+      <template v-slot:eraser
+        ><q-icon name="mdi-eraser" class="q-px-sm"
+      /></template>
+      <template v-slot:line
+        ><q-icon name="mdi-vector-line" class="q-px-sm"
+      /></template>
+      <template v-slot:rectangle
+        ><q-icon name="mdi-vector-rectangle" class="q-px-sm"
+      /></template>
+      <template v-slot:fill
+        ><q-icon name="mdi-format-color-fill" class="q-px-sm q-pt-xs"
+      /></template>
     </q-btn-toggle>
 
-    <input type="file" class="file-upload hidden" @change="upload"/>
-    <q-btn flat dense @click="triggerUpload" :loading="paintStore.flags.imageFileLoading" class="q-px-sm" icon="mdi-file-image-outline"></q-btn>
+    <input type="file" class="file-upload hidden" @change="upload" />
+    <q-btn
+      flat
+      dense
+      @click="triggerUpload"
+      :loading="paintStore.flags.imageFileLoading"
+      class="q-px-sm"
+      icon="mdi-file-image-outline"
+    ></q-btn>
 
     <q-btn
       flat
@@ -52,7 +89,11 @@
     <q-separator vertical class="q-mx-xs"></q-separator>
 
     <q-btn-group flat>
-      <q-btn icon="mdi-magnify-minus-outline" class="q-px-sm" @click="zoom({ offset: -1 })"></q-btn>
+      <q-btn
+        icon="mdi-magnify-minus-outline"
+        class="q-px-sm"
+        @click="zoom({ offset: -1 })"
+      ></q-btn>
       <!-- <q-input
         dense
         outlined
@@ -65,20 +106,37 @@
         label="Zoom"
         class="q-mx-xs"
       /> -->
-      <q-btn icon="mdi-magnify-plus-outline" class="q-px-sm" @click="zoom({ offset: 1 })"></q-btn>
+      <q-btn
+        icon="mdi-magnify-plus-outline"
+        class="q-px-sm"
+        @click="zoom({ offset: 1 })"
+      ></q-btn>
     </q-btn-group>
 
     <q-separator vertical class="q-mx-xs"></q-separator>
 
-    <q-btn flat icon="mdi-file-download-outline" class="q-px-sm" @click="download"></q-btn>
+    <q-btn
+      flat
+      icon="mdi-file-download-outline"
+      class="q-px-sm"
+      @click="download"
+    ></q-btn>
 
-    <q-btn flat icon="mdi-delete-outline" class="q-px-sm" color="negative" @click="clear"></q-btn>
+    <q-btn
+      flat
+      icon="mdi-delete-outline"
+      class="q-px-sm"
+      color="negative"
+      @click="clear"
+    ></q-btn>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { exportFile } from 'quasar'
+
+import { showNotif } from 'shared/lib/utils/useShowNotif'
 
 import { PaintModel } from 'entities/Paint'
 const paintStore = PaintModel.usePaintStore()
@@ -125,14 +183,17 @@ const zoomLimit = computed(() => {
   }
 })
 
-watch(() => paintStore.zoomLevel, (newValue: number) => {
-  if (!/^[0-9]*$/.test(String(newValue))) {
-    return
+watch(
+  () => paintStore.zoomLevel,
+  (newValue: number) => {
+    if (!/^[0-9]*$/.test(String(newValue))) {
+      return
+    }
+    if (pe.value) {
+      pe.value.resize({ zoom: newValue })
+    }
   }
-  if (pe.value) {
-    pe.value.resize({ zoom: newValue })
-  }
-})
+)
 
 const zoom = ({
   mul,
@@ -195,7 +256,9 @@ const upload = (event: Event): void => {
             }
             const img = new Image()
             img.onload = () => {
-              (document.querySelector('.file-upload') as HTMLInputElement).value = ''
+              ;(
+                document.querySelector('.file-upload') as HTMLInputElement
+              ).value = ''
               paintStore.flags.imageFileLoading = false
               paintStore.uploadedImage = img
               paintStore.flags.ditherDialog = true
@@ -217,11 +280,10 @@ const download = async () => {
   const blob = await pe.value?.toBlob()
   const status = exportFile(`Paint_${new Date().toISOString()}.png`, blob)
   if (!status) {
-    console.error('Failed to download image: permission denied')
-    // showNotif({
-    //   message: 'Failed to download image: permission denied',
-    //   color: 'negative'
-    // })
+    showNotif({
+      message: 'Failed to download image: permission denied',
+      color: 'negative'
+    })
   }
 }
 </script>

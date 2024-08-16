@@ -15,7 +15,11 @@
       v-else-if="!flipperStore.info?.storage.sdcard?.status.isInstalled"
     >
       <div class="column items-center">
-        <FlipperMicroSDCard flat />
+        <FlipperMicroSDCard
+          flat
+          :showFindMicroSdBtn="flipperStore.isElectron"
+          @onFindMicroSd="flipperStore.findMicroSd"
+        />
       </div>
     </template>
     <template v-else-if="appsStore.noApplicationsInstalled">

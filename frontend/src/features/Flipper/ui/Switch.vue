@@ -220,7 +220,9 @@ import { ref, computed } from 'vue'
 import { getCssVar } from 'quasar'
 import { emitter as bridgeEmitter } from 'shared/lib/flipperJs/bridgeController'
 import { ProgressBar } from 'shared/components/ProgressBar'
-// import { FlipperElectron } from 'src/shared/lib/flipperJs'
+
+import { showNotif } from 'shared/lib/utils/useShowNotif'
+
 import { FlipperModel, FlipperApi } from 'entities/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 
@@ -299,11 +301,11 @@ const recovery = async (info: FlipperModel.DataDfuFlipperElectron['info']) => {
   const onTimeout = () => {
     const messageLong =
       'Error: Operation timed out. Please check USB connection and try again.'
-    // const messageShort = `Failed to repair ${info.name}: Repair timeout`
-    // showNotif({
-    //   message: messageShort,
-    //   color: 'negative'
-    // })
+    const messageShort = `Failed to repair ${info.name}: Repair timeout`
+    showNotif({
+      message: messageShort,
+      color: 'negative'
+    })
     // log({
     //   level: 'error',
     //   message: messageShort
@@ -416,11 +418,10 @@ const recovery = async (info: FlipperModel.DataDfuFlipperElectron['info']) => {
           messageShort = `Failed to repair ${info.name}: Timeout error`
           break
       }
-      console.log(messageShort)
-      // showNotif({
-      //   message: messageShort,
-      //   color: 'negative'
-      // })
+      showNotif({
+        message: messageShort,
+        color: 'negative'
+      })
       unbindLogs()
       unbindStatus()
       recoveryUpdateStage.value = messageLong

@@ -8,6 +8,9 @@ import {
   addToQueue,
   getFlipperCurrentlyParticipating
 } from 'shared/lib/utils/usePromiseQueue'
+
+import { showNotif } from 'shared/lib/utils/useShowNotif'
+
 import { instance } from 'boot/axios'
 import { App, InstalledApp, AppsPostShortParams, ActionType } from './types'
 import { api } from '../api'
@@ -340,6 +343,7 @@ export const useAppsStore = defineStore('apps', () => {
     })
   }
 
+  const appNotif = ref()
   const handleAction = async (
     app: App | InstalledApp,
     actionType: ActionType
@@ -356,76 +360,82 @@ export const useAppsStore = defineStore('apps', () => {
       return
     }
 
-    // appNotif.value = showNotif({
-    //   isStayOpen: true,
-    //   group: false, // required to be updatable
-    //   timeout: 0, // we want to be in control when it gets dismissed
-    //   spinner: true,
-    //   message: 'Processing...',
-    //   caption: '0%'
-    // })
+    appNotif.value = showNotif({
+      isStayOpen: true,
+      group: false, // required to be updatable
+      timeout: 0, // we want to be in control when it gets dismissed
+      spinner: true,
+      message: 'Processing...',
+      caption: '0%'
+    })
 
     switch (actionType) {
       case 'install':
-        // appNotif.value({
-        //   message: `Installing ${app?.currentVersion?.name || 'app'}...`
-        // })
-        return installApp(app).catch((/* error */) => {
-          // const message = `${app.currentVersion?.name || 'App'} didn't install${flipper.value?.name !== getFlipperCurrentlyParticipating() ? ' because ' + error.message : ''}!`
-          // appNotif.value({
-          //   icon: 'error_outline',
-          //   color: 'negative',
-          //   spinner: false, // we reset the spinner setting so the icon can be displayed
-          //   actions: [
-          //     { icon: 'close', color: 'white', class: 'q-px-sm' }
-          //   ],
-          //   message,
-          //   caption: ''
-          // })
-          // const index = installableApps.value.findIndex((e) => e.id === app.id)
-          // if (index !== -1) {
-          //   installableApps.value.splice(index, 1)
-          // }
-          // updateInstalledApps([app])
-          // throw new Error(message)
+        appNotif.value({
+          message: `Installing ${app?.currentVersion?.name || 'app'}...`
+        })
+        return installApp(app).catch((error) => {
+          const message = `${app.currentVersion?.name || 'App'} didn't install${
+            flipper.value?.name !== getFlipperCurrentlyParticipating()
+              ? ' because ' + error.message
+              : ''
+          }!`
+          appNotif.value({
+            icon: 'error_outline',
+            color: 'negative',
+            spinner: false, // we reset the spinner setting so the icon can be displayed
+            actions: [{ icon: 'close', color: 'white', class: 'q-px-sm' }],
+            message,
+            caption: ''
+          })
+          const index = installedApps.value.findIndex((e) => e.id === app.id)
+          if (index !== -1) {
+            installedApps.value.splice(index, 1)
+          }
+          app.action.type = ''
+          throw new Error(message)
         })
       case 'update':
-        // appNotif.value({
-        //   message: `Uploading ${app?.currentVersion?.name || 'app'}...`
-        // })
-        return updateApp(app).catch((/* error */) => {
-          // const message = `${app.currentVersion?.name || 'App'} didn't update${flipper.value?.name !== getFlipperCurrentlyParticipating() ? ' because ' + error.message : ''}!`
-          // appNotif.value({
-          //   icon: 'error_outline',
-          //   color: 'negative',
-          //   spinner: false, // we reset the spinner setting so the icon can be displayed
-          //   actions: [
-          //     { icon: 'close', color: 'white', class: 'q-px-sm' }
-          //   ],
-          //   message,
-          //   caption: ''
-          // })
-          // updateInstalledApps([app])
-          // throw new Error(message)
+        appNotif.value({
+          message: `Uploading ${app?.currentVersion?.name || 'app'}...`
+        })
+        return updateApp(app).catch((error) => {
+          const message = `${app.currentVersion?.name || 'App'} didn't update${
+            flipper.value?.name !== getFlipperCurrentlyParticipating()
+              ? ' because ' + error.message
+              : ''
+          }!`
+          appNotif.value({
+            icon: 'error_outline',
+            color: 'negative',
+            spinner: false, // we reset the spinner setting so the icon can be displayed
+            actions: [{ icon: 'close', color: 'white', class: 'q-px-sm' }],
+            message,
+            caption: ''
+          })
+          app.action.type = ''
+          throw new Error(message)
         })
       case 'delete':
-        // appNotif.value({
-        //   message: `Deleting ${app?.currentVersion?.name || 'app'}...`
-        // })
-        return deleteApp(app as InstalledApp).catch((/* error */) => {
-          // const message = `${app.currentVersion?.name || 'App'} wasn't deleted${flipper.value?.name !== getFlipperCurrentlyParticipating() ? ' because ' + error.message : ''}!`
-          // appNotif.value({
-          //   icon: 'error_outline',
-          //   color: 'negative',
-          //   spinner: false, // we reset the spinner setting so the icon can be displayed
-          //   actions: [
-          //     { icon: 'close', color: 'white', class: 'q-px-sm' }
-          //   ],
-          //   message,
-          //   caption: ''
-          // })
-          // updateInstalledApps([app])
-          // throw new Error(message)
+        appNotif.value({
+          message: `Deleting ${app?.currentVersion?.name || 'app'}...`
+        })
+        return deleteApp(app as InstalledApp).catch((error) => {
+          const message = `${app.currentVersion?.name || 'App'} wasn't deleted${
+            flipper.value?.name !== getFlipperCurrentlyParticipating()
+              ? ' because ' + error.message
+              : ''
+          }!`
+          appNotif.value({
+            icon: 'error_outline',
+            color: 'negative',
+            spinner: false, // we reset the spinner setting so the icon can be displayed
+            actions: [{ icon: 'close', color: 'white', class: 'q-px-sm' }],
+            message,
+            caption: ''
+          })
+          app.action.type = ''
+          throw new Error(message)
         })
     }
   }
@@ -463,10 +473,10 @@ export const useAppsStore = defineStore('apps', () => {
       target: `f${info.value?.firmware.target}`,
       api: `${info.value?.firmware.api.major}.${info.value?.firmware.api.minor}`
     }).catch((error) => {
-      // showNotif({
-      //   message: error.toString(),
-      //   color: 'negative'
-      // })
+      showNotif({
+        message: error.toString(),
+        color: 'negative'
+      })
       // log({
       //   level: 'error',
       //   message: `${componentName}: Installing app '${app.name}' (${app.alias}): ${error}`
@@ -490,9 +500,9 @@ export const useAppsStore = defineStore('apps', () => {
       // if (app.action.type === 'update') {
       //   batch.value.progress = 0.33
       // }
-      // appNotif.value({
-      //   caption: '33%'
-      // })
+      appNotif.value({
+        caption: '33%'
+      })
       await asyncSleep(300)
       // log({
       //   level: 'debug',
@@ -535,9 +545,9 @@ export const useAppsStore = defineStore('apps', () => {
       // if (app.action.type === 'update') {
       //   batch.value.progress = 0.45
       // }
-      // appNotif.value({
-      //   caption: '45%'
-      // })
+      appNotif.value({
+        caption: '45%'
+      })
       // await asyncSleep(300)
     } else {
       throw new Error(
@@ -596,9 +606,9 @@ export const useAppsStore = defineStore('apps', () => {
       // if (app.action.type === 'update') {
       //   batch.value.progress = 0.75
       // }
-      // appNotif.value({
-      //   caption: '75%'
-      // })
+      appNotif.value({
+        caption: '75%'
+      })
       // await asyncSleep(300)
     } else {
       throw new Error(
@@ -657,9 +667,9 @@ export const useAppsStore = defineStore('apps', () => {
       // if (app.action.type === 'update') {
       //   batch.value.progress = 0.8
       // }
-      // appNotif.value({
-      //   caption: '80%'
-      // })
+      appNotif.value({
+        caption: '80%'
+      })
       // await asyncSleep(300)
     } else {
       throw new Error(
@@ -714,9 +724,9 @@ export const useAppsStore = defineStore('apps', () => {
       // if (app.action.type === 'update') {
       //   batch.value.progress = 1
       // }
-      // appNotif.value({
-      //   caption: '100%'
-      // })
+      appNotif.value({
+        caption: '100%'
+      })
       // await asyncSleep(300)
     } else {
       throw new Error(
@@ -729,6 +739,16 @@ export const useAppsStore = defineStore('apps', () => {
       refreshInstalledApps: true
     })
 
+    appNotif.value({
+      icon: 'done',
+      color: 'positive',
+      spinner: false, // we reset the spinner setting so the icon can be displayed
+      message: `${app.currentVersion?.name || 'App'} ${
+        app.action.type === 'update' ? 'updated' : 'installed'
+      }!`,
+      timeout: 500 // we will timeout it in 0.5s
+    })
+
     app.action.type = ''
     app.action.progress = 0
     // if (app.action.type === 'update') {
@@ -738,13 +758,6 @@ export const useAppsStore = defineStore('apps', () => {
     // if (index !== -1) {
     //   installableApps.value.splice(index, 1)
     // }
-    // appNotif.value({
-    //   icon: 'done',
-    //   color: 'positive',
-    //   spinner: false, // we reset the spinner setting so the icon can be displayed
-    //   message: `${app.currentVersion?.name || 'App'} ${app.action.type === 'update' ? 'updated' : 'installed'}!`,
-    //   timeout: 500 // we will timeout it in 0.5s
-    // })
   }
 
   const deleteApp = async (app: InstalledApp) => {
@@ -792,9 +805,9 @@ export const useAppsStore = defineStore('apps', () => {
           })
       }
       app.action.progress = 0.5
-      // appNotif.value({
-      //   caption: '50%'
-      // })
+      appNotif.value({
+        caption: '50%'
+      })
     } else {
       throw new Error(
         `Flipper ${getFlipperCurrentlyParticipating()} was not found`
@@ -831,9 +844,9 @@ export const useAppsStore = defineStore('apps', () => {
           })
       }
       app.action.progress = 1
-      // appNotif.value({
-      //   caption: '100%'
-      // })
+      appNotif.value({
+        caption: '100%'
+      })
     } else {
       throw new Error(
         `Flipper ${getFlipperCurrentlyParticipating()} was not found`
@@ -845,15 +858,16 @@ export const useAppsStore = defineStore('apps', () => {
       refreshInstalledApps: true
     })
 
+    appNotif.value({
+      icon: 'done',
+      color: 'positive',
+      spinner: false, // we reset the spinner setting so the icon can be displayed
+      message: `${app.currentVersion?.name || 'App'} deleted!`,
+      timeout: 500 // we will timeout it in 0.5s
+    })
+
     app.action.type = ''
     app.action.progress = 0
-    // appNotif.value({
-    //   icon: 'done',
-    //   color: 'positive',
-    //   spinner: false, // we reset the spinner setting so the icon can be displayed
-    //   message: `${app.currentVersion?.name || 'App'} deleted!`,
-    //   timeout: 500 // we will timeout it in 0.5s
-    // })
   }
 
   return {

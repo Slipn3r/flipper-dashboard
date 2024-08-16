@@ -3,6 +3,9 @@ import { Platform } from 'quasar'
 import { defineStore } from 'pinia'
 import { isProd } from 'shared/config'
 import { FlipperWeb, FlipperElectron } from 'shared/lib/flipperJs'
+
+import { showNotif } from 'shared/lib/utils/useShowNotif'
+
 import { AppsModel } from 'entities/Apps'
 import {
   FlipperInfo,
@@ -57,7 +60,8 @@ export const useFlipperStore = defineStore('flipper', () => {
     switchFlipper: ref(false),
     flipperIsInitialized: ref(false),
     catalogChannelProduction: ref(getCatalogChannel()),
-    catalogCanSwitchChannel: ref(catalogCanSwitchChannel)
+    catalogCanSwitchChannel: ref(catalogCanSwitchChannel),
+    disableNavigation: ref(false)
   })
 
   const dialogs = reactive({
@@ -260,7 +264,12 @@ export const useFlipperStore = defineStore('flipper', () => {
     localFlipper.setName(_flipper.name)
     // localFlipper.setEmitter(_flipper.emitter)
 
-    await localFlipper.connect(/* name, emitter */)
+    await localFlipper.connect(/* name, emitter */).catch(() => {
+      showNotif({
+        message: `Failed to connect to Flipper ${_flipper.name}. Replug the device and try again.`,
+        color: 'negative'
+      })
+    })
 
     flipper.value = localFlipper
 
@@ -514,6 +523,21 @@ export const useFlipperStore = defineStore('flipper', () => {
     init()
   }
 
+  const findMicroSd = async () => {
+    await flipper.value?.getInfo()
+
+    if (info.value?.storage.sdcard?.status.isInstalled) {
+      dialogs.microSDcardMissing = false
+    } else {
+      showNotif({
+        message: 'MicroSD not found',
+        color: 'warning',
+        textColor: 'black',
+        timeout: 1000
+      })
+    }
+  }
+
   return {
     isElectron,
 
@@ -540,6 +564,7 @@ export const useFlipperStore = defineStore('flipper', () => {
     availableFlippers,
     availableDfuFlippers,
     availableBridgeFlippers,
-    connectFlipper
+    connectFlipper,
+    findMicroSd
   }
 })

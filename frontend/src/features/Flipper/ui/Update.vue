@@ -132,6 +132,8 @@ import asyncSleep from 'simple-async-sleep'
 import { PB } from 'shared/lib/flipperJs/protobufCompiled'
 import { unpack } from 'shared/lib/utils/operation'
 
+import { showNotif } from 'shared/lib/utils/useShowNotif'
+
 import { ProgressBar } from 'shared/components/ProgressBar'
 import { FlipperModel, FlipperApi } from 'entities/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
@@ -185,7 +187,26 @@ const fwModel = ref(fwOptions.value[0])
 const emit = defineEmits<{ (event: 'updateInProgress'): Promise<void> }>()
 
 onMounted(async () => {
-  channels.value = await fetchChannels()
+  channels.value = await fetchChannels().catch((error) => {
+    showNotif({
+      message: 'Unable to load firmware channels from the build server.',
+      color: 'negative',
+      actions: [
+        {
+          label: 'Reload',
+          color: 'white',
+          handler: () => {
+            location.reload()
+          }
+        }
+      ]
+    })
+    // log({
+    //   level: 'error',
+    //   message: `${componentName}: failed to fetch update channels`
+    // })
+    throw error
+  })
 
   if (channels.value.length) {
     fwOptions.value[0].version =
@@ -259,7 +280,12 @@ const update = async () => {
 
   flipperStore.onUpdateStage('start')
   await emit('updateInProgress')
-  await loadFirmware()
+  await loadFirmware().catch((error) => {
+    showNotif({
+      message: error.toString(),
+      color: 'negative'
+    })
+  })
 }
 
 const updateStage = ref('')
@@ -273,11 +299,19 @@ const loadFirmware = async () => {
   if (flipperStore.info?.hardware.region !== '0' || overrideDevRegion.value) {
     const regions: FlipperModel.Regions = await fetchRegions().catch(
       (error) => {
-        // showNotif({
-        //   message: 'Failed to fetch regional update information',
-        //   color: 'negative',
-        //   actions: [{ label: 'Reload', color: 'white', handler: () => { location.reload() } }]
-        // })
+        showNotif({
+          message: 'Failed to fetch regional update information',
+          color: 'negative',
+          actions: [
+            {
+              label: 'Reload',
+              color: 'white',
+              handler: () => {
+                location.reload()
+              }
+            }
+          ]
+        })
         // log({
         //   level: 'error',
         //   message: `${componentName}: Failed to fetch regional update information: ${error.toString()}`
@@ -357,11 +391,19 @@ const loadFirmware = async () => {
           .catch((error) => {
             updateError.value = true
             updateStage.value = error
-            // showNotif({
-            //   message: 'Failed to fetch firmware: ' + error.toString(),
-            //   color: 'negative',
-            //   actions: [{ label: 'Reload', color: 'white', handler: () => { location.reload() } }]
-            // })
+            showNotif({
+              message: 'Failed to fetch firmware: ' + error.toString(),
+              color: 'negative',
+              actions: [
+                {
+                  label: 'Reload',
+                  color: 'white',
+                  handler: () => {
+                    location.reload()
+                  }
+                }
+              ]
+            })
             // log({
             //   level: 'error',
             //   message: `${componentName}: Failed to fetch firmware: ${error.toString()}`
@@ -479,6 +521,20 @@ const loadFirmware = async () => {
     updateError.value = true
 
     updateStage.value = 'Failed to fetch channel'
+
+    showNotif({
+      message: 'Unable to load firmware channel from the build server.',
+      color: 'negative',
+      actions: [
+        {
+          label: 'Reload',
+          color: 'white',
+          handler: () => {
+            location.reload()
+          }
+        }
+      ]
+    })
     throw updateStage.value
   }
 }

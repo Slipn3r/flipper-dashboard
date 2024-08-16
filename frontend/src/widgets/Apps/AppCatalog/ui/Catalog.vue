@@ -84,6 +84,8 @@
 import { ref, watch, nextTick, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
+import { showNotif } from 'shared/lib/utils/useShowNotif'
+
 import { ProgressBar } from 'shared/components/ProgressBar'
 import { Loading } from 'shared/components/Loading'
 
@@ -142,11 +144,19 @@ const getApps = async () => {
       })
       .catch(() => {
         fetchEnd.value = true
-        // showNotif({
-        //   message: 'Unable to load applications.',
-        //   color: 'negative',
-        //   actions: [{ label: 'Reload', color: 'white', handler: () => { location.reload() } }]
-        // })
+        showNotif({
+          message: 'Unable to load applications.',
+          color: 'negative',
+          actions: [
+            {
+              label: 'Reload',
+              color: 'white',
+              handler: () => {
+                reLoad()
+              }
+            }
+          ]
+        })
       })
   }
 

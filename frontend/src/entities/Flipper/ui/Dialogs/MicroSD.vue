@@ -18,6 +18,16 @@
         It seems that the MicroSD card is not mounted or damaged. Insert the
         microSD card into the slot and try again.
       </p>
+      <template v-if="showFindMicroSdBtn">
+        <q-btn
+          unelevated
+          color="primary"
+          icon="mdi-magnify"
+          label="Find MicroSD"
+          no-caps
+          @click="onFindMicroSd"
+        />
+      </template>
     </q-card-section>
 
     <q-card-section class="q-pt-none" align="center">
@@ -33,15 +43,21 @@
 </template>
 
 <script setup lang="ts">
-// import showNotif from 'src/composables/useShowNotif'
-
 type Props = {
   flat?: boolean
   isDialog?: boolean
+  showFindMicroSdBtn?: boolean
 }
 
 withDefaults(defineProps<Props>(), {
   flat: false,
-  isDialog: false
+  isDialog: false,
+  showFindMicroSdBtn: false
 })
+
+const emit = defineEmits(['onFindMicroSd'])
+
+const onFindMicroSd = () => {
+  emit('onFindMicroSd')
+}
 </script>

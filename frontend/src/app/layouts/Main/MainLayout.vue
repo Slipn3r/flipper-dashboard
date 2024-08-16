@@ -56,7 +56,11 @@
       </template>
 
       <q-dialog v-model="flipperStore.dialogs.microSDcardMissing">
-        <FlipperMicroSDCard isDialog />
+        <FlipperMicroSDCard
+          isDialog
+          :showFindMicroSdBtn="flipperStore.isElectron"
+          @onFindMicroSd="flipperStore.findMicroSd"
+        />
       </q-dialog>
       <AppOutdatedFirmwareDialog
         v-model="appsStore.dialogs.outdatedFirmwareDialog"
