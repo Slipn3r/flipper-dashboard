@@ -33,6 +33,9 @@ import {
   onBeforeUnmount,
   watch
 } from 'vue'
+
+import { log } from 'shared/lib/utils/useLog'
+
 import { Loading } from 'shared/components/Loading'
 import { FlipperUpdate } from 'features/Flipper'
 import { FlipperBody, FlipperInfo, FlipperModel } from 'entities/Flipper'
@@ -51,6 +54,8 @@ import { FlipperWeb } from 'src/shared/lib/flipperJs'
 //     }
 //   }
 // })
+
+const componentName = 'DeviceInfo'
 
 const sdCardUsage = computed(() => {
   if (
@@ -123,10 +128,10 @@ const startScreenStream = async (attempts = 0) => {
       } */
     })
     .then(() => {
-      // log({
-      //   level: 'debug',
-      //   message: `${componentName}: guiStartScreenStream: OK`
-      // })
+      log({
+        level: 'debug',
+        message: `${componentName}: guiStartScreenStream: OK`
+      })
 
       console.log('Started screen streaming')
     })
@@ -190,10 +195,10 @@ const stopScreenStream = async () => {
       throw new Error(`Stop screen stream RPC error: ${error.message || error}`)
     })
     .then((/* value */) => {
-      // log({
-      //   level: 'debug',
-      //   message: `${componentName}: guiStartScreenStream: OK`
-      // })
+      log({
+        level: 'debug',
+        message: `${componentName}: guiStartScreenStream: OK`
+      })
       if (unbindFrame.value) {
         unbindFrame.value()
       }

@@ -318,11 +318,15 @@ import { ref, unref, onMounted, watch } from 'vue'
 import { exportFile } from 'quasar'
 import { type RouteLocationRaw } from 'vue-router'
 
+import { log } from 'shared/lib/utils/useLog'
+
 import { ProgressBar } from 'shared/components/ProgressBar'
 
 import { FlipperModel } from 'entities/Flipper'
 import { FlipperWeb } from 'src/shared/lib/flipperJs'
 const flipperStore = FlipperModel.useFlipperStore()
+
+const componentName = 'FlipperFileExplorer'
 
 type PathItem = FlipperModel.File & {
   path: string
@@ -417,10 +421,10 @@ const upload = async () => {
         buffer: await localFile.arrayBuffer()
       })
       .then(() => {
-        // log({
-        //   level: 'debug',
-        //   message: `${componentName.value}: storageWrite: ${path.value}/${localFile.name}`
-        // })
+        log({
+          level: 'debug',
+          message: `${componentName}: storageWrite: ${dir}/${localFile.name}`
+        })
       })
       .catch(/* error => rpcErrorHandler(componentName, error, 'storageWrite') */)
     if (unbind) {
@@ -444,10 +448,10 @@ const mkdir = async ({ path }: { path: string }) => {
   await flipperStore.flipper
     ?.RPC('storageMkdir', { path })
     .then(() => {
-      // log({
-      //   level: 'debug',
-      //   message: `${componentName.value}: storageMkdir: ${path}`
-      // })
+      log({
+        level: 'debug',
+        message: `${componentName}: storageMkdir: ${path}`
+      })
     })
     .catch(/* error => rpcErrorHandler(componentName, error, 'storageMkdir') */)
   list({
@@ -494,10 +498,10 @@ const list = async ({ path }: { path: string }) => {
   const list = await flipperStore.flipper
     ?.RPC('storageList', { path })
     .then((list: FlipperModel.File[]) => {
-      // log({
-      //   level: 'debug',
-      //   message: `${componentName.value}: storageList: ${path.value}`
-      // })
+      log({
+        level: 'debug',
+        message: `${componentName}: storageList: ${path}`
+      })
       return list
     })
     .catch(/* error => rpcErrorHandler(componentName, error, 'storageList') */)
@@ -600,10 +604,10 @@ const read = async ({
   const res: Uint8Array = await flipperStore.flipper
     ?.RPC('storageRead', { path: filePath })
     .then((data: Uint8Array) => {
-      // log({
-      //   level: 'debug',
-      //   message: `${componentName.value}: storageRead: ${path}`
-      // })
+      log({
+        level: 'debug',
+        message: `${componentName}: storageRead: ${filePath}`
+      })
       return data
     })
     .catch(/* error => rpcErrorHandler(componentName, error, 'storageRead') */)
@@ -672,10 +676,10 @@ const rename = async ({
       newPath: path + '/' + newName
     })
     .then(() => {
-      // log({
-      //   level: 'debug',
-      //   message: `${componentName.value}: storageRename: ${path}, old name: ${oldName}, new name: ${newName}`
-      // })
+      log({
+        level: 'debug',
+        message: `${componentName}: storageRename: ${path}, old name: ${oldName}, new name: ${newName}`
+      })
     })
     .catch(/* error => rpcErrorHandler(componentName, error, 'storageRename') */)
   list({
@@ -699,10 +703,10 @@ const remove = async ({
   await flipperStore.flipper
     ?.RPC('storageRemove', { path, recursive: isRecursive })
     .then(() => {
-      // log({
-      //   level: 'debug',
-      //   message: `${componentName.value}: storageRemove: ${path}, recursive: ${isRecursive}`
-      // })
+      log({
+        level: 'debug',
+        message: `${componentName}: storageRemove: ${path}, recursive: ${isRecursive}`
+      })
     })
     .catch(/* error => rpcErrorHandler(componentName, error, 'storageRemove') */)
   list({

@@ -105,6 +105,8 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 
+import { log } from 'shared/lib/utils/useLog'
+
 import { FlipperConnectWebBtn } from 'features/Flipper'
 
 import { FlipperModel } from 'entities/Flipper'
@@ -114,6 +116,8 @@ import { NfcModel } from 'entities/Nfc'
 const nfcStore = NfcModel.useNfcStore()
 import { useNumbersOnly } from 'shared/lib/utils/useNumberOnly'
 import { FlipperWeb } from 'shared/lib/flipperJs'
+
+const componentName = 'NfcAttack'
 
 const mfkeyStatus = ref('')
 
@@ -137,10 +141,10 @@ const readNonces = async () => {
       console.error(error)
     })
     .then((value: Uint8Array) => {
-      // log({
-      //   level: 'debug',
-      //   message: `${componentName}: storageRead: /ext/nfc/.mfkey32.log`
-      // })
+      log({
+        level: 'debug',
+        message: `${componentName}: storageRead: /ext/nfc/.mfkey32.log`
+      })
       return value
     })
 
@@ -229,10 +233,10 @@ const mfkeyFlipperStart = async () => {
         error = String(error)
       }
       errors.push(error)
-      // log({
-      //   level: 'error',
-      //   message: `${componentName}: error in mfkey32v2: ${error} (args: ${args})`
-      // })
+      log({
+        level: 'error',
+        message: `${componentName}: error in mfkey32v2: ${error} (args: ${args})`
+      })
     }
   }
 
@@ -244,10 +248,10 @@ const mfkeyFlipperStart = async () => {
       console.error(error)
     })
     .finally(() => {
-      // log({
-      //   level: 'debug',
-      //   message: `${componentName}: storageRead: /ext/nfc/assets/mf_classic_dict_user.nfc`
-      // })
+      log({
+        level: 'debug',
+        message: `${componentName}: storageRead: /ext/nfc/assets/mf_classic_dict_user.nfc`
+      })
     })
 
   let dictionary: string[] | Set<string> = []
@@ -278,10 +282,10 @@ const mfkeyFlipperStart = async () => {
       console.error(error)
     })
     .finally(() => {
-      // log({
-      //   level: 'debug',
-      //   message: `${componentName}: storage.write: ${path}`
-      // })
+      log({
+        level: 'debug',
+        message: `${componentName}: storage.write: ${path}`
+      })
     })
 
   mfkeyStatus.value = `Nonces: ${nonces.value.length} | Unique keys: ${

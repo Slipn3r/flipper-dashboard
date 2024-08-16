@@ -222,6 +222,7 @@ import { emitter as bridgeEmitter } from 'shared/lib/flipperJs/bridgeController'
 import { ProgressBar } from 'shared/components/ProgressBar'
 
 import { showNotif } from 'shared/lib/utils/useShowNotif'
+import { log, type LogLevel } from 'shared/lib/utils/useLog'
 
 import { FlipperModel, FlipperApi } from 'entities/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
@@ -306,10 +307,10 @@ const recovery = async (info: FlipperModel.DataDfuFlipperElectron['info']) => {
       message: messageShort,
       color: 'negative'
     })
-    // log({
-    //   level: 'error',
-    //   message: messageShort
-    // })
+    log({
+      level: 'error',
+      message: messageShort
+    })
     unbindLogs()
     unbindStatus()
     recoveryUpdateStage.value = messageLong
@@ -342,18 +343,18 @@ const recovery = async (info: FlipperModel.DataDfuFlipperElectron['info']) => {
     logLines.pop()
     logLines.forEach((line: string) => {
       recoveryLogs.value.push(line)
-      // let level = 'debug'
-      // if (line.includes('[E]')) {
-      //   level = 'error'
-      // } else if (line.includes('[W]')) {
-      //   level = 'warn'
-      // } else if (line.includes('[I]')) {
-      //   level = 'info'
-      // }
-      // log({
-      //   level,
-      //   message: line
-      // })
+      let level: LogLevel = 'debug'
+      if (line.includes('[E]')) {
+        level = 'error'
+      } else if (line.includes('[W]')) {
+        level = 'warn'
+      } else if (line.includes('[I]')) {
+        level = 'info'
+      }
+      log({
+        level,
+        message: line
+      })
     })
   })
 

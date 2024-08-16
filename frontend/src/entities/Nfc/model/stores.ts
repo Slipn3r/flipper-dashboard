@@ -3,6 +3,10 @@ import { defineStore } from 'pinia'
 
 import { startMfkey } from '../lib/mfkey'
 
+import { log } from 'shared/lib/utils/useLog'
+
+const componentName = 'NfcStore'
+
 export const useNfcStore = defineStore('nfc', () => {
   const flags = reactive({
     mfkeyFlipperInProgress: false,
@@ -19,12 +23,12 @@ export const useNfcStore = defineStore('nfc', () => {
 
     try {
       result = await startMfkey(args, timeoutSeconds.value)
-      // if (result) {
-      //   log({
-      //     level: 'debug',
-      //     message: `${componentName}: cracked nonce: ${args}, key: ${result}`
-      //   })
-      // }
+      if (result) {
+        log({
+          level: 'debug',
+          message: `${componentName}: cracked nonce: ${args}, key: ${result}`
+        })
+      }
     } catch (error) {
       if (error instanceof ErrorEvent || error instanceof Error) {
         result = error.message

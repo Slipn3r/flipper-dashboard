@@ -5,6 +5,7 @@ import { isProd } from 'shared/config'
 import { FlipperWeb, FlipperElectron } from 'shared/lib/flipperJs'
 
 import { showNotif } from 'shared/lib/utils/useShowNotif'
+import { log } from 'shared/lib/utils/useLog'
 
 import { AppsModel } from 'entities/Apps'
 import {
@@ -24,6 +25,8 @@ import {
   init as bridgeControllerInit,
   emitter as bridgeEmitter /* , getCurrentFlipper, getList, setCurrentFlipper */
 } from 'shared/lib/flipperJs/bridgeController'
+
+const componentName = 'FlipperStore'
 
 export const useFlipperStore = defineStore('flipper', () => {
   const isElectron = Platform.is.electron
@@ -214,10 +217,10 @@ export const useFlipperStore = defineStore('flipper', () => {
     path: RouteLocationRaw
     file: PulseFile
   }) => {
-    // log({
-    //   level: 'info',
-    //   message: `${componentName}: Passing file ${file.name} to ${path}`
-    // })
+    log({
+      level: 'info',
+      message: `${componentName}: Passing file ${file.name} to ${path}`
+    })
     fileToPass.value = file
     router.push(path)
   }

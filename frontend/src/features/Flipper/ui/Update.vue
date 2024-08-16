@@ -133,11 +133,14 @@ import { PB } from 'shared/lib/flipperJs/protobufCompiled'
 import { unpack } from 'shared/lib/utils/operation'
 
 import { showNotif } from 'shared/lib/utils/useShowNotif'
+import { log } from 'shared/lib/utils/useLog'
 
 import { ProgressBar } from 'shared/components/ProgressBar'
 import { FlipperModel, FlipperApi } from 'entities/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 const { fetchChannels, fetchRegions, fetchFirmware } = FlipperApi
+
+const componentName = 'FlipperUpdate'
 
 const outdated = ref<boolean | undefined>(false)
 const ableToUpdate = ref(true)
@@ -201,10 +204,10 @@ onMounted(async () => {
         }
       ]
     })
-    // log({
-    //   level: 'error',
-    //   message: `${componentName}: failed to fetch update channels`
-    // })
+    log({
+      level: 'error',
+      message: `${componentName}: failed to fetch update channels`
+    })
     throw error
   })
 
@@ -312,10 +315,10 @@ const loadFirmware = async () => {
             }
           ]
         })
-        // log({
-        //   level: 'error',
-        //   message: `${componentName}: Failed to fetch regional update information: ${error.toString()}`
-        // })
+        log({
+          level: 'error',
+          message: `${componentName}: Failed to fetch regional update information: ${error.toString()}`
+        })
         throw error
       }
     )
@@ -374,10 +377,10 @@ const loadFirmware = async () => {
     if (uploadedFile.value) {
       const buffer = await uploadedFile.value.arrayBuffer()
       files = await unpack(buffer).then((value: object) => {
-        // log({
-        //   level: 'debug',
-        //   message: `${componentName}: Unpacked firmware`
-        // })
+        log({
+          level: 'debug',
+          message: `${componentName}: Unpacked firmware`
+        })
         return value
       })
     } else {
@@ -404,17 +407,23 @@ const loadFirmware = async () => {
                 }
               ]
             })
-            // log({
-            //   level: 'error',
-            //   message: `${componentName}: Failed to fetch firmware: ${error.toString()}`
-            // })
+            log({
+              level: 'error',
+              message: `${componentName}: Failed to fetch firmware: ${error.toString()}`
+            })
             throw error
           })
           .then((value) => {
-            // log({
-            //   level: 'debug',
-            //   message: `${componentName}: Downloaded firmware from ${channels.value[fwModel.value.value].url}`
-            // })
+            const channel = channels.value.find(
+              (channel) => channel.id === fwModel.value.value
+            )
+
+            if (channel) {
+              log({
+                level: 'debug',
+                message: `${componentName}: Downloaded firmware from ${channel.url}`
+              })
+            }
             return value
           })
       }
@@ -437,10 +446,10 @@ const loadFirmware = async () => {
             ?.RPC('storageMkdir', { path: '/ext/update' })
             // .catch(error => rpcErrorHandler(componentName, error, 'storageMkdir'))
             .then(() => {
-              // log({
-              //   level: 'debug',
-              //   message: `${componentName}: storageMkdir: /ext/update`
-              // })
+              log({
+                level: 'debug',
+                message: `${componentName}: storageMkdir: /ext/update`
+              })
             })
         }
       })
@@ -458,10 +467,10 @@ const loadFirmware = async () => {
           ?.RPC('storageMkdir', { path })
           // .catch(error => rpcErrorHandler(componentName, error, 'storageMkdir'))
           .then(() => {
-            // log({
-            //   level: 'debug',
-            //   message: `${componentName}: storageMkdir: ${path}`
-            // })
+            log({
+              level: 'debug',
+              message: `${componentName}: storageMkdir: ${path}`
+            })
           })
       } else {
         write.value.filename = file.name.slice(file.name.lastIndexOf('/') + 1)
@@ -478,10 +487,10 @@ const loadFirmware = async () => {
           })
           // .catch(error => rpcErrorHandler(componentName, error, 'storageWrite'))
           .then(() => {
-            // log({
-            //   level: 'debug',
-            //   message: `${componentName}: storageWrite: /ext/update/${file.name}`
-            // })
+            log({
+              level: 'debug',
+              message: `${componentName}: storageWrite: /ext/update/${file.name}`
+            })
           })
 
         if (unbind) {
@@ -504,10 +513,10 @@ const loadFirmware = async () => {
       ?.RPC('systemUpdate', { path: path + '/update.fuf' })
       // .catch(error => rpcErrorHandler(componentName, error, 'systemUpdate'))
       .then(() => {
-        // log({
-        //   level: 'debug',
-        //   message: `${componentName}: systemUpdate: OK`
-        // })
+        log({
+          level: 'debug',
+          message: `${componentName}: systemUpdate: OK`
+        })
       })
 
     updateStage.value = 'Update in progress, pay attention to your Flipper'

@@ -192,6 +192,7 @@ type FirmwareVersion = {
 }
 
 export type Channel = {
+  [key: string]: string | FirmwareVersion[]
   id: string
   title: string
   description: string
