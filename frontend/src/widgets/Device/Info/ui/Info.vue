@@ -35,6 +35,7 @@ import {
 } from 'vue'
 
 import { log } from 'shared/lib/utils/useLog'
+import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
 
 import { Loading } from 'shared/components/Loading'
 import { FlipperUpdate } from 'features/Flipper'
@@ -119,8 +120,8 @@ const isLeftHanded = ref(false)
 const startScreenStream = async (attempts = 0) => {
   await flipperStore.flipper
     ?.RPC('guiStartScreenStream')
-    .catch((/* error */) => {
-      // rpcErrorHandler(componentName, error, 'guiStartScreenStream')
+    .catch((error: Error) => {
+      rpcErrorHandler({ componentName, error, command: 'guiStartScreenStream' })
       if (attempts < 3) {
         return startScreenStream(attempts + 1)
       } /* else {
@@ -191,7 +192,7 @@ const stopScreenStream = async () => {
   await flipperStore.flipper
     ?.RPC('guiStopScreenStream')
     .catch((error: Error) => {
-      // rpcErrorHandler('Device', error, 'guiStopScreenStream')
+      rpcErrorHandler({ componentName, error, command: 'guiStopScreenStream' })
       throw new Error(`Stop screen stream RPC error: ${error.message || error}`)
     })
     .then((/* value */) => {

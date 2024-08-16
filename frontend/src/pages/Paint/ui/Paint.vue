@@ -26,6 +26,7 @@
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 
 import { showNotif } from 'shared/lib/utils/useShowNotif'
+import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
 
 import { imageDataToXBM } from 'shared/lib/utils/pixeleditor/xbm'
 
@@ -41,6 +42,8 @@ const pe = computed(() => paintStore.pe)
 import { FlipperModel } from 'entities/Flipper'
 import { FlipperWeb } from 'src/shared/lib/flipperJs'
 const flipperStore = FlipperModel.useFlipperStore()
+
+const componentName = 'Paint'
 
 const mouseUp = () => {
   if (!pe.value) {
@@ -94,8 +97,12 @@ const startVirtualDisplay = async () => {
     .then(() => {
       console.log('guiStartVirtualDisplay enable')
     })
-    .catch((error: object) => {
-      /* rpcErrorHandler(componentName, error, 'guiStartVirtualDisplay') */
+    .catch((error: Error) => {
+      rpcErrorHandler({
+        componentName,
+        error,
+        command: 'guiStartVirtualDisplay'
+      })
       showNotif({
         message: "Couldn't start virtual display session",
         color: 'negative'
@@ -128,7 +135,7 @@ const stopVirtualDisplay = async () => {
   //         .then(() => {
   //           console.log('guiStartVirtualDisplay disabled')
   //         })
-  //         .catch(/* error => rpcErrorHandler(componentName, error, 'guiStopVirtualDisplay') */)
+  //         .catch(/* (error: Error) => rpcErrorHandler({ componentName, error, command: 'guiStopVirtualDisplay' }) */)
   //     }
   //   }
   // } else {
@@ -137,19 +144,31 @@ const stopVirtualDisplay = async () => {
     .then(() => {
       console.log('guiStartVirtualDisplay disabled')
     })
-    .catch(/* error => rpcErrorHandler(componentName, error, 'guiStopVirtualDisplay') */)
+    .catch((error: Error) =>
+      rpcErrorHandler({
+        componentName,
+        error,
+        command: 'guiStopVirtualDisplay'
+      })
+    )
   // }
 }
 const enableBacklight = async () => {
   await flipperStore.flipper
     ?.RPC('guiSendInputEvent', { key: 'OK', type: 'PRESS' })
-    .catch(/* error => rpcErrorHandler(componentName, error, 'guiSendInputEvent') */)
+    .catch((error: Error) =>
+      rpcErrorHandler({ componentName, error, command: 'guiSendInputEvent' })
+    )
   await flipperStore.flipper
     ?.RPC('guiSendInputEvent', { key: 'OK', type: 'SHORT' })
-    .catch(/* error => rpcErrorHandler(componentName, error, 'guiSendInputEvent') */)
+    .catch((error: Error) =>
+      rpcErrorHandler({ componentName, error, command: 'guiSendInputEvent' })
+    )
   await flipperStore.flipper
     ?.RPC('guiSendInputEvent', { key: 'OK', type: 'RELEASE' })
-    .catch(/* error => rpcErrorHandler(componentName, error, 'guiSendInputEvent') */)
+    .catch((error: Error) =>
+      rpcErrorHandler({ componentName, error, command: 'guiSendInputEvent' })
+    )
 }
 const sendFrame = async () => {
   if (pe.value) {

@@ -319,6 +319,7 @@ import { exportFile } from 'quasar'
 import { type RouteLocationRaw } from 'vue-router'
 
 import { log } from 'shared/lib/utils/useLog'
+import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
 
 import { ProgressBar } from 'shared/components/ProgressBar'
 
@@ -426,7 +427,9 @@ const upload = async () => {
           message: `${componentName}: storageWrite: ${dir}/${localFile.name}`
         })
       })
-      .catch(/* error => rpcErrorHandler(componentName, error, 'storageWrite') */)
+      .catch((error: Error) =>
+        rpcErrorHandler({ componentName, error, command: 'storageWrite' })
+      )
     if (unbind) {
       unbind()
     }
@@ -453,7 +456,9 @@ const mkdir = async ({ path }: { path: string }) => {
         message: `${componentName}: storageMkdir: ${path}`
       })
     })
-    .catch(/* error => rpcErrorHandler(componentName, error, 'storageMkdir') */)
+    .catch((error: Error) =>
+      rpcErrorHandler({ componentName, error, command: 'storageMkdir' })
+    )
   list({
     path: fullPath.value
   })
@@ -504,7 +509,9 @@ const list = async ({ path }: { path: string }) => {
       })
       return list
     })
-    .catch(/* error => rpcErrorHandler(componentName, error, 'storageList') */)
+    .catch((error: Error) =>
+      rpcErrorHandler({ componentName, error, command: 'storageList' })
+    )
 
   if (list.length === 0) {
     dirs.value = []
@@ -610,7 +617,9 @@ const read = async ({
       })
       return data
     })
-    .catch(/* error => rpcErrorHandler(componentName, error, 'storageRead') */)
+    .catch((error: Error) =>
+      rpcErrorHandler({ componentName, error, command: 'storageRead' })
+    )
 
   const s = filePath.split('/')
   if (!preventDownload) {
@@ -681,7 +690,9 @@ const rename = async ({
         message: `${componentName}: storageRename: ${path}, old name: ${oldName}, new name: ${newName}`
       })
     })
-    .catch(/* error => rpcErrorHandler(componentName, error, 'storageRename') */)
+    .catch((error: Error) =>
+      rpcErrorHandler({ componentName, error, command: 'storageRename' })
+    )
   list({
     path: fullPath.value
   })
@@ -708,7 +719,9 @@ const remove = async ({
         message: `${componentName}: storageRemove: ${path}, recursive: ${isRecursive}`
       })
     })
-    .catch(/* error => rpcErrorHandler(componentName, error, 'storageRemove') */)
+    .catch((error: Error) =>
+      rpcErrorHandler({ componentName, error, command: 'storageRemove' })
+    )
   list({
     path: fullPath.value
   })

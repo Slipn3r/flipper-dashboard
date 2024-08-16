@@ -134,6 +134,7 @@ import { unpack } from 'shared/lib/utils/operation'
 
 import { showNotif } from 'shared/lib/utils/useShowNotif'
 import { log } from 'shared/lib/utils/useLog'
+import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
 
 import { ProgressBar } from 'shared/components/ProgressBar'
 import { FlipperModel, FlipperApi } from 'entities/Flipper'
@@ -359,11 +360,14 @@ const loadFirmware = async () => {
       PB.Region.encodeDelimited(message).finish()
     ).slice(1)
 
-    await flipperStore.flipper?.RPC('storageWrite', {
-      path: '/int/.region_data',
-      buffer: encoded
-    })
-    // .catch(error => rpcErrorHandler(error, 'storageWrite'))
+    await flipperStore.flipper
+      ?.RPC('storageWrite', {
+        path: '/int/.region_data',
+        buffer: encoded
+      })
+      .catch((error: Error) =>
+        rpcErrorHandler({ componentName, error, command: 'storageWrite' })
+      )
   }
 
   if (updateError.value) {
@@ -438,13 +442,15 @@ const loadFirmware = async () => {
     let path = '/ext/update/'
     await flipperStore.flipper
       ?.RPC('storageStat', { path: '/ext/update' })
-      .catch(async (error: string) => {
+      .catch(async (error: Error) => {
         if (error.toString() !== 'ERROR_STORAGE_NOT_EXIST') {
-          // rpcErrorHandler(componentName, error, 'storageStat')
+          rpcErrorHandler({ componentName, error, command: 'storageStat' })
         } else {
           await flipperStore.flipper
             ?.RPC('storageMkdir', { path: '/ext/update' })
-            // .catch(error => rpcErrorHandler(componentName, error, 'storageMkdir'))
+            .catch((error: Error) =>
+              rpcErrorHandler({ componentName, error, command: 'storageMkdir' })
+            )
             .then(() => {
               log({
                 level: 'debug',
@@ -465,7 +471,9 @@ const loadFirmware = async () => {
         }
         await flipperStore.flipper
           ?.RPC('storageMkdir', { path })
-          // .catch(error => rpcErrorHandler(componentName, error, 'storageMkdir'))
+          .catch((error: Error) =>
+            rpcErrorHandler({ componentName, error, command: 'storageMkdir' })
+          )
           .then(() => {
             log({
               level: 'debug',
@@ -485,7 +493,9 @@ const loadFirmware = async () => {
             path: '/ext/update/' + file.name,
             buffer: file.buffer
           })
-          // .catch(error => rpcErrorHandler(componentName, error, 'storageWrite'))
+          .catch((error: Error) =>
+            rpcErrorHandler({ componentName, error, command: 'storageWrite' })
+          )
           .then(() => {
             log({
               level: 'debug',
@@ -511,7 +521,9 @@ const loadFirmware = async () => {
 
     await flipperStore.flipper
       ?.RPC('systemUpdate', { path: path + '/update.fuf' })
-      // .catch(error => rpcErrorHandler(componentName, error, 'systemUpdate'))
+      .catch((error: Error) =>
+        rpcErrorHandler({ componentName, error, command: 'systemUpdate' })
+      )
       .then(() => {
         log({
           level: 'debug',
@@ -521,8 +533,11 @@ const loadFirmware = async () => {
 
     updateStage.value = 'Update in progress, pay attention to your Flipper'
 
-    await flipperStore.flipper?.RPC('systemReboot', { mode: 'UPDATE' })
-    // .catch(error => rpcErrorHandler(componentName, error, 'systemReboot'))
+    await flipperStore.flipper
+      ?.RPC('systemReboot', { mode: 'UPDATE' })
+      .catch((error: Error) =>
+        rpcErrorHandler({ componentName, error, command: 'systemReboot' })
+      )
 
     flipperStore.flags.waitForReconnect = true
     flipperStore.flags.autoReconnect = true

@@ -5,8 +5,9 @@ import useSetProperty from 'shared/lib/utils/useSetProperty'
 import asyncSleep from 'simple-async-sleep'
 
 import { log } from 'shared/lib/utils/useLog'
+import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
 
-const componentName = 'FlipperJS Utils ReadInfo'
+const componentName = 'FlipperJS Util ReadInfo'
 
 async function isOldProtobuf(this: Flipper) {
   let protobufVersion
@@ -18,13 +19,18 @@ async function isOldProtobuf(this: Flipper) {
       this.info as unknown as FlipperModel.DataFlipperElectron['info']
     )?.protobuf.version
   } else {
-    protobufVersion = await this.RPC('systemProtobufVersion')
+    protobufVersion = await this.RPC('systemProtobufVersion').catch(
+      (error: Error) => {
+        rpcErrorHandler({
+          componentName,
+          error,
+          command: 'systemProtobufVersion'
+        })
+        throw error
+      }
+    )
   }
-  // const protobufVersion = await this.RPC('systemProtobufVersion')
-  // .catch(error => {
-  //   rpcErrorHandler(componentName, error, 'systemProtobufVersion')
-  //   throw error
-  // })
+
   return protobufVersion.major === 0 && protobufVersion.minor < 14
 }
 
@@ -57,70 +63,60 @@ export default async function readInfo(this: Flipper) {
   //   return
   // }
 
-  /* await flipper.value?.RPC('systemPing', { timeout: 2000 })
-    .catch(error => {
-      rpcErrorHandler(componentName, error, 'systemPing')
-      throw error
-    }) */
-
   if (await isOldProtobuf.bind(this)()) {
-    await this.RPC('systemDeviceInfo').then(
-      (devInfo: FlipperModel.DeviceInfo) => {
+    await this.RPC('systemDeviceInfo')
+      .then((devInfo: FlipperModel.DeviceInfo) => {
         log({
           level: 'debug',
           message: `${componentName}: deviceInfo: OK`
         })
         setInfo({ ...info, ...devInfo })
-      }
-    )
-    // .catch(error => {
-    //   rpcErrorHandler(componentName, error, 'systemDeviceInfo')
-    //   throw error
-    // })
+      })
+      .catch((error: Error) => {
+        rpcErrorHandler({ componentName, error, command: 'systemDeviceInfo' })
+        throw error
+      })
   } else {
     await asyncSleep(1000)
-    await this.RPC('propertyGet', { key: 'devinfo' }).then(
-      (devInfo: FlipperModel.DeviceInfo) => {
+    await this.RPC('propertyGet', { key: 'devinfo' })
+      .then((devInfo: FlipperModel.DeviceInfo) => {
         log({
           level: 'debug',
           message: `${componentName}: propertyGet: OK`
         })
         setInfo({ ...info, ...devInfo })
-      }
-    )
-    // .catch(error => {
-    //   rpcErrorHandler(componentName, error, 'propertyGet')
-    //   throw error
-    // })
+      })
+      .catch((error: Error) => {
+        rpcErrorHandler({ componentName, error, command: 'propertyGet' })
+        throw error
+      })
 
-    await this.RPC('propertyGet', { key: 'pwrinfo' }).then(
-      (powerInfo: FlipperModel.PowerInfo) => {
+    await this.RPC('propertyGet', { key: 'pwrinfo' })
+      .then((powerInfo: FlipperModel.PowerInfo) => {
         log({
           level: 'debug',
           message: `${componentName}: propertyGet: OK`
         })
         setPropertyInfo({ power: powerInfo })
-      }
-    )
-    // .catch(error => {
-    //   rpcErrorHandler(componentName, error, 'propertyGet')
-    //   throw error
-    // })
+      })
+      .catch((error: Error) => {
+        rpcErrorHandler({ componentName, error, command: 'propertyGet' })
+        throw error
+      })
   }
 
-  const ext = await this.RPC('storageList', { path: '/ext' }).then(
-    (list: FlipperModel.File[]) => {
+  const ext = await this.RPC('storageList', { path: '/ext' })
+    .then((list: FlipperModel.File[]) => {
       log({
         level: 'debug',
         message: `${componentName}: storageList: /ext`
       })
       return list
-    }
-  )
-  // .catch(error => {
-  //   rpcErrorHandler(componentName, error, 'storageList')
-  //   throw error
-  // })
+    })
+    .catch((error: Error) => {
+      rpcErrorHandler({ componentName, error, command: 'storageList' })
+      throw error
+    })
 
   if (ext && ext.length) {
     const manifest = ext.find((e: FlipperModel.File) => {
@@ -140,8 +136,8 @@ export default async function readInfo(this: Flipper) {
       }
     })
 
-    await this.RPC('storageInfo', { path: '/ext' }).then(
-      (extInfo: FlipperModel.SpaceInfo) => {
+    await this.RPC('storageInfo', { path: '/ext' })
+      .then((extInfo: FlipperModel.SpaceInfo) => {
         log({
           level: 'debug',
           message: `${componentName}: storageInfo: /ext`
@@ -158,13 +154,11 @@ export default async function readInfo(this: Flipper) {
             }
           }
         })
-      }
-    )
-    // .catch(error => {
-    //   rpcErrorHandler(componentName, error, 'storageInfo')
-    //   console.error(error)
-    //   throw error
-    // })
+      })
+      .catch((error: Error) => {
+        rpcErrorHandler({ componentName, error, command: 'storageInfo' })
+        throw error
+      })
   } else {
     setPropertyInfo({
       storage: {
@@ -200,10 +194,9 @@ export default async function readInfo(this: Flipper) {
         message: `${componentName}: Fetched device info`
       })
     })
-    .catch((error: object) => {
-      // rpcErrorHandler(componentName, error, 'storageInfo')
-      // throw error
-      console.log(error)
+    .catch((error: Error) => {
+      rpcErrorHandler({ componentName, error, command: 'storageInfo' })
+      throw error
     })
   setPropertyInfo({ doneReading: true })
 

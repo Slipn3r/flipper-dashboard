@@ -106,6 +106,7 @@
 import { ref, onMounted, watch } from 'vue'
 
 import { log } from 'shared/lib/utils/useLog'
+import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
 
 import { FlipperConnectWebBtn } from 'features/Flipper'
 
@@ -133,12 +134,10 @@ const readNonces = async () => {
 
   const res = await flipperStore.flipper
     ?.RPC('storageRead', { path: '/ext/nfc/.mfkey32.log' })
-    .catch((error: object) => {
-      // rpcErrorHandler(componentName, error, 'storageRead')
+    .catch((error: Error) => {
+      rpcErrorHandler({ componentName, error, command: 'storageRead' })
       mfkeyStatus.value = 'Mfkey log file not found'
       nfcStore.flags.mfkeyFlipperInProgress = false
-
-      console.error(error)
     })
     .then((value: Uint8Array) => {
       log({
@@ -243,10 +242,9 @@ const mfkeyFlipperStart = async () => {
   mfkeyStatus.value = 'Loading user dictionary'
   const res = await flipperStore.flipper
     ?.RPC('storageRead', { path: '/ext/nfc/assets/mf_classic_dict_user.nfc' })
-    .catch((error: object) => {
-      // rpcErrorHandler(componentName, error, 'storageRead')
-      console.error(error)
-    })
+    .catch((error: Error) =>
+      rpcErrorHandler({ componentName, error, command: 'storageRead' })
+    )
     .finally(() => {
       log({
         level: 'debug',
@@ -277,10 +275,9 @@ const mfkeyFlipperStart = async () => {
   const path = '/ext/nfc/assets/mf_classic_dict_user.nfc'
   await flipperStore.flipper
     ?.RPC('storageWrite', { path, buffer: file.buffer })
-    .catch((error: object) => {
-      // rpcErrorHandler(componentName, error, 'storageWrite')
-      console.error(error)
-    })
+    .catch((error: Error) =>
+      rpcErrorHandler({ componentName, error, command: 'storageWrite' })
+    )
     .finally(() => {
       log({
         level: 'debug',

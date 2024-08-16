@@ -2,6 +2,8 @@ import { PB } from './protobufCompiled'
 
 import type { Emitter, DefaultEvents } from 'nanoevents'
 
+import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
+
 import { FlipperModel } from 'entities/Flipper'
 
 import readInfo from './utils/readInfo'
@@ -32,6 +34,7 @@ const RPCSubSystems: RPCSubSystemsType = {
 
 RPCSubSystems['storage']['info']
 
+const componentName = 'FlipperJS'
 export default class Flipper {
   filters: {
     usbVendorId: number
@@ -139,29 +142,41 @@ export default class Flipper {
     if (this.flipperReady && this.info?.storage.sdcard?.status.isInstalled) {
       let dir = await this.RPC('storageStat', {
         path: '/ext/apps_manifests'
-      }).catch(/* error => rpcErrorHandler(componentName, error, 'storageStat') */)
+      }).catch((error: Error) =>
+        rpcErrorHandler({ componentName, error, command: 'storageStat' })
+      )
       if (!dir) {
         await this.RPC('storageMkdir', {
           path: '/ext/apps_manifests'
-        }).catch(/* error => rpcErrorHandler(componentName, error, 'storageMkdir') */)
+        }).catch((error: Error) =>
+          rpcErrorHandler({ componentName, error, command: 'storageMkdir' })
+        )
       }
 
       dir = await this.RPC('storageStat', {
         path: '/ext/.tmp'
-      }).catch(/* error => rpcErrorHandler(componentName, error, 'storageStat') */)
+      }).catch((error: Error) =>
+        rpcErrorHandler({ componentName, error, command: 'storageStat' })
+      )
       if (!dir) {
         await this.RPC('storageMkdir', {
           path: '/ext/.tmp'
-        }).catch(/* error => rpcErrorHandler(componentName, error, 'storageMkdir') */)
+        }).catch((error: Error) =>
+          rpcErrorHandler({ componentName, error, command: 'storageMkdir' })
+        )
       }
 
       dir = await this.RPC('storageStat', {
         path: '/ext/.tmp/lab'
-      }).catch(/* error => rpcErrorHandler(componentName, error, 'storageStat') */)
+      }).catch((error: Error) =>
+        rpcErrorHandler({ componentName, error, command: 'storageStat' })
+      )
       if (!dir) {
         await this.RPC('storageMkdir', {
           path: '/ext/.tmp/lab'
-        }).catch(/* error => rpcErrorHandler(componentName, error, 'storageMkdir') */)
+        }).catch((error: Error) =>
+          rpcErrorHandler({ componentName, error, command: 'storageMkdir' })
+        )
       }
     }
   }

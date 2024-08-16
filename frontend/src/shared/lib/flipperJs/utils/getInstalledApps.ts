@@ -1,6 +1,10 @@
 import Flipper from '../flipper'
 import { FlipperModel } from 'entities/Flipper'
 
+import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
+
+const componentName = 'FlipperJS Util getInstalled'
+
 let installedApps: FlipperModel.App[] = []
 
 const onClearInstalledAppsList = () => {
@@ -11,14 +15,16 @@ async function getInstalledApps(this: Flipper) {
   if (this.flipperReady) {
     const manifestsList = await this.RPC('storageList', {
       path: '/ext/apps_manifests'
-    })
-    // .catch(error => rpcErrorHandler(componentName, error, 'storageList'))
+    }).catch((error: Error) =>
+      rpcErrorHandler({ componentName, error, command: 'storageList' })
+    )
     const decoder = new TextDecoder()
     for await (const file of manifestsList) {
       const manifestFile = await this.RPC('storageRead', {
         path: `/ext/apps_manifests/${file.name}`
-      })
-      // .catch(error => rpcErrorHandler(componentName, error, 'storageRead'))
+      }).catch((error: Error) =>
+        rpcErrorHandler({ componentName, error, command: 'storageRead' })
+      )
       const manifest = decoder.decode(manifestFile)
       const app: FlipperModel.App = {
         id: '',

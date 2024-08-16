@@ -11,6 +11,7 @@ import {
 
 import { showNotif } from 'shared/lib/utils/useShowNotif'
 import { log } from 'shared/lib/utils/useLog'
+import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
 
 import { instance } from 'boot/axios'
 import { App, InstalledApp, AppsPostShortParams, ActionType } from './types'
@@ -446,11 +447,15 @@ export const useAppsStore = defineStore('apps', () => {
     for (const category of categories.value) {
       const dir = await flipper.value
         ?.RPC('storageStat', { path: `/ext/apps/${category.name}` })
-        .catch(/* error => rpcErrorHandler(componentName, error, 'storageStat') */)
+        .catch((error: Error) =>
+          rpcErrorHandler({ componentName, error, command: 'storageStat' })
+        )
       if (!dir) {
         await flipper.value
           ?.RPC('storageMkdir', { path: `/ext/apps/${category.name}` })
-          .catch(/* error => rpcErrorHandler(componentName, error, 'storageMkdir') */)
+          .catch((error: Error) =>
+            rpcErrorHandler({ componentName, error, command: 'storageMkdir' })
+          )
       }
     }
   }
@@ -570,8 +575,8 @@ export const useAppsStore = defineStore('apps', () => {
             message: `${componentName}: Installing app '${app.currentVersion.name}' (${app.alias}): uploaded manifest (temp)`
           })
         })
-        .catch((error: ErrorEvent) => {
-          // rpcErrorHandler(componentName, error, 'storageWrite')
+        .catch((error: Error) => {
+          rpcErrorHandler({ componentName, error, command: 'storageWrite' })
 
           throw error
         })
@@ -599,8 +604,8 @@ export const useAppsStore = defineStore('apps', () => {
             message: `${componentName}: Installing app '${app.currentVersion.name}' (${app.alias}): uploaded .fap (temp)`
           })
         })
-        .catch((error: ErrorEvent) => {
-          // rpcErrorHandler(componentName, error, 'storageWrite')
+        .catch((error: Error) => {
+          rpcErrorHandler({ componentName, error, command: 'storageWrite' })
 
           throw error
         })
@@ -623,8 +628,8 @@ export const useAppsStore = defineStore('apps', () => {
     if (flipper.value?.name === getFlipperCurrentlyParticipating()) {
       dirList = await flipper.value
         .RPC('storageList', { path: paths.manifestDir })
-        .catch((error: ErrorEvent) => {
-          // rpcErrorHandler(componentName, error, 'storageList')
+        .catch((error: Error) => {
+          rpcErrorHandler({ componentName, error, command: 'storageList' })
 
           throw error
         })
@@ -642,8 +647,8 @@ export const useAppsStore = defineStore('apps', () => {
               message: `${componentName}: Installing app '${app.currentVersion.name}' (${app.alias}): removed old manifest`
             })
           })
-          .catch((error: ErrorEvent) => {
-            // rpcErrorHandler(componentName, error, 'storageRemove')
+          .catch((error: Error) => {
+            rpcErrorHandler({ componentName, error, command: 'storageRemove' })
 
             throw error
           })
@@ -660,8 +665,8 @@ export const useAppsStore = defineStore('apps', () => {
             message: `${componentName}: Installing app '${app.currentVersion.name}' (${app.alias}): moved new manifest`
           })
         })
-        .catch((error: ErrorEvent) => {
-          // rpcErrorHandler(componentName, error, 'storageRename')
+        .catch((error: Error) => {
+          rpcErrorHandler({ componentName, error, command: 'storageRename' })
 
           throw error
         })
@@ -682,8 +687,8 @@ export const useAppsStore = defineStore('apps', () => {
     if (flipper.value?.name === getFlipperCurrentlyParticipating()) {
       dirList = await flipper.value
         .RPC('storageList', { path: paths.appDir })
-        .catch((error: ErrorEvent) => {
-          // rpcErrorHandler(componentName, error, 'storageList')
+        .catch((error: Error) => {
+          rpcErrorHandler({ componentName, error, command: 'storageList' })
 
           throw error
         })
@@ -699,8 +704,8 @@ export const useAppsStore = defineStore('apps', () => {
               message: `${componentName}: Installing app '${app.currentVersion.name}' (${app.alias}): removed old .fap`
             })
           })
-          .catch((error: ErrorEvent) => {
-            // rpcErrorHandler(componentName, error, 'storageRemove')
+          .catch((error: Error) => {
+            rpcErrorHandler({ componentName, error, command: 'storageRemove' })
 
             throw error
           })
@@ -717,8 +722,8 @@ export const useAppsStore = defineStore('apps', () => {
             message: `${componentName}: Installing app '${app.currentVersion.name}' (${app.alias}): moved new .fap`
           })
         })
-        .catch((error: ErrorEvent) => {
-          // rpcErrorHandler(componentName, error, 'storageRename')
+        .catch((error: Error) => {
+          rpcErrorHandler({ componentName, error, command: 'storageRename' })
 
           throw error
         })
@@ -783,8 +788,8 @@ export const useAppsStore = defineStore('apps', () => {
     if (flipper.value?.name === getFlipperCurrentlyParticipating()) {
       dirList = await flipper.value
         .RPC('storageList', { path: paths.appDir })
-        .catch((error: ErrorEvent) => {
-          // rpcErrorHandler(componentName, error, 'storageList')
+        .catch((error: Error) => {
+          rpcErrorHandler({ componentName, error, command: 'storageList' })
 
           throw error
         })
@@ -800,8 +805,8 @@ export const useAppsStore = defineStore('apps', () => {
               message: `${componentName}: Deleting app '${app.name}' (${app.alias}): removed .fap`
             })
           })
-          .catch((error: ErrorEvent) => {
-            // rpcErrorHandler(componentName, error, 'storageRemove')
+          .catch((error: Error) => {
+            rpcErrorHandler({ componentName, error, command: 'storageRemove' })
 
             throw error
           })
@@ -820,8 +825,8 @@ export const useAppsStore = defineStore('apps', () => {
     if (flipper.value?.name === getFlipperCurrentlyParticipating()) {
       dirList = await flipper.value
         .RPC('storageList', { path: paths.manifestDir })
-        .catch((error: ErrorEvent) => {
-          // rpcErrorHandler(componentName, error, 'storageList')
+        .catch((error: Error) => {
+          rpcErrorHandler({ componentName, error, command: 'storageList' })
 
           throw error
         })
@@ -839,8 +844,8 @@ export const useAppsStore = defineStore('apps', () => {
               message: `${componentName}: Deleting app '${app.name}' (${app.alias}): removed manifest`
             })
           })
-          .catch((error: ErrorEvent) => {
-            // rpcErrorHandler(componentName, error, 'storageRemove')
+          .catch((error: Error) => {
+            rpcErrorHandler({ componentName, error, command: 'storageRemove' })
 
             throw error
           })
