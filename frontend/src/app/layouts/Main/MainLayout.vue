@@ -89,6 +89,9 @@
       <FlipperUnsupportedBrowserDialog
         v-model="flipperStore.dialogs.serialUnsupported"
       />
+      <q-dialog v-model="flipperStore.dialogs.logs">
+        <FlipperLogCard isDialog />
+      </q-dialog>
     </q-page-container>
   </q-layout>
 </template>
@@ -110,7 +113,7 @@ import {
 import { AppsModel, AppOutdatedFirmwareDialog } from 'entities/Apps'
 const appsStore = AppsModel.useAppsStore()
 
-import { FlipperConnectWebBtn } from 'features/Flipper'
+import { FlipperConnectWebBtn, FlipperLogCard } from 'features/Flipper'
 import { FlipperModel } from 'entities/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 

@@ -53,6 +53,15 @@
                 @click="toggleCatalogChannel"
               />
             </q-item>
+            <q-item clickable @click="showLogsDialog">
+              <q-item-section avatar style="min-width: initial">
+                <q-icon name="flipper:logs" />
+              </q-item-section>
+
+              <q-item-section>
+                <q-item-label>View logs</q-item-label>
+              </q-item-section>
+            </q-item>
             <q-item clickable @click="showHomeMenu">
               <q-item-section avatar>
                 <q-icon size="2rem" name="mdi-chevron-left" />
@@ -144,6 +153,10 @@ const toggleCatalogChannel = () => {
   localStorage.setItem('catalogChannel', catalogChannel)
 
   instance.defaults.baseURL = getBaseUrl(catalogChannel)
+}
+
+const showLogsDialog = () => {
+  flipperStore.dialogs.logs = true
 }
 </script>
 

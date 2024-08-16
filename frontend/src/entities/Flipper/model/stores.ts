@@ -72,7 +72,8 @@ export const useFlipperStore = defineStore('flipper', () => {
     multiflipper: false,
     connectFlipper: false,
     mobileDetected: false,
-    serialUnsupported: false
+    serialUnsupported: false,
+    logs: false
   })
 
   const recoveringFlipperName = ref('')
