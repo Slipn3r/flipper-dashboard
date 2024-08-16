@@ -1,29 +1,27 @@
-/**
- * This file is used specifically for security reasons.
- * Here you can access Nodejs stuff and inject functionality into
- * the renderer thread (accessible there through the "window" object)
- *
- * WARNING!
- * If you import anything from node_modules, then make sure that the package is specified
- * in package.json > dependencies and NOT in devDependencies
- *
- * Example (injects window.myAPI.doAThing() into renderer thread):
- *
- *   import { contextBridge } from 'electron'
- *
- *   contextBridge.exposeInMainWorld('myAPI', {
- *     doAThing: () => {}
- *   })
- *
- * WARNING!
- * If accessing Node functionality (like importing @electron/remote) then in your
- * electron-main.ts you will need to set the following when you instantiate BrowserWindow:
- *
- * mainWindow = new BrowserWindow({
- *   // ...
- *   webPreferences: {
- *     // ...
- *     sandbox: false // <-- to be able to import @electron/remote in preload script
- *   }
- * }
- */
+import { contextBridge, ipcRenderer } from 'electron'
+
+contextBridge.exposeInMainWorld('bridge', {
+  spawn: () => ipcRenderer.send('bridge:spawn'),
+  kill: () => ipcRenderer.send('bridge:kill'),
+  send: (json) => ipcRenderer.send('bridge:send', json),
+  onSpawn: (callback) =>
+    ipcRenderer.on('bridge:spawn', (_event, value) => callback(value)),
+  onLog: (callback) =>
+    ipcRenderer.on('bridge:log', (_event, value) => callback(value)),
+  onExit: (callback) =>
+    ipcRenderer.on('bridge:exit', (_event, value) => callback(value)),
+  onList: (callback) =>
+    ipcRenderer.on('bridge:list', (_event, value) => callback(value)),
+  onCLIRead: (callback) =>
+    ipcRenderer.on('bridge:read/cli', (_event, value) => callback(value)),
+  onRPCRead: (callback) =>
+    ipcRenderer.on('bridge:read/rpc', (_event, value) => callback(value)),
+  onStatus: (callback) =>
+    ipcRenderer.on('bridge:status', (_event, value) => callback(value)),
+  onError: (callback) =>
+    ipcRenderer.on('bridge:error', (_event, value) => callback(value))
+})
+
+contextBridge.exposeInMainWorld('fs', {
+  saveToTemp: (args) => ipcRenderer.invoke('fs:saveToTemp', args)
+})

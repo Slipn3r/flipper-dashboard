@@ -34,39 +34,25 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-const props = defineProps({
-  firmwareVersion: {
-    type: String,
-    required: true
-  },
-  buildDate: {
-    type: String,
-    required: true
-  },
-  sdCardUsage: {
-    type: String,
-    required: true
-  },
-  databaseStatus: {
-    type: String,
-    required: true
-  },
-  hardwareVersion: {
-    type: String,
-    required: true
-  },
-  radioVersion: {
-    type: String,
-    required: true
-  },
-  radioStackType: {
-    type: String,
-    required: true
-  }
-})
+type Props = {
+  firmwareVersion?: string
+  buildDate?: string
+  sdCardUsage: string
+  databaseStatus?: string
+  hardwareVersion: string
+  radioVersion: string
+  radioStackType?: string
+}
+
+const props = defineProps<Props>()
 
 const _radioStackType = computed(() => {
-  switch (parseInt(props.radioStackType)) {
+  let intRadioStackType
+  if (props.radioStackType) {
+    intRadioStackType = parseInt(props.radioStackType)
+  }
+
+  switch (intRadioStackType) {
     case 0x01:
       return 'full'
     case 0x02:
@@ -120,7 +106,8 @@ const _radioStackType = computed(() => {
     case 0x90:
       return 'BLE_MAC_STATIC'
     default:
-      return props.radioStackType
+      // return props.radioStackType
+      return undefined
   }
 })
 </script>

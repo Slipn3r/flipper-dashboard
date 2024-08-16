@@ -4,7 +4,7 @@
       <div class="installed-card__icon-wrapper q-mr-md">
         <q-img
           :src="`data:image/png;base64,${app.icon}`"
-          style="image-rendering: pixelated;"
+          style="image-rendering: pixelated"
         />
       </div>
       <div class="column q-mr-md">
@@ -20,13 +20,12 @@
             dense
           />
         </div>
-        <div class="text-grey-7">{{ app.installedVersion.shortDescription }}</div>
+        <div class="text-grey-7">
+          {{ app.installedVersion.shortDescription }}
+        </div>
       </div>
       <q-space />
-      <div
-        v-if="app.installedVersion.version"
-        class="column items-end"
-      >
+      <div v-if="app.installedVersion.version" class="column items-end">
         <p class="text-grey-7 q-mb-none">Version:</p>
         <b>{{ app.installedVersion.version }}</b>
       </div>
@@ -46,9 +45,7 @@
           <slot name="button" />
         </div>
         <div class="col-auto">
-          <AppDeleteBtn
-            :app="app"
-          />
+          <AppDeleteBtn :app="app" />
         </div>
       </template>
     </q-card-section>
@@ -59,10 +56,10 @@
 import { AppDeleteBtn } from 'features/Apps/DeleteButton'
 import { ProgressBar } from 'shared/components/ProgressBar'
 import { AppsModel } from 'entities/Apps'
-const appsStore = AppsModel.useAppStore()
+const appsStore = AppsModel.useAppsStore()
 
 interface Props {
-  app: AppsModel.InstalledApp,
+  app: AppsModel.InstalledApp
   unsupported?: boolean
 }
 

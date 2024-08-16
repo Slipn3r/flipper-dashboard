@@ -1,4 +1,4 @@
-import Flipper from '../flipperWeb'
+import Flipper from '../flipper'
 import { FlipperModel } from 'entities/Flipper'
 
 let installedApps: FlipperModel.App[] = []
@@ -7,14 +7,18 @@ const onClearInstalledAppsList = () => {
   installedApps = []
 }
 
-async function getInstalledApps (this: Flipper) {
+async function getInstalledApps(this: Flipper) {
   if (this.flipperReady) {
-    const manifestsList = await this.RPC('storageList', { path: '/ext/apps_manifests' })
-      // .catch(error => rpcErrorHandler(componentName, error, 'storageList'))
+    const manifestsList = await this.RPC('storageList', {
+      path: '/ext/apps_manifests'
+    })
+    // .catch(error => rpcErrorHandler(componentName, error, 'storageList'))
     const decoder = new TextDecoder()
     for await (const file of manifestsList) {
-      const manifestFile = await this.RPC('storageRead', { path: `/ext/apps_manifests/${file.name}` })
-        // .catch(error => rpcErrorHandler(componentName, error, 'storageRead'))
+      const manifestFile = await this.RPC('storageRead', {
+        path: `/ext/apps_manifests/${file.name}`
+      })
+      // .catch(error => rpcErrorHandler(componentName, error, 'storageRead'))
       const manifest = decoder.decode(manifestFile)
       const app: FlipperModel.App = {
         id: '',
@@ -61,7 +65,4 @@ async function getInstalledApps (this: Flipper) {
   return []
 }
 
-export {
-  onClearInstalledAppsList,
-  getInstalledApps
-}
+export { onClearInstalledAppsList, getInstalledApps }

@@ -222,3 +222,42 @@ export type PulseFile = {
   data: Uint8Array
   name: string
 }
+
+import type { Emitter, DefaultEvents } from 'nanoevents'
+
+export type DataFlipperElectron = {
+  emitter: Emitter<DefaultEvents>
+  mode: string
+  name: string
+  info: {
+    device: {
+      info: DeviceInfo['format']
+    }
+    enclave: {
+      valid: DeviceInfo['enclave']['valid']
+    }
+    firmware: DeviceInfo['firmware']
+    hardware: DeviceInfo['hardware']
+    protobuf: DeviceInfo['protobuf']
+    radio: DeviceInfo['radio']
+    system: DeviceInfo['system']
+  }
+}
+
+export type DataDfuFlipperElectron = {
+  emitter: Emitter<DefaultEvents>
+  mode: string
+  name: string
+  info: {
+    body: number
+    color: number
+    connect: number
+    display: number
+    format: number
+    name: DeviceInfo['hardware']['name']
+    region: number
+    target: number
+    timestamp: number
+    version: number
+  }
+}

@@ -209,16 +209,23 @@ module.exports = configure(function (/* ctx */) {
 
         appId: 'new-architecture',
         dmg: {
-          sign: false,
+          sign: false
         },
+        extraResources: [
+          {
+            from: 'src-electron/extraResources/',
+            to: 'extraResources',
+            filter: ['**/*']
+          }
+        ],
         mac: {
           target: [
             {
               target: 'dmg',
-              arch: ['arm64', 'x64'],
-            },
-          ],
-        },
+              arch: ['arm64', 'x64']
+            }
+          ]
+        }
       }
     },
 

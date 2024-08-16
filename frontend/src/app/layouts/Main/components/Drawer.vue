@@ -1,26 +1,37 @@
 <template>
-  <q-drawer class="menu-link bg-grey-2" show-if-above :width="175" :breakpoint="900">
+  <q-drawer
+    class="menu-link bg-grey-2"
+    show-if-above
+    :width="175"
+    :breakpoint="900"
+  >
     <q-scroll-area class="fit">
       <q-tab-panels v-model="tab" class="fit bg-transparent" animated>
         <q-tab-panel class="no-padding" name="home">
           <q-list class="column fit justify-between no-wrap">
             <div>
-              <RouterLink v-for="link in linksList" :key="link.title" v-bind="link" />
+              <RouterLink
+                v-for="link in linksList"
+                :key="link.title"
+                v-bind="link"
+              />
             </div>
             <q-space />
-            <q-item
-              clickable
-              @click="showSettingsMenu"
-            >
+            <q-item clickable @click="showSettingsMenu">
               <q-item-section avatar>
-                <q-icon name="flipper:settings" size="24px"/>
+                <q-icon name="flipper:settings" size="24px" />
               </q-item-section>
               <q-item-section>
                 <q-item-label>Settings</q-item-label>
               </q-item-section>
             </q-item>
             <q-separator class="menu-link__separator" />
-            <FlipperConnectWebBtn type="item"/>
+            <template v-if="!flipperStore.isElectron">
+              <FlipperConnectWebBtn type="item" />
+            </template>
+            <template v-else>
+              <FlipperSwitch />
+            </template>
           </q-list>
         </q-tab-panel>
         <q-tab-panel class="no-padding" name="settings">
@@ -34,10 +45,15 @@
                 @click="toggleAutoReconnect"
               />
             </q-item>
-            <q-item
-              clickable
-              @click="showHomeMenu"
-            >
+            <q-item v-if="flipperStore.flags.catalogCanSwitchChannel">
+              <q-toggle
+                v-model="flipperStore.flags.catalogChannelProduction"
+                dense
+                label="Production Apps"
+                @click="toggleCatalogChannel"
+              />
+            </q-item>
+            <q-item clickable @click="showHomeMenu">
               <q-item-section avatar>
                 <q-icon size="2rem" name="mdi-chevron-left" />
               </q-item-section>
@@ -52,12 +68,16 @@
   </q-drawer>
 </template>
 
-<script setup>
-import { ref } from 'vue';
+<script setup lang="ts">
+import { computed, ref } from 'vue'
 import { RouterLink } from 'shared/components/RouterLink'
-import { FlipperConnectWebBtn } from 'features/Flipper';
+import { FlipperConnectWebBtn } from 'features/Flipper'
+import { FlipperSwitch } from 'features/Flipper'
+
+import { PRODUCTION_NAME, DEVELOP_NAME } from 'shared/config'
 
 import { FlipperModel } from 'entities/Flipper'
+import { instance, getBaseUrl } from 'boot/axios'
 const flipperStore = FlipperModel.useFlipperStore()
 
 const tab = ref('home')
@@ -74,8 +94,8 @@ const linksList = [
   {
     title: 'My Flipper',
     icon: 'flipper:device',
-    name: 'Device'
-    // titleOverride: currentFlipperName
+    name: 'Device',
+    titleOverride: computed(() => flipperStore.flipperName || 'My Flipper')
   },
   {
     title: 'Apps',
@@ -110,7 +130,20 @@ const linksList = [
 ]
 
 const toggleAutoReconnect = () => {
-  localStorage.setItem('autoReconnect', flipperStore.flags.autoReconnect)
+  localStorage.setItem(
+    'autoReconnect',
+    String(flipperStore.flags.autoReconnect)
+  )
+}
+
+const toggleCatalogChannel = () => {
+  const catalogChannel = flipperStore.flags.catalogChannelProduction
+    ? PRODUCTION_NAME
+    : DEVELOP_NAME
+
+  localStorage.setItem('catalogChannel', catalogChannel)
+
+  instance.defaults.baseURL = getBaseUrl(catalogChannel)
 }
 </script>
 

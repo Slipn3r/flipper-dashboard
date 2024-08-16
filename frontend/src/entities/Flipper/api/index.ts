@@ -1,8 +1,8 @@
 import { instance } from 'boot/axios'
-import { unpack } from 'shared/lib/utils/unpack'
+import { unpack, ungzip } from 'shared/lib/utils/operation'
 // import { Channel } from '../model/types'
 
-async function fetchChannels (/* target: string */) {
+async function fetchChannels(/* target: string */) {
   return await instance
     .get('https://update.flipperzero.one/firmware/directory.json')
     .then(({ data }) => {
@@ -17,7 +17,7 @@ async function fetchChannels (/* target: string */) {
     })
 }
 
-async function fetchRegions () {
+async function fetchRegions() {
   return await instance
     .get('https://update.flipperzero.one/regions/api/v0/bundle')
     .then(({ data }) => {
@@ -34,7 +34,7 @@ async function fetchRegions () {
     })
 }
 
-async function fetchFirmware (url: string) {
+async function fetchFirmware(url: string) {
   return await instance
     .get(url, { responseType: 'arraybuffer' })
     .then(async ({ data }) => {
@@ -49,9 +49,24 @@ async function fetchFirmware (url: string) {
     })
 }
 
+async function fetchFirmwareTar(url: string) {
+  return await instance
+    .get(url, { responseType: 'arraybuffer' })
+    .then(({ data }) => {
+      return ungzip(data)
+    })
+    .catch((error) => {
+      const decoder = new TextDecoder('utf-8')
+      const data = JSON.parse(decoder.decode(error.response.data)).detail
+      if (data.code >= 400) {
+        throw new Error('Failed to fetch firmware (' + data.code + ')')
+      }
+    })
+}
 
 export const api = {
   fetchChannels,
   fetchRegions,
-  fetchFirmware
+  fetchFirmware,
+  fetchFirmwareTar
 }

@@ -1,30 +1,87 @@
 import { ref, unref, computed, reactive } from 'vue'
+import { Platform } from 'quasar'
 import { defineStore } from 'pinia'
-import { FlipperWeb } from 'shared/lib/flipperJs'
+import { isProd } from 'shared/config'
+import { FlipperWeb, FlipperElectron } from 'shared/lib/flipperJs'
 import { AppsModel } from 'entities/Apps'
-import { FlipperInfo, PulseFile } from './types'
+import {
+  FlipperInfo,
+  PulseFile,
+  DataFlipperElectron,
+  DataDfuFlipperElectron
+} from './types'
 import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router'
 
+// import type { Emitter, DefaultEvents } from 'nanoevents'
+// import { createNanoEvents } from 'nanoevents'
+
+import asyncSleep from 'simple-async-sleep'
+
+import {
+  init as bridgeControllerInit,
+  emitter as bridgeEmitter /* , getCurrentFlipper, getList, setCurrentFlipper */
+} from 'shared/lib/flipperJs/bridgeController'
+
 export const useFlipperStore = defineStore('flipper', () => {
+  const isElectron = Platform.is.electron
+
   const route = useRoute()
   const router = useRouter()
 
-  const appsStore = AppsModel.useAppStore()
-  const { getInstalledApps, onClearInstalledAppsList } = appsStore
+  const appsStore = AppsModel.useAppsStore()
+
+  let catalogCanSwitchChannel = false
+  const getCatalogChannel = () => {
+    const savedChannel = localStorage.getItem('catalogChannel')
+    if (isProd) {
+      localStorage.setItem('catalogChannel', 'production')
+    } else {
+      catalogCanSwitchChannel = true
+
+      if (savedChannel === 'production') {
+        return true
+      } else {
+        localStorage.setItem('catalogChannel', 'dev')
+        return false
+      }
+    }
+  }
 
   const flags = reactive({
-    connected: computed(() => flipper.value.connected),
+    connected: computed(() => flipper.value?.connected),
     updateInProgress: ref(false),
-    microSDcardMissingDialog: ref(false),
-    autoReconnect: ref(false)
+    waitForReconnect: ref(false),
+    recovering: ref(false),
+    autoReconnect: ref(false),
+    isBridgeReady: ref(false),
+    switchFlipper: ref(false),
+    flipperIsInitialized: ref(false),
+    catalogChannelProduction: ref(getCatalogChannel()),
+    catalogCanSwitchChannel: ref(catalogCanSwitchChannel)
   })
 
-  const flipper = ref(new FlipperWeb())
-  const flipperReady = computed(() => flipper.value.flipperReady)
-  const rpcActive = computed(() => flipper.value.rpcActive)
+  const dialogs = reactive({
+    microSDcardMissing: false,
+    multiflipper: false,
+    connectFlipper: false,
+    mobileDetected: false,
+    serialUnsupported: false
+  })
+
+  const recoveringFlipperName = ref('')
+  const oldFlipper = ref<FlipperElectron | FlipperWeb>()
+  const flipper = ref<FlipperElectron | FlipperWeb>()
+  // Platform.is.electron
+  //   ? new FlipperElectron(/* '', createNanoEvents() */)
+  //   : new FlipperWeb()
+
+  // const flipper = ref<FlipperElectron | FlipperWeb>(new FlipperWeb())
+  const flipperName = computed(() => flipper.value?.name)
+  const flipperReady = computed(() => flipper.value?.flipperReady || false)
+  const rpcActive = computed(() => flipper.value?.rpcActive || false)
   // const flippers: Ref<FlipperWeb[]> = ref([])
-  const info = computed(() => flipper.value.info as FlipperInfo | undefined)
-  const loadingInfo = computed(() => flipper.value.loadingInfo)
+  const info = computed(() => flipper.value?.info as FlipperInfo | undefined)
+  const loadingInfo = computed(() => flipper.value?.loadingInfo)
 
   const api = computed(() => {
     const firmware = info?.value?.firmware
@@ -42,59 +99,68 @@ export const useFlipperStore = defineStore('flipper', () => {
     mode?: string
     autoReconnect?: boolean
   } = {}) => {
-    // const ports = await navigator.serial.getPorts()
+    if (flipper.value instanceof FlipperWeb) {
+      // const ports = await navigator.serial.getPorts()
 
-    // console.log(ports)
-    // ports.forEach(async (port) => {
-    //   console.log(port)
-    //   await new Promise((resolve) => {
-    //     setTimeout(() => resolve(true), 2000)
-    //   })
-    //   const _flipper = new FlipperWeb()
-    //   await _flipper.connect({
-    //     type: 'RPC'
-    //   })
-    //   flippers.value.push(_flipper)
-    //   console.log(flippers.value)
-    // })
+      // console.log(ports)
+      // ports.forEach(async (port) => {
+      //   console.log(port)
+      //   await new Promise((resolve) => {
+      //     setTimeout(() => resolve(true), 2000)
+      //   })
+      //   const _flipper = new FlipperWeb()
+      //   await _flipper.connect({
+      //     type: 'RPC'
+      //   })
+      //   flippers.value.push(_flipper)
+      //   console.log(flippers.value)
+      // })
 
-    const currentAutoReconnectFlag = unref(flags.autoReconnect)
-    await flipper.value
-      .connect({
-        type: mode || route.name === 'Cli' ? 'CLI' : 'RPC',
-        autoReconnect
-      })
-      .then(async () => {
-        // flags.connected = true
-        const unbind = flipper.value.emitter.on('disconnect', (e) => {
-          onClearInstalledAppsList()
+      const currentAutoReconnectFlag = unref(flags.autoReconnect)
+      await flipper.value
+        .connect({
+          type: mode || route.name === 'Cli' ? 'CLI' : 'RPC',
+          autoReconnect
+        })
+        .then(async () => {
+          // flags.connected = true
+          const unbind = flipper.value?.emitter.on(
+            'disconnect',
+            (e: { isUserAction: boolean }) => {
+              appsStore.onClearInstalledAppsList()
 
-          if (flags.autoReconnect && !e.isUserAction) {
-            onAutoReconnect()
+              if (flags.autoReconnect && !e.isUserAction) {
+                onAutoReconnect()
 
-            flags.autoReconnect = currentAutoReconnectFlag
+                flags.autoReconnect = currentAutoReconnectFlag
+              }
+
+              if (unbind) {
+                unbind()
+              }
+            }
+          )
+
+          if (reconnectInterval.value) {
+            clearInterval(reconnectInterval.value)
           }
 
-          unbind()
+          if (flags.updateInProgress) {
+            onUpdateStage('end')
+          }
+
+          if (mode !== 'CLI' && route.fullPath.split('/')[1] === 'apps') {
+            if (!appsStore.flipperInstalledApps?.length) {
+              await appsStore.getInstalledApps({
+                refreshInstalledApps: true
+              })
+            }
+          }
         })
-
-        if (reconnectInterval.value) {
-          clearInterval(reconnectInterval.value)
-        }
-
-        if (flags.updateInProgress) {
-          onUpdateStage('end')
-        }
-
-        if (mode !== 'CLI') {
-          await getInstalledApps({
-            refreshInstalledApps: true
-          })
-        }
-      })
-      .catch(() => {
-        // flags.connected = false
-      })
+        .catch(() => {
+          // flags.connected = false
+        })
+    }
   }
 
   const disconnect = async ({
@@ -102,24 +168,28 @@ export const useFlipperStore = defineStore('flipper', () => {
   }: {
     isUserAction?: boolean
   } = {}) => {
-    await flipper.value.disconnect({
-      isUserAction
-    })
-    // flags.connected = false
-    onClearInstalledAppsList()
+    if (flipper.value instanceof FlipperWeb) {
+      await flipper.value?.disconnect({
+        isUserAction
+      })
+      // flags.connected = false
+      appsStore.onClearInstalledAppsList()
+    }
   }
 
   const onUpdateStage = (stage: string) => {
-    if (stage === 'start') {
-      // flags.disableNavigation = true
-      flags.updateInProgress = true
-      flipper.value.updating = true
+    if (flipper.value) {
+      if (stage === 'start') {
+        // flags.disableNavigation = true
+        flags.updateInProgress = true
+        flipper.value.updating = true
 
-      // stopScreenStream()
-    } else if (stage === 'end') {
-      // flags.disableNavigation = false
-      flags.updateInProgress = false
-      flipper.value.updating = false
+        // stopScreenStream()
+      } else if (stage === 'end') {
+        // flags.disableNavigation = false
+        flags.updateInProgress = false
+        flipper.value.updating = false
+      }
     }
   }
 
@@ -148,12 +218,314 @@ export const useFlipperStore = defineStore('flipper', () => {
     router.push(path)
   }
 
+  const availableFlippers = ref<DataFlipperElectron[]>([])
+  const availableDfuFlippers = ref<DataDfuFlipperElectron[]>([])
+
+  const connectFlipper = async (
+    _flipper: DataFlipperElectron
+    // {
+    //   name,
+    //   emitter,
+    //   mode
+    // }: {
+    //   name: string
+    //   emitter: Emitter<DefaultEvents>
+    //   mode: string
+    // }
+  ) => {
+    _flipper.mode = route.name === 'Cli' ? 'cli' : 'rpc'
+
+    if (flipperReady.value && flipperName.value !== _flipper.name) {
+      // _flipper.flipperReady = false
+      flags.switchFlipper = true
+    }
+    flags.flipperIsInitialized = true
+    if (flipper.value) {
+      // flipper.value.flipperReady = false
+      await flipper.value.disconnect()
+      oldFlipper.value = unref(flipper.value)
+    }
+
+    await asyncSleep(500)
+
+    const localFlipper = new FlipperElectron(
+      /*
+      flipper.name,
+      flipper.emitter,
+      flipper.info */ _flipper.name,
+      _flipper.emitter
+    )
+
+    localFlipper.setReadingMode(_flipper.mode)
+    localFlipper.setName(_flipper.name)
+    // localFlipper.setEmitter(_flipper.emitter)
+
+    await localFlipper.connect(/* name, emitter */)
+
+    flipper.value = localFlipper
+
+    if (flipper.value.readingMode.type === 'rpc') {
+      await flipper.value.getInfo()
+      await flipper.value.ensureCommonPaths()
+    } /* else {
+      flipper.value.info = _flipper.info
+    } */
+
+    if (flags.updateInProgress) {
+      onUpdateStage('end')
+    }
+
+    // const _flipper = new FlipperElectron(name, emitter)
+    // flipper.value.setReadingMode('rpc')
+    // await _flipper.getInfo()
+
+    // await asyncSleep(1)
+    // await _flipper.init()
+
+    // flipper.value = localFlipper
+
+    // await flipper.value?.RPC('systemPing', { timeout: 2000 })
+    // await asyncSleep(1000)
+
+    // flipper.value = _flipper
+    flags.waitForReconnect = false
+    flags.switchFlipper = false
+    flags.flipperIsInitialized = false
+
+    appsStore.onClearInstalledAppsList()
+    if (
+      localFlipper.readingMode.type === 'rpc' &&
+      route.fullPath.split('/')[1] === 'apps'
+    ) {
+      if (!appsStore.flipperInstalledApps?.length) {
+        await appsStore.getInstalledApps({
+          refreshInstalledApps: true
+        })
+      }
+    }
+  }
+
+  const isDataFlipperElectron = (
+    flipper: any // eslint-disable-line @typescript-eslint/no-explicit-any
+  ): flipper is DataFlipperElectron => {
+    return flipper.mode !== 'dfu'
+  }
+  const isDataDfuFlipperElectron = (
+    flipper: any // eslint-disable-line @typescript-eslint/no-explicit-any
+  ): flipper is DataDfuFlipperElectron => {
+    return flipper.mode === 'dfu'
+  }
+
+  const availableBridgeFlippers = ref<
+    Array<DataFlipperElectron | DataDfuFlipperElectron>
+  >([])
+  const listInit = () => {
+    bridgeEmitter.on(
+      'list',
+      async (data: DataFlipperElectron[] | DataDfuFlipperElectron[]) => {
+        console.log(data)
+
+        // availableFlippers.value = []
+        // availableDfuFlippers.value = []
+
+        // const _availableFlippers = []
+        // const _availableDfuFlippers = []
+
+        // new FlipperElectron(data.name, data.emitter)
+        if (availableBridgeFlippers.value.length > data.length) {
+          for (
+            let index = 0;
+            index < availableBridgeFlippers.value.length;
+            index++
+          ) {
+            const bridgeFlipper = availableBridgeFlippers.value[index]
+
+            if (
+              data.findIndex((flipper) => {
+                return flipper.name === bridgeFlipper.name
+              }) === -1
+            ) {
+              availableBridgeFlippers.value.splice(index, 1)
+
+              if (flipper.value?.name === bridgeFlipper.name) {
+                flipper.value.disconnect()
+
+                if (!flags.updateInProgress) {
+                  flipper.value = undefined
+                }
+              }
+
+              if (isDataFlipperElectron(bridgeFlipper)) {
+                const index = availableFlippers.value.findIndex((flipper) => {
+                  return flipper.name === bridgeFlipper.name
+                })
+
+                if (index !== -1) {
+                  availableFlippers.value.splice(index, 1)
+                }
+              }
+
+              if (isDataDfuFlipperElectron(bridgeFlipper)) {
+                const index = availableDfuFlippers.value.findIndex(
+                  (flipper) => {
+                    return flipper.name === bridgeFlipper.name
+                  }
+                )
+
+                if (index !== -1) {
+                  availableDfuFlippers.value.splice(index, 1)
+                }
+              }
+            }
+          }
+        }
+
+        for (let index = 0; index < data.length; index++) {
+          const flipper = data[index]
+
+          if (
+            availableBridgeFlippers.value.findIndex((availableFlipper) => {
+              return availableFlipper.name === flipper.name
+            }) === -1
+          ) {
+            availableBridgeFlippers.value.push(flipper)
+
+            if (isDataFlipperElectron(flipper)) {
+              availableFlippers.value.push(flipper)
+            }
+
+            if (isDataDfuFlipperElectron(flipper)) {
+              availableDfuFlippers.value.push(flipper)
+              // useFlipperStore().availableDfuFlippers.push(
+              //   new FlipperElectron(flipper.name, flipper.emitter, flipper.info)
+              // )
+            }
+          }
+        }
+
+        if (flags.updateInProgress) {
+          if (flags.waitForReconnect) {
+            const findFlipper = availableFlippers.value.find(
+              (availableFlipper) => {
+                return availableFlipper.name === flipper.value?.name
+              }
+            )
+
+            if (findFlipper) {
+              // await asyncSleep(1000)
+
+              if (isDataFlipperElectron(findFlipper)) {
+                connectFlipper(findFlipper)
+              }
+            }
+          }
+        } else if (flags.recovering) {
+          if (flags.waitForReconnect) {
+            const findFlipper = availableFlippers.value.find(
+              (availableFlipper) => {
+                return availableFlipper.name === recoveringFlipperName.value
+              }
+            )
+
+            if (findFlipper) {
+              // await asyncSleep(1000)
+
+              if (isDataFlipperElectron(findFlipper)) {
+                connectFlipper(findFlipper)
+              }
+            }
+
+            flags.recovering = false
+          }
+        } else {
+          if (availableFlippers.value.length === 1) {
+            // await asyncSleep(1000)
+
+            if (!flipper.value) {
+              if (!flags.flipperIsInitialized) {
+                connectFlipper(availableFlippers.value[0])
+              }
+              // console.log('flipper.value', flipper.value.name)
+              // if (flipper.value.name !== availableFlippers.value[0].name) {
+              //   console.log(
+              //     'availableFlippers.value[0].name',
+              //     availableFlippers.value[0].name
+              //   )
+              //   connectFlipper(availableFlippers.value[0])
+              // }
+            }
+          }
+        }
+
+        // availableFlippers.value = _availableFlippers
+        // availableDfuFlippers.value = _availableDfuFlippers
+        // data.forEach((flipper) => {
+        //   if (isDataFlipperElectron(flipper)) {
+        //     const _flipper = new FlipperElectron /*
+        //       flipper.name,
+        //       flipper.emitter,
+        //       flipper.info */()
+
+        //     _flipper.setName(flipper.name)
+        //     _flipper.setEmitter(flipper.emitter)
+        //     _flipper.getInfo()
+
+        //     // await asyncSleep(10000)
+        //     // await _flipper.getInfo()
+
+        //     useFlipperStore().availableFlippers.push(_flipper)
+        //   }
+
+        //   if (isDataDfuFlipperElectron(flipper)) {
+        //     useFlipperStore().availableDfuFlippers.push(flipper)
+        //     // useFlipperStore().availableDfuFlippers.push(
+        //     //   new FlipperElectron(flipper.name, flipper.emitter, flipper.info)
+        //     // )
+        //   }
+        // })
+
+        // useFlipperStore().availableFlippers[0].getInfo()
+      }
+    )
+  }
+
+  const init = async () => {
+    // toggleAutoReconnectCondition.value()
+
+    bridgeEmitter.on('spawn', () => {
+      flags.isBridgeReady = true
+      // setTimeout(() => {
+      // }, 1000)
+    })
+    bridgeEmitter.on('exit', () => {
+      flags.isBridgeReady = false
+    })
+    listInit()
+    await bridgeControllerInit()
+
+    // if (flags.value.autoReconnect && flipper.value?.name) {
+    //   autoReconnectFlipperName.value = flipper.value?.name
+    // } else {
+    //   autoReconnectFlipperName.value = null
+    // }
+  }
+
+  if (Platform.is.electron) {
+    init()
+  }
+
   return {
+    isElectron,
+
     flags,
+    dialogs,
     connect,
     disconnect,
+    recoveringFlipperName,
+    oldFlipper,
     flipper,
     flipperReady,
+    flipperName,
     rpcActive,
     info,
     loadingInfo,
@@ -163,257 +535,11 @@ export const useFlipperStore = defineStore('flipper', () => {
     onAutoReconnect,
 
     fileToPass,
-    openFileIn
+    openFileIn,
+
+    availableFlippers,
+    availableDfuFlippers,
+    availableBridgeFlippers,
+    connectFlipper
   }
 })
-
-// const write = async () => {
-//   // flipper.write('info device\r')
-//   console.log(flipper.RPC('systemDeviceInfo'))
-// }
-
-// const filters = [
-//   { usbVendorId: 0x0483, usbProductId: 0x5740 }
-// ]
-
-// const findKnownDevices = async () => {
-//   console.log('findKnownDevices')
-//   return navigator.serial.getPorts()
-//     .then((ports) => {
-//       const filteredPorts = ports.filter(port => {
-//         const info = port.getInfo()
-//         console.log('info', info)
-
-//         return info.usbVendorId === filters[0].usbVendorId &&
-//           info.usbProductId === filters[0].usbProductId;
-//       })
-
-//       console.log(filteredPorts)
-//       return filteredPorts
-//     })
-//     .catch((e) => {
-//       console.error(e)
-
-//       throw e
-//     })
-// }
-
-// const selectPort = async () => {
-//   return await navigator.serial.requestPort({ filters })
-// }
-// const flipper = ref(new FlipperWeb())
-
-// const startRpc = async () => {
-//   if (!flags.value.connected) {
-//     return
-//   }
-//   // flags.value.rpcToggling = true
-
-//   await flipper.value.startRPCSession()
-//     .catch(error => {
-//       console.error(error)
-//     })
-//   // flags.value.rpcActive = true
-//   // flags.value.rpcToggling = false
-
-//   // log({
-//   //   level: 'info',
-//   //   message: `${componentName}: RPC started`
-//   // })
-// }
-
-// const isOldProtobuf = async () => {
-//     const protobufVersion = await flipper.value.RPC('systemProtobufVersion')
-//       // .catch(error => {
-//       //   rpcErrorHandler(componentName, error, 'systemProtobufVersion')
-//       //   throw error
-//       // })
-//     return protobufVersion.major === 0 && protobufVersion.minor < 14
-//   }
-// const readInfo = async () => {
-//   if (!flags.value.connected) {
-//     return
-//   }
-//   // const defaultInfo = {
-//   //   doneReading: false,
-//   //   storage: {
-//   //     sdcard: {
-//   //       status: {}
-//   //     },
-//   //     databases: {},
-//   //     internal: {}
-//   //   }
-//   // }
-//   // setInfo(defaultInfo)
-
-//   /* await flipper.value.RPC('systemPing', { timeout: 2000 })
-//     .catch(error => {
-//       rpcErrorHandler(componentName, error, 'systemPing')
-//       throw error
-//     }) */
-
-//   if (await isOldProtobuf()) {
-//     await flipper.value.RPC('systemDeviceInfo')
-//       .then((devInfo: FlipperModel.DeviceInfo) => {
-//         console.log('isOldProtobuf', devInfo)
-//         // log({
-//         //   level: 'debug',
-//         //   message: `${componentName}: deviceInfo: OK`
-//         // })
-//         // setInfo({ ...info.value, ...devInfo })
-//       })
-//       // .catch(error => {
-//       //   rpcErrorHandler(componentName, error, 'systemDeviceInfo')
-//       //   throw error
-//       // })
-//   } else {
-//     await flipper.value.RPC('propertyGet', { key: 'devinfo' })
-//       .then((devInfo: FlipperModel.DeviceInfo) => {
-//         console.log('devInfo', devInfo)
-//         // log({
-//         //   level: 'debug',
-//         //   message: `${componentName}: propertyGet: OK`
-//         // })
-//         // setInfo({ ...info.value, ...devInfo })
-//       })
-//       // .catch(error => {
-//       //   rpcErrorHandler(componentName, error, 'propertyGet')
-//       //   throw error
-//       // })
-
-//     await flipper.value.RPC('propertyGet', { key: 'pwrinfo' })
-//       .then((powerInfo: FlipperModel.PowerInfo) => {
-//         console.log('powerInfo', powerInfo)
-//         // log({
-//         //   level: 'debug',
-//         //   message: `${componentName}: propertyGet: OK`
-//         // })
-//         // setPropertyInfo({ power: powerInfo })
-//       })
-//       // .catch(error => {
-//       //   rpcErrorHandler(componentName, error, 'propertyGet')
-//       //   throw error
-//       // })
-//   }
-
-//   const ext = await flipper.value.RPC('storageList', { path: '/ext' })
-//     .then((list: FlipperModel.File[]) => {
-//       console.log('list', list)
-//       // log({
-//       //   level: 'debug',
-//       //   message: `${componentName}: storageList: /ext`
-//       // })
-//       return list
-//     })
-//     // .catch(error => {
-//     //   rpcErrorHandler(componentName, error, 'storageList')
-//     //   throw error
-//     // })
-
-//   if (ext && ext.length) {
-//     const manifest: FlipperModel.File = ext.find((e: FlipperModel.File) => {
-//       console.log('e', e)
-//       return e.name === 'Manifest'
-//     })
-//     console.log('manifest', manifest)
-//     // let status
-//     // if (manifest) {
-//     //   status = 'installed'
-//     // } else {
-//     //   status = 'missing'
-//     // }
-//     // setPropertyInfo({
-//     //   storage: {
-//     //     databases: {
-//     //       status
-//     //     }
-//     //   }
-//     // })
-
-//     await flipper.value.RPC('storageInfo', { path: '/ext' })
-//       .then((extInfo: FlipperModel.ExtInfo) => {
-//         console.log('extInfo', extInfo)
-//         // log({
-//         //   level: 'debug',
-//         //   message: `${componentName}: storageInfo: /ext`
-//         // })
-//         // setPropertyInfo({
-//         //   storage: {
-//         //     sdcard: {
-//         //       status: {
-//         //         label: 'installed',
-//         //         isInstalled: true
-//         //       },
-//         //       totalSpace: extInfo.totalSpace,
-//         //       freeSpace: extInfo.freeSpace
-//         //     }
-//         //   }
-//         // })
-//       })
-//       // .catch(error => {
-//       //   rpcErrorHandler(componentName, error, 'storageInfo')
-//       //   console.error(error)
-//       //   throw error
-//       // })
-//   } /* else {
-//     setPropertyInfo({
-//       storage: {
-//         sdcard: {
-//           status: {
-//             label: 'missing',
-//             isInstalled: false
-//           }
-//         },
-//         databases: {
-//           status: 'missing'
-//         }
-//       }
-//     })
-//   } */
-// }
-
-// const start = async ({
-//   manual = false
-// }: {
-//   manual?: boolean
-// } = {}) => {
-//   const ports = await findKnownDevices()
-
-//   if (ports && ports.length > 1) {
-//     if (manual) {
-//       console.log('manual')
-//       await selectPort()
-//     }
-//   }
-
-//   await connect()
-//   await startRpc()
-//   await readInfo()
-// }
-
-// const connect = async () => {
-//   console.log('connect')
-//   return new Promise((resolve, reject) => {
-//     (async () => {
-//       await flipper.value.connect()
-//         .then(() => {
-//           flags.value.connected = true
-//           resolve('Connected')
-//         })
-//         .catch((e) => {
-//           flags.value.connected = false
-//           reject(e)
-//         })
-//     })()
-//   })
-// }
-
-// const disconnect = () => {
-//   flipper.value.disconnect()
-//     .then(() => {
-//       flags.value.connected = false
-//     })
-//     .catch((e) => {
-//       console.error(e)
-//     })
-// }

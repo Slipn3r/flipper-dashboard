@@ -1,9 +1,7 @@
 <template>
   <div class="app">
     <template v-if="loading">
-      <Loading
-        label="Loading app..."
-      />
+      <Loading label="Loading app..." />
     </template>
     <template v-else-if="currentApp">
       <div class="row items-center q-mb-lg">
@@ -65,25 +63,28 @@
           <template v-if="currentApp.action?.type">
             <div class="col-auto fit">
               <ProgressBar
-                style="width: 188px;"
+                style="width: 188px"
                 :title="currentApp.action.progress * 100 + '%'"
                 titleSize="40px"
                 :progress="currentApp.action.progress"
                 :color="appsStore.progressColors(currentApp.action.type).bar"
-                :track-color="appsStore.progressColors(currentApp.action.type).track"
+                :track-color="
+                  appsStore.progressColors(currentApp.action.type).track
+                "
                 size="54px"
               />
             </div>
           </template>
           <template v-else>
-            <div class="col-auto" :class="{'q-mr-md': isInstalledOrUpdate}">
-              <template v-if="appsStore.getButtonState(currentApp) === 'installed'">
-                <AppInstalledBtn
-                  size="22px"
-                  padding="15px 60px"
-                />
+            <div class="col-auto" :class="{ 'q-mr-md': isInstalledOrUpdate }">
+              <template
+                v-if="appsStore.getButtonState(currentApp) === 'installed'"
+              >
+                <AppInstalledBtn size="22px" padding="15px 60px" />
               </template>
-              <template v-else-if="appsStore.getButtonState(currentApp) === 'update'">
+              <template
+                v-else-if="appsStore.getButtonState(currentApp) === 'update'"
+              >
                 <AppUpdateBtn
                   :app="currentApp"
                   :loading="appsStore.loadingInstalledApps"
@@ -102,11 +103,7 @@
             </div>
             <template v-if="isInstalledOrUpdate">
               <div class="col-auto">
-                <AppDeleteBtn
-                  :app="currentApp"
-                  size="16px"
-                  padding="15px"
-                />
+                <AppDeleteBtn :app="currentApp" size="16px" padding="15px" />
               </div>
             </template>
           </template>
@@ -185,7 +182,9 @@
             style="text-decoration: none"
           >
             <q-icon name="mdi-github" color="grey-7" size="20px" />
-            <span class="q-ml-xs" style="text-decoration: underline">Manifest</span>
+            <span class="q-ml-xs" style="text-decoration: underline"
+              >Manifest</span
+            >
           </a>
           <br />
           <a
@@ -195,7 +194,9 @@
             style="text-decoration: none"
           >
             <q-icon name="mdi-github" color="grey-7" size="20px" />
-            <span class="q-ml-xs" style="text-decoration: underline">Repository</span>
+            <span class="q-ml-xs" style="text-decoration: underline"
+              >Repository</span
+            >
           </a>
         </p>
       </div>
@@ -205,29 +206,99 @@
         color="negative"
         icon="mdi-alert-circle-outline"
         label="Report app"
+        @click="showReportDialog"
       />
+      <AppOutdatedAppDialog
+        v-model="appsStore.dialogs.outdatedAppDialog"
+        :href="currentApp.currentVersion.links.manifestUri"
+      />
+      <q-dialog v-model="reportDialog">
+        <q-card class="dialog" style="min-width: 300px">
+          <q-card-section class="q-pb-none">
+            <h6 class="q-ma-none">Report app</h6>
+          </q-card-section>
+
+          <q-card-section>
+            <q-select
+              v-model="report.description_type"
+              :options="reportOptions"
+              label="What do you want to submit?"
+            />
+          </q-card-section>
+
+          <q-card-section v-if="report.description_type === 'bug'">
+            Sorry, we don't provide support for third-party apps.<br />
+            You can file an issue on Github or contact the app developer.
+          </q-card-section>
+          <q-card-section v-if="report.description_type === 'report'">
+            <q-input
+              v-model="report.description"
+              placeholder="Describe your problem"
+              autogrow
+            />
+            <p v-if="reportSubmitted" class="text-positive q-ma-none q-mt-md">
+              We received your report. Thank you for the feedback!
+            </p>
+          </q-card-section>
+
+          <q-card-actions align="right">
+            <q-btn
+              flat
+              text-color="dark"
+              class="q-mr-md"
+              label="Cancel"
+              v-close-popup
+            ></q-btn>
+            <q-btn
+              v-if="
+                !report.description_type || report.description_type === 'report'
+              "
+              outline
+              color="primary"
+              label="Send"
+              :disabled="reportSubmitted || !report.description"
+              @click="sendReport"
+            ></q-btn>
+            <q-btn
+              v-if="report.description_type === 'bug'"
+              outline
+              color="primary"
+              label="View on Github"
+              v-close-popup
+              :href="currentApp.currentVersion.links.manifestUri"
+              target="_blank"
+            ></q-btn>
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { AppInstallBtn } from 'features/Apps/InstallButton'
 import { AppUpdateBtn } from 'features/Apps/UpdateButton'
 import { AppDeleteBtn } from 'features/Apps/DeleteButton'
 import { ProgressBar } from 'shared/components/ProgressBar'
 import { Loading } from 'shared/components/Loading'
-import { AppInstalledBtn, AppsApi, AppsModel } from 'entities/Apps'
-const appsStore = AppsModel.useAppStore()
+import {
+  AppsApi,
+  AppsModel,
+  AppInstalledBtn,
+  AppOutdatedAppDialog
+} from 'entities/Apps'
+const appsStore = AppsModel.useAppsStore()
 
 import { CategoryChip, CategoryModel } from 'entities/Category'
 import { bytesToSize } from 'shared/lib/utils/bytesToSize'
 import { FlipperModel } from 'entities/Flipper'
 import { type QScrollArea } from 'quasar'
+import { FlipperWeb } from 'src/shared/lib/flipperJs'
 const flipperStore = FlipperModel.useFlipperStore()
 
-const { fetchAppById } = AppsApi
+const { fetchAppById, submitAppReport } = AppsApi
 
 const route = useRoute()
 const router = useRouter()
@@ -236,7 +307,8 @@ const currentApp = ref<AppsModel.AppDetail | undefined>(undefined)
 const categoriesStore = CategoryModel.useCategoriesStore()
 
 const getCategories = async () => {
-  if (!categoriesStore.categories.length ||
+  if (
+    !categoriesStore.categories.length ||
     flipperStore.api !== categoriesStore.lastApi ||
     flipperStore.target !== categoriesStore.lastTarget
   ) {
@@ -247,9 +319,12 @@ const getCategories = async () => {
   }
 }
 
-watch(() => flipperStore.flipperReady, async () => {
-  await getCategories()
-})
+watch(
+  () => flipperStore.flipperReady,
+  async () => {
+    await getCategories()
+  }
+)
 
 const init = async () => {
   await getCurrentApp()
@@ -259,20 +334,45 @@ const init = async () => {
 onMounted(async () => {
   if (flipperStore.flipperReady) {
     if (!flipperStore.rpcActive) {
-      await flipperStore.flipper.startRPCSession()
+      if (!flipperStore.isElectron) {
+        if (flipperStore.flipper instanceof FlipperWeb) {
+          await flipperStore.flipper?.startRPCSession()
+        }
+      } else {
+        flipperStore.flipper?.setReadingMode('rpc')
+      }
     }
 
-    if (flipperStore.flipper.readingMode.type === 'raw') {
+    if (flipperStore.flipper?.readingMode.type === 'rpc') {
       if (!flipperStore.info) {
-        await flipperStore.flipper.getInfo()
+        await flipperStore.flipper?.getInfo()
       }
 
       await init()
+
+      if (!appsStore.flipperInstalledApps?.length) {
+        await appsStore.getInstalledApps({
+          refreshInstalledApps: true
+        })
+      }
     }
   } else {
     await init()
   }
 })
+
+watch(
+  () => flipperStore.flags.catalogChannelProduction,
+  async () => {
+    await init()
+
+    if (!flipperStore.flipper) {
+      await appsStore.getInstalledApps({
+        refreshInstalledApps: true
+      })
+    }
+  }
+)
 
 const loading = ref(true)
 const getCurrentApp = async () => {
@@ -285,12 +385,19 @@ const getCurrentApp = async () => {
   loading.value = false
 }
 
-watch(() => flipperStore.flipperReady, () => {
-  getCurrentApp()
-})
+watch(
+  () => flipperStore.flipperReady,
+  () => {
+    getCurrentApp()
+  }
+)
 
 const isInstalledOrUpdate = computed(() => {
-  return currentApp.value && (appsStore.getButtonState(currentApp.value) === 'installed' || appsStore.getButtonState(currentApp.value) === 'update')
+  return (
+    currentApp.value &&
+    (appsStore.getButtonState(currentApp.value) === 'installed' ||
+      appsStore.getButtonState(currentApp.value) === 'update')
+  )
 })
 
 type StatusHint = {
@@ -347,7 +454,7 @@ const getStatusHint = computed(() => {
 
 const showDialog = (dialog: string | undefined) => {
   if (dialog) {
-    console.log(dialog)
+    appsStore.dialogs[dialog] = true
   }
 }
 
@@ -356,9 +463,12 @@ const category = computed(() =>
 )
 const goCategory = () => {
   if (category.value) {
-    router.push({ name: 'AppsCategory', params: { path:  category.value.name.toLowerCase()} })
+    router.push({
+      name: 'AppsCategory',
+      params: { path: category.value.name.toLowerCase() }
+    })
   } else {
-    router.push({ name: 'Apps'})
+    router.push({ name: 'Apps' })
   }
 }
 
@@ -375,7 +485,10 @@ const animateScroll = (direction: string) => {
 
   if (numberOfScreenshots) {
     if (direction === 'forward') {
-      if ((position.value + (screenshotWidth * screenshotsOnScreen)) < screenshotWidth * numberOfScreenshots) {
+      if (
+        position.value + screenshotWidth * screenshotsOnScreen <
+        screenshotWidth * numberOfScreenshots
+      ) {
         position.value = position.value + screenshotWidth
       }
     }
@@ -390,6 +503,26 @@ const animateScroll = (direction: string) => {
 
     scrollAreaRef.value.setScrollPosition('horizontal', position.value, 300)
   }
+}
+
+const reportDialog = ref(false)
+const reportSubmitted = ref(false)
+const report = reactive({
+  description_type: '',
+  description: ''
+})
+const reportOptions = ['bug', 'report']
+const showReportDialog = () => {
+  reportDialog.value = true
+}
+const sendReport = async () => {
+  if (currentApp.value) {
+    await submitAppReport({
+      id: currentApp.value.id,
+      report
+    })
+  }
+  reportSubmitted.value = true
 }
 </script>
 

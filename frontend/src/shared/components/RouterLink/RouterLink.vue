@@ -5,28 +5,35 @@
     </q-item-section>
 
     <q-item-section>
-      <q-item-label>{{ title }}</q-item-label>
+      <q-item-label>
+        <template v-if="titleOverride">
+          {{ titleOverride }}
+        </template>
+        <template v-else>
+          {{ title }}
+        </template>
+      </q-item-label>
     </q-item-section>
   </q-item>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { ComputedRef } from 'vue'
+
 defineOptions({
   name: 'RouterLink'
 })
 
-defineProps({
-  title: {
-    type: String,
-    required: true
-  },
-  name: {
-    type: String,
-    default: '#'
-  },
-  icon: {
-    type: String,
-    default: ''
-  }
+type Props = {
+  title: string
+  titleOverride?: ComputedRef<string>
+  name: string
+  icon?: string
+}
+
+withDefaults(defineProps<Props>(), {
+  titleOverride: undefined,
+  name: '#',
+  icon: ''
 })
 </script>

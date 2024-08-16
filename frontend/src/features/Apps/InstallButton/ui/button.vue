@@ -12,10 +12,10 @@
 
 <script setup lang="ts">
 import { AppsModel } from 'entities/Apps'
-const appsStore = AppsModel.useAppStore()
+const appsStore = AppsModel.useAppsStore()
 
 interface Props {
-  app?: AppsModel.App,
+  app?: AppsModel.App
   loading?: boolean
 }
 

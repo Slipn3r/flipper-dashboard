@@ -1,9 +1,12 @@
 import { boot } from 'quasar/wrappers'
 import axios, { AxiosInstance } from 'axios'
 import {
-  ARCHIVARIUS_API_ENDPOINT,
+  // ARCHIVARIUS_API_ENDPOINT,
   API_PROD_ENDPOINT,
-  API_DEV_ENDPOINT
+  API_DEV_ENDPOINT,
+  PRODUCTION_NAME,
+  DEVELOP_NAME,
+  isProd
 } from 'shared/config'
 
 declare module '@vue/runtime-core' {
@@ -13,12 +16,27 @@ declare module '@vue/runtime-core' {
   }
 }
 
-let API_ENDPOINT = ARCHIVARIUS_API_ENDPOINT
-if (localStorage.getItem('catalogChannel') !== null) {
-  if (localStorage.getItem('catalogChannel') === 'production') {
-    API_ENDPOINT = API_PROD_ENDPOINT
+const getBaseUrl = (catalogChanel: string) => {
+  if (catalogChanel === PRODUCTION_NAME) {
+    return API_PROD_ENDPOINT
   } else {
-    API_ENDPOINT = API_DEV_ENDPOINT
+    return API_DEV_ENDPOINT
+  }
+}
+
+let baseURL
+// let API_ENDPOINT = ARCHIVARIUS_API_ENDPOINT
+if (isProd) {
+  baseURL = getBaseUrl(PRODUCTION_NAME)
+} else {
+  baseURL = getBaseUrl(DEVELOP_NAME)
+}
+
+if (localStorage.getItem('catalogChannel') !== null && !isProd) {
+  if (localStorage.getItem('catalogChannel') === PRODUCTION_NAME) {
+    baseURL = getBaseUrl(PRODUCTION_NAME)
+  } else {
+    baseURL = getBaseUrl(DEVELOP_NAME)
   }
 }
 
@@ -29,7 +47,7 @@ if (localStorage.getItem('catalogChannel') !== null) {
 // "export default () => {}" function below (which runs individually
 // for each client)
 const instance = axios.create({
-  baseURL: API_ENDPOINT,
+  baseURL,
   timeout: 25000,
   headers: {
     Accept: 'application/json',
@@ -49,4 +67,4 @@ export default boot(({ app }) => {
   //       so you can easily perform requests against your app's API
 })
 
-export { instance }
+export { axios, instance, getBaseUrl }

@@ -1,5 +1,6 @@
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import { defineStore } from 'pinia'
+import { Platform } from 'quasar'
 import asyncSleep from 'simple-async-sleep'
 import { FlipperModel } from 'entities/Flipper'
 import { CategoryModel } from 'entities/Category'
@@ -12,7 +13,7 @@ import { App, InstalledApp, AppsPostShortParams, ActionType } from './types'
 import { api } from '../api'
 const { fetchAppsVersions, fetchPostAppsShort, fetchAppFap } = api
 
-export const useAppStore = defineStore('apps', () => {
+export const useAppsStore = defineStore('apps', () => {
   const flipperStore = FlipperModel.useFlipperStore()
   // const { flipper, info, flipperReady } = flipperStore
   const flipper = computed(() => flipperStore.flipper)
@@ -21,17 +22,27 @@ export const useAppStore = defineStore('apps', () => {
   const target = computed(() => flipperStore.target)
   const flipperReady = computed(() => flipperStore.flipperReady)
 
+  const dialogs = reactive<{
+    [key: string]: boolean
+  }>({
+    outdatedFirmwareDialogPersistent: false,
+    outdatedFirmwareDialog: false,
+    outdatedAppDialog: false,
+    noFreeSpace: false
+  })
+
   const categoryStore = CategoryModel.useCategoriesStore()
   // const { categories } = categoryStore
   const categories = computed(() => categoryStore.categories)
 
-  const flipperInstalledApps = computed(() => flipper.value.installedApps)
+  const flipperInstalledApps = computed(() => flipper.value?.installedApps)
   const installedApps = ref<InstalledApp[]>([])
   const updatableApps = ref<InstalledApp[]>([])
   const upToDateApps = ref<InstalledApp[]>([])
   const unsupportedApps = ref<InstalledApp[]>([])
   const appsUpdateCount = ref(0)
   const loadingInstalledApps = ref(false)
+  const noApplicationsInstalled = ref(false)
 
   const onClearInstalledAppsList = () => {
     installedApps.value = []
@@ -47,24 +58,27 @@ export const useAppStore = defineStore('apps', () => {
 
     if (refreshInstalledApps) {
       // onClearInstalledAppsList()
-      await flipper.value.getInstalledApps()
+      await flipper.value?.getInstalledApps()
     }
 
     try {
-      let installed: InstalledApp[] = (installedApps.value =
-        flipperStore.flipper.installedApps)
+      let installed: InstalledApp[] = (installedApps.value = flipperStore
+        .flipper?.installedApps as InstalledApp[])
 
-      // if (!installed.length) {
-      //   flags.value.noApplicationsInstalled = true
-      //   flags.value.loadingInstalledApps = false
-      //   return
-      // }
+      if (!installed.length) {
+        noApplicationsInstalled.value = true
+        throw 'No installed apps'
+      } else {
+        noApplicationsInstalled.value = false
+      }
 
       const versions = await fetchAppsVersions(
-        flipperInstalledApps.value.map((app) => app.installedVersion.id)
+        (flipperInstalledApps.value as InstalledApp[]).map(
+          (app) => app.installedVersion.id
+        )
       )
       for (const version of versions) {
-        const app = flipperInstalledApps.value.find(
+        const app = (flipperInstalledApps.value as InstalledApp[]).find(
           (app) => app.id === version.applicationId
         )
         if (app) {
@@ -93,8 +107,10 @@ export const useAppStore = defineStore('apps', () => {
       } while (actualApps.length === params.limit)
 
       installed = installed.filter((installedApp) => {
-        // if (installedApp.devCatalog && mainFlags.value.catalogChannelProduction) {
-        if (installedApp.devCatalog) {
+        if (
+          installedApp.devCatalog &&
+          flipperStore.flags.catalogChannelProduction
+        ) {
           return false
         }
 
@@ -268,6 +284,19 @@ export const useAppStore = defineStore('apps', () => {
   const actionAppList = ref<Array<App | InstalledApp>>([])
   const onAction = async (app: App | InstalledApp, actionType: ActionType) => {
     // TODO: validation check //
+    if (Platform.is.mobile) {
+      dialogs.mobileAppDialog = true
+      return
+    }
+    if (!('serial' in navigator)) {
+      flipperStore.dialogs.serialUnsupported = true
+      return
+    }
+
+    if (!flipper.value?.connected) {
+      flipperStore.dialogs.connectFlipper = true
+      return
+    }
 
     app.action = {
       progress: 0,
@@ -306,7 +335,7 @@ export const useAppStore = defineStore('apps', () => {
 
     await addToQueue({
       fn: action,
-      flipperName: flipper.value.name,
+      flipperName: flipper.value?.name,
       params: [app, actionType]
     })
   }
@@ -315,14 +344,14 @@ export const useAppStore = defineStore('apps', () => {
     app: App | InstalledApp,
     actionType: ActionType
   ) => {
-    // if (info?.value.storage.sdcard) {
-    //   app.action.type = actionType
-    //   mainStore.toggleFlag('microSDcardMissingDialog', true)
-    //   setTimeout(() => {
-    //     app.action.type = ''
-    //   }, 300)
-    //   return
-    // }
+    if (!flipperStore.info?.storage.sdcard) {
+      app.action.type = actionType
+      flipperStore.dialogs.microSDcardMissing = true
+      setTimeout(() => {
+        app.action.type = ''
+      }, 300)
+      return
+    }
     if (!actionType) {
       return
     }
@@ -342,7 +371,7 @@ export const useAppStore = defineStore('apps', () => {
         //   message: `Installing ${app?.currentVersion?.name || 'app'}...`
         // })
         return installApp(app).catch((/* error */) => {
-          // const message = `${app.currentVersion?.name || 'App'} didn't install${flipper.value.name !== getFlipperCurrentlyParticipating() ? ' because ' + error.message : ''}!`
+          // const message = `${app.currentVersion?.name || 'App'} didn't install${flipper.value?.name !== getFlipperCurrentlyParticipating() ? ' because ' + error.message : ''}!`
           // appNotif.value({
           //   icon: 'error_outline',
           //   color: 'negative',
@@ -365,7 +394,7 @@ export const useAppStore = defineStore('apps', () => {
         //   message: `Uploading ${app?.currentVersion?.name || 'app'}...`
         // })
         return updateApp(app).catch((/* error */) => {
-          // const message = `${app.currentVersion?.name || 'App'} didn't update${flipper.value.name !== getFlipperCurrentlyParticipating() ? ' because ' + error.message : ''}!`
+          // const message = `${app.currentVersion?.name || 'App'} didn't update${flipper.value?.name !== getFlipperCurrentlyParticipating() ? ' because ' + error.message : ''}!`
           // appNotif.value({
           //   icon: 'error_outline',
           //   color: 'negative',
@@ -384,7 +413,7 @@ export const useAppStore = defineStore('apps', () => {
         //   message: `Deleting ${app?.currentVersion?.name || 'app'}...`
         // })
         return deleteApp(app as InstalledApp).catch((/* error */) => {
-          // const message = `${app.currentVersion?.name || 'App'} wasn't deleted${flipper.value.name !== getFlipperCurrentlyParticipating() ? ' because ' + error.message : ''}!`
+          // const message = `${app.currentVersion?.name || 'App'} wasn't deleted${flipper.value?.name !== getFlipperCurrentlyParticipating() ? ' because ' + error.message : ''}!`
           // appNotif.value({
           //   icon: 'error_outline',
           //   color: 'negative',
@@ -404,11 +433,11 @@ export const useAppStore = defineStore('apps', () => {
   const ensureCategoryPaths = async () => {
     for (const category of categories.value) {
       const dir = await flipper.value
-        .RPC('storageStat', { path: `/ext/apps/${category.name}` })
+        ?.RPC('storageStat', { path: `/ext/apps/${category.name}` })
         .catch(/* error => rpcErrorHandler(componentName, error, 'storageStat') */)
       if (!dir) {
         await flipper.value
-          .RPC('storageMkdir', { path: `/ext/apps/${category.name}` })
+          ?.RPC('storageMkdir', { path: `/ext/apps/${category.name}` })
           .catch(/* error => rpcErrorHandler(componentName, error, 'storageMkdir') */)
       }
     }
@@ -456,7 +485,7 @@ export const useAppStore = defineStore('apps', () => {
       return
     }
 
-    if (flipper.value.name === getFlipperCurrentlyParticipating()) {
+    if (flipper.value?.name === getFlipperCurrentlyParticipating()) {
       app.action.progress = 0.33
       // if (app.action.type === 'update') {
       //   batch.value.progress = 0.33
@@ -477,7 +506,7 @@ export const useAppStore = defineStore('apps', () => {
 
     // generate manifest
     let manifestFile = null
-    if (flipper.value.name === getFlipperCurrentlyParticipating()) {
+    if (flipper.value?.name === getFlipperCurrentlyParticipating()) {
       async function urlContentToDataUri(url: string) {
         return await instance
           .get(url, { responseType: 'blob' })
@@ -497,10 +526,10 @@ export const useAppStore = defineStore('apps', () => {
       }
       const dataUri = await urlContentToDataUri(app.currentVersion.iconUri)
       const base64Icon = dataUri.split(',')[1]
-      const manifestText = `Filetype: Flipper Application Installation Manifest\nVersion: 1\nFull Name: ${app.currentVersion.name}\nIcon: ${base64Icon}\nVersion Build API: ${info.value?.firmware.api.major}.${info.value?.firmware.api.minor}\nUID: ${app.id}\nVersion UID: ${app.currentVersion.id}\nPath: ${paths.appDir}/${app.alias}.fap`
-      // if (!mainFlags.value.catalogChannelProduction) {
-      //   manifestText = manifestText + '\nDevCatalog: true'
-      // }
+      let manifestText = `Filetype: Flipper Application Installation Manifest\nVersion: 1\nFull Name: ${app.currentVersion.name}\nIcon: ${base64Icon}\nVersion Build API: ${info.value?.firmware.api.major}.${info.value?.firmware.api.minor}\nUID: ${app.id}\nVersion UID: ${app.currentVersion.id}\nPath: ${paths.appDir}/${app.alias}.fap`
+      if (!flipperStore.flags.catalogChannelProduction) {
+        manifestText = manifestText + '\nDevCatalog: true'
+      }
       manifestFile = new TextEncoder().encode(manifestText)
       app.action.progress = 0.45
       // if (app.action.type === 'update') {
@@ -517,9 +546,9 @@ export const useAppStore = defineStore('apps', () => {
     }
 
     // upload manifest to temp
-    if (flipper.value.name === getFlipperCurrentlyParticipating()) {
+    if (flipper.value?.name === getFlipperCurrentlyParticipating()) {
       await flipper.value
-        .RPC('storageWrite', {
+        ?.RPC('storageWrite', {
           path: `${paths.tempDir}/${app.id}.fim`,
           buffer: manifestFile
         })
@@ -546,9 +575,9 @@ export const useAppStore = defineStore('apps', () => {
     }
 
     // upload fap to temp
-    if (flipper.value.name === getFlipperCurrentlyParticipating()) {
+    if (flipper.value?.name === getFlipperCurrentlyParticipating()) {
       await flipper.value
-        .RPC('storageWrite', {
+        ?.RPC('storageWrite', {
           path: `${paths.tempDir}/${app.id}.fap`,
           buffer: fap
         })
@@ -579,7 +608,7 @@ export const useAppStore = defineStore('apps', () => {
 
     // move manifest and fap
     let dirList = null
-    if (flipper.value.name === getFlipperCurrentlyParticipating()) {
+    if (flipper.value?.name === getFlipperCurrentlyParticipating()) {
       dirList = await flipper.value
         .RPC('storageList', { path: paths.manifestDir })
         .catch((error: ErrorEvent) => {
@@ -638,7 +667,7 @@ export const useAppStore = defineStore('apps', () => {
       )
     }
 
-    if (flipper.value.name === getFlipperCurrentlyParticipating()) {
+    if (flipper.value?.name === getFlipperCurrentlyParticipating()) {
       dirList = await flipper.value
         .RPC('storageList', { path: paths.appDir })
         .catch((error: ErrorEvent) => {
@@ -736,7 +765,7 @@ export const useAppStore = defineStore('apps', () => {
 
     // remove .fap
     let dirList = null
-    if (flipper.value.name === getFlipperCurrentlyParticipating()) {
+    if (flipper.value?.name === getFlipperCurrentlyParticipating()) {
       dirList = await flipper.value
         .RPC('storageList', { path: paths.appDir })
         .catch((error: ErrorEvent) => {
@@ -773,7 +802,7 @@ export const useAppStore = defineStore('apps', () => {
     }
 
     // remove manifest
-    if (flipper.value.name === getFlipperCurrentlyParticipating()) {
+    if (flipper.value?.name === getFlipperCurrentlyParticipating()) {
       dirList = await flipper.value
         .RPC('storageList', { path: paths.manifestDir })
         .catch((error: ErrorEvent) => {
@@ -828,6 +857,7 @@ export const useAppStore = defineStore('apps', () => {
   }
 
   return {
+    dialogs,
     onClearInstalledAppsList,
     getInstalledApps,
     getButtonState,
@@ -838,6 +868,7 @@ export const useAppStore = defineStore('apps', () => {
     unsupportedApps,
     appsUpdateCount,
     loadingInstalledApps,
+    noApplicationsInstalled,
     onAction,
     actionAppList,
     batch,

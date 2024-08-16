@@ -33,11 +33,11 @@ class Operation {
   }
 }
 
-function ungzip(buffer: number) {
+function ungzip(buffer: ArrayBuffer) {
   return pako.ungzip(new Uint8Array(buffer))
 }
 
-function unpack(buffer: number) {
+function unpack(buffer: ArrayBuffer) {
   const ungzipped = ungzip(buffer)
   return untar(ungzipped.buffer)
 }

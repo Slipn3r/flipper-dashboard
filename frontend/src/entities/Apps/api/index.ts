@@ -3,12 +3,17 @@ import { Notify } from 'quasar'
 import { instance } from 'boot/axios'
 import { camelCaseDeep } from 'shared/lib/utils/camelCaseDeep'
 
-import type { AppsShortParams, AppsPostShortParams, AppFapParams, App, GetAppParams, AppVersion } from '../model'
+import type {
+  AppsShortParams,
+  AppsPostShortParams,
+  AppFapParams,
+  App,
+  GetAppParams,
+  AppVersion
+} from '../model'
 
 let controller: AbortController | undefined = undefined
-async function fetchAppsShort(
-  params: Partial<AppsShortParams> = {}
-) {
+async function fetchAppsShort(params: Partial<AppsShortParams> = {}) {
   const defaultParams: AppsShortParams = {
     limit: 48,
     offset: 0,
@@ -43,18 +48,17 @@ async function fetchAppsShort(
     })
 }
 
-async function fetchPostAppsShort (
-  params: AppsPostShortParams
-) {
-  return await instance.post('/1/application', params)
-    .then(({ data }) => data.map((app: App) => {
+async function fetchPostAppsShort(params: AppsPostShortParams) {
+  return await instance.post('/1/application', params).then(({ data }) =>
+    data.map((app: App) => {
       // app.action = {
       //   type: '',
       //   progress: 0,
       //   id: app.id
       // }
       return camelCaseDeep(app)
-    }))
+    })
+  )
 }
 
 async function fetchAppById(params: GetAppParams) {
@@ -88,11 +92,9 @@ async function fetchAppById(params: GetAppParams) {
     })
 }
 
-async function fetchAppsVersions(
-  uids: string[]
-) {
+async function fetchAppsVersions(uids: string[]) {
   const allVersions: AppVersion[] = []
-  uids = uids.filter(u => u)
+  uids = uids.filter((u) => u)
 
   if (uids) {
     const size = 100
@@ -141,7 +143,7 @@ async function fetchAppsVersions(
   return allVersions.map((version) => camelCaseDeep(version))
 }
 
-async function fetchAppFap (params: AppFapParams) {
+async function fetchAppFap(params: AppFapParams) {
   return await instance
     .get(`/application/version/${params.versionId}/build/compatible`, {
       params: {
@@ -162,10 +164,26 @@ async function fetchAppFap (params: AppFapParams) {
     })
 }
 
+async function submitAppReport({
+  id,
+  report
+}: {
+  id: string
+  report: {
+    description: string
+    description_type: string
+  }
+}) {
+  return instance.post(`/application/${id}/issue`, {
+    ...report
+  })
+}
+
 export const api = {
   fetchAppsShort,
   fetchPostAppsShort,
   fetchAppById,
   fetchAppsVersions,
-  fetchAppFap
+  fetchAppFap,
+  submitAppReport
 }

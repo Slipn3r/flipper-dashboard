@@ -130,7 +130,7 @@ import semver from 'semver'
 import asyncSleep from 'simple-async-sleep'
 
 import { PB } from 'shared/lib/flipperJs/protobufCompiled'
-import { unpack } from 'shared/lib/utils/unpack'
+import { unpack } from 'shared/lib/utils/operation'
 
 import { ProgressBar } from 'shared/components/ProgressBar'
 import { FlipperModel, FlipperApi } from 'entities/Flipper'
@@ -181,6 +181,8 @@ const fwOptions = ref([
   // }
 ])
 const fwModel = ref(fwOptions.value[0])
+
+const emit = defineEmits<{ (event: 'updateInProgress'): Promise<void> }>()
 
 onMounted(async () => {
   channels.value = await fetchChannels()
@@ -251,11 +253,12 @@ const getTextButton = computed(() => {
 
 const update = async () => {
   if (!flipperStore.info?.storage.sdcard?.status.isInstalled) {
-    flipperStore.flags.microSDcardMissingDialog = true
+    flipperStore.dialogs.microSDcardMissing = true
     return
   }
 
   flipperStore.onUpdateStage('start')
+  await emit('updateInProgress')
   await loadFirmware()
 }
 
@@ -319,7 +322,7 @@ const loadFirmware = async () => {
       PB.Region.encodeDelimited(message).finish()
     ).slice(1)
 
-    await flipperStore.flipper.RPC('storageWrite', {
+    await flipperStore.flipper?.RPC('storageWrite', {
       path: '/int/.region_data',
       buffer: encoded
     })
@@ -383,13 +386,13 @@ const loadFirmware = async () => {
 
     let path = '/ext/update/'
     await flipperStore.flipper
-      .RPC('storageStat', { path: '/ext/update' })
+      ?.RPC('storageStat', { path: '/ext/update' })
       .catch(async (error: string) => {
         if (error.toString() !== 'ERROR_STORAGE_NOT_EXIST') {
           // rpcErrorHandler(componentName, error, 'storageStat')
         } else {
           await flipperStore.flipper
-            .RPC('storageMkdir', { path: '/ext/update' })
+            ?.RPC('storageMkdir', { path: '/ext/update' })
             // .catch(error => rpcErrorHandler(componentName, error, 'storageMkdir'))
             .then(() => {
               // log({
@@ -410,7 +413,7 @@ const loadFirmware = async () => {
           path = path.slice(0, -1)
         }
         await flipperStore.flipper
-          .RPC('storageMkdir', { path })
+          ?.RPC('storageMkdir', { path })
           // .catch(error => rpcErrorHandler(componentName, error, 'storageMkdir'))
           .then(() => {
             // log({
@@ -420,14 +423,14 @@ const loadFirmware = async () => {
           })
       } else {
         write.value.filename = file.name.slice(file.name.lastIndexOf('/') + 1)
-        const unbind = flipperStore.flipper.emitter.on(
+        const unbind = flipperStore.flipper?.emitter.on(
           'storageWriteRequest/progress',
-          (e) => {
+          (e: { progress: number; total: number }) => {
             write.value.progress = e.progress / e.total
           }
         )
         await flipperStore.flipper
-          .RPC('storageWrite', {
+          ?.RPC('storageWrite', {
             path: '/ext/update/' + file.name,
             buffer: file.buffer
           })
@@ -438,7 +441,10 @@ const loadFirmware = async () => {
             //   message: `${componentName}: storageWrite: /ext/update/${file.name}`
             // })
           })
-        unbind()
+
+        if (unbind) {
+          unbind()
+        }
       }
       await asyncSleep(300)
     }
@@ -453,7 +459,7 @@ const loadFirmware = async () => {
     }
 
     await flipperStore.flipper
-      .RPC('systemUpdate', { path: path + '/update.fuf' })
+      ?.RPC('systemUpdate', { path: path + '/update.fuf' })
       // .catch(error => rpcErrorHandler(componentName, error, 'systemUpdate'))
       .then(() => {
         // log({
@@ -464,9 +470,10 @@ const loadFirmware = async () => {
 
     updateStage.value = 'Update in progress, pay attention to your Flipper'
 
-    await flipperStore.flipper.RPC('systemReboot', { mode: 'UPDATE' })
+    await flipperStore.flipper?.RPC('systemReboot', { mode: 'UPDATE' })
     // .catch(error => rpcErrorHandler(componentName, error, 'systemReboot'))
 
+    flipperStore.flags.waitForReconnect = true
     flipperStore.flags.autoReconnect = true
   } else {
     updateError.value = true
@@ -477,8 +484,10 @@ const loadFirmware = async () => {
 }
 
 const cancelUpdate = () => {
-  // mainFlags.updateInProgress = false
+  flipperStore.flags.waitForReconnect = false
+  flipperStore.flags.updateInProgress = false
   updateError.value = false
+  updateStage.value = ''
   // reload()
 }
 </script>

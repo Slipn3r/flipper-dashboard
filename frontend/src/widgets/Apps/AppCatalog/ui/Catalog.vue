@@ -3,8 +3,8 @@
     <div
       class="q-mb-lg"
       :class="{
-        'row': $q.screen.gt.md,
-        'column': !$q.screen.gt.md
+        row: $q.screen.gt.md,
+        column: !$q.screen.gt.md
       }"
     >
       <CategoriesList
@@ -50,7 +50,9 @@
                   size="33px"
                 />
               </template>
-              <template v-else-if="appsStore.getButtonState(app) === 'installed'">
+              <template
+                v-else-if="appsStore.getButtonState(app) === 'installed'"
+              >
                 <AppInstalledBtn />
               </template>
               <template v-else-if="appsStore.getButtonState(app) === 'update'">
@@ -71,9 +73,7 @@
       </div>
       <template v-slot:loading>
         <div class="row justify-center q-my-md">
-          <Loading
-            label="Loading apps..."
-          />
+          <Loading label="Loading apps..." />
         </div>
       </template>
     </q-infinite-scroll>
@@ -92,12 +92,13 @@ import { CategoryModel } from 'entities/Category'
 const categoriesStore = CategoryModel.useCategoriesStore()
 
 import { AppCard, AppInstalledBtn, AppsApi, AppsModel } from 'entities/Apps'
-const appsStore = AppsModel.useAppStore()
+const appsStore = AppsModel.useAppsStore()
 
 import { AppInstallBtn } from 'features/Apps/InstallButton'
 import { AppUpdateBtn } from 'features/Apps/UpdateButton'
 import { FlipperModel } from 'entities/Flipper'
 import { type QInfiniteScroll } from 'quasar'
+import { FlipperWeb } from 'src/shared/lib/flipperJs'
 const flipperStore = FlipperModel.useFlipperStore()
 
 const { fetchAppsShort } = AppsApi
@@ -139,14 +140,14 @@ const getApps = async () => {
           fetchEnd.value = true
         }
       })
-        .catch(() => {
-          fetchEnd.value = true
-          // showNotif({
-          //   message: 'Unable to load applications.',
-          //   color: 'negative',
-          //   actions: [{ label: 'Reload', color: 'white', handler: () => { location.reload() } }]
-          // })
-        })
+      .catch(() => {
+        fetchEnd.value = true
+        // showNotif({
+        //   message: 'Unable to load applications.',
+        //   color: 'negative',
+        //   actions: [{ label: 'Reload', color: 'white', handler: () => { location.reload() } }]
+        // })
+      })
   }
 
   appsLoading.value = false
@@ -155,17 +156,23 @@ const getApps = async () => {
 onMounted(async () => {
   if (flipperStore.flipperReady) {
     if (!flipperStore.rpcActive) {
-      await flipperStore.flipper.startRPCSession()
+      if (!flipperStore.isElectron) {
+        if (flipperStore.flipper instanceof FlipperWeb) {
+          await flipperStore.flipper?.startRPCSession()
+        }
+      } else {
+        flipperStore.flipper?.setReadingMode('rpc')
+      }
     }
 
-    if (flipperStore.flipper.readingMode.type === 'raw') {
+    if (flipperStore.flipper?.readingMode.type === 'rpc') {
       if (!flipperStore.info) {
-        await flipperStore.flipper.getInfo()
+        await flipperStore.flipper?.getInfo()
       }
 
-      reLoad()
+      // await reLoad()
 
-      if (!appsStore.flipperInstalledApps.length) {
+      if (!appsStore.flipperInstalledApps?.length) {
         await appsStore.getInstalledApps({
           refreshInstalledApps: true
         })
@@ -174,9 +181,23 @@ onMounted(async () => {
   }
 })
 
-watch(() => flipperStore.flipperReady, () => {
-  reLoad()
-})
+// watch(
+//   () => flipperStore.flipperReady,
+//   async () => {
+//     await reLoad()
+//   }
+// )
+
+watch(
+  () => flipperStore.flags.catalogChannelProduction,
+  async () => {
+    if (flipperStore.flipper?.readingMode.type === 'rpc') {
+      await appsStore.getInstalledApps({
+        refreshInstalledApps: true
+      })
+    }
+  }
+)
 
 const sortModel = ref('New Updates')
 const sortOptions = ref([
@@ -237,12 +258,12 @@ const onLoad = async (index: number, done: (stop?: boolean) => void) => {
   done(fetchEnd.value)
 }
 
-const onCategorySelected = () => {
-  reLoad()
+const onCategorySelected = async () => {
+  await reLoad()
 }
 
 const router = useRouter()
-const goAppPage = (appAlias: string) => {
+const goAppPage = (appAlias: AppsModel.App['alias']) => {
   router.push({ name: 'AppsPath', params: { path: appAlias } })
 }
 </script>

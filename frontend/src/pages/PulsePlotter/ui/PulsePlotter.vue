@@ -64,15 +64,17 @@ const notifyForWrongFile = () => {
   })
 }
 
-const switchFiletype = async ({
-  file,
-  isBuffer
-}: {
-  file?: File | Uint8Array
-  isBuffer?: boolean
-} = {
-  isBuffer: false
-}) => {
+const switchFiletype = async (
+  {
+    file,
+    isBuffer
+  }: {
+    file?: File | Uint8Array
+    isBuffer?: boolean
+  } = {
+    isBuffer: false
+  }
+) => {
   if (!file) {
     return
   }

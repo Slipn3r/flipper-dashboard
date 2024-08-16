@@ -9,7 +9,7 @@
         v-bind="category"
         :isCurrentCategory="
           !categoriesStore.currentCategory ||
-            category.id === categoriesStore.currentCategory?.id
+          category.id === categoriesStore.currentCategory?.id
         "
         @click="onClick(category)"
       />
@@ -31,7 +31,8 @@ const categoriesStore = CategoryModel.useCategoriesStore()
 const emit = defineEmits(['categorySelected'])
 
 const getCategories = async () => {
-  if (!categoriesStore.categories.length ||
+  if (
+    !categoriesStore.categories.length ||
     flipperStore.api !== categoriesStore.lastApi ||
     flipperStore.target !== categoriesStore.lastTarget
   ) {
@@ -46,17 +47,40 @@ onMounted(async () => {
   await getCategories()
 })
 
-watch(() => flipperStore.flipperReady, async () => {
-  await getCategories()
-})
+watch(
+  () => flipperStore.flipperReady,
+  async () => {
+    categoriesStore.categories = []
+
+    await getCategories()
+
+    emit('categorySelected')
+  }
+)
+
+watch(
+  () => flipperStore.flags.catalogChannelProduction,
+  async () => {
+    categoriesStore.categories = []
+
+    await getCategories()
+
+    emit('categorySelected')
+  }
+)
 
 const onClick = (category: CategoryModel.CategoryData) => {
-  categoriesStore.setCurrentCategory(category.id !== '-1' ? category : undefined)
+  categoriesStore.setCurrentCategory(
+    category.id !== '-1' ? category : undefined
+  )
 
   if (categoriesStore.currentCategory) {
-    router.push({ name: 'AppsCategory', params: { path:  categoriesStore.currentCategory.name.toLowerCase()} })
+    router.push({
+      name: 'AppsCategory',
+      params: { path: categoriesStore.currentCategory.name.toLowerCase() }
+    })
   } else {
-    router.push({ name: 'Apps'})
+    router.push({ name: 'Apps' })
   }
 
   emit('categorySelected')

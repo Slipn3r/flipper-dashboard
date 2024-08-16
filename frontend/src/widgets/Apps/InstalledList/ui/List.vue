@@ -1,5 +1,5 @@
 <template>
-  <q-page padding>
+  <div>
     <div
       v-if="appsStore.updatableApps.length"
       style="width: 140px"
@@ -8,7 +8,10 @@
       <template v-if="appsStore.batch.inProcess">
         <ProgressBar
           :title="`${appsStore.batch.doneCount} / ${appsStore.batch.totalCount}`"
-          :progress="appsStore.batch.doneCount / appsStore.batch.totalCount + appsStore.batch.progress / appsStore.batch.totalCount"
+          :progress="
+            appsStore.batch.doneCount / appsStore.batch.totalCount +
+            appsStore.batch.progress / appsStore.batch.totalCount
+          "
           color="positive"
           trackColor="green-4"
           size="33px"
@@ -38,9 +41,7 @@
     >
       <AppInstalledCard :app="updatableApp">
         <template v-slot:button>
-          <AppUpdateBtn
-            :app="updatableApp"
-          />
+          <AppUpdateBtn :app="updatableApp" />
         </template>
       </AppInstalledCard>
     </q-intersection>
@@ -75,7 +76,7 @@
         </template>
       </AppInstalledCard>
     </q-intersection>
-  </q-page>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -84,7 +85,7 @@ import { ProgressBar } from 'shared/components/ProgressBar'
 import { AppUpdateBtn } from 'features/Apps/UpdateButton'
 import { AppInstalledCard } from 'features/Apps/InstalledCard'
 import { AppInstalledBtn, AppsModel } from 'entities/Apps'
-const appsStore = AppsModel.useAppStore()
+const appsStore = AppsModel.useAppsStore()
 
 import { FlipperModel } from 'entities/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
@@ -93,7 +94,8 @@ import { CategoryModel } from 'entities/Category'
 const categoriesStore = CategoryModel.useCategoriesStore()
 
 const getCategories = async () => {
-  if (!categoriesStore.categories.length ||
+  if (
+    !categoriesStore.categories.length ||
     flipperStore.api !== categoriesStore.lastApi ||
     flipperStore.target !== categoriesStore.lastTarget
   ) {
@@ -104,13 +106,41 @@ const getCategories = async () => {
   }
 }
 
+const reLoad = async () => {
+  appsStore.onClearInstalledAppsList()
+
+  await getCategories()
+
+  if (flipperStore.flipper) {
+    await appsStore.getInstalledApps({
+      refreshInstalledApps: true
+    })
+  }
+}
+
 onMounted(async () => {
   await getCategories()
+
+  if (!appsStore.flipperInstalledApps?.length) {
+    await appsStore.getInstalledApps({
+      refreshInstalledApps: true
+    })
+  }
 })
 
-watch(() => flipperStore.flipperReady, async () => {
-  await getCategories()
-})
+watch(
+  () => flipperStore.flipperReady,
+  async () => {
+    await reLoad()
+  }
+)
+
+watch(
+  () => flipperStore.flags.catalogChannelProduction,
+  async () => {
+    await reLoad()
+  }
+)
 </script>
 
 <style lang="scss" scoped>

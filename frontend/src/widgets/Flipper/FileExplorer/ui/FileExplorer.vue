@@ -11,26 +11,21 @@
         :disabled="fullPath === '/'"
         @click="itemClicked({ name: '..' })"
       />
-      <q-breadcrumbs
-        class="col q-px-md"
-        active-color="black"
-        gutter="xs"
-      >
+      <q-breadcrumbs class="col q-px-md" active-color="black" gutter="xs">
         <template v-slot:separator>
-          <q-icon
-            size="1.4em"
-            name="chevron_right"
-          />
+          <q-icon size="1.4em" name="chevron_right" />
         </template>
         <template v-for="(item, index) in pathList" :key="index">
           <q-breadcrumbs-el
             class="toolbar__breadcrumb justify-center"
-            :class="{'cursor-pointer': item.path !== fullPath}"
+            :class="{ 'cursor-pointer': item.path !== fullPath }"
             :label="item.name"
             :icon="item.icon"
-            @click="movePath({
-              item
-            })"
+            @click="
+              movePath({
+                item
+              })
+            "
           />
         </template>
       </q-breadcrumbs>
@@ -46,38 +41,23 @@
         auto-close
       >
         <q-list style="min-width: 100px">
-          <q-item
-            clickable
-            @click="showUploadFileDialog"
-          >
+          <q-item clickable @click="showUploadFileDialog">
             <q-item-section avatar>
-              <q-icon name="mdi-file-upload-outline"/>
+              <q-icon name="mdi-file-upload-outline" />
             </q-item-section>
-            <q-item-section>
-              Upload file
-            </q-item-section>
+            <q-item-section> Upload file </q-item-section>
           </q-item>
-          <q-item
-            clickable
-            @click="showUploadFolderDialog"
-          >
+          <q-item clickable @click="showUploadFolderDialog">
             <q-item-section avatar>
-              <q-icon name="mdi-folder-upload-outline"/>
+              <q-icon name="mdi-folder-upload-outline" />
             </q-item-section>
-            <q-item-section>
-              Upload folder
-            </q-item-section>
+            <q-item-section> Upload folder </q-item-section>
           </q-item>
-          <q-item
-            clickable
-            @click="showMkdirDialog"
-          >
+          <q-item clickable @click="showMkdirDialog">
             <q-item-section avatar>
-              <q-icon name="mdi-folder-plus-outline"/>
+              <q-icon name="mdi-folder-plus-outline" />
             </q-item-section>
-            <q-item-section>
-              Create folder
-            </q-item-section>
+            <q-item-section> Create folder </q-item-section>
           </q-item>
         </q-list>
       </q-btn-dropdown>
@@ -97,15 +77,20 @@
           <q-item-section>
             <q-item-label class="ellipsis">{{ item.name }}</q-item-label>
             <q-item-label class="ellipsis" caption>
-              <span v-if="fullPath === '/' && item.name === 'int'">Flipper internal storage</span>
-              <span v-if="fullPath === '/' && item.name === 'ext'">SD card</span>
-              <span v-if="item.type !== 1 && item.size" class="text-weight-light">{{ item.size }} bytes</span>
+              <span v-if="fullPath === '/' && item.name === 'int'"
+                >Flipper internal storage</span
+              >
+              <span v-if="fullPath === '/' && item.name === 'ext'"
+                >SD card</span
+              >
+              <span
+                v-if="item.type !== 1 && item.size"
+                class="text-weight-light"
+                >{{ item.size }} bytes</span
+              >
             </q-item-label>
           </q-item-section>
-          <q-item-section
-            v-if="fullPath !== '/'"
-            avatar
-          >
+          <q-item-section v-if="fullPath !== '/'" avatar>
             <q-btn-dropdown
               flat
               dense
@@ -122,37 +107,30 @@
                   @click="itemClicked(item)"
                 >
                   <q-item-section avatar>
-                    <q-icon name="mdi-download-outline"/>
+                    <q-icon name="mdi-download-outline" />
                   </q-item-section>
-                  <q-item-section>
-                    Download
-                  </q-item-section>
+                  <q-item-section> Download </q-item-section>
                 </q-item>
                 <q-item
                   v-if="item.name.endsWith('.sub') || item.name.endsWith('.ir')"
                   clickable
-                  @click="openFileIn({
-                    item,
-                    destination: { name: 'PulsePlotter' }
-                  })"
+                  @click="
+                    openFileIn({
+                      item,
+                      destination: { name: 'PulsePlotter' }
+                    })
+                  "
                 >
                   <q-item-section avatar>
-                    <q-icon name="mdi-share-outline"/>
+                    <q-icon name="mdi-share-outline" />
                   </q-item-section>
-                  <q-item-section>
-                    Open in Pulse plotter
-                  </q-item-section>
+                  <q-item-section> Open in Pulse plotter </q-item-section>
                 </q-item>
-                <q-item
-                  clickable
-                  @click="renameItem(item)"
-                >
+                <q-item clickable @click="renameItem(item)">
                   <q-item-section avatar>
-                    <q-icon name="mdi-pencil-outline"/>
+                    <q-icon name="mdi-pencil-outline" />
                   </q-item-section>
-                  <q-item-section>
-                    Rename
-                  </q-item-section>
+                  <q-item-section> Rename </q-item-section>
                 </q-item>
                 <q-item
                   class="text-negative"
@@ -160,11 +138,9 @@
                   @click="deleteItem(item)"
                 >
                   <q-item-section avatar>
-                    <q-icon name="mdi-delete-outline"/>
+                    <q-icon name="mdi-delete-outline" />
                   </q-item-section>
-                  <q-item-section>
-                    Delete
-                  </q-item-section>
+                  <q-item-section> Delete </q-item-section>
                 </q-item>
               </q-list>
             </q-btn-dropdown>
@@ -176,184 +152,164 @@
         class="text-grey-7 full-width"
       >
         <q-item-section avatar class="q-ml-xs">
-          <q-icon name="mdi-folder-outline"/>
+          <q-icon name="mdi-folder-outline" />
         </q-item-section>
 
         <q-item-section>
-          <q-item-label>
-            Empty folder
-          </q-item-label>
+          <q-item-label> Empty folder </q-item-label>
         </q-item-section>
       </q-item>
     </q-list>
     <q-dialog v-model="uploadFolderDialog">
-        <q-card>
-          <q-card-section class="q-pt-none">
-            <q-file
-              outlined
-              multiple
-              webkitdirectory
-              v-model="uploadedFiles"
-              label="Drop or select folder"
-              class="q-pt-md folder-upload"
-              :style="$q.screen.width > 380 ? 'width: 300px;' : ''"
-            >
-              <template v-slot:prepend>
-                <q-icon name="mdi-folder-upload-outline"></q-icon>
-              </template>
-            </q-file>
-          </q-card-section>
+      <q-card>
+        <q-card-section class="q-pt-none">
+          <q-file
+            outlined
+            multiple
+            webkitdirectory
+            v-model="uploadedFiles"
+            label="Drop or select folder"
+            class="q-pt-md folder-upload"
+            :style="$q.screen.width > 380 ? 'width: 300px;' : ''"
+          >
+            <template v-slot:prepend>
+              <q-icon name="mdi-folder-upload-outline"></q-icon>
+            </template>
+          </q-file>
+        </q-card-section>
 
-          <q-card-actions align="right">
-            <q-btn
-              flat
-              label="Upload"
-              v-close-popup
-              @click="upload"
-            ></q-btn>
-            <q-btn
-              flat
-              label="Cancel"
-              color="negative"
-              v-close-popup
-            ></q-btn>
-          </q-card-actions>
-        </q-card>
-      </q-dialog>
-      <q-dialog v-model="deleteDialog">
-        <template v-if="itemToDelete">
-          <q-card>
-            <q-card-section>
-              <div class="text-subtitle1">Are you sure you want to delete <b>{{ itemToDelete.name }}</b>?</div>
-              This action is permanent and can't be undone.
-            </q-card-section>
-
-            <q-card-actions align="right">
-              <q-btn
-                flat
-                label="Cancel"
-                v-close-popup
-              ></q-btn>
-              <q-btn
-                flat
-                label="Delete"
-                color="negative"
-                v-close-popup
-                @click="remove({
-                  path: `${fullPath}/${itemToDelete?.name}`,
-                  isRecursive: !!itemToDelete?.type
-                })"
-              ></q-btn>
-            </q-card-actions>
-          </q-card>
-        </template>
-      </q-dialog>
-      <q-dialog v-model="uploadDialog">
-        <q-card>
-          <q-card-section class="q-pt-none">
-            <q-file
-              outlined
-              multiple
-              v-model="uploadedFiles"
-              label="Drop or select files"
-              class="q-pt-md"
-              :style="$q.screen.width > 380 ? 'width: 300px;' : ''"
-            >
-              <template v-slot:prepend>
-                <q-icon name="mdi-file-upload-outline"></q-icon>
-              </template>
-            </q-file>
-          </q-card-section>
-
-          <q-card-actions align="right">
-            <q-btn
-              flat
-              label="Upload"
-              v-close-popup
-              @click="upload"
-            ></q-btn>
-            <q-btn
-              flat
-              label="Cancel"
-              color="negative"
-              v-close-popup
-            ></q-btn>
-          </q-card-actions>
-        </q-card>
-      </q-dialog>
-      <q-dialog v-model="renameDialog">
+        <q-card-actions align="right">
+          <q-btn flat label="Upload" v-close-popup @click="upload"></q-btn>
+          <q-btn flat label="Cancel" color="negative" v-close-popup></q-btn>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="deleteDialog">
+      <template v-if="itemToDelete">
         <q-card>
           <q-card-section>
-            <q-input
-              v-model="editableItem.newName"
-              :label="'Rename ' + editableItem.oldName"
-              :style="$q.screen.width > 380 ? 'width: 300px;' : ''"
-            ></q-input>
+            <div class="text-subtitle1">
+              Are you sure you want to delete <b>{{ itemToDelete.name }}</b
+              >?
+            </div>
+            This action is permanent and can't be undone.
           </q-card-section>
 
           <q-card-actions align="right">
+            <q-btn flat label="Cancel" v-close-popup></q-btn>
             <q-btn
               flat
-              label="Save"
+              label="Delete"
+              color="negative"
               v-close-popup
-              @click="rename({
+              @click="
+                remove({
+                  path: `${fullPath}/${itemToDelete?.name}`,
+                  isRecursive: !!itemToDelete?.type
+                })
+              "
+            ></q-btn>
+          </q-card-actions>
+        </q-card>
+      </template>
+    </q-dialog>
+    <q-dialog v-model="uploadDialog">
+      <q-card>
+        <q-card-section class="q-pt-none">
+          <q-file
+            outlined
+            multiple
+            v-model="uploadedFiles"
+            label="Drop or select files"
+            class="q-pt-md"
+            :style="$q.screen.width > 380 ? 'width: 300px;' : ''"
+          >
+            <template v-slot:prepend>
+              <q-icon name="mdi-file-upload-outline"></q-icon>
+            </template>
+          </q-file>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Upload" v-close-popup @click="upload"></q-btn>
+          <q-btn flat label="Cancel" color="negative" v-close-popup></q-btn>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="renameDialog">
+      <q-card>
+        <q-card-section>
+          <q-input
+            v-model="editableItem.newName"
+            :label="'Rename ' + editableItem.oldName"
+            :style="$q.screen.width > 380 ? 'width: 300px;' : ''"
+          ></q-input>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            label="Save"
+            v-close-popup
+            @click="
+              rename({
                 path: fullPath,
                 oldName: editableItem.oldName,
                 newName: editableItem.newName
-              })"
-            ></q-btn>
-            <q-btn
-              flat
-              label="Cancel"
-              color="negative"
-              v-close-popup
-              @click="editableItem.newName = ''"
-            ></q-btn>
-          </q-card-actions>
-        </q-card>
-      </q-dialog>
-      <q-dialog v-model="mkdirDialog">
-        <q-card>
-          <q-card-section>
-            <q-input
-              v-model="createdDirName"
-              label="Folder name"
-              :style="$q.screen.width > 380 ? 'width: 300px;' : ''"
-            ></q-input>
-          </q-card-section>
+              })
+            "
+          ></q-btn>
+          <q-btn
+            flat
+            label="Cancel"
+            color="negative"
+            v-close-popup
+            @click="editableItem.newName = ''"
+          ></q-btn>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="mkdirDialog">
+      <q-card>
+        <q-card-section>
+          <q-input
+            v-model="createdDirName"
+            label="Folder name"
+            :style="$q.screen.width > 380 ? 'width: 300px;' : ''"
+          ></q-input>
+        </q-card-section>
 
-          <q-card-actions align="right">
-            <q-btn
-              flat
-              label="Create"
-              v-close-popup
-              @click="mkdir({
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            label="Create"
+            v-close-popup
+            @click="
+              mkdir({
                 path: `${fullPath}/${createdDirName}`
-              })"
-            ></q-btn>
-            <q-btn
-              flat
-              label="Cancel"
-              color="negative"
-              v-close-popup
-              @click="createdDirName = ''"
-            ></q-btn>
-          </q-card-actions>
-        </q-card>
-      </q-dialog>
-      <q-dialog v-model="blockingOperationDialog" persistent>
-        <q-card>
-          <q-card-section>
-            <div class="text-h6">File operation in progress</div>
-          </q-card-section>
-          <q-card-section v-if="file.name.length > 0">
-            <ProgressBar
-              :title="file.name"
-              :progress="file.progress"
-            />
-          </q-card-section>
-        </q-card>
-      </q-dialog>
+              })
+            "
+          ></q-btn>
+          <q-btn
+            flat
+            label="Cancel"
+            color="negative"
+            v-close-popup
+            @click="createdDirName = ''"
+          ></q-btn>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="blockingOperationDialog" persistent>
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">File operation in progress</div>
+        </q-card-section>
+        <q-card-section v-if="file.name.length > 0">
+          <ProgressBar :title="file.name" :progress="file.progress" />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -365,6 +321,7 @@ import { type RouteLocationRaw } from 'vue-router'
 import { ProgressBar } from 'shared/components/ProgressBar'
 
 import { FlipperModel } from 'entities/Flipper'
+import { FlipperWeb } from 'src/shared/lib/flipperJs'
 const flipperStore = FlipperModel.useFlipperStore()
 
 type PathItem = FlipperModel.File & {
@@ -438,18 +395,27 @@ const upload = async () => {
       path.pop()
       while (path.length > 0) {
         dir += '/' + path.shift()
-        const stat = await flipperStore.flipper.RPC('storageStat', { path: dir })
+        const stat = await flipperStore.flipper?.RPC('storageStat', {
+          path: dir
+        })
         if (!stat) {
-          await flipperStore.flipper.RPC('storageMkdir', { path: dir })
+          await flipperStore.flipper?.RPC('storageMkdir', { path: dir })
         }
       }
     }
 
-    const unbind = flipperStore.flipper.emitter.on('storageWriteRequest/progress', e => {
-      file.value.progress = e.progress / e.total
-    })
+    const unbind = flipperStore.flipper?.emitter.on(
+      'storageWriteRequest/progress',
+      (e: { progress: number; total: number }) => {
+        file.value.progress = e.progress / e.total
+      }
+    )
 
-    await flipperStore.flipper.RPC('storageWrite', { path: dir + '/' + localFile.name, buffer: await localFile.arrayBuffer() })
+    await flipperStore.flipper
+      ?.RPC('storageWrite', {
+        path: dir + '/' + localFile.name,
+        buffer: await localFile.arrayBuffer()
+      })
       .then(() => {
         // log({
         //   level: 'debug',
@@ -457,7 +423,9 @@ const upload = async () => {
         // })
       })
       .catch(/* error => rpcErrorHandler(componentName, error, 'storageWrite') */)
-    unbind()
+    if (unbind) {
+      unbind()
+    }
   }
   file.value.name = ''
   list({
@@ -472,12 +440,9 @@ const showMkdirDialog = () => {
   mkdirDialog.value = true
   createdDirName.value = ''
 }
-const mkdir = async ({
-  path
-}: {
-  path: string
-}) => {
-  await flipperStore.flipper.RPC('storageMkdir', { path })
+const mkdir = async ({ path }: { path: string }) => {
+  await flipperStore.flipper
+    ?.RPC('storageMkdir', { path })
     .then(() => {
       // log({
       //   level: 'debug',
@@ -493,14 +458,20 @@ const mkdir = async ({
 onMounted(async () => {
   if (flipperStore.flipperReady) {
     if (!flipperStore.rpcActive) {
-      await flipperStore.flipper.startRPCSession()
-
-      if (!flipperStore.info) {
-        await flipperStore.flipper.getInfo()
+      if (!flipperStore.isElectron) {
+        if (flipperStore.flipper instanceof FlipperWeb) {
+          await flipperStore.flipper?.startRPCSession()
+        }
+      } else {
+        flipperStore.flipper?.setReadingMode('rpc')
       }
     }
 
-    if (flipperStore.flipper.readingMode.type === 'raw') {
+    if (flipperStore.flipper?.readingMode.type === 'rpc') {
+      if (!flipperStore.info) {
+        await flipperStore.flipper?.getInfo()
+      }
+
       list({
         path: fullPath.value
       })
@@ -508,20 +479,20 @@ onMounted(async () => {
   }
 })
 
-watch(() => flipperStore.flipperReady, (newValue) => {
-  if (newValue) {
-    list({
-      path: fullPath.value
-    })
+watch(
+  () => flipperStore.flipperReady,
+  (newValue) => {
+    if (newValue) {
+      list({
+        path: fullPath.value
+      })
+    }
   }
-})
+)
 
-const list = async ({
-  path
-}: {
-  path: string
-}) => {
-  const list = await flipperStore.flipper.RPC('storageList', { path })
+const list = async ({ path }: { path: string }) => {
+  const list = await flipperStore.flipper
+    ?.RPC('storageList', { path })
     .then((list: FlipperModel.File[]) => {
       // log({
       //   level: 'debug',
@@ -543,11 +514,7 @@ const list = async ({
   }
 }
 
-const movePath = async ({
-  item
-}: {
-  item: PathItem
-}) => {
+const movePath = async ({ item }: { item: PathItem }) => {
   if (item.path !== fullPath.value) {
     await list({
       path: item.path
@@ -555,7 +522,9 @@ const movePath = async ({
 
     fullPath.value = item.path
 
-    const removeIndex = pathList.value.findIndex((dir) => dir.name === item.name)
+    const removeIndex = pathList.value.findIndex(
+      (dir) => dir.name === item.name
+    )
     pathList.value.splice(removeIndex + 1)
   }
 }
@@ -610,20 +579,26 @@ const read = async ({
 }) => {
   blockingOperationDialog.value = true
   file.value.name = fullPath.value.slice(fullPath.value.lastIndexOf('/') + 1)
-  const localFile = dirs.value.find(e => e.name === file.value.name && !e.type)
+  const localFile = dirs.value.find(
+    (e) => e.name === file.value.name && !e.type
+  )
 
   let unbind
   if (localFile) {
     const total = localFile.size
 
     if (total) {
-      unbind = flipperStore.flipper.emitter.on('storageReadRequest/progress', chunks => {
-        file.value.progress = Math.min(chunks * 512, total) / total
-      })
+      unbind = flipperStore.flipper?.emitter.on(
+        'storageReadRequest/progress',
+        (chunks: number) => {
+          file.value.progress = Math.min(chunks * 512, total) / total
+        }
+      )
     }
   }
 
-  const res: Uint8Array = await flipperStore.flipper.RPC('storageRead', { path: filePath })
+  const res: Uint8Array = await flipperStore.flipper
+    ?.RPC('storageRead', { path: filePath })
     .then((data: Uint8Array) => {
       // log({
       //   level: 'debug',
@@ -687,11 +662,15 @@ const rename = async ({
   oldName,
   newName
 }: {
-  path: string,
-  oldName: string,
+  path: string
+  oldName: string
   newName: string
 }) => {
-  await flipperStore.flipper.RPC('storageRename', { oldPath: path + '/' + oldName, newPath: path + '/' + newName })
+  await flipperStore.flipper
+    ?.RPC('storageRename', {
+      oldPath: path + '/' + oldName,
+      newPath: path + '/' + newName
+    })
     .then(() => {
       // log({
       //   level: 'debug',
@@ -717,7 +696,8 @@ const remove = async ({
   path: string
   isRecursive: boolean
 }) => {
-  await flipperStore.flipper.RPC('storageRemove', { path, recursive: isRecursive })
+  await flipperStore.flipper
+    ?.RPC('storageRemove', { path, recursive: isRecursive })
     .then(() => {
       // log({
       //   level: 'debug',

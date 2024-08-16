@@ -113,14 +113,22 @@ const flipperStore = FlipperModel.useFlipperStore()
 import { NfcModel } from 'entities/Nfc'
 const nfcStore = NfcModel.useNfcStore()
 import { useNumbersOnly } from 'shared/lib/utils/useNumberOnly'
+import { FlipperWeb } from 'shared/lib/flipperJs'
 
 const mfkeyStatus = ref('')
 
 const nonces = ref<string[]>([])
 const noncesNotFound = ref(false)
 const readNonces = async () => {
+  noncesNotFound.value = false
+
+  if (!flipperStore.info?.storage.sdcard?.status.isInstalled) {
+    flipperStore.dialogs.microSDcardMissing = true
+    return
+  }
+
   const res = await flipperStore.flipper
-    .RPC('storageRead', { path: '/ext/nfc/.mfkey32.log' })
+    ?.RPC('storageRead', { path: '/ext/nfc/.mfkey32.log' })
     .catch((error: object) => {
       // rpcErrorHandler(componentName, error, 'storageRead')
       mfkeyStatus.value = 'Mfkey log file not found'
@@ -144,31 +152,44 @@ const readNonces = async () => {
   if (nonces.value[nonces.value.length - 1].length === 0) {
     nonces.value.pop()
   }
+
+  if (nonces.value.length === 0) {
+    const res = await flipperStore.flipper
+      ?.RPC('storageStat', { path: '/ext/nfc/.mfkey32.log' })
+      .catch((error: object) => {
+        console.error(error)
+      })
+    if (res && res.size) {
+      mfkeyStatus.value = 'No nonces found in log file'
+    } else {
+      mfkeyStatus.value = 'Log file not found'
+    }
+    noncesNotFound.value = true
+  }
 }
 onMounted(async () => {
   if (flipperStore.flipperReady) {
-    if (flipperStore.rpcActive) {
-      noncesNotFound.value = false
-      await readNonces()
-
-      if (nonces.value.length === 0) {
-        const res = await flipperStore.flipper
-          .RPC('storageStat', { path: '/ext/nfc/.mfkey32.log' })
-          .catch((error: object) => {
-            console.error(error)
-          })
-        if (res && res.size) {
-          mfkeyStatus.value = 'No nonces found in log file'
-        } else {
-          mfkeyStatus.value = 'Log file not found'
+    if (!flipperStore.rpcActive) {
+      if (!flipperStore.isElectron) {
+        if (flipperStore.flipper instanceof FlipperWeb) {
+          await flipperStore.flipper?.startRPCSession()
         }
-        noncesNotFound.value = true
+      } else {
+        flipperStore.flipper?.setReadingMode('rpc')
       }
+    }
+
+    if (flipperStore.rpcActive) {
+      if (!flipperStore.info) {
+        await flipperStore.flipper?.getInfo()
+      }
+
+      await readNonces()
     }
   }
 })
 watch(
-  () => flipperStore.flipper.flipperReady,
+  () => flipperStore.flipper?.flipperReady,
   async (newValue) => {
     if (newValue) {
       readNonces()
@@ -217,7 +238,7 @@ const mfkeyFlipperStart = async () => {
 
   mfkeyStatus.value = 'Loading user dictionary'
   const res = await flipperStore.flipper
-    .RPC('storageRead', { path: '/ext/nfc/assets/mf_classic_dict_user.nfc' })
+    ?.RPC('storageRead', { path: '/ext/nfc/assets/mf_classic_dict_user.nfc' })
     .catch((error: object) => {
       // rpcErrorHandler(componentName, error, 'storageRead')
       console.error(error)
@@ -251,7 +272,7 @@ const mfkeyFlipperStart = async () => {
   const file = new TextEncoder().encode(Array.from(dictionary).join('\n'))
   const path = '/ext/nfc/assets/mf_classic_dict_user.nfc'
   await flipperStore.flipper
-    .RPC('storageWrite', { path, buffer: file.buffer })
+    ?.RPC('storageWrite', { path, buffer: file.buffer })
     .catch((error: object) => {
       // rpcErrorHandler(componentName, error, 'storageWrite')
       console.error(error)

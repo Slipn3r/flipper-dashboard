@@ -3,11 +3,11 @@
 export const SERIAL_TIMEOUT = 5000
 export const RPC_TIMEOUT = 4000
 
-export function watch (callback, emitter, requestType) {
+export function watch(callback, emitter, requestType) {
   const validator = {
     set: (target, key, value) => {
       target[key] = value
-      if (typeof (value) === 'object') {
+      if (typeof value === 'object') {
         if (emitter) {
           emitter.emit(requestType + '/progress', key)
         }
@@ -34,10 +34,13 @@ export function watch (callback, emitter, requestType) {
 //   }
 // }
 
-export function createRPCPromise (requestType, args, format, emitter, timeout) {
+export function createRPCPromise(requestType, args, format, emitter, timeout) {
   return new Promise((resolve, reject) => {
-    const rejectTimeout = setTimeout(() => reject(`RPC timeout: ${requestType}`), timeout || RPC_TIMEOUT)
-    function callback (chunks) {
+    const rejectTimeout = setTimeout(
+      () => reject(`RPC timeout: ${requestType}`),
+      timeout || RPC_TIMEOUT
+    )
+    function callback(chunks) {
       let result
       if (format) {
         result = format(chunks)
@@ -68,11 +71,11 @@ export function createRPCPromise (requestType, args, format, emitter, timeout) {
   })
 }
 
-export function isObject (item) {
-  return (item && typeof item === 'object' && !Array.isArray(item))
+export function isObject(item) {
+  return item && typeof item === 'object' && !Array.isArray(item)
 }
 
-export function mergeDeep (target, ...sources) {
+export function mergeDeep(target, ...sources) {
   if (!sources.length) return target
   const source = sources.shift()
   if (isObject(target) && isObject(source)) {
@@ -88,7 +91,7 @@ export function mergeDeep (target, ...sources) {
   return mergeDeep(target, ...sources)
 }
 
-export function expand (str, separator, defaultVal = {}) {
+export function expand(str, separator, defaultVal = {}) {
   return str.split(separator).reduceRight((acc, currentVal) => {
     return {
       [currentVal]: acc

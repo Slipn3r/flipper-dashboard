@@ -1,12 +1,53 @@
 <template>
   <q-layout view="hhh LpR fff">
-    <AppHeader @toggleLeftDrawer="toggleLeftDrawer" />
+    <AppHeader
+      v-if="!flipperStore.isElectron"
+      @toggleLeftDrawer="toggleLeftDrawer"
+    />
 
     <AppDrawer v-model="leftDrawerOpen" />
 
     <q-page-container>
-      <template v-if="route.meta.canLoadWithoutFlipper || flipperStore.flipperReady">
-        <router-view />
+      <template
+        v-if="
+          route.meta.canLoadWithoutFlipper ||
+          flipperStore.flipperReady ||
+          flipperStore.flags.switchFlipper ||
+          flipperStore.flags.updateInProgress
+        "
+      >
+        <template v-if="flipperStore.flags.switchFlipper">
+          <q-page class="flex flex-center" padding>
+            <Loading label="Switching Flipper..." />
+          </q-page>
+        </template>
+        <template v-else>
+          <router-view />
+        </template>
+      </template>
+      <template v-else-if="flipperStore.isElectron">
+        <q-page class="flex flex-center fit" padding>
+          <q-card flat>
+            <q-card-section class="q-pa-none q-ma-md" align="center">
+              <template
+                v-if="
+                  flipperStore.flags.isBridgeReady &&
+                  !flipperStore.flags.flipperIsInitialized
+                "
+              >
+                <q-img
+                  src="~assets/flipper_alert.svg"
+                  width="70px"
+                  no-spinner
+                />
+                <div class="text-h6 q-my-sm">Flipper not connected</div>
+              </template>
+              <template v-else>
+                <Loading label="Flipper is initialized..." />
+              </template>
+            </q-card-section>
+          </q-card>
+        </q-page>
       </template>
       <template v-else>
         <q-page class="flex flex-center fit" padding>
@@ -14,9 +55,36 @@
         </q-page>
       </template>
 
-      <q-dialog v-model="flipperStore.flags.microSDcardMissingDialog">
+      <q-dialog v-model="flipperStore.dialogs.microSDcardMissing">
         <FlipperMicroSDCard isDialog />
       </q-dialog>
+      <AppOutdatedFirmwareDialog
+        v-model="appsStore.dialogs.outdatedFirmwareDialog"
+        :persistent="appsStore.dialogs.outdatedFirmwareDialogPersistent"
+      />
+      <FlipperConnectFlipperDialog
+        v-model="flipperStore.dialogs.connectFlipper"
+      >
+        <template v-slot:description>
+          <template v-if="flipperStore.isElectron">
+            <p>Plug in your Flipper and and wait for initialization</p>
+          </template>
+          <template v-else>
+            <p>Plug in your Flipper and click the button below</p>
+          </template>
+        </template>
+        <template v-slot:default>
+          <template v-if="!flipperStore.isElectron">
+            <FlipperConnectWebBtn />
+          </template>
+        </template>
+      </FlipperConnectFlipperDialog>
+      <FlipperMobileDetectedDialog
+        v-model="flipperStore.dialogs.mobileDetected"
+      />
+      <FlipperUnsupportedBrowserDialog
+        v-model="flipperStore.dialogs.serialUnsupported"
+      />
     </q-page-container>
   </q-layout>
 </template>
@@ -27,8 +95,17 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 
 import { AppHeader, AppDrawer } from './components'
+import { Loading } from 'shared/components/Loading'
 
-import { FlipperMicroSDCard } from 'widgets/Flipper/Dialogs'
+import {
+  FlipperMicroSDCard,
+  FlipperConnectFlipperDialog,
+  FlipperMobileDetectedDialog,
+  FlipperUnsupportedBrowserDialog
+} from 'entities/Flipper'
+import { AppsModel, AppOutdatedFirmwareDialog } from 'entities/Apps'
+const appsStore = AppsModel.useAppsStore()
+
 import { FlipperConnectWebBtn } from 'features/Flipper'
 import { FlipperModel } from 'entities/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
@@ -43,7 +120,7 @@ const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
 
-onMounted(() => {
+onMounted(async () => {
   if (localStorage.getItem('autoReconnect') !== 'false') {
     flipperStore.flags.autoReconnect = true
   } else {
