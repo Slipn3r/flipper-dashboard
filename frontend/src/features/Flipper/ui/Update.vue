@@ -172,13 +172,13 @@ const fwOptions = ref([
   },
   {
     label: 'Release-candidate',
-    value: 'rc',
+    value: 'release-candidate',
     version: '',
     color: 'accent'
   },
   {
     label: 'Dev (unstable)',
-    value: 'dev',
+    value: 'development',
     version: '',
     color: 'negative'
   }
