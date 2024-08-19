@@ -1,21 +1,58 @@
 const { exec } = require('child_process')
+const {
+  bgGreen,
+  green,
+  inverse,
+  // bgRed,
+  // red,
+  // bgYellow,
+  // yellow,
+  black,
+  // white,
+  underline
+} = require('kolorist')
 // const fs = require('fs')
 // const path = require('path')
 // const readline = require('readline')
 
+const dot = '•'
+const banner = 'Before build ' + dot
+const greenBanner = green(banner)
+
 const compileProtofiles = () => {
+  const startTime = Date.now()
+  console.log()
+  console.log(
+    ` ${greenBanner} ${inverse(' WAIT ')} ${dot} Compiling of ${underline(
+      green('Protofiles')
+    )} in progress...`
+  )
+
   return new Promise((resolve, reject) => {
     exec(
-      'git submodule update --remote --merge -- ./src/shared/lib/flipperzero-protobuf && echo "compile-protofiles START" && pbjs -t static-module -w es6 --no-comments --lint "eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars, camelcase, default-case-last, no-mixed-operators" -o src/shared/lib/flipperJs/protobufCompiled.js ./src/shared/lib/flipperzero-protobuf/*.proto && npx eslint --fix src/shared/lib/flipperJs/protobufCompiled.js && echo "compile-protofiles END"',
+      'git submodule update --remote --merge -- ./src/shared/lib/flipperzero-protobuf && pbjs -t static-module -w es6 --no-comments --lint "eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars, camelcase, default-case-last, no-mixed-operators" -o src/shared/lib/flipperJs/protobufCompiled.js ./src/shared/lib/flipperzero-protobuf/*.proto && npx eslint --fix src/shared/lib/flipperJs/protobufCompiled.js && echo ""',
       (err, stdout, stderr) => {
         if (err) {
           reject(err)
         }
         if (stdout) {
-          console.log(stdout)
+          const diffTime = +new Date() - startTime
+          console.log(
+            ` ${greenBanner} ${bgGreen(black(' DONE '))} ${green(
+              dot +
+                ' ' +
+                underline('Protofiles') +
+                ' compiled with success ' +
+                dot +
+                ' ' +
+                diffTime +
+                'ms'
+            )}`
+          )
+          console.log()
         }
         if (stderr) {
-          console.error(stderr)
+          console.error('stderr', stderr)
         }
         resolve()
       }
