@@ -7,7 +7,7 @@
           style="image-rendering: pixelated"
         />
       </div>
-      <div class="column q-mr-md">
+      <div class="col column q-mr-md">
         <div class="row">
           <p class="text-h6 q-mr-sm q-mb-none">{{ app.name }}</p>
           <q-chip
