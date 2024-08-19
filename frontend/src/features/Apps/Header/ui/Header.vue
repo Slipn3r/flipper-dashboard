@@ -73,7 +73,7 @@
         flat
         rounded
         no-caps
-        color="black"
+        :color="$route.name === 'InstalledApps' ? 'primary' : 'black'"
         icon="flipper:installed"
         label="Installed"
         :to="{ name: 'InstalledApps' }"
