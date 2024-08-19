@@ -34,7 +34,9 @@
         </q-card>
       </div>
     </template>
-    <InstalledList v-else />
+    <template v-else-if="!flipperStore.flags.flipperIsInitialized">
+      <InstalledList />
+    </template>
   </q-page>
 </template>
 

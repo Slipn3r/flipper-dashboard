@@ -301,10 +301,6 @@ export const useFlipperStore = defineStore('flipper', () => {
     // await asyncSleep(1000)
 
     // flipper.value = _flipper
-    flags.waitForReconnect = false
-    flags.switchFlipper = false
-    flags.flipperIsInitialized = false
-
     appsStore.onClearInstalledAppsList()
     if (
       localFlipper.readingMode.type === 'rpc' &&
@@ -316,6 +312,10 @@ export const useFlipperStore = defineStore('flipper', () => {
         })
       }
     }
+
+    flags.waitForReconnect = false
+    flags.switchFlipper = false
+    flags.flipperIsInitialized = false
   }
 
   const isDataFlipperElectron = (

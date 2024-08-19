@@ -128,12 +128,12 @@ onMounted(async () => {
   }
 })
 
-watch(
-  () => flipperStore.flipperReady,
-  async () => {
-    await reLoad()
-  }
-)
+// watch(
+//   () => flipperStore.flipperReady,
+//   async () => {
+//     await reLoad()
+//   }
+// )
 
 watch(
   () => flipperStore.flags.catalogChannelProduction,
