@@ -94,7 +94,7 @@ async function fetchAppById(params: GetAppParams) {
 
 async function fetchAppsVersions(uids: string[]) {
   const allVersions: AppVersion[] = []
-  uids = uids.filter((u) => u)
+  uids = uids.filter((u) => u.trim())
 
   if (uids) {
     const size = 100
