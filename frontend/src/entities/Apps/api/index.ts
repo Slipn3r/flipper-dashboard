@@ -49,6 +49,8 @@ async function fetchAppsShort(params: Partial<AppsShortParams> = {}) {
 }
 
 async function fetchPostAppsShort(params: AppsPostShortParams) {
+  params.applications = params.applications?.filter((u) => u.trim())
+
   return await instance.post('/1/application', params).then(({ data }) =>
     data.map((app: App) => {
       // app.action = {
