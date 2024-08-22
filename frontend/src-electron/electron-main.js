@@ -162,7 +162,11 @@ function createWindow() {
     }
   })
 
-  mainWindow.loadURL(process.env.APP_URL)
+  mainWindow.loadURL(process.env.APP_URL).then(() => {
+    if (process.env.DEBUGGING && process.env.NODE_ENV === 'production') {
+      mainWindow.title = `${app.getName()} v.${app.getVersion()}`
+    }
+  })
 
   if (process.env.DEBUGGING) {
     // if on DEV or Production with debug enabled
