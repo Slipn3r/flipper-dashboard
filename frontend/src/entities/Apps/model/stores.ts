@@ -66,7 +66,9 @@ export const useAppsStore = defineStore('apps', () => {
 
     if (refreshInstalledApps) {
       // onClearInstalledAppsList()
-      await flipper.value?.getInstalledApps()
+      await flipper.value?.getInstalledApps().catch((error: Error) => {
+        throw error
+      })
     }
 
     try {
@@ -747,9 +749,17 @@ export const useAppsStore = defineStore('apps', () => {
       )
     }
 
+    await flipper.value
+      .RPC('systemPing', { timeout: 1000 })
+      .catch((error: Error) => {
+        throw error
+      })
+
     // post-install
     await getInstalledApps({
       refreshInstalledApps: true
+    }).catch((error: Error) => {
+      throw error
     })
 
     appNotif.value({
@@ -866,9 +876,17 @@ export const useAppsStore = defineStore('apps', () => {
       )
     }
 
-    // post-delete
+    await flipper.value
+      .RPC('systemPing', { timeout: 1000 })
+      .catch((error: Error) => {
+        throw error
+      })
+
+    // post-install
     await getInstalledApps({
       refreshInstalledApps: true
+    }).catch((error: Error) => {
+      throw error
     })
 
     appNotif.value({

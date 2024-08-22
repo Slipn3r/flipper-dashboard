@@ -92,7 +92,14 @@ export default class Flipper {
   }
   async getInstalledApps() {
     onClearInstalledAppsList()
-    this.installedApps = await getInstalledApps.bind(this)()
+    await getInstalledApps
+      .bind(this)()
+      .then((apps) => {
+        this.installedApps = apps
+      })
+      .catch((error: Error) => {
+        throw error
+      })
   }
 
   encodeRPCRequest(
