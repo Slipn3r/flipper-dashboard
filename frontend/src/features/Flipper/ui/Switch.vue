@@ -1,6 +1,12 @@
 <template>
-  <q-item clickable @click="onSwitchFlipper">
-    <!-- :disable="flags.disableButtonMultiflipper || flags.disableNavigation" -->
+  <q-item
+    :disable="
+      flipperStore.flags.disableButtonMultiflipper ||
+      flipperStore.flags.disableNavigation
+    "
+    clickable
+    @click="onSwitchFlipper"
+  >
     <q-item-section avatar class="items-center">
       <q-avatar size="md" square>
         <q-icon name="flipper:switch" size="32px" />
@@ -17,7 +23,7 @@
       <q-item-label>My Flippers</q-item-label>
     </q-item-section>
   </q-item>
-  <!-- v-if="!flags.dialogRecovery" -->
+
   <q-dialog v-model="flipperStore.dialogs.multiflipper">
     <q-card class="rounded-borders">
       <q-card-section class="row items-center" style="min-width: 350px">
@@ -38,10 +44,6 @@
               @click="connectFlipper(flipper)"
               v-close-popup
             >
-              <!-- :style="`${info?.hardware?.uid === flipper.info.hardware.uid ? 'border: 2px solid ' + getCssVar('primary') : ''}`"
-            :active="info?.hardware?.uid === flipper.info.hardware.uid"
-            :clickable="info?.hardware?.uid !== flipper.info.hardware.uid"
-            @click="onConnectFlipper(flipper.name)" -->
               <q-item-section class="col-5">
                 <img
                   v-if="flipper.info?.hardware.color === '1'"

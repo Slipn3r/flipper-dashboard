@@ -6,7 +6,8 @@ import { FlipperModel } from 'entities/Flipper'
 import { CategoryModel } from 'entities/Category'
 import {
   addToQueue,
-  getFlipperCurrentlyParticipating
+  getFlipperCurrentlyParticipating,
+  getProcess
 } from 'shared/lib/utils/usePromiseQueue'
 
 import { showNotif } from 'shared/lib/utils/useShowNotif'
@@ -290,7 +291,6 @@ export const useAppsStore = defineStore('apps', () => {
   }
   const actionAppList = ref<Array<App | InstalledApp>>([])
   const onAction = async (app: App | InstalledApp, actionType: ActionType) => {
-    // TODO: validation check //
     if (Platform.is.mobile) {
       dialogs.mobileAppDialog = true
       return
@@ -304,6 +304,8 @@ export const useAppsStore = defineStore('apps', () => {
       flipperStore.dialogs.connectFlipper = true
       return
     }
+
+    flipperStore.flags.disableButtonMultiflipper = true
 
     app.action = {
       progress: 0,
@@ -344,6 +346,10 @@ export const useAppsStore = defineStore('apps', () => {
       flipperName: flipper.value?.name,
       params: [app, actionType]
     })
+
+    if (getProcess() === false) {
+      flipperStore.flags.disableButtonMultiflipper = false
+    }
   }
 
   const appNotif = ref()

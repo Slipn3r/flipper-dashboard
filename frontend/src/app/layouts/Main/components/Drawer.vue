@@ -13,6 +13,7 @@
               <RouterLink
                 v-for="link in linksList"
                 :key="link.title"
+                :disable="flipperStore.flags.disableNavigation"
                 v-bind="link"
               />
             </div>

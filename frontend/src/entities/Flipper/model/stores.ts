@@ -64,7 +64,8 @@ export const useFlipperStore = defineStore('flipper', () => {
     flipperIsInitialized: ref(false),
     catalogChannelProduction: ref(getCatalogChannel()),
     catalogCanSwitchChannel: ref(catalogCanSwitchChannel),
-    disableNavigation: ref(false)
+    disableNavigation: ref(false),
+    disableButtonMultiflipper: ref(false)
   })
 
   const dialogs = reactive({
@@ -188,13 +189,15 @@ export const useFlipperStore = defineStore('flipper', () => {
   const onUpdateStage = (stage: string) => {
     if (flipper.value) {
       if (stage === 'start') {
-        // flags.disableNavigation = true
+        flags.disableButtonMultiflipper = true
+        flags.disableNavigation = true
         flags.updateInProgress = true
         flipper.value.updating = true
 
         // stopScreenStream()
       } else if (stage === 'end') {
-        // flags.disableNavigation = false
+        flags.disableButtonMultiflipper = false
+        flags.disableNavigation = false
         flags.updateInProgress = false
         flipper.value.updating = false
       }
