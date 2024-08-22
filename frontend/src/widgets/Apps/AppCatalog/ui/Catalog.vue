@@ -7,23 +7,28 @@
         column: !$q.screen.gt.md
       }"
     >
-      <CategoriesList
-        :class="{
-          'q-mr-md': $q.screen.gt.md,
-          'q-mb-md justify-center': !$q.screen.gt.md
-        }"
-        class="col"
-        @categorySelected="onCategorySelected"
-      />
-      <q-select
-        class="col-auto"
-        v-model="sortModel"
-        @update:model-value="onSortApps()"
-        :options="sortOptions"
-        dense
-        standout="bg-primary text-white no-shadow"
-        rounded
-      />
+      <template v-if="categoriesStore.categoriesLoading">
+        <Loading label="Loading categories..." />
+      </template>
+      <div v-show="!categoriesStore.categoriesLoading">
+        <CategoriesList
+          :class="{
+            'q-mr-md': $q.screen.gt.md,
+            'q-mb-md justify-center': !$q.screen.gt.md
+          }"
+          class="col"
+          @categorySelected="onCategorySelected"
+        />
+        <q-select
+          class="col-auto"
+          v-model="sortModel"
+          @update:model-value="onSortApps()"
+          :options="sortOptions"
+          dense
+          standout="bg-primary text-white no-shadow"
+          rounded
+        />
+      </div>
     </div>
     <q-infinite-scroll
       ref="infinityScrollRef"
