@@ -1,10 +1,6 @@
 <template>
   <q-list class="row q-col-gutter-sm">
-    <div
-      class="col-auto"
-      v-for="category in categoriesStore.categories"
-      :key="category.id"
-    >
+    <div class="col-auto" v-for="category in categories" :key="category.id">
       <CategoryChip
         v-bind="category"
         :isCurrentCategory="
@@ -18,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, watch } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
@@ -42,6 +38,15 @@ const getCategories = async () => {
     })
   }
 }
+
+const categories = computed(() => [
+  {
+    name: 'All apps',
+    color: 'EBEBEB',
+    id: '-1'
+  },
+  ...categoriesStore.categories
+])
 
 onMounted(async () => {
   await getCategories()

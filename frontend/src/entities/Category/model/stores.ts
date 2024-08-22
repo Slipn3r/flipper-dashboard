@@ -36,16 +36,7 @@ export const useCategoriesStore = defineStore('categories', () => {
     }
 
     try {
-      const data = await api.fetchCategories(params)
-
-      categories.value = [
-        {
-          name: 'All apps',
-          color: 'EBEBEB',
-          id: '-1'
-        },
-        ...data
-      ]
+      categories.value = await api.fetchCategories(params)
 
       const path = route.params.path
       if (path) {
