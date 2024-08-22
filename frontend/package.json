@@ -2,7 +2,7 @@
   "name": "lab.flipper.net",
   "version": "0.0.1",
   "description": "Web platform for your Flipper",
-  "productName": "lab.flipper.net",
+  "productName": "Flipper Lab",
   "repository": {
     "type": "git",
     "url": "https://github.com/flipperdevices/lab.flipper.net.git"

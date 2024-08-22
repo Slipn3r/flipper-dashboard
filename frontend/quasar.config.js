@@ -213,7 +213,7 @@ module.exports = configure(function (/* ctx */) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'new-architecture',
+        appId: 'lab.flipper.net',
         dmg: {
           sign: false
         },
