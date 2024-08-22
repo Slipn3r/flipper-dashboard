@@ -1,34 +1,33 @@
 <template>
   <div>
+    <template v-if="categoriesStore.categoriesLoading">
+      <Loading label="Loading categories..." />
+    </template>
     <div
+      v-show="!categoriesStore.categoriesLoading"
       class="q-mb-lg"
       :class="{
-        row: $q.screen.gt.md,
-        column: !$q.screen.gt.md
+        row: !$q.screen.lt.md,
+        column: $q.screen.lt.md
       }"
     >
-      <template v-if="categoriesStore.categoriesLoading">
-        <Loading label="Loading categories..." />
-      </template>
-      <div v-show="!categoriesStore.categoriesLoading">
-        <CategoriesList
-          :class="{
-            'q-mr-md': $q.screen.gt.md,
-            'q-mb-md justify-center': !$q.screen.gt.md
-          }"
-          class="col"
-          @categorySelected="onCategorySelected"
-        />
-        <q-select
-          class="col-auto"
-          v-model="sortModel"
-          @update:model-value="onSortApps()"
-          :options="sortOptions"
-          dense
-          standout="bg-primary text-white no-shadow"
-          rounded
-        />
-      </div>
+      <CategoriesList
+        :class="{
+          'q-mr-md': !$q.screen.lt.md,
+          'q-mb-md justify-center': $q.screen.lt.md
+        }"
+        class="col"
+        @categorySelected="onCategorySelected"
+      />
+      <q-select
+        class="col-auto"
+        v-model="sortModel"
+        @update:model-value="onSortApps()"
+        :options="sortOptions"
+        dense
+        standout="bg-primary text-white no-shadow"
+        rounded
+      />
     </div>
     <q-infinite-scroll
       ref="infinityScrollRef"

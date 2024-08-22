@@ -5,18 +5,18 @@
     </template>
     <template v-else-if="currentApp">
       <div class="row items-center q-mb-lg">
-        <div class="row">
+        <div class="row col">
           <div class="app__icon-wrapper q-mr-md">
             <q-img
               :src="currentApp.currentVersion.iconUri"
               style="image-rendering: pixelated"
             />
           </div>
-          <div>
+          <div class="col">
             <h2 class="text-h6 q-ma-none q-mb-xs">
               {{ currentApp.currentVersion.name }}
             </h2>
-            <div class="row items-center q-gutter-md">
+            <div class="row items-center q-gutter-x-md">
               <div>
                 <CategoryChip
                   v-if="category"
