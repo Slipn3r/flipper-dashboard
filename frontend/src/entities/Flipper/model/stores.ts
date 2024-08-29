@@ -80,6 +80,10 @@ export const useFlipperStore = defineStore('flipper', () => {
   const recoveringFlipperName = ref('')
   const oldFlipper = ref<FlipperElectron | FlipperWeb>()
   const flipper = ref<FlipperElectron | FlipperWeb>()
+
+  if (!Platform.is.electron) {
+    flipper.value = new FlipperWeb()
+  }
   // Platform.is.electron
   //   ? new FlipperElectron(/* '', createNanoEvents() */)
   //   : new FlipperWeb()
