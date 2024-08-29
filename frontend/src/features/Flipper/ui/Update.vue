@@ -95,6 +95,8 @@
         class="full-width"
         :title="write.filename"
         :progress="write.progress"
+        color="positive"
+        trackColor="green-4"
         size="56px"
       />
     </template>
@@ -418,16 +420,10 @@ const loadFirmware = async () => {
             throw error
           })
           .then((value) => {
-            const channel = channels.value.find(
-              (channel) => channel.id === fwModel.value.value
-            )
-
-            if (channel) {
-              log({
-                level: 'debug',
-                message: `${componentName}: Downloaded firmware from ${channel.url}`
-              })
-            }
+            log({
+              level: 'debug',
+              message: `${componentName}: Downloaded firmware from ${file.url}`
+            })
             return value
           })
       }
@@ -442,10 +438,8 @@ const loadFirmware = async () => {
     let path = '/ext/update/'
     await flipperStore.flipper
       ?.RPC('storageStat', { path: '/ext/update' })
-      .catch(async (error: Error) => {
-        if (error.toString() !== 'ERROR_STORAGE_NOT_EXIST') {
-          rpcErrorHandler({ componentName, error, command: 'storageStat' })
-        } else {
+      .then(async (file: FlipperModel.File) => {
+        if (file === undefined) {
           await flipperStore.flipper
             ?.RPC('storageMkdir', { path: '/ext/update' })
             .catch((error: Error) =>
@@ -457,6 +451,11 @@ const loadFirmware = async () => {
                 message: `${componentName}: storageMkdir: /ext/update`
               })
             })
+        }
+      })
+      .catch(async (error: Error) => {
+        if (error.toString() !== 'ERROR_STORAGE_NOT_EXIST') {
+          rpcErrorHandler({ componentName, error, command: 'storageStat' })
         }
       })
 
