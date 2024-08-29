@@ -7,6 +7,8 @@ import { FlipperWeb, FlipperElectron } from 'shared/lib/flipperJs'
 import { showNotif } from 'shared/lib/utils/useShowNotif'
 import { log } from 'shared/lib/utils/useLog'
 
+import { clearQueue } from 'shared/lib/utils/usePromiseQueue'
+
 import { AppsModel } from 'entities/Apps'
 import {
   FlipperInfo,
@@ -129,6 +131,7 @@ export const useFlipperStore = defineStore('flipper', () => {
       //   console.log(flippers.value)
       // })
 
+      clearQueue()
       const currentAutoReconnectFlag = unref(flags.autoReconnect)
       await flipper.value
         .connect({
@@ -261,6 +264,7 @@ export const useFlipperStore = defineStore('flipper', () => {
       oldFlipper.value = unref(flipper.value)
     }
 
+    clearQueue()
     await asyncSleep(500)
 
     const localFlipper = new FlipperElectron(
