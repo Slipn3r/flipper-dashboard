@@ -197,20 +197,21 @@
         </template>
         <q-expansion-item
           v-model="showRecoveryLog"
-          class="full-width"
+          class="full-width q-mt-md"
           icon="svguse:common-icons.svg#logs"
           label="View logs"
         >
-          <q-scroll-area
-            ref="scrollAreaRef"
+          <div
+            class="full-width bg-grey-12 q-px-sm q-py-xs rounded-borders"
             style="height: 300px"
-            class="full-width bg-grey-12 q-mt-md q-px-sm q-py-xs rounded-borders text-left"
           >
-            <code v-for="line in recoveryLogs" :key="line">
-              {{ line }}
-              <br />
-            </code>
-          </q-scroll-area>
+            <q-scroll-area ref="scrollAreaRef" class="fit text-left">
+              <code v-for="line in recoveryLogs" :key="line">
+                {{ line }}
+                <br />
+              </code>
+            </q-scroll-area>
+          </div>
         </q-expansion-item>
       </q-card-section>
     </q-card>
@@ -219,7 +220,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { getCssVar } from 'quasar'
+import { getCssVar, QScrollArea } from 'quasar'
 import { emitter as bridgeEmitter } from 'shared/lib/flipperJs/bridgeController'
 import { ProgressBar } from 'shared/components/ProgressBar'
 
@@ -253,6 +254,7 @@ const recoveryError = ref(false)
 const recoveryUpdateStage = ref('')
 const recoveryProgress = ref(0)
 const showRecoveryLog = ref(false)
+const scrollAreaRef = ref<QScrollArea>()
 const recoveryLogs = ref<string[]>([])
 
 const retry = () => {
@@ -282,11 +284,13 @@ const recovery = async (info: FlipperModel.DataDfuFlipperElectron['info']) => {
   dialogRecovery.value = true
   flipperStore.flags.recovering = true
   flipperStore.recoveringFlipperName = info.name
+  flipperStore.flags.waitForReconnect = true
   // setAutoReconnectCondition.value(flags.value.autoReconnect)
   // flags.value.autoReconnect = false
   // autoReconnectFlipperName.value = info.name
 
   // console.log(info)
+  recoveryUpdateStage.value = 'Loading firmware bundle...'
   const firmwareTar = await FlipperApi.fetchFirmwareTar(
     `https://update.flipperzero.one/firmware/release/f${info.target}/update_tgz`
   )
@@ -345,6 +349,9 @@ const recovery = async (info: FlipperModel.DataDfuFlipperElectron['info']) => {
     logLines.pop()
     logLines.forEach((line: string) => {
       recoveryLogs.value.push(line)
+      if (scrollAreaRef.value) {
+        scrollAreaRef.value.setScrollPercentage('vertical', 1)
+      }
       let level: LogLevel = 'debug'
       if (line.includes('[E]')) {
         level = 'error'

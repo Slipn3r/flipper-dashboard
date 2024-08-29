@@ -207,6 +207,7 @@ export const useFlipperStore = defineStore('flipper', () => {
         flags.disableNavigation = false
         flags.updateInProgress = false
         flipper.value.updating = false
+        flags.recovering = false
       }
     }
   }
@@ -251,6 +252,10 @@ export const useFlipperStore = defineStore('flipper', () => {
     //   mode: string
     // }
   ) => {
+    console.log('connectFlipper', _flipper)
+    if (!_flipper) {
+      return
+    }
     _flipper.mode = route.name === 'Cli' ? 'cli' : 'rpc'
 
     if (flipperReady.value && flipperName.value !== _flipper.name) {
@@ -295,7 +300,7 @@ export const useFlipperStore = defineStore('flipper', () => {
       flipper.value.info = _flipper.info
     } */
 
-    if (flags.updateInProgress) {
+    if (flags.updateInProgress || flags.recovering) {
       onUpdateStage('end')
     }
 
@@ -428,6 +433,7 @@ export const useFlipperStore = defineStore('flipper', () => {
         }
 
         if (flags.updateInProgress) {
+          console.log('flags.updateInProgress', flags.updateInProgress)
           if (flags.waitForReconnect) {
             const findFlipper = availableFlippers.value.find(
               (availableFlipper) => {
@@ -444,22 +450,27 @@ export const useFlipperStore = defineStore('flipper', () => {
             }
           }
         } else if (flags.recovering) {
+          console.log('flags.recovering', flags.recovering)
           if (flags.waitForReconnect) {
+            console.log('flags.waitForReconnect', flags.waitForReconnect)
             const findFlipper = availableFlippers.value.find(
               (availableFlipper) => {
                 return availableFlipper.name === recoveringFlipperName.value
               }
             )
 
+            console.log('findFlipper', findFlipper)
             if (findFlipper) {
               // await asyncSleep(1000)
 
               if (isDataFlipperElectron(findFlipper)) {
+                console.log(
+                  'isDataFlipperElectron',
+                  isDataFlipperElectron(findFlipper)
+                )
                 connectFlipper(findFlipper)
               }
             }
-
-            flags.recovering = false
           }
         } else {
           if (availableFlippers.value.length === 1) {
