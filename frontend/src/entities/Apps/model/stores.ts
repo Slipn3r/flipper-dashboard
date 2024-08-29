@@ -67,6 +67,7 @@ export const useAppsStore = defineStore('apps', () => {
     if (refreshInstalledApps) {
       // onClearInstalledAppsList()
       await flipper.value?.getInstalledApps().catch((error: Error) => {
+        loadingInstalledApps.value = false
         throw error
       })
     }

@@ -98,6 +98,7 @@ export default class Flipper {
         this.installedApps = apps
       })
       .catch((error: Error) => {
+        this.installedApps = []
         throw error
       })
   }
