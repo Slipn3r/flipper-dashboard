@@ -98,6 +98,7 @@
         color="positive"
         trackColor="green-4"
         size="56px"
+        interpolated
       />
     </template>
 
