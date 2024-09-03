@@ -14,59 +14,68 @@ type Icons = {
   [k: string]: string
 }
 
-const getPathToIcon = (path: string) => {
-  return `svguse:${Platform.is.electron ? '' : '/'}${
-    isType(path) ? 'file-types' : 'common-icons'
-  }.svg#${path}`
-}
-
-const isType = (path: string) => {
-  switch (path) {
-    case 'badusb':
-      return true
-    case 'ibutton':
-      return true
-    case 'infrared':
-      return true
-    case 'nfc':
-      return true
-    case 'rfid':
-      return true
-    case 'subghz':
-      return true
-    case 'u2f':
-      return true
-
-    default:
-      return false
-  }
+const getPathToIcon = (file: string, path: string, viewBox?: string) => {
+  return `svguse:${Platform.is.electron ? '' : '/'}${file}.svg#${path}${
+    viewBox ? '|' + viewBox : ''
+  }`
 }
 
 const myIcons: Icons = {
-  'flipper:apps': getPathToIcon('apps'),
-  'flipper:device': getPathToIcon('device'),
-  'flipper:files': getPathToIcon('files'),
-  'flipper:cli': getPathToIcon('cli'),
-  'flipper:nfctools': getPathToIcon('nfctools'),
-  'flipper:paint': getPathToIcon('paint'),
-  'flipper:subtools': getPathToIcon('subtools'),
-  'flipper:installed': getPathToIcon('installed'),
-  'flipper:delete': getPathToIcon('delete'),
-  'flipper:settings': getPathToIcon('settings'),
-  'flipper:switch': getPathToIcon('switch'),
-  'flipper:connect': getPathToIcon('connect'),
-  'flipper:connected': getPathToIcon('connected'),
-  'flipper:logs': getPathToIcon('logs'),
-  'flipper:fw-conflict-icon': getPathToIcon('fw-conflict-icon'),
-  'flipper:internal-memory': getPathToIcon('internal-memory'),
-  'flipper:sdcard-memory': getPathToIcon('sdcard-memory'),
-  'flipper:badusb': getPathToIcon('badusb'),
-  'flipper:ibutton': getPathToIcon('ibutton'),
-  'flipper:infrared': getPathToIcon('infrared'),
-  'flipper:nfc': getPathToIcon('nfc'),
-  'flipper:rfid': getPathToIcon('rfid'),
-  'flipper:subghz': getPathToIcon('subghz'),
-  'flipper:u2f': getPathToIcon('u2f')
+  'flipper:apps': getPathToIcon('common-icons', 'apps'),
+  'flipper:device': getPathToIcon('common-icons', 'device'),
+  'flipper:files': getPathToIcon('common-icons', 'files'),
+  'flipper:cli': getPathToIcon('common-icons', 'cli'),
+  'flipper:nfctools': getPathToIcon('common-icons', 'nfctools'),
+  'flipper:paint': getPathToIcon('common-icons', 'paint'),
+  'flipper:subtools': getPathToIcon('common-icons', 'subtools'),
+  'flipper:installed': getPathToIcon('common-icons', 'installed'),
+  'flipper:delete': getPathToIcon('common-icons', 'delete'),
+  'flipper:settings': getPathToIcon('common-icons', 'settings'),
+  'flipper:switch': getPathToIcon('common-icons', 'switch'),
+  'flipper:connect': getPathToIcon('common-icons', 'connect'),
+  'flipper:connected': getPathToIcon('common-icons', 'connected'),
+  'flipper:logs': getPathToIcon('common-icons', 'logs'),
+  'flipper:fw-conflict-icon': getPathToIcon('common-icons', 'fw-conflict-icon'),
+  'flipper:internal-memory': getPathToIcon('common-icons', 'internal-memory'),
+  'flipper:sdcard-memory': getPathToIcon('common-icons', 'sdcard-memory'),
+  'flipper:info': getPathToIcon('common-icons', 'info'),
+  'flipper:info-small': getPathToIcon('common-icons', 'info-small'),
+  'flipper:info-big': getPathToIcon('common-icons', 'info-big'),
+  'flipper:save-symbolic': getPathToIcon('common-icons', 'save-symbolic'),
+  'flipper:chevron-left': getPathToIcon('common-icons', 'chevron-left'),
+  'flipper:chevron-left-small': getPathToIcon(
+    'common-icons',
+    'chevron-left-small'
+  ),
+
+  'flipper:badusb': getPathToIcon('file-types', 'badusb'),
+  'flipper:ibutton': getPathToIcon('file-types', 'ibutton'),
+  'flipper:infrared': getPathToIcon('file-types', 'infrared'),
+  'flipper:nfc': getPathToIcon('file-types', 'nfc'),
+  'flipper:rfid': getPathToIcon('file-types', 'rfid'),
+  'flipper:subghz': getPathToIcon('file-types', 'subghz'),
+  'flipper:u2f': getPathToIcon('file-types', 'u2f'),
+
+  'flipper:control-back': getPathToIcon('controls', 'back'),
+  'flipper:control-back-down': getPathToIcon('controls', 'back-down'),
+  'flipper:control-back-hover': getPathToIcon('controls', 'back-hover'),
+  'flipper:control-circle': getPathToIcon('controls', 'circle'),
+  'flipper:control-circle-down': getPathToIcon('controls', 'circle-down'),
+  'flipper:control-circle-hover': getPathToIcon('controls', 'circle-hover'),
+  'flipper:control-triangle': getPathToIcon('controls', 'triangle'),
+  'flipper:control-triangle-down': getPathToIcon('controls', 'triangle-down'),
+  'flipper:control-triangle-hover': getPathToIcon('controls', 'triangle-hover'),
+
+  'flipper:steaming-help': getPathToIcon(
+    'streaming-help',
+    'default',
+    '0 0 207 102'
+  ),
+  'flipper:steaming-help-mac': getPathToIcon(
+    'streaming-help',
+    'mac',
+    '0 0 207 102'
+  )
 }
 
 onBeforeMount(() => {

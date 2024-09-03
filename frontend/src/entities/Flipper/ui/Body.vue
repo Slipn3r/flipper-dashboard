@@ -2,14 +2,31 @@
   <div class="column items-center">
     <h5 class="q-mb-md q-mt-none text-bold">{{ props.flipperName }}</h5>
     <div class="flipper relative-position" :class="flipperBodyClass">
-      <canvas
-        v-show="isScreenStream"
-        :width="128 * screenScale"
-        :height="64 * screenScale"
-        style="image-rendering: pixelated"
-        :style="`rotate: ${isLeftHanded ? 180 : 0}deg`"
-        ref="screenStreamCanvas"
-      />
+      <div
+        class="flipper__display-wrapper relative-position"
+        :style="`width: ${128 * screenScale}px; height: ${64 * screenScale}px`"
+      >
+        <div
+          class="flipper__expand-wrapper absolute-center cursor-pointer"
+          @click="expandView"
+        >
+          <div class="dimmed" />
+          <q-icon
+            class="absolute-center"
+            name="mdi-arrow-expand"
+            size="64px"
+            color="primary"
+          />
+        </div>
+        <canvas
+          v-show="isScreenStream"
+          :width="128 * screenScale"
+          :height="64 * screenScale"
+          style="image-rendering: pixelated"
+          :style="`rotate: ${isLeftHanded ? 180 : 0}deg`"
+          ref="screenStreamCanvas"
+        />
+      </div>
       <img
         v-if="showScreenUpdating"
         class="flipper__image"
@@ -40,6 +57,8 @@ const props = withDefaults(defineProps<Props>(), {
   screenScale: 1
 })
 
+const emit = defineEmits(['expandView'])
+
 const flipperBodyClass = computed(() => {
   switch (props.flipperColor) {
     case '1':
@@ -51,7 +70,11 @@ const flipperBodyClass = computed(() => {
   }
 })
 
-const screenStreamCanvas = ref()
+const expandView = () => {
+  emit('expandView')
+}
+
+const screenStreamCanvas = ref<HTMLCanvasElement>()
 defineExpose({
   screenStreamCanvas
 })

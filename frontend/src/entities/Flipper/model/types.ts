@@ -262,3 +262,10 @@ export type DataDfuFlipperElectron = {
     version: number
   }
 }
+
+type InputKey = 'UP' | 'DOWN' | 'RIGHT' | 'LEFT' | 'OK' | 'BACK'
+type InputType = 'PRESS' | 'RELEASE' | 'SHORT' | 'LONG' | 'REPEAT'
+export interface InputEvent {
+  key: InputKey
+  type: InputType
+}

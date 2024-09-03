@@ -16,6 +16,7 @@
     "cuid",
     "devinfo",
     "ditherpunk",
+    "dpad",
     "flipperzero",
     "gpio",
     "Haxr",
@@ -45,5 +46,6 @@
     "varints",
     "viebox"
   ],
-  "prettier.configPath": "./frontend/.prettierrc.json"
+  "prettier.configPath": "./frontend/.prettierrc.json",
+  "svgPreview.autoOpen": false
 }

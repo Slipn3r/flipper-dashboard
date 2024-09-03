@@ -11,11 +11,23 @@
             :isScreenStream="isScreenStream"
             :isLeftHanded="isLeftHanded"
             :screenScale="screenScale"
+            @expandView="expandView"
           />
         </div>
 
         <FlipperUpdate @updateInProgress="stopScreenStream" />
       </div>
+
+      <template v-if="expand">
+        <FlipperExpandView
+          v-model="expand"
+          ref="refFlipperExpandView"
+          :isScreenStream="isScreenStream"
+          :isLeftHanded="isLeftHanded"
+          :screenScale="screenScale"
+          @hideExpandView="hideExpandView"
+        />
+      </template>
     </template>
   </template>
   <template v-else>
@@ -34,11 +46,13 @@ import {
   watch
 } from 'vue'
 
+import asyncSleep from 'simple-async-sleep'
+
 import { log } from 'shared/lib/utils/useLog'
 import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
 
 import { Loading } from 'shared/components/Loading'
-import { FlipperUpdate } from 'features/Flipper'
+import { FlipperUpdate, FlipperExpandView } from 'features/Flipper'
 import { FlipperBody, FlipperInfo, FlipperModel } from 'entities/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 
@@ -110,9 +124,35 @@ const flipperBody = ref({
 })
 
 const refFlipperBody = ref<typeof FlipperBody>()
-const screenStreamCanvas = computed(
+const screenStreamCanvas = computed<HTMLCanvasElement>(
   () => refFlipperBody.value?.screenStreamCanvas
 )
+
+const refFlipperExpandView = ref<typeof FlipperExpandView>()
+const screenStreamExpandCanvas = computed<HTMLCanvasElement>(
+  () => refFlipperExpandView.value?.screenStreamExpandCanvas
+)
+
+let ctx: CanvasRenderingContext2D | null = null
+const isExpand = ref(false)
+const expand = ref(false)
+const expandView = async () => {
+  expand.value = true
+
+  await asyncSleep(1)
+
+  isExpand.value = true
+  screenScale.value = 4
+
+  ctx = screenStreamExpandCanvas.value.getContext('2d')
+}
+const hideExpandView = () => {
+  isExpand.value = false
+  screenScale.value = 1
+
+  ctx = screenStreamCanvas.value.getContext('2d')
+}
+
 const screenScale = ref(1)
 const unbindFrame = ref()
 const isScreenStream = ref(false)
@@ -138,13 +178,20 @@ const startScreenStream = async (attempts = 0) => {
     })
   isScreenStream.value = true
 
-  const ctx = screenStreamCanvas.value.getContext('2d')
-  ctx.lineWidth = 1
-  ctx.lineCap = 'square'
-  ctx.imageSmoothingEnabled = false
-  ctx.fillStyle = '#ff8201'
-  ctx.fillRect(0, 0, 128 * screenScale.value, 64 * screenScale.value)
-  ctx.fillStyle = 'black'
+  if (isExpand.value) {
+    ctx = screenStreamExpandCanvas.value.getContext('2d')
+  } else {
+    ctx = screenStreamCanvas.value.getContext('2d')
+  }
+
+  if (ctx) {
+    ctx.lineWidth = 1
+    ctx.lineCap = 'square'
+    ctx.imageSmoothingEnabled = false
+    ctx.fillStyle = '#ff8201'
+    ctx.fillRect(0, 0, 128 * screenScale.value, 64 * screenScale.value)
+    ctx.fillStyle = 'black'
+  }
 
   unbindFrame.value = flipperStore.flipper?.emitter.on(
     'screenStream/frame',
@@ -158,28 +205,30 @@ const startScreenStream = async (attempts = 0) => {
           isLeftHanded.value = false
         }
 
-        for (let x = 0; x < 128; x++) {
-          for (let y = 0; y < 64; y++) {
-            const i = Math.floor(y / 8) * 128 + x
-            const z = y & 7
+        if (ctx) {
+          for (let x = 0; x < 128; x++) {
+            for (let y = 0; y < 64; y++) {
+              const i = Math.floor(y / 8) * 128 + x
+              const z = y & 7
 
-            const dataAt = data.at(i)
-            if (dataAt && dataAt & (1 << z)) {
-              ctx.fillStyle = 'black'
-              ctx.fillRect(
-                x * screenScale.value,
-                y * screenScale.value,
-                1 * screenScale.value,
-                1 * screenScale.value
-              )
-            } else {
-              ctx.fillStyle = '#ff8201'
-              ctx.fillRect(
-                x * screenScale.value,
-                y * screenScale.value,
-                1 * screenScale.value,
-                1 * screenScale.value
-              )
+              const dataAt = data.at(i)
+              if (dataAt && dataAt & (1 << z)) {
+                ctx.fillStyle = 'black'
+                ctx.fillRect(
+                  x * screenScale.value,
+                  y * screenScale.value,
+                  1 * screenScale.value,
+                  1 * screenScale.value
+                )
+              } else {
+                ctx.fillStyle = '#ff8201'
+                ctx.fillRect(
+                  x * screenScale.value,
+                  y * screenScale.value,
+                  1 * screenScale.value,
+                  1 * screenScale.value
+                )
+              }
             }
           }
         }

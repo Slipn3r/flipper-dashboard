@@ -23,7 +23,7 @@ const showNotif = ({
     () => flipperStore.flags.disableNavigation
   )
 
-  if (!isStayOpen) {
+  if (!isStayOpen && !timeout) {
     if (actions.length === 0) {
       actions.push({ icon: 'close', color: textColor, class: 'q-px-sm' })
     } else {
