@@ -144,6 +144,7 @@ export const useFlipperStore = defineStore('flipper', () => {
             'disconnect',
             (e: { isUserAction: boolean }) => {
               appsStore.onClearInstalledAppsList()
+              clearQueue()
 
               if (flags.autoReconnect && !e.isUserAction) {
                 onAutoReconnect()
@@ -190,6 +191,7 @@ export const useFlipperStore = defineStore('flipper', () => {
       })
       // flags.connected = false
       appsStore.onClearInstalledAppsList()
+      clearQueue()
     }
   }
 
@@ -266,6 +268,7 @@ export const useFlipperStore = defineStore('flipper', () => {
     if (flipper.value) {
       // flipper.value.flipperReady = false
       await flipper.value.disconnect()
+      clearQueue()
       oldFlipper.value = unref(flipper.value)
     }
 
@@ -378,6 +381,7 @@ export const useFlipperStore = defineStore('flipper', () => {
 
               if (flipper.value?.name === bridgeFlipper.name) {
                 flipper.value.disconnect()
+                clearQueue()
 
                 if (!flags.updateInProgress) {
                   flipper.value = undefined
