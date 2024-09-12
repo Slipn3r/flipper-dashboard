@@ -45,6 +45,9 @@ export default class Flipper {
   commandQueue: {
     commandId: number
     requestType: string
+    commandStatus?: {
+      value: number
+    }
     chunks?: Args[]
     args?: Args | Args[]
     error?: Error

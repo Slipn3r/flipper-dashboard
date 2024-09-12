@@ -16,6 +16,7 @@ type ContentValue = {
 type CustomValueBase = {
   content: string
   commandId: number
+  commandStatus?: number
   guiScreenFrame: {
     data: Uint8Array
     orientation: string
@@ -230,6 +231,15 @@ export default class FlipperElectron extends Flipper {
 
           value[value.content].hasNext = value.hasNext
           if (command) {
+            if (!command.commandStatus) {
+              command.commandStatus = {
+                value: 0
+              }
+            }
+            if (value.commandStatus) {
+              command.commandStatus.value = value.commandStatus
+            }
+
             if (!command.chunks) {
               command.chunks = []
             }

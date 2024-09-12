@@ -1,4 +1,4 @@
-// import { PB } from './protobufCompiled'
+import { PB } from './protobufCompiled'
 
 export const SERIAL_TIMEOUT = 5000
 export const RPC_TIMEOUT = 4000
@@ -23,16 +23,14 @@ export function watch(callback, emitter, requestType) {
   return validator
 }
 
-// function test (callback) {
-//   return {
-//     set: (target, key, value) => {
-//       // console.log('tets', PB.CommandStatus[value])
-
-//       callback(value)
-//       return value
-//     }
-//   }
-// }
+function watchStatus(callback) {
+  return {
+    set: (target, key, value) => {
+      callback(value)
+      return true
+    }
+  }
+}
 
 export function createRPCPromise(requestType, args, format, emitter, timeout) {
   return new Promise((resolve, reject) => {
@@ -55,17 +53,16 @@ export function createRPCPromise(requestType, args, format, emitter, timeout) {
       resolve(result)
     }
     const [data, command] = this.encodeRPCRequest(requestType, args)
-    // const unbind = this.emitter.on(`commandStatus_${command.commandId}`, () => {
-    //   unbind()
-    //   console.log('emitter', PB.CommandStatus[command.status])
-    //   reject(PB.CommandStatus[command.status])
-    // })
-    // command.status = new Proxy([], test((value) => {
-    //   console.log('reject status')
-    //   clearTimeout(rejectTimeout)
-    //   reject(PB.CommandStatus[value])
-    //   // throw PB.CommandStatus[value]
-    // }))
+
+    command.commandStatus = new Proxy(
+      { value: 0 },
+      watchStatus((value) => {
+        if (value !== 0) {
+          reject(PB.CommandStatus[value])
+        }
+      })
+    )
+
     command.chunks = new Proxy([], watch(callback, emitter, requestType))
     this.writeRaw(data)
   })

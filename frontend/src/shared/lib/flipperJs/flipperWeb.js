@@ -396,8 +396,23 @@ export default class FlipperWeb extends Flipper {
           const command = this.commandQueue.find(
             (c) => c.commandId === value.commandId
           )
+
           value[value.content].hasNext = value.hasNext
-          command.chunks.push(value[value.content])
+          if (command) {
+            if (!command.commandStatus) {
+              command.commandStatus = {
+                value: 0
+              }
+            }
+            if (value.commandStatus) {
+              command.commandStatus.value = value.commandStatus
+            }
+
+            if (!command.chunks) {
+              command.chunks = []
+            }
+            command.chunks.push(value[value.content])
+          }
         } else {
           this.emitter.emit('cli/output', value)
         }
