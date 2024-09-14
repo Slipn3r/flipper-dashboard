@@ -381,6 +381,7 @@ export const useFlipperStore = defineStore('flipper', () => {
 
               if (flipper.value?.name === bridgeFlipper.name) {
                 flipper.value.disconnect()
+                appsStore.onClearInstalledAppsList()
                 clearQueue()
 
                 if (!flags.updateInProgress) {
