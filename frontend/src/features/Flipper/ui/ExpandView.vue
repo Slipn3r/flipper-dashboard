@@ -18,7 +18,9 @@
               :width="128 * screenScale"
               :height="64 * screenScale"
               style="image-rendering: pixelated"
-              :style="`rotate: ${isLeftHanded ? 180 : 0}deg`"
+              :style="`rotate: ${
+                90 * rotationCalculation
+              }deg; scale: ${scaleCalculation};`"
               ref="screenStreamExpandCanvas"
             />
           </div>
@@ -179,7 +181,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, computed } from 'vue'
 import { exportFile } from 'quasar'
 import { FlipperKeypadButton } from 'entities/Flipper'
 import { FlipperModel } from 'entities/Flipper'
@@ -190,19 +192,43 @@ import { showNotif } from 'shared/lib/utils/useShowNotif'
 
 type Props = {
   isScreenStream?: boolean
-  isLeftHanded?: boolean
+  orientation?: number
   screenScale?: number
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   isScreenStream: false,
-  isLeftHanded: false,
-  screenScale: 1
+  orientation: 0,
+  screenScale: 4
 })
 
 const componentName = 'ExpandView'
 
-const emit = defineEmits(['hideExpandView'])
+const rotationCalculation = computed(() => {
+  switch (props.orientation) {
+    case 1:
+      return 2
+
+    case 2:
+      return 1
+
+    default:
+      return props.orientation
+  }
+})
+
+const scaleCalculation = computed(() => {
+  switch (props.orientation) {
+    case 1:
+      return 0.5
+
+    case 2:
+      return 0.5
+
+    default:
+      return 1
+  }
+})
 
 const onInputEvent = ({ key, type }: FlipperModel.InputEvent) => {
   // emit('inputEvent', {
@@ -231,7 +257,6 @@ const onInputEvent = ({ key, type }: FlipperModel.InputEvent) => {
 const hideDialog = () => {
   window.removeEventListener('resize', resizeCanvas)
   document.removeEventListener('keydown', copyToClipboard)
-  emit('hideExpandView')
 }
 
 const screenStreamExpandCanvas = ref<HTMLCanvasElement>()

@@ -9,8 +9,6 @@
             v-bind="flipperBody"
             :showScreenUpdating="flipperStore.flags.updateInProgress"
             :isScreenStream="isScreenStream"
-            :isLeftHanded="isLeftHanded"
-            :screenScale="screenScale"
             @expandView="expandView"
           />
         </div>
@@ -18,16 +16,12 @@
         <FlipperUpdate @updateInProgress="stopScreenStream" />
       </div>
 
-      <template v-if="expand">
-        <FlipperExpandView
-          v-model="expand"
-          ref="refFlipperExpandView"
-          :isScreenStream="isScreenStream"
-          :isLeftHanded="isLeftHanded"
-          :screenScale="screenScale"
-          @hideExpandView="hideExpandView"
-        />
-      </template>
+      <FlipperExpandView
+        v-model="expand"
+        ref="refFlipperExpandView"
+        :isScreenStream="isScreenStream"
+        :orientation="orientation"
+      />
     </template>
   </template>
   <template v-else>
@@ -45,8 +39,6 @@ import {
   onBeforeUnmount,
   watch
 } from 'vue'
-
-import asyncSleep from 'simple-async-sleep'
 
 import { log } from 'shared/lib/utils/useLog'
 import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
@@ -133,30 +125,41 @@ const screenStreamExpandCanvas = computed<HTMLCanvasElement>(
   () => refFlipperExpandView.value?.screenStreamExpandCanvas
 )
 
-let ctx: CanvasRenderingContext2D | null = null
-const isExpand = ref(false)
 const expand = ref(false)
 const expandView = async () => {
   expand.value = true
-
-  await asyncSleep(1)
-
-  isExpand.value = true
-  screenScale.value = 4
-
-  ctx = screenStreamExpandCanvas.value.getContext('2d')
-}
-const hideExpandView = () => {
-  isExpand.value = false
-  screenScale.value = 1
-
-  ctx = screenStreamCanvas.value.getContext('2d')
 }
 
-const screenScale = ref(1)
 const unbindFrame = ref()
 const isScreenStream = ref(false)
-const isLeftHanded = ref(false)
+const orientation = ref(0)
+
+const renderToCanvas = ({
+  targetCanvas,
+  sourceCanvas,
+  scale
+}: {
+  targetCanvas: HTMLCanvasElement
+  sourceCanvas: HTMLCanvasElement
+  scale: number
+}) => {
+  const targetCtx = targetCanvas.getContext('2d')!
+  targetCtx.imageSmoothingEnabled = false
+  targetCtx.clearRect(0, 0, targetCanvas.width, targetCanvas.height)
+
+  targetCtx.drawImage(
+    sourceCanvas,
+    0,
+    0,
+    targetCanvas.width,
+    targetCanvas.height,
+    0,
+    0,
+    targetCanvas.width * scale,
+    targetCanvas.height * scale
+  )
+}
+
 const startScreenStream = async (attempts = 0) => {
   await flipperStore.flipper
     ?.RPC('guiStartScreenStream')
@@ -178,60 +181,25 @@ const startScreenStream = async (attempts = 0) => {
     })
   isScreenStream.value = true
 
-  if (isExpand.value) {
-    ctx = screenStreamExpandCanvas.value.getContext('2d')
-  } else {
-    ctx = screenStreamCanvas.value.getContext('2d')
-  }
-
-  if (ctx) {
-    ctx.lineWidth = 1
-    ctx.lineCap = 'square'
-    ctx.imageSmoothingEnabled = false
-    ctx.fillStyle = '#ff8201'
-    ctx.fillRect(0, 0, 128 * screenScale.value, 64 * screenScale.value)
-    ctx.fillStyle = 'black'
-  }
-
   unbindFrame.value = flipperStore.flipper?.emitter.on(
     'screenStream/frame',
-    (data: Uint8Array, orientation: string) => {
-      if (!data) {
-        return
-      } else {
-        if (orientation && !isLeftHanded.value) {
-          isLeftHanded.value = true
-        } else if (!orientation && isLeftHanded.value) {
-          isLeftHanded.value = false
-        }
+    (frameCanvas: HTMLCanvasElement, frameOrientation: string) => {
+      orientation.value = Number(frameOrientation)
 
-        if (ctx) {
-          for (let x = 0; x < 128; x++) {
-            for (let y = 0; y < 64; y++) {
-              const i = Math.floor(y / 8) * 128 + x
-              const z = y & 7
+      if (screenStreamCanvas.value) {
+        renderToCanvas({
+          targetCanvas: screenStreamCanvas.value,
+          sourceCanvas: frameCanvas,
+          scale: 1
+        })
+      }
 
-              const dataAt = data.at(i)
-              if (dataAt && dataAt & (1 << z)) {
-                ctx.fillStyle = 'black'
-                ctx.fillRect(
-                  x * screenScale.value,
-                  y * screenScale.value,
-                  1 * screenScale.value,
-                  1 * screenScale.value
-                )
-              } else {
-                ctx.fillStyle = '#ff8201'
-                ctx.fillRect(
-                  x * screenScale.value,
-                  y * screenScale.value,
-                  1 * screenScale.value,
-                  1 * screenScale.value
-                )
-              }
-            }
-          }
-        }
+      if (screenStreamExpandCanvas.value) {
+        renderToCanvas({
+          targetCanvas: screenStreamExpandCanvas.value,
+          sourceCanvas: frameCanvas,
+          scale: 4
+        })
       }
     }
   )

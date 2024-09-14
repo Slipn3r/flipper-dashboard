@@ -2,6 +2,7 @@ import { ProtobufTransformer } from './transformers'
 import { encode, decode } from 'base64-arraybuffer'
 
 import Flipper from './flipper'
+import FrameRenderer from './frameRenderer'
 
 import type { Emitter, DefaultEvents, Unsubscribe } from 'nanoevents'
 
@@ -36,6 +37,8 @@ export default class FlipperElectron extends Flipper {
   readingMode: {
     type: string
   }
+
+  private frameRenderer: FrameRenderer
 
   unbindCli: Unsubscribe
   unbindRpc?: Unsubscribe
@@ -93,6 +96,8 @@ export default class FlipperElectron extends Flipper {
     })
 
     this.unbindScreenStream
+
+    this.frameRenderer = new FrameRenderer()
 
     // this.emitter = emitter
 
@@ -219,9 +224,17 @@ export default class FlipperElectron extends Flipper {
           }
 
           if (value.content && value.content === 'guiScreenFrame') {
+            if (!value.guiScreenFrame.data) {
+              return
+            }
+
+            this.frameRenderer.renderFrame({
+              data: value.guiScreenFrame.data
+            })
+
             this.emitter.emit(
               'screenStream/frame',
-              value.guiScreenFrame.data,
+              this.frameRenderer.getCanvas(),
               value.guiScreenFrame.orientation
             )
           }

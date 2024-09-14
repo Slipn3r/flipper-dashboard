@@ -2,7 +2,14 @@
   <div class="column items-center">
     <h5 class="q-mb-md q-mt-none text-bold">{{ props.flipperName }}</h5>
     <div class="flipper relative-position" :class="flipperBodyClass">
+      <img
+        v-if="showScreenUpdating"
+        class="flipper__image"
+        src="~/assets/flipper-screen-updating.png"
+        style=""
+      />
       <div
+        v-else
         class="flipper__display-wrapper relative-position"
         :style="`width: ${128 * screenScale}px; height: ${64 * screenScale}px`"
       >
@@ -23,16 +30,9 @@
           :width="128 * screenScale"
           :height="64 * screenScale"
           style="image-rendering: pixelated"
-          :style="`rotate: ${isLeftHanded ? 180 : 0}deg`"
           ref="screenStreamCanvas"
         />
       </div>
-      <img
-        v-if="showScreenUpdating"
-        class="flipper__image"
-        src="~/assets/flipper-screen-updating.png"
-        style=""
-      />
     </div>
   </div>
 </template>
@@ -45,7 +45,6 @@ type Props = {
   flipperColor: string
   showScreenUpdating: boolean
   isScreenStream?: boolean
-  isLeftHanded?: boolean
   screenScale?: number
 }
 
@@ -53,7 +52,6 @@ const props = withDefaults(defineProps<Props>(), {
   flipperColor: '2',
   showScreenUpdating: false,
   isScreenStream: false,
-  isLeftHanded: false,
   screenScale: 1
 })
 
