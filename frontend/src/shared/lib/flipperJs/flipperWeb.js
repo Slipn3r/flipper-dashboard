@@ -7,6 +7,7 @@ if ('serial' in navigator) {
 import asyncSleep from 'simple-async-sleep'
 
 import Flipper from './flipper'
+import FrameRenderer from './frameRenderer'
 
 import {
   LineBreakTransformer,
@@ -65,6 +66,8 @@ export default class FlipperWeb extends Flipper {
 
     this.writer = null
     this.writable = null
+
+    this.frameRenderer = new FrameRenderer()
   }
 
   async findKnownDevices() {
@@ -387,9 +390,17 @@ export default class FlipperWeb extends Flipper {
 
         if (this.readingMode.transform === 'protobuf') {
           if (value.content && value.content === 'guiScreenFrame') {
+            if (!value.guiScreenFrame.data) {
+              return
+            }
+
+            this.frameRenderer.renderFrame({
+              data: value.guiScreenFrame.data
+            })
+
             this.emitter.emit(
               'screenStream/frame',
-              value.guiScreenFrame.data,
+              this.frameRenderer.getCanvas(),
               value.guiScreenFrame.orientation
             )
           }
