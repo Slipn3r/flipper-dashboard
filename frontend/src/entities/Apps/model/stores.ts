@@ -58,6 +58,14 @@ export const useAppsStore = defineStore('apps', () => {
     upToDateApps.value = []
     unsupportedApps.value = []
     appsUpdateCount.value = 0
+    actionAppList.value = []
+    batch.value = {
+      inProcess: false,
+      totalCount: 0,
+      doneCount: 0,
+      failed: [],
+      progress: 0
+    }
   }
   const getInstalledApps = async ({ refreshInstalledApps = false } = {}) => {
     if (!installedApps.value.length) {
@@ -82,6 +90,17 @@ export const useAppsStore = defineStore('apps', () => {
       } else {
         noApplicationsInstalled.value = false
       }
+
+      installed = installed.filter((installedApp) => {
+        if (
+          installedApp.devCatalog &&
+          flipperStore.flags.catalogChannelProduction
+        ) {
+          return false
+        }
+
+        return true
+      })
 
       const versions = await fetchAppsVersions(
         (flipperInstalledApps.value as InstalledApp[]).map(
@@ -116,17 +135,6 @@ export const useAppsStore = defineStore('apps', () => {
           applications: installed.map((app) => app.id)
         })
       } while (actualApps.length === params.limit)
-
-      installed = installed.filter((installedApp) => {
-        if (
-          installedApp.devCatalog &&
-          flipperStore.flags.catalogChannelProduction
-        ) {
-          return false
-        }
-
-        return true
-      })
 
       // HACK: Bind the past action state to the new list
       if (actionAppList.value.length) {
