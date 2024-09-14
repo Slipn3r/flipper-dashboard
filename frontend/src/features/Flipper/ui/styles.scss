@@ -46,15 +46,6 @@ $transforms: (
 }
 
 .scanLine {
-  @keyframes moveGradient {
-    0% {
-      background-position: 0 -320px;
-    }
-    100% {
-      background-position: 0 100vh;
-    }
-  }
-
   background: linear-gradient(
     to bottom,
     rgba(254, 138, 44, 0) 0%,
@@ -66,4 +57,13 @@ $transforms: (
   background-repeat: no-repeat;
 
   animation: moveGradient 4s linear infinite;
+
+  @keyframes moveGradient {
+    0% {
+      background-position: 0 -320px;
+    }
+    100% {
+      background-position: 0 100vh;
+    }
+  }
 }
