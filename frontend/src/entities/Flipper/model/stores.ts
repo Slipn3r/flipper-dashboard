@@ -437,7 +437,6 @@ export const useFlipperStore = defineStore('flipper', () => {
         }
 
         if (flags.updateInProgress) {
-          console.log('flags.updateInProgress', flags.updateInProgress)
           if (flags.waitForReconnect) {
             const findFlipper = availableFlippers.value.find(
               (availableFlipper) => {
