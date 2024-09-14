@@ -163,6 +163,8 @@ async function fetchAppFap(params: AppFapParams) {
       if (data.code >= 400) {
         throw new Error('Failed to fetch application build (' + data.code + ')')
       }
+
+      throw new Error('Failed to fetch application build')
     })
 }
 
