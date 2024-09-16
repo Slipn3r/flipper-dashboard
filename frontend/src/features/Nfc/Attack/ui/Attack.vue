@@ -97,7 +97,12 @@
       </div>
     </q-card-section>
     <q-card-section v-else class="row justify-center">
-      <FlipperConnectWebBtn />
+      <template v-if="flipperStore.isElectron">
+        <p>Plug in your Flipper and and wait for initialization</p>
+      </template>
+      <template v-else>
+        <FlipperConnectWebBtn />
+      </template>
     </q-card-section>
   </q-card>
 </template>
