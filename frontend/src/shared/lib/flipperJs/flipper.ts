@@ -89,9 +89,16 @@ export default class Flipper {
 
   async getInfo() {
     this.loadingInfo = true
-    this.info = (await readInfo.bind(this)()) as FlipperModel.FlipperInfo
+    await readInfo
+      .bind(this)()
+      .then((data: Partial<FlipperModel.FlipperInfo>) => {
+        this.info = data as FlipperModel.FlipperInfo
+        this.flipperReady = true
+      })
+      .catch((/* error: Error */) => {
+        this.flipperReady = false
+      })
     this.loadingInfo = false
-    this.flipperReady = true
   }
   async getInstalledApps() {
     onClearInstalledAppsList()

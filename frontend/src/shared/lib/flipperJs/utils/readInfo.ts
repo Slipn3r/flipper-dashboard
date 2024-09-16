@@ -2,7 +2,7 @@ import Flipper from '../flipper'
 import { FlipperModel } from 'entities/Flipper'
 import useSetProperty from 'shared/lib/utils/useSetProperty'
 
-import asyncSleep from 'simple-async-sleep'
+// import asyncSleep from 'simple-async-sleep'
 
 import { log } from 'shared/lib/utils/useLog'
 import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
@@ -39,12 +39,12 @@ export interface InfoObject {
   [key: string]: FlipperModel.FlipperInfo | Primitive | InfoObject
 }
 
-let info: InfoObject = {}
-const setInfo = (options: InfoObject) => {
-  info = { ...info, ...options }
-}
+let info: Partial<FlipperModel.FlipperInfo> = {}
+// const setInfo = (options: InfoObject) => {
+//   info = { ...info, ...options }
+// }
 
-const setPropertyInfo = (options: InfoObject) => {
+const setPropertyInfo = (options: Partial<FlipperModel.FlipperInfo>) => {
   info = useSetProperty(info, options)
 }
 
@@ -59,6 +59,16 @@ export default async function readInfo(this: Flipper) {
       internal: {}
     }
   }
+  // info = {
+  //   doneReading: false,
+  //   storage: {
+  //     sdcard: {
+  //       status: {}
+  //     },
+  //     databases: {},
+  //     internal: {}
+  //   }
+  // }
   // if (!flags.value.connected) {
   //   return
   // }
@@ -70,24 +80,28 @@ export default async function readInfo(this: Flipper) {
           level: 'debug',
           message: `${componentName}: deviceInfo: OK`
         })
-        setInfo({ ...info, ...devInfo })
+        setPropertyInfo(devInfo)
       })
       .catch((error: Error) => {
         rpcErrorHandler({ componentName, error, command: 'systemDeviceInfo' })
         throw error
       })
   } else {
-    await asyncSleep(1000)
+    // await asyncSleep(1000)
     await this.RPC('propertyGet', { key: 'devinfo' })
       .then((devInfo: FlipperModel.DeviceInfo) => {
         log({
           level: 'debug',
-          message: `${componentName}: propertyGet: OK`
+          message: `${componentName}: propertyGet devinfo: OK`
         })
-        setInfo({ ...info, ...devInfo })
+        setPropertyInfo(devInfo)
       })
       .catch((error: Error) => {
-        rpcErrorHandler({ componentName, error, command: 'propertyGet' })
+        rpcErrorHandler({
+          componentName,
+          error,
+          command: 'propertyGet devinfo'
+        })
         throw error
       })
 
@@ -95,12 +109,16 @@ export default async function readInfo(this: Flipper) {
       .then((powerInfo: FlipperModel.PowerInfo) => {
         log({
           level: 'debug',
-          message: `${componentName}: propertyGet: OK`
+          message: `${componentName}: propertyGet pwrinfo: OK`
         })
-        setPropertyInfo({ power: powerInfo })
+        setPropertyInfo(powerInfo)
       })
       .catch((error: Error) => {
-        rpcErrorHandler({ componentName, error, command: 'propertyGet' })
+        rpcErrorHandler({
+          componentName,
+          error,
+          command: 'propertyGet pwrinfo'
+        })
         throw error
       })
   }
@@ -114,8 +132,8 @@ export default async function readInfo(this: Flipper) {
       return list
     })
     .catch((error: Error) => {
-      rpcErrorHandler({ componentName, error, command: 'storageList' })
-      throw error
+      rpcErrorHandler({ componentName, error, command: 'storageList /ext' })
+      // throw error
     })
 
   if (ext && ext.length) {
@@ -156,8 +174,8 @@ export default async function readInfo(this: Flipper) {
         })
       })
       .catch((error: Error) => {
-        rpcErrorHandler({ componentName, error, command: 'storageInfo' })
-        throw error
+        rpcErrorHandler({ componentName, error, command: 'storageInfo /ext' })
+        // throw error
       })
   } else {
     setPropertyInfo({
@@ -195,8 +213,8 @@ export default async function readInfo(this: Flipper) {
       })
     })
     .catch((error: Error) => {
-      rpcErrorHandler({ componentName, error, command: 'storageInfo' })
-      throw error
+      rpcErrorHandler({ componentName, error, command: 'storageInfo /int' })
+      // throw error
     })
   setPropertyInfo({ doneReading: true })
 
