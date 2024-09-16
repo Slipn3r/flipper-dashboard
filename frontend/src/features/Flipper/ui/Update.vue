@@ -109,6 +109,7 @@
             outlined
             v-model="uploadedFile"
             label="Drop or select files"
+            accept=".tgz"
             class="q-pt-md"
             :style="$q.screen.width > 380 ? 'width: 300px;' : ''"
           >
@@ -119,7 +120,12 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Upload" v-close-popup @click="update()"></q-btn>
+          <q-btn
+            flat
+            label="Upload"
+            v-close-popup
+            @click="update(true)"
+          ></q-btn>
           <q-btn flat label="Cancel" color="negative" v-close-popup></q-btn>
         </q-card-actions>
       </q-card>
@@ -279,19 +285,42 @@ const getTextButton = computed(() => {
   return 'Install'
 })
 
-const update = async () => {
+const update = async (fromFile = false) => {
+  updateStage.value = ''
+
   if (!flipperStore.info?.storage.sdcard?.status.isInstalled) {
     flipperStore.dialogs.microSDcardMissing = true
     return
   }
 
   flipperStore.onUpdateStage('start')
-  await emit('updateInProgress')
-  await loadFirmware().catch((error) => {
-    showNotif({
-      message: error.toString(),
-      color: 'negative'
+
+  if (fromFile) {
+    if (!uploadedFile.value) {
+      updateError.value = true
+      flipperStore.onUpdateStage('end')
+      updateStage.value = 'No file selected'
+      throw new Error(updateStage.value)
+    } else if (!uploadedFile.value.name.endsWith('.tgz')) {
+      updateError.value = true
+      flipperStore.onUpdateStage('end')
+      updateStage.value = 'Wrong file format'
+      throw new Error(updateStage.value)
+    }
+    log({
+      level: 'info',
+      message: `${componentName}: Uploading firmware from file`
     })
+  }
+
+  await emit('updateInProgress')
+  await loadFirmware().catch((error: Error) => {
+    updateError.value = true
+    updateStage.value = error.message || error.toString()
+
+    flipperStore.onUpdateStage('end')
+
+    throw error
   })
 }
 
