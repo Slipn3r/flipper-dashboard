@@ -14,7 +14,7 @@ const path = require('path')
 
 const { compileProtofiles } = require('./beforeBuild.js')
 
-module.exports = configure(function (/* ctx */) {
+module.exports = configure(function (ctx) {
   return {
     // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
     // preFetch: true,
@@ -72,7 +72,10 @@ module.exports = configure(function (/* ctx */) {
 
       // publicPath: '/',
       // analyze: true,
-      env: process.env,
+      env: {
+        DEBUGGING: ctx.debug,
+        ...process.env
+      },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,

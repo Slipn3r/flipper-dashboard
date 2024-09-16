@@ -151,8 +151,6 @@ const toggleCatalogChannel = () => {
     ? PRODUCTION_NAME
     : DEVELOP_NAME
 
-  localStorage.setItem('catalogChannel', catalogChannel)
-
   instance.defaults.baseURL = getBaseUrl(catalogChannel)
 }
 

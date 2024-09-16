@@ -4,9 +4,7 @@ import {
   // ARCHIVARIUS_API_ENDPOINT,
   API_PROD_ENDPOINT,
   API_DEV_ENDPOINT,
-  PRODUCTION_NAME,
-  DEVELOP_NAME,
-  isProd
+  PRODUCTION_NAME
 } from 'shared/config'
 
 declare module '@vue/runtime-core' {
@@ -24,22 +22,6 @@ const getBaseUrl = (catalogChanel: string) => {
   }
 }
 
-let baseURL
-// let API_ENDPOINT = ARCHIVARIUS_API_ENDPOINT
-if (isProd) {
-  baseURL = getBaseUrl(PRODUCTION_NAME)
-} else {
-  baseURL = getBaseUrl(DEVELOP_NAME)
-}
-
-if (localStorage.getItem('catalogChannel') !== null && !isProd) {
-  if (localStorage.getItem('catalogChannel') === PRODUCTION_NAME) {
-    baseURL = getBaseUrl(PRODUCTION_NAME)
-  } else {
-    baseURL = getBaseUrl(DEVELOP_NAME)
-  }
-}
-
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
 // If any client changes this (global) instance, it might be a
@@ -47,7 +29,7 @@ if (localStorage.getItem('catalogChannel') !== null && !isProd) {
 // "export default () => {}" function below (which runs individually
 // for each client)
 const instance = axios.create({
-  baseURL,
+  baseURL: getBaseUrl(PRODUCTION_NAME),
   timeout: 25000,
   headers: {
     Accept: 'application/json',

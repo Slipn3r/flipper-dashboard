@@ -1,7 +1,7 @@
 import { ref, unref, computed, reactive } from 'vue'
 import { Platform } from 'quasar'
 import { defineStore } from 'pinia'
-import { isProd } from 'shared/config'
+import { isProd, isDebug } from 'shared/config'
 import { FlipperWeb, FlipperElectron } from 'shared/lib/flipperJs'
 
 import { showNotif } from 'shared/lib/utils/useShowNotif'
@@ -38,23 +38,6 @@ export const useFlipperStore = defineStore('flipper', () => {
 
   const appsStore = AppsModel.useAppsStore()
 
-  let catalogCanSwitchChannel = false
-  const getCatalogChannel = () => {
-    const savedChannel = localStorage.getItem('catalogChannel')
-    if (isProd) {
-      localStorage.setItem('catalogChannel', 'production')
-    } else {
-      catalogCanSwitchChannel = true
-
-      if (savedChannel === 'production') {
-        return true
-      } else {
-        localStorage.setItem('catalogChannel', 'dev')
-        return false
-      }
-    }
-  }
-
   const flags = reactive({
     connected: computed(() => flipper.value?.connected),
     updateInProgress: ref(false),
@@ -64,8 +47,8 @@ export const useFlipperStore = defineStore('flipper', () => {
     isBridgeReady: ref(false),
     switchFlipper: ref(false),
     flipperIsInitialized: ref(false),
-    catalogChannelProduction: ref(getCatalogChannel()),
-    catalogCanSwitchChannel: ref(catalogCanSwitchChannel),
+    catalogChannelProduction: ref(true),
+    catalogCanSwitchChannel: ref(isProd && !isDebug ? false : true),
     disableNavigation: ref(false),
     disableButtonMultiflipper: ref(false)
   })

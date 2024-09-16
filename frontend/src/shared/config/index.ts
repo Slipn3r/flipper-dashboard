@@ -15,3 +15,4 @@ export const PRODUCTION_NAME = 'production'
 export const DEVELOP_NAME = 'dev'
 
 export const isProd = process.env.PROD
+export const isDebug = process.env.DEBUGGING
