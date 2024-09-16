@@ -35,7 +35,7 @@ function watchStatus(callback) {
 export function createRPCPromise(requestType, args, format, emitter, timeout) {
   return new Promise((resolve, reject) => {
     const rejectTimeout = setTimeout(
-      () => reject(`RPC timeout: ${requestType}`),
+      () => reject(new Error(`RPC timeout: ${requestType}`)),
       timeout || RPC_TIMEOUT
     )
     function callback(chunks) {

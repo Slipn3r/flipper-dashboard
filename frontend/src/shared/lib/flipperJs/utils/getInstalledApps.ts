@@ -19,11 +19,17 @@ async function getInstalledApps(this: Flipper) {
 
     const manifestsList = await this.RPC('storageList', {
       path: '/ext/apps_manifests'
-    }).catch((error: Error) =>
-      rpcErrorHandler({ componentName, error, command: 'storageList' })
-    )
+    }).catch((error: Error) => {
+      rpcErrorHandler({
+        componentName,
+        error,
+        command: 'storageList /ext/apps_manifests'
+      })
 
-    if (manifestsList.length) {
+      throw error
+    })
+
+    if (manifestsList?.length) {
       try {
         const decoder = new TextDecoder()
         for await (const file of manifestsList) {
