@@ -1708,6 +1708,9 @@ export const PB = $root.PB = (() => {
         Main.prototype.gpioReadPin = null;
         Main.prototype.gpioReadPinResponse = null;
         Main.prototype.gpioWritePin = null;
+        Main.prototype.gpioGetOtgMode = null;
+        Main.prototype.gpioGetOtgModeResponse = null;
+        Main.prototype.gpioSetOtgMode = null;
         Main.prototype.appStateResponse = null;
         Main.prototype.propertyGetRequest = null;
         Main.prototype.propertyGetResponse = null;
@@ -1720,7 +1723,7 @@ export const PB = $root.PB = (() => {
         let $oneOfFields;
 
         Object.defineProperty(Main.prototype, 'content', {
-            get: $util.oneOfGetter($oneOfFields = ['empty', 'stopSession', 'systemPingRequest', 'systemPingResponse', 'systemRebootRequest', 'systemDeviceInfoRequest', 'systemDeviceInfoResponse', 'systemFactoryResetRequest', 'systemGetDatetimeRequest', 'systemGetDatetimeResponse', 'systemSetDatetimeRequest', 'systemPlayAudiovisualAlertRequest', 'systemProtobufVersionRequest', 'systemProtobufVersionResponse', 'systemUpdateRequest', 'systemUpdateResponse', 'systemPowerInfoRequest', 'systemPowerInfoResponse', 'storageInfoRequest', 'storageInfoResponse', 'storageTimestampRequest', 'storageTimestampResponse', 'storageStatRequest', 'storageStatResponse', 'storageListRequest', 'storageListResponse', 'storageReadRequest', 'storageReadResponse', 'storageWriteRequest', 'storageDeleteRequest', 'storageMkdirRequest', 'storageMd5sumRequest', 'storageMd5sumResponse', 'storageRenameRequest', 'storageBackupCreateRequest', 'storageBackupRestoreRequest', 'storageTarExtractRequest', 'appStartRequest', 'appLockStatusRequest', 'appLockStatusResponse', 'appExitRequest', 'appLoadFileRequest', 'appButtonPressRequest', 'appButtonReleaseRequest', 'appGetErrorRequest', 'appGetErrorResponse', 'appDataExchangeRequest', 'guiStartScreenStreamRequest', 'guiStopScreenStreamRequest', 'guiScreenFrame', 'guiSendInputEventRequest', 'guiStartVirtualDisplayRequest', 'guiStopVirtualDisplayRequest', 'gpioSetPinMode', 'gpioSetInputPull', 'gpioGetPinMode', 'gpioGetPinModeResponse', 'gpioReadPin', 'gpioReadPinResponse', 'gpioWritePin', 'appStateResponse', 'propertyGetRequest', 'propertyGetResponse', 'desktopIsLockedRequest', 'desktopUnlockRequest', 'desktopStatusSubscribeRequest', 'desktopStatusUnsubscribeRequest', 'desktopStatus']),
+            get: $util.oneOfGetter($oneOfFields = ['empty', 'stopSession', 'systemPingRequest', 'systemPingResponse', 'systemRebootRequest', 'systemDeviceInfoRequest', 'systemDeviceInfoResponse', 'systemFactoryResetRequest', 'systemGetDatetimeRequest', 'systemGetDatetimeResponse', 'systemSetDatetimeRequest', 'systemPlayAudiovisualAlertRequest', 'systemProtobufVersionRequest', 'systemProtobufVersionResponse', 'systemUpdateRequest', 'systemUpdateResponse', 'systemPowerInfoRequest', 'systemPowerInfoResponse', 'storageInfoRequest', 'storageInfoResponse', 'storageTimestampRequest', 'storageTimestampResponse', 'storageStatRequest', 'storageStatResponse', 'storageListRequest', 'storageListResponse', 'storageReadRequest', 'storageReadResponse', 'storageWriteRequest', 'storageDeleteRequest', 'storageMkdirRequest', 'storageMd5sumRequest', 'storageMd5sumResponse', 'storageRenameRequest', 'storageBackupCreateRequest', 'storageBackupRestoreRequest', 'storageTarExtractRequest', 'appStartRequest', 'appLockStatusRequest', 'appLockStatusResponse', 'appExitRequest', 'appLoadFileRequest', 'appButtonPressRequest', 'appButtonReleaseRequest', 'appGetErrorRequest', 'appGetErrorResponse', 'appDataExchangeRequest', 'guiStartScreenStreamRequest', 'guiStopScreenStreamRequest', 'guiScreenFrame', 'guiSendInputEventRequest', 'guiStartVirtualDisplayRequest', 'guiStopVirtualDisplayRequest', 'gpioSetPinMode', 'gpioSetInputPull', 'gpioGetPinMode', 'gpioGetPinModeResponse', 'gpioReadPin', 'gpioReadPinResponse', 'gpioWritePin', 'gpioGetOtgMode', 'gpioGetOtgModeResponse', 'gpioSetOtgMode', 'appStateResponse', 'propertyGetRequest', 'propertyGetResponse', 'desktopIsLockedRequest', 'desktopUnlockRequest', 'desktopStatusSubscribeRequest', 'desktopStatusUnsubscribeRequest', 'desktopStatus']),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -1873,6 +1876,12 @@ export const PB = $root.PB = (() => {
                 $root.PB_Desktop.Status.encode(message.desktopStatus, writer.uint32(562).fork()).ldelim();
             if (message.storageTarExtractRequest != null && Object.hasOwnProperty.call(message, 'storageTarExtractRequest'))
                 $root.PB_Storage.TarExtractRequest.encode(message.storageTarExtractRequest, writer.uint32(570).fork()).ldelim();
+            if (message.gpioGetOtgMode != null && Object.hasOwnProperty.call(message, 'gpioGetOtgMode'))
+                $root.PB_Gpio.GetOtgMode.encode(message.gpioGetOtgMode, writer.uint32(578).fork()).ldelim();
+            if (message.gpioGetOtgModeResponse != null && Object.hasOwnProperty.call(message, 'gpioGetOtgModeResponse'))
+                $root.PB_Gpio.GetOtgModeResponse.encode(message.gpioGetOtgModeResponse, writer.uint32(586).fork()).ldelim();
+            if (message.gpioSetOtgMode != null && Object.hasOwnProperty.call(message, 'gpioSetOtgMode'))
+                $root.PB_Gpio.SetOtgMode.encode(message.gpioSetOtgMode, writer.uint32(594).fork()).ldelim();
             return writer;
         };
 
@@ -2137,6 +2146,18 @@ export const PB = $root.PB = (() => {
                     }
                 case 57: {
                         message.gpioWritePin = $root.PB_Gpio.WritePin.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 72: {
+                        message.gpioGetOtgMode = $root.PB_Gpio.GetOtgMode.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 73: {
+                        message.gpioGetOtgModeResponse = $root.PB_Gpio.GetOtgModeResponse.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 74: {
+                        message.gpioSetOtgMode = $root.PB_Gpio.SetOtgMode.decode(reader, reader.uint32());
                         break;
                     }
                 case 58: {
@@ -2824,6 +2845,36 @@ export const PB = $root.PB = (() => {
                         return 'gpioWritePin.' + error;
                 }
             }
+            if (message.gpioGetOtgMode != null && message.hasOwnProperty('gpioGetOtgMode')) {
+                if (properties.content === 1)
+                    return 'content: multiple values';
+                properties.content = 1;
+                {
+                    let error = $root.PB_Gpio.GetOtgMode.verify(message.gpioGetOtgMode);
+                    if (error)
+                        return 'gpioGetOtgMode.' + error;
+                }
+            }
+            if (message.gpioGetOtgModeResponse != null && message.hasOwnProperty('gpioGetOtgModeResponse')) {
+                if (properties.content === 1)
+                    return 'content: multiple values';
+                properties.content = 1;
+                {
+                    let error = $root.PB_Gpio.GetOtgModeResponse.verify(message.gpioGetOtgModeResponse);
+                    if (error)
+                        return 'gpioGetOtgModeResponse.' + error;
+                }
+            }
+            if (message.gpioSetOtgMode != null && message.hasOwnProperty('gpioSetOtgMode')) {
+                if (properties.content === 1)
+                    return 'content: multiple values';
+                properties.content = 1;
+                {
+                    let error = $root.PB_Gpio.SetOtgMode.verify(message.gpioSetOtgMode);
+                    if (error)
+                        return 'gpioSetOtgMode.' + error;
+                }
+            }
             if (message.appStateResponse != null && message.hasOwnProperty('appStateResponse')) {
                 if (properties.content === 1)
                     return 'content: multiple values';
@@ -3323,6 +3374,21 @@ export const PB = $root.PB = (() => {
                     throw TypeError('.PB.Main.gpioWritePin: object expected');
                 message.gpioWritePin = $root.PB_Gpio.WritePin.fromObject(object.gpioWritePin);
             }
+            if (object.gpioGetOtgMode != null) {
+                if (typeof object.gpioGetOtgMode !== 'object')
+                    throw TypeError('.PB.Main.gpioGetOtgMode: object expected');
+                message.gpioGetOtgMode = $root.PB_Gpio.GetOtgMode.fromObject(object.gpioGetOtgMode);
+            }
+            if (object.gpioGetOtgModeResponse != null) {
+                if (typeof object.gpioGetOtgModeResponse !== 'object')
+                    throw TypeError('.PB.Main.gpioGetOtgModeResponse: object expected');
+                message.gpioGetOtgModeResponse = $root.PB_Gpio.GetOtgModeResponse.fromObject(object.gpioGetOtgModeResponse);
+            }
+            if (object.gpioSetOtgMode != null) {
+                if (typeof object.gpioSetOtgMode !== 'object')
+                    throw TypeError('.PB.Main.gpioSetOtgMode: object expected');
+                message.gpioSetOtgMode = $root.PB_Gpio.SetOtgMode.fromObject(object.gpioSetOtgMode);
+            }
             if (object.appStateResponse != null) {
                 if (typeof object.appStateResponse !== 'object')
                     throw TypeError('.PB.Main.appStateResponse: object expected');
@@ -3720,6 +3786,21 @@ export const PB = $root.PB = (() => {
                 object.storageTarExtractRequest = $root.PB_Storage.TarExtractRequest.toObject(message.storageTarExtractRequest, options);
                 if (options.oneofs)
                     object.content = 'storageTarExtractRequest';
+            }
+            if (message.gpioGetOtgMode != null && message.hasOwnProperty('gpioGetOtgMode')) {
+                object.gpioGetOtgMode = $root.PB_Gpio.GetOtgMode.toObject(message.gpioGetOtgMode, options);
+                if (options.oneofs)
+                    object.content = 'gpioGetOtgMode';
+            }
+            if (message.gpioGetOtgModeResponse != null && message.hasOwnProperty('gpioGetOtgModeResponse')) {
+                object.gpioGetOtgModeResponse = $root.PB_Gpio.GetOtgModeResponse.toObject(message.gpioGetOtgModeResponse, options);
+                if (options.oneofs)
+                    object.content = 'gpioGetOtgModeResponse';
+            }
+            if (message.gpioSetOtgMode != null && message.hasOwnProperty('gpioSetOtgMode')) {
+                object.gpioSetOtgMode = $root.PB_Gpio.SetOtgMode.toObject(message.gpioSetOtgMode, options);
+                if (options.oneofs)
+                    object.content = 'gpioSetOtgMode';
             }
             return object;
         };
@@ -8716,6 +8797,13 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
         return values;
     })();
 
+    PB_Gpio.GpioOtgMode = (function() {
+        const valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[0] = 'OFF'] = 0;
+        values[valuesById[1] = 'ON'] = 1;
+        return values;
+    })();
+
     PB_Gpio.SetPinMode = (function() {
 
         function SetPinMode(properties) {
@@ -9734,6 +9822,308 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
         };
 
         return WritePin;
+    })();
+
+    PB_Gpio.GetOtgMode = (function() {
+
+        function GetOtgMode(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        GetOtgMode.create = function create(properties) {
+            return new GetOtgMode(properties);
+        };
+
+        GetOtgMode.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            return writer;
+        };
+
+        GetOtgMode.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        GetOtgMode.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.PB_Gpio.GetOtgMode();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        GetOtgMode.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        GetOtgMode.verify = function verify(message) {
+            if (typeof message !== 'object' || message === null)
+                return 'object expected';
+            return null;
+        };
+
+        GetOtgMode.fromObject = function fromObject(object) {
+            if (object instanceof $root.PB_Gpio.GetOtgMode)
+                return object;
+            return new $root.PB_Gpio.GetOtgMode();
+        };
+
+        GetOtgMode.toObject = function toObject() {
+            return {};
+        };
+
+        GetOtgMode.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        GetOtgMode.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = 'type.googleapis.com';
+            }
+            return typeUrlPrefix + '/PB_Gpio.GetOtgMode';
+        };
+
+        return GetOtgMode;
+    })();
+
+    PB_Gpio.GetOtgModeResponse = (function() {
+
+        function GetOtgModeResponse(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        GetOtgModeResponse.prototype.mode = 0;
+
+        GetOtgModeResponse.create = function create(properties) {
+            return new GetOtgModeResponse(properties);
+        };
+
+        GetOtgModeResponse.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.mode != null && Object.hasOwnProperty.call(message, 'mode'))
+                writer.uint32(8).int32(message.mode);
+            return writer;
+        };
+
+        GetOtgModeResponse.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        GetOtgModeResponse.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.PB_Gpio.GetOtgModeResponse();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1: {
+                        message.mode = reader.int32();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        GetOtgModeResponse.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        GetOtgModeResponse.verify = function verify(message) {
+            if (typeof message !== 'object' || message === null)
+                return 'object expected';
+            if (message.mode != null && message.hasOwnProperty('mode'))
+                switch (message.mode) {
+                default:
+                    return 'mode: enum value expected';
+                case 0:
+                case 1:
+                    break;
+                }
+            return null;
+        };
+
+        GetOtgModeResponse.fromObject = function fromObject(object) {
+            if (object instanceof $root.PB_Gpio.GetOtgModeResponse)
+                return object;
+            let message = new $root.PB_Gpio.GetOtgModeResponse();
+            switch (object.mode) {
+            default:
+                if (typeof object.mode === 'number') {
+                    message.mode = object.mode;
+                    break;
+                }
+                break;
+            case 'OFF':
+            case 0:
+                message.mode = 0;
+                break;
+            case 'ON':
+            case 1:
+                message.mode = 1;
+                break;
+            }
+            return message;
+        };
+
+        GetOtgModeResponse.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.mode = options.enums === String ? 'OFF' : 0;
+            if (message.mode != null && message.hasOwnProperty('mode'))
+                object.mode = options.enums === String ? $root.PB_Gpio.GpioOtgMode[message.mode] === undefined ? message.mode : $root.PB_Gpio.GpioOtgMode[message.mode] : message.mode;
+            return object;
+        };
+
+        GetOtgModeResponse.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        GetOtgModeResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = 'type.googleapis.com';
+            }
+            return typeUrlPrefix + '/PB_Gpio.GetOtgModeResponse';
+        };
+
+        return GetOtgModeResponse;
+    })();
+
+    PB_Gpio.SetOtgMode = (function() {
+
+        function SetOtgMode(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        SetOtgMode.prototype.mode = 0;
+
+        SetOtgMode.create = function create(properties) {
+            return new SetOtgMode(properties);
+        };
+
+        SetOtgMode.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.mode != null && Object.hasOwnProperty.call(message, 'mode'))
+                writer.uint32(8).int32(message.mode);
+            return writer;
+        };
+
+        SetOtgMode.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        SetOtgMode.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.PB_Gpio.SetOtgMode();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1: {
+                        message.mode = reader.int32();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        SetOtgMode.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        SetOtgMode.verify = function verify(message) {
+            if (typeof message !== 'object' || message === null)
+                return 'object expected';
+            if (message.mode != null && message.hasOwnProperty('mode'))
+                switch (message.mode) {
+                default:
+                    return 'mode: enum value expected';
+                case 0:
+                case 1:
+                    break;
+                }
+            return null;
+        };
+
+        SetOtgMode.fromObject = function fromObject(object) {
+            if (object instanceof $root.PB_Gpio.SetOtgMode)
+                return object;
+            let message = new $root.PB_Gpio.SetOtgMode();
+            switch (object.mode) {
+            default:
+                if (typeof object.mode === 'number') {
+                    message.mode = object.mode;
+                    break;
+                }
+                break;
+            case 'OFF':
+            case 0:
+                message.mode = 0;
+                break;
+            case 'ON':
+            case 1:
+                message.mode = 1;
+                break;
+            }
+            return message;
+        };
+
+        SetOtgMode.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.mode = options.enums === String ? 'OFF' : 0;
+            if (message.mode != null && message.hasOwnProperty('mode'))
+                object.mode = options.enums === String ? $root.PB_Gpio.GpioOtgMode[message.mode] === undefined ? message.mode : $root.PB_Gpio.GpioOtgMode[message.mode] : message.mode;
+            return object;
+        };
+
+        SetOtgMode.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        SetOtgMode.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = 'type.googleapis.com';
+            }
+            return typeUrlPrefix + '/PB_Gpio.SetOtgMode';
+        };
+
+        return SetOtgMode;
     })();
 
     return PB_Gpio;

@@ -3,14 +3,23 @@ import { PB } from './protobufCompiled'
 import type { Emitter, DefaultEvents } from 'nanoevents'
 
 import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
+import {
+  addToQueue,
+  getProcess,
+  clearQueue,
+  type QueueItem
+} from 'shared/lib/utils/usePromiseQueue'
 
 import { FlipperModel } from 'entities/Flipper'
+import { CategoryModel } from 'entities/Category'
+import type { ActionAppOptions, InstallAppOptions } from './types'
 
 import readInfo from './utils/readInfo'
 import {
   getInstalledApps,
   onClearInstalledAppsList
 } from './utils/getInstalledApps'
+import { installApp, deleteApp } from './utils/appActions'
 
 import * as storage from './commands/storage'
 import * as system from './commands/system'
@@ -40,6 +49,11 @@ export default class Flipper {
     usbVendorId: number
     usbProductId: number
   }[]
+  config: {
+    appDir: string
+    manifestDir: string
+    tempDir: string
+  }
   info?: FlipperModel.FlipperInfo
   flipperReady: boolean
   commandQueue: {
@@ -62,6 +76,11 @@ export default class Flipper {
 
   constructor(emitter: Emitter<DefaultEvents>) {
     this.filters = [{ usbVendorId: 0x0483, usbProductId: 0x5740 }]
+    this.config = {
+      appDir: '/ext/apps',
+      manifestDir: '/ext/apps_manifests',
+      tempDir: '/ext/.tmp'
+    }
 
     this.commandQueue = [
       {
@@ -159,44 +178,90 @@ export default class Flipper {
   async ensureCommonPaths() {
     if (this.flipperReady && this.info?.storage.sdcard?.status.isInstalled) {
       let dir = await this.RPC('storageStat', {
-        path: '/ext/apps_manifests'
+        path: this.config.manifestDir
       }).catch((error: Error) =>
         rpcErrorHandler({ componentName, error, command: 'storageStat' })
       )
       if (!dir) {
         await this.RPC('storageMkdir', {
-          path: '/ext/apps_manifests'
+          path: this.config.manifestDir
         }).catch((error: Error) =>
           rpcErrorHandler({ componentName, error, command: 'storageMkdir' })
         )
       }
 
       dir = await this.RPC('storageStat', {
-        path: '/ext/.tmp'
+        path: this.config.tempDir
       }).catch((error: Error) =>
         rpcErrorHandler({ componentName, error, command: 'storageStat' })
       )
       if (!dir) {
         await this.RPC('storageMkdir', {
-          path: '/ext/.tmp'
+          path: this.config.tempDir
         }).catch((error: Error) =>
           rpcErrorHandler({ componentName, error, command: 'storageMkdir' })
         )
       }
 
       dir = await this.RPC('storageStat', {
-        path: '/ext/.tmp/lab'
+        path: `${this.config.tempDir}/lab`
       }).catch((error: Error) =>
         rpcErrorHandler({ componentName, error, command: 'storageStat' })
       )
       if (!dir) {
         await this.RPC('storageMkdir', {
-          path: '/ext/.tmp/lab'
+          path: `${this.config.tempDir}/lab`
         }).catch((error: Error) =>
           rpcErrorHandler({ componentName, error, command: 'storageMkdir' })
         )
       }
     }
+  }
+
+  async ensureCategoryPaths(categories: CategoryModel.CategoryData[]) {
+    for (const category of categories) {
+      const dir = await this.RPC('storageStat', {
+        path: `/ext/apps/${category.name}`
+      }).catch((error: Error) =>
+        rpcErrorHandler({ componentName, error, command: 'storageStat' })
+      )
+      if (!dir) {
+        await this.RPC('storageMkdir', {
+          path: `/ext/apps/${category.name}`
+        }).catch((error: Error) =>
+          rpcErrorHandler({ componentName, error, command: 'storageMkdir' })
+        )
+      }
+    }
+  }
+
+  async installApp({
+    callback,
+    categoryName,
+    app,
+    catalogChannelProduction = true
+  }: InstallAppOptions) {
+    return installApp.bind(this)({
+      callback,
+      categoryName,
+      app,
+      catalogChannelProduction
+    })
+  }
+  async deleteApp({ callback, categoryName, app }: ActionAppOptions) {
+    return deleteApp.bind(this)({ callback, categoryName, app })
+  }
+
+  async addToQueue({ fn, params }: QueueItem) {
+    return await addToQueue({ fn, params })
+  }
+
+  getProcess() {
+    return getProcess()
+  }
+
+  clearQueue() {
+    return clearQueue()
   }
 }
 

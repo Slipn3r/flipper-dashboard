@@ -206,6 +206,7 @@ export default class FlipperWeb extends Flipper {
     }
 
     this.rpcActive = false
+    this.clearQueue()
 
     try {
       if (this.reader) {

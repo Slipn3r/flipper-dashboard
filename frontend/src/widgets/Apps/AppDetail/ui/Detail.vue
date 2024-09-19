@@ -71,6 +71,7 @@
                 :track-color="
                   appsStore.progressColors(currentApp.action.type).track
                 "
+                interpolated
                 size="54px"
               />
             </div>

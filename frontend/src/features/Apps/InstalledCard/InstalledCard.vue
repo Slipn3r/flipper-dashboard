@@ -38,6 +38,7 @@
           :progress="app.action.progress"
           :color="appsStore.progressColors(app.action.type).bar"
           :trackColor="appsStore.progressColors(app.action.type).track"
+          interpolated
         />
       </template>
       <template v-else>

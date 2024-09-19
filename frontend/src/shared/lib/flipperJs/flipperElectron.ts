@@ -149,6 +149,7 @@ export default class FlipperElectron extends Flipper {
   async disconnect() {
     this.connected = false
     this.flipperReady = false
+    this.clearQueue()
 
     if (this.unbindCli) {
       this.unbindCli()

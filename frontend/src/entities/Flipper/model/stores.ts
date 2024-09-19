@@ -7,8 +7,6 @@ import { FlipperWeb, FlipperElectron } from 'shared/lib/flipperJs'
 import { showNotif } from 'shared/lib/utils/useShowNotif'
 import { log } from 'shared/lib/utils/useLog'
 
-import { clearQueue } from 'shared/lib/utils/usePromiseQueue'
-
 import { AppsModel } from 'entities/Apps'
 import {
   FlipperInfo,
@@ -114,7 +112,6 @@ export const useFlipperStore = defineStore('flipper', () => {
       //   console.log(flippers.value)
       // })
 
-      clearQueue()
       const currentAutoReconnectFlag = unref(flags.autoReconnect)
       await flipper.value
         .connect({
@@ -127,7 +124,6 @@ export const useFlipperStore = defineStore('flipper', () => {
             'disconnect',
             (e: { isUserAction: boolean }) => {
               appsStore.onClearInstalledAppsList()
-              clearQueue()
 
               if (flags.autoReconnect && !e.isUserAction) {
                 onAutoReconnect()
@@ -174,7 +170,6 @@ export const useFlipperStore = defineStore('flipper', () => {
       })
       // flags.connected = false
       appsStore.onClearInstalledAppsList()
-      clearQueue()
     }
   }
 
@@ -251,11 +246,9 @@ export const useFlipperStore = defineStore('flipper', () => {
     if (flipper.value) {
       // flipper.value.flipperReady = false
       await flipper.value.disconnect()
-      clearQueue()
       oldFlipper.value = unref(flipper.value)
     }
 
-    clearQueue()
     await asyncSleep(500)
 
     const localFlipper = new FlipperElectron(
@@ -338,8 +331,6 @@ export const useFlipperStore = defineStore('flipper', () => {
     bridgeEmitter.on(
       'list',
       async (data: DataFlipperElectron[] | DataDfuFlipperElectron[]) => {
-        console.log(data)
-
         // availableFlippers.value = []
         // availableDfuFlippers.value = []
 
@@ -365,7 +356,6 @@ export const useFlipperStore = defineStore('flipper', () => {
               if (flipper.value?.name === bridgeFlipper.name) {
                 flipper.value.disconnect()
                 appsStore.onClearInstalledAppsList()
-                clearQueue()
 
                 if (!flags.updateInProgress) {
                   flipper.value = undefined
@@ -437,24 +427,17 @@ export const useFlipperStore = defineStore('flipper', () => {
             }
           }
         } else if (flags.recovering) {
-          console.log('flags.recovering', flags.recovering)
           if (flags.waitForReconnect) {
-            console.log('flags.waitForReconnect', flags.waitForReconnect)
             const findFlipper = availableFlippers.value.find(
               (availableFlipper) => {
                 return availableFlipper.name === recoveringFlipperName.value
               }
             )
 
-            console.log('findFlipper', findFlipper)
             if (findFlipper) {
               // await asyncSleep(1000)
 
               if (isDataFlipperElectron(findFlipper)) {
-                console.log(
-                  'isDataFlipperElectron',
-                  isDataFlipperElectron(findFlipper)
-                )
                 connectFlipper(findFlipper)
               }
             }

@@ -1,24 +1,17 @@
 import { App, InstalledApp, ActionType } from 'entities/Apps/model'
 import { beforeunloadActive, beforeunloadDeactivate } from './useBeforeunload'
 
-type QueueItem = {
+export type QueueItem = {
   fn: (app: App | InstalledApp, actionType: ActionType) => Promise<void>
-  flipperName?: string
   params: [App | InstalledApp, ActionType]
 }
 
 let queue: QueueItem[] = []
 let process = false
-let flipperCurrentlyParticipating = ''
 
-const addToQueue = async ({
-  fn,
-  flipperName,
-  params
-}: QueueItem) => {
+const addToQueue = async ({ fn, params }: QueueItem) => {
   queue.push({
     fn,
-    flipperName,
     params
   })
 
@@ -40,11 +33,8 @@ const executeQueue = () => {
       if (queue.length) {
         const queueShift = queue.shift()
         if (queueShift) {
-          const { fn, flipperName, params } = queueShift
+          const { fn, params } = queueShift
 
-          if (flipperName) {
-            flipperCurrentlyParticipating = flipperName
-          }
           fn(...params)
             .then(() => next())
             .catch((error) => {
@@ -65,11 +55,5 @@ const executeQueue = () => {
 }
 
 const getProcess = () => process
-const getFlipperCurrentlyParticipating = () => flipperCurrentlyParticipating
 
-export {
-  addToQueue,
-  clearQueue,
-  getProcess,
-  getFlipperCurrentlyParticipating
-}
+export { addToQueue, clearQueue, getProcess }

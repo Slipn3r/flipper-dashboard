@@ -51,6 +51,7 @@
                   :progress="app.action.progress"
                   :color="appsStore.progressColors(app.action.type).bar"
                   :track-color="appsStore.progressColors(app.action.type).track"
+                  interpolated
                   size="33px"
                 />
               </template>
