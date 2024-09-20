@@ -19,15 +19,22 @@
         class="col"
         @categorySelected="onCategorySelected"
       />
-      <q-select
-        class="col-auto"
-        v-model="sortModel"
-        @update:model-value="onSortApps()"
-        :options="sortOptions"
-        dense
-        standout="bg-primary text-white no-shadow"
-        rounded
-      />
+      <div class="column col-auto q-col-gutter-sm">
+        <q-select
+          class="col"
+          v-model="sortModel"
+          @update:model-value="onSortApps()"
+          :options="sortOptions"
+          dense
+          standout="bg-primary text-white no-shadow"
+          rounded
+        />
+        <template v-if="appsStore.flags.catalogInstallAllApps">
+          <div class="col">
+            <AppInstallAll :disabled="appsStore.loadingInstalledApps" />
+          </div>
+        </template>
+      </div>
     </div>
     <q-infinite-scroll
       ref="infinityScrollRef"
@@ -103,6 +110,7 @@ const appsStore = AppsModel.useAppsStore()
 
 import { AppInstallBtn } from 'features/Apps/InstallButton'
 import { AppUpdateBtn } from 'features/Apps/UpdateButton'
+import { AppInstallAll } from 'features/Apps/InstallAll'
 import { FlipperModel } from 'entities/Flipper'
 import { type QInfiniteScroll } from 'quasar'
 import { FlipperWeb } from 'src/shared/lib/flipperJs'
@@ -204,7 +212,7 @@ onMounted(async () => {
 // )
 
 watch(
-  () => flipperStore.flags.catalogChannelProduction,
+  () => appsStore.flags.catalogChannelProduction,
   async () => {
     if (flipperStore.flipper?.readingMode.type === 'rpc') {
       await appsStore.getInstalledApps({

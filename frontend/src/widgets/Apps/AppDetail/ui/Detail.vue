@@ -363,7 +363,7 @@ onMounted(async () => {
 })
 
 watch(
-  () => flipperStore.flags.catalogChannelProduction,
+  () => appsStore.flags.catalogChannelProduction,
   async () => {
     await init()
 

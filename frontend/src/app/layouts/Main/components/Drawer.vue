@@ -46,12 +46,19 @@
                 @click="toggleAutoReconnect"
               />
             </q-item>
-            <q-item v-if="flipperStore.flags.catalogCanSwitchChannel">
+            <q-item v-if="appsStore.flags.catalogCanSwitchChannel">
               <q-toggle
-                v-model="flipperStore.flags.catalogChannelProduction"
+                v-model="appsStore.flags.catalogChannelProduction"
                 dense
                 label="Production Apps"
                 @click="toggleCatalogChannel"
+              />
+            </q-item>
+            <q-item v-if="appsStore.flags.catalogCanInstallAllApps">
+              <q-toggle
+                v-model="appsStore.flags.catalogInstallAllApps"
+                dense
+                label="Install All Apps"
               />
             </q-item>
             <q-item clickable @click="showLogsDialog">
@@ -89,6 +96,9 @@ import { PRODUCTION_NAME, DEVELOP_NAME } from 'shared/config'
 import { FlipperModel } from 'entities/Flipper'
 import { instance, getBaseUrl } from 'boot/axios'
 const flipperStore = FlipperModel.useFlipperStore()
+
+import { AppsModel } from 'src/entities/Apps'
+const appsStore = AppsModel.useAppsStore()
 
 const tab = ref('home')
 
@@ -147,7 +157,7 @@ const toggleAutoReconnect = () => {
 }
 
 const toggleCatalogChannel = () => {
-  const catalogChannel = flipperStore.flags.catalogChannelProduction
+  const catalogChannel = appsStore.flags.catalogChannelProduction
     ? PRODUCTION_NAME
     : DEVELOP_NAME
 

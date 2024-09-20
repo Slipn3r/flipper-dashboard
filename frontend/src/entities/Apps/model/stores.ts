@@ -1,6 +1,7 @@
 import { ref, computed, reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { Platform } from 'quasar'
+import { isProd, isDebug } from 'shared/config'
 // import asyncSleep from 'simple-async-sleep'
 import { FlipperModel } from 'entities/Flipper'
 import { CategoryModel } from 'entities/Category'
@@ -25,6 +26,13 @@ export const useAppsStore = defineStore('apps', () => {
   const api = computed(() => flipperStore.api)
   const target = computed(() => flipperStore.target)
   const flipperReady = computed(() => flipperStore.flipperReady)
+
+  const flags = reactive({
+    catalogChannelProduction: ref(true),
+    catalogCanSwitchChannel: ref(isProd && !isDebug ? false : true),
+    catalogInstallAllApps: ref(false),
+    catalogCanInstallAllApps: ref(isProd && !isDebug ? false : true)
+  })
 
   const dialogs = reactive<{
     [key: string]: boolean
@@ -89,10 +97,7 @@ export const useAppsStore = defineStore('apps', () => {
       }
 
       installed = installed.filter((installedApp) => {
-        if (
-          installedApp.devCatalog &&
-          flipperStore.flags.catalogChannelProduction
-        ) {
+        if (installedApp.devCatalog && flags.catalogChannelProduction) {
           return false
         }
 
@@ -297,6 +302,22 @@ export const useAppsStore = defineStore('apps', () => {
       }
     }
   }
+  const installationBatch = ref<{
+    inProcess: boolean
+    totalCount: number
+    doneCount: number
+    failed: {
+      id: string
+      name: string
+    }[]
+    progress: number
+  }>({
+    inProcess: false,
+    totalCount: 0,
+    doneCount: 0,
+    failed: [],
+    progress: 0
+  })
   const actionAppList = ref<Array<App | InstalledApp>>([])
   const onAction = async (app: App | InstalledApp, actionType: ActionType) => {
     if (Platform.is.mobile) {
@@ -309,6 +330,7 @@ export const useAppsStore = defineStore('apps', () => {
     }
 
     if (!flipper.value) {
+      flipperStore.dialogs.connectFlipper = true
       return
     }
 
@@ -467,8 +489,7 @@ export const useAppsStore = defineStore('apps', () => {
             },
             categoryName: installCategoryName,
             app,
-            catalogChannelProduction:
-              flipperStore.flags.catalogChannelProduction
+            catalogChannelProduction: flags.catalogChannelProduction
           })
           .then(async () => {
             const _app = await getCurrentApp(app as App)
@@ -511,6 +532,19 @@ export const useAppsStore = defineStore('apps', () => {
             throw new Error(message)
           })
           .finally(() => {
+            if (installationBatch.value.inProcess) {
+              installationBatch.value.doneCount++
+
+              if (
+                installationBatch.value.totalCount ===
+                installationBatch.value.doneCount
+              ) {
+                installationBatch.value.totalCount = 0
+                installationBatch.value.doneCount = 0
+                installationBatch.value.inProcess = false
+              }
+            }
+
             app.action.type = ''
             app.action.progress = 0
           })
@@ -528,8 +562,7 @@ export const useAppsStore = defineStore('apps', () => {
             categoryName: categories.value.find((e) => e.id === app.categoryId)!
               .name,
             app,
-            catalogChannelProduction:
-              flipperStore.flags.catalogChannelProduction
+            catalogChannelProduction: flags.catalogChannelProduction
           })
           .then(async () => {
             const _app = await getCurrentApp(app as App)
@@ -586,6 +619,19 @@ export const useAppsStore = defineStore('apps', () => {
             throw new Error(message)
           })
           .finally(() => {
+            if (installationBatch.value.inProcess) {
+              installationBatch.value.doneCount++
+
+              if (
+                installationBatch.value.totalCount ===
+                installationBatch.value.doneCount
+              ) {
+                installationBatch.value.totalCount = 0
+                installationBatch.value.doneCount = 0
+                installationBatch.value.inProcess = false
+              }
+            }
+
             app.action.type = ''
             app.action.progress = 0
           })
@@ -660,6 +706,7 @@ export const useAppsStore = defineStore('apps', () => {
   }
 
   return {
+    flags,
     dialogs,
     onClearInstalledAppsList,
     getInstalledApps,
@@ -674,6 +721,7 @@ export const useAppsStore = defineStore('apps', () => {
     noApplicationsInstalled,
     onAction,
     actionAppList,
+    installationBatch,
     batch,
     batchUpdate
   }

@@ -1,7 +1,6 @@
 import { ref, unref, computed, reactive } from 'vue'
 import { Platform } from 'quasar'
 import { defineStore } from 'pinia'
-import { isProd, isDebug } from 'shared/config'
 import { FlipperWeb, FlipperElectron } from 'shared/lib/flipperJs'
 
 import { showNotif } from 'shared/lib/utils/useShowNotif'
@@ -45,8 +44,6 @@ export const useFlipperStore = defineStore('flipper', () => {
     isBridgeReady: ref(false),
     switchFlipper: ref(false),
     flipperIsInitialized: ref(false),
-    catalogChannelProduction: ref(true),
-    catalogCanSwitchChannel: ref(isProd && !isDebug ? false : true),
     disableNavigation: ref(false),
     disableButtonMultiflipper: ref(false)
   })

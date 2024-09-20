@@ -21,6 +21,9 @@ const router = useRouter()
 import { FlipperModel } from 'entities/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 
+import { AppsModel } from 'src/entities/Apps'
+const appsStore = AppsModel.useAppsStore()
+
 import { CategoryModel, CategoryChip } from 'entities/Category'
 const categoriesStore = CategoryModel.useCategoriesStore()
 
@@ -64,7 +67,7 @@ watch(
 )
 
 watch(
-  () => flipperStore.flags.catalogChannelProduction,
+  () => appsStore.flags.catalogChannelProduction,
   async () => {
     categoriesStore.categories = []
 
