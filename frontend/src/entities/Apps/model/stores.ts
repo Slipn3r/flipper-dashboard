@@ -429,12 +429,16 @@ export const useAppsStore = defineStore('apps', () => {
   const getCurrentApp = async (app: App) => {
     const version = await fetchAppsVersions([app.currentVersion.id])
 
-    const manifest = await FlipperJsUtils.readManifest.bind(flipper.value!)({
+    const manifest = (await FlipperJsUtils.readManifest.bind(flipper.value!)({
       name: `${app.alias}.fim`
-    })
+    })) as InstalledApp
 
-    const _app = manifest!
+    const _app: InstalledApp = { ...manifest! }
     _app.installedVersion = { ..._app.installedVersion, ...version[0] }
+
+    _app.currentVersion = app.currentVersion
+    _app.alias = app.alias
+    _app.categoryId = app.categoryId
 
     return _app as InstalledApp
   }
