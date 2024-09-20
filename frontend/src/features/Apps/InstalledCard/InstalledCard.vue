@@ -31,7 +31,7 @@
       </div>
     </q-card-section>
     <q-card-section class="row no-wrap">
-      <template v-if="app.action?.type">
+      <template v-if="app.action?.type || getAppAction(app)">
         <ProgressBar
           style="width: 120px"
           :title="app.action.progress * 100 + '%'"
@@ -67,6 +67,24 @@ interface Props {
 withDefaults(defineProps<Props>(), {
   unsupported: false
 })
+
+const getAppAction = (app: AppsModel.InstalledApp) => {
+  const actionApp = appsStore.actionAppList.find((_app) => {
+    if (_app.id === app.id) {
+      return true
+    }
+
+    return false
+  })
+
+  if (actionApp) {
+    app.action = actionApp.action
+
+    return true
+  }
+
+  return false
+}
 </script>
 
 <style scoped lang="scss">

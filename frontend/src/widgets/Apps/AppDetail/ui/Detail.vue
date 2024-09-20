@@ -330,6 +330,24 @@ watch(
 const init = async () => {
   await getCurrentApp()
   await getCategories()
+
+  if (currentApp.value) {
+    getAppAction(currentApp.value)
+  }
+}
+
+const getAppAction = (app: AppsModel.App) => {
+  const actionApp = appsStore.actionAppList.find((_app) => {
+    if (_app.id === app.id) {
+      return true
+    }
+
+    return false
+  })
+
+  if (actionApp) {
+    app.action = actionApp.action
+  }
 }
 
 onMounted(async () => {

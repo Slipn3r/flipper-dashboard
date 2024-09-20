@@ -52,7 +52,7 @@
         >
           <AppCard v-bind="app" @click="goAppPage">
             <template v-slot:button>
-              <template v-if="app.action?.type">
+              <template v-if="app.action?.type || getAppAction(app)">
                 <ProgressBar
                   :title="app.action.progress * 100 + '%'"
                   :progress="app.action.progress"
@@ -174,6 +174,24 @@ const getApps = async () => {
   }
 
   appsLoading.value = false
+}
+
+const getAppAction = (app: AppsModel.App) => {
+  const actionApp = appsStore.actionAppList.find((_app) => {
+    if (_app.id === app.id) {
+      return true
+    }
+
+    return false
+  })
+
+  if (actionApp) {
+    app.action = actionApp.action
+
+    return true
+  }
+
+  return false
 }
 
 onMounted(async () => {
