@@ -9,6 +9,7 @@
             v-bind="flipperBody"
             :showScreenUpdating="flipperStore.flags.updateInProgress"
             :isScreenStream="isScreenStream"
+            :orientation="orientation"
             @expandView="expandView"
           />
         </div>

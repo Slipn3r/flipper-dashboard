@@ -11,7 +11,9 @@
       <div
         v-else
         class="flipper__display-wrapper relative-position"
-        :style="`width: ${128 * screenScale}px; height: ${64 * screenScale}px`"
+        :style="`width: ${128 * screenScale}px; height: ${
+          64 * screenScale
+        }px; rotate: ${90 * rotationCalculation}deg;`"
       >
         <div
           class="flipper__expand-wrapper absolute-center cursor-pointer"
@@ -46,13 +48,15 @@ type Props = {
   showScreenUpdating: boolean
   isScreenStream?: boolean
   screenScale?: number
+  orientation?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
   flipperColor: '2',
   showScreenUpdating: false,
   isScreenStream: false,
-  screenScale: 1
+  screenScale: 1,
+  orientation: 0
 })
 
 const emit = defineEmits(['expandView'])
@@ -68,6 +72,15 @@ const flipperBodyClass = computed(() => {
   }
 })
 
+const rotationCalculation = computed(() => {
+  switch (props.orientation) {
+    case 1:
+      return 2
+
+    default:
+      return 0
+  }
+})
 const expandView = () => {
   emit('expandView')
 }

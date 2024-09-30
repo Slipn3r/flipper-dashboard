@@ -212,17 +212,20 @@ const rotationCalculation = computed(() => {
     case 2:
       return 1
 
+    case 3:
+      return 1
+
     default:
-      return props.orientation
+      return 0
   }
 })
 
 const scaleCalculation = computed(() => {
   switch (props.orientation) {
-    case 1:
+    case 2:
       return 0.5
 
-    case 2:
+    case 3:
       return 0.5
 
     default:
