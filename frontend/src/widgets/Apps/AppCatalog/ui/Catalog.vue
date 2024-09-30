@@ -213,7 +213,10 @@ onMounted(async () => {
 
       // await reLoad()
 
-      if (!appsStore.flipperInstalledApps?.length) {
+      if (
+        !appsStore.loadingInstalledApps &&
+        !appsStore.flipperInstalledApps?.length
+      ) {
         await appsStore.getInstalledApps({
           refreshInstalledApps: true
         })

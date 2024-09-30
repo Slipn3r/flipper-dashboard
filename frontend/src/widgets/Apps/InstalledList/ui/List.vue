@@ -95,9 +95,10 @@ const categoriesStore = CategoryModel.useCategoriesStore()
 
 const getCategories = async () => {
   if (
-    !categoriesStore.categories.length ||
-    flipperStore.api !== categoriesStore.lastApi ||
-    flipperStore.target !== categoriesStore.lastTarget
+    !categoriesStore.categoriesLoading &&
+    (!categoriesStore.categories.length ||
+      flipperStore.api !== categoriesStore.lastApi ||
+      flipperStore.target !== categoriesStore.lastTarget)
   ) {
     await categoriesStore.getCategories({
       api: flipperStore.api,
@@ -121,7 +122,10 @@ const reLoad = async () => {
 onMounted(async () => {
   await getCategories()
 
-  if (!appsStore.flipperInstalledApps?.length) {
+  if (
+    !appsStore.loadingInstalledApps &&
+    !appsStore.flipperInstalledApps?.length
+  ) {
     await appsStore.getInstalledApps({
       refreshInstalledApps: true
     })
