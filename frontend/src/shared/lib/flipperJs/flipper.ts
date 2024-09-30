@@ -2,6 +2,7 @@ import { PB } from './protobufCompiled'
 
 import type { Emitter, DefaultEvents } from 'nanoevents'
 
+import { log } from 'shared/lib/utils/useLog'
 import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
 import {
   addToQueue,
@@ -179,41 +180,107 @@ export default class Flipper {
     if (this.flipperReady && this.info?.storage.sdcard?.status.isInstalled) {
       let dir = await this.RPC('storageStat', {
         path: this.config.manifestDir
-      }).catch((error: Error) =>
-        rpcErrorHandler({ componentName, error, command: 'storageStat' })
-      )
+      }).catch((error: Error) => {
+        if (error.toString() !== 'ERROR_STORAGE_NOT_EXIST') {
+          rpcErrorHandler({
+            componentName,
+            error,
+            command: `storageStat ${this.config.manifestDir}`
+          })
+        } else {
+          log({
+            level: 'debug',
+            message: `${componentName}: Storage ${this.config.manifestDir} not exist`
+          })
+        }
+      })
       if (!dir) {
         await this.RPC('storageMkdir', {
           path: this.config.manifestDir
-        }).catch((error: Error) =>
-          rpcErrorHandler({ componentName, error, command: 'storageMkdir' })
-        )
+        })
+          .then(() =>
+            log({
+              level: 'debug',
+              message: `${componentName}: storageMkdir: ${this.config.manifestDir}`
+            })
+          )
+          .catch((error: Error) =>
+            rpcErrorHandler({
+              componentName,
+              error,
+              command: `storageMkdir ${this.config.manifestDir}`
+            })
+          )
       }
 
       dir = await this.RPC('storageStat', {
         path: this.config.tempDir
-      }).catch((error: Error) =>
-        rpcErrorHandler({ componentName, error, command: 'storageStat' })
-      )
+      }).catch((error: Error) => {
+        if (error.toString() !== 'ERROR_STORAGE_NOT_EXIST') {
+          rpcErrorHandler({
+            componentName,
+            error,
+            command: `storageStat ${this.config.tempDir}`
+          })
+        } else {
+          log({
+            level: 'debug',
+            message: `${componentName}: Storage ${this.config.tempDir} not exist`
+          })
+        }
+      })
       if (!dir) {
         await this.RPC('storageMkdir', {
           path: this.config.tempDir
-        }).catch((error: Error) =>
-          rpcErrorHandler({ componentName, error, command: 'storageMkdir' })
-        )
+        })
+          .then(() =>
+            log({
+              level: 'debug',
+              message: `${componentName}: storageMkdir: ${this.config.tempDir}`
+            })
+          )
+          .catch((error: Error) =>
+            rpcErrorHandler({
+              componentName,
+              error,
+              command: `storageMkdir ${this.config.tempDir}`
+            })
+          )
       }
 
       dir = await this.RPC('storageStat', {
         path: `${this.config.tempDir}/lab`
-      }).catch((error: Error) =>
-        rpcErrorHandler({ componentName, error, command: 'storageStat' })
-      )
+      }).catch((error: Error) => {
+        if (error.toString() !== 'ERROR_STORAGE_NOT_EXIST') {
+          return rpcErrorHandler({
+            componentName,
+            error,
+            command: `storageStat ${this.config.tempDir}/lab`
+          })
+        } else {
+          return log({
+            level: 'debug',
+            message: `${componentName}: Storage ${this.config.tempDir}/lab not exist`
+          })
+        }
+      })
       if (!dir) {
         await this.RPC('storageMkdir', {
           path: `${this.config.tempDir}/lab`
-        }).catch((error: Error) =>
-          rpcErrorHandler({ componentName, error, command: 'storageMkdir' })
-        )
+        })
+          .then(() =>
+            log({
+              level: 'debug',
+              message: `${componentName}: storageMkdir: ${this.config.tempDir}/lab`
+            })
+          )
+          .catch((error: Error) =>
+            rpcErrorHandler({
+              componentName,
+              error,
+              command: `storageMkdir ${this.config.tempDir}/lab`
+            })
+          )
       }
     }
   }
