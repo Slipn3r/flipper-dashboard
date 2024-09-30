@@ -171,7 +171,7 @@ export default class Flipper {
       const [subSystem, command] = splitRequestType(requestType)
       return RPCSubSystems[subSystem][command].bind(this)(args)
     } catch (e) {
-      console.error('test', e)
+      console.error(e)
     }
   }
 

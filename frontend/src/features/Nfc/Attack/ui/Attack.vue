@@ -64,6 +64,7 @@
           dense
           icon="mdi-reload"
           label="Refresh"
+          @click="readNonces"
         />
       </div>
       <div v-if="uniqueKeys.length || timeouts.length" class="q-mt-sm">
@@ -130,7 +131,9 @@ const mfkeyStatus = ref('')
 const nonces = ref<string[]>([])
 const noncesNotFound = ref(false)
 const readNonces = async () => {
+  nfcStore.flags.mfkeyFlipperInProgress = true
   noncesNotFound.value = false
+  mfkeyStatus.value = ''
 
   if (!flipperStore.info?.storage.sdcard?.status.isInstalled) {
     flipperStore.dialogs.microSDcardMissing = true
@@ -139,17 +142,31 @@ const readNonces = async () => {
 
   const res = await flipperStore.flipper
     ?.RPC('storageRead', { path: '/ext/nfc/.mfkey32.log' })
-    .catch((error: Error) => {
-      rpcErrorHandler({ componentName, error, command: 'storageRead' })
-      mfkeyStatus.value = 'Mfkey log file not found'
-      nfcStore.flags.mfkeyFlipperInProgress = false
-    })
     .then((value: Uint8Array) => {
       log({
         level: 'debug',
         message: `${componentName}: storageRead: /ext/nfc/.mfkey32.log`
       })
+
       return value
+    })
+    .catch((error: Error) => {
+      if (error.toString() !== 'ERROR_STORAGE_NOT_EXIST') {
+        rpcErrorHandler({
+          componentName,
+          error,
+          command: 'storageRead: /ext/nfc/.mfkey32.log'
+        })
+      } else {
+        log({
+          level: 'warn',
+          message: `${componentName}: storageRead: /ext/nfc/.mfkey32.log: ${error.toString()}`
+        })
+      }
+
+      noncesNotFound.value = true
+      mfkeyStatus.value = 'Mfkey log file not found'
+      nfcStore.flags.mfkeyFlipperInProgress = false
     })
 
   if (!res) {
