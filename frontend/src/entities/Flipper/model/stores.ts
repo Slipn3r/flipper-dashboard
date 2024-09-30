@@ -243,17 +243,16 @@ export const useFlipperStore = defineStore('flipper', () => {
     if (flipper.value) {
       // flipper.value.flipperReady = false
       await flipper.value.disconnect()
+      appsStore.onClearInstalledAppsList()
       oldFlipper.value = unref(flipper.value)
     }
 
     await asyncSleep(500)
 
     const localFlipper = new FlipperElectron(
-      /*
-      flipper.name,
-      flipper.emitter,
-      flipper.info */ _flipper.name,
+      _flipper.name,
       _flipper.emitter
+      /* flipper.info */
     )
 
     localFlipper.setReadingMode(_flipper.mode)
@@ -269,6 +268,9 @@ export const useFlipperStore = defineStore('flipper', () => {
 
     flipper.value = localFlipper
 
+    flags.switchFlipper = false
+    flags.waitForReconnect = false
+
     if (flipper.value.readingMode.type === 'rpc') {
       await flipper.value.getInfo()
       await flipper.value.ensureCommonPaths()
@@ -279,6 +281,8 @@ export const useFlipperStore = defineStore('flipper', () => {
     if (flags.updateInProgress || flags.recovering) {
       onUpdateStage('end')
     }
+
+    flags.flipperIsInitialized = false
 
     // const _flipper = new FlipperElectron(name, emitter)
     // flipper.value.setReadingMode('rpc')
@@ -293,7 +297,6 @@ export const useFlipperStore = defineStore('flipper', () => {
     // await asyncSleep(1000)
 
     // flipper.value = _flipper
-    appsStore.onClearInstalledAppsList()
     if (
       localFlipper.readingMode.type === 'rpc' &&
       route.fullPath.split('/')[1] === 'apps'
@@ -304,10 +307,6 @@ export const useFlipperStore = defineStore('flipper', () => {
         })
       }
     }
-
-    flags.waitForReconnect = false
-    flags.switchFlipper = false
-    flags.flipperIsInitialized = false
   }
 
   const isDataFlipperElectron = (
