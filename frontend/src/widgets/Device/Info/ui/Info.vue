@@ -76,7 +76,7 @@ const sdCardUsage = computed(() => {
     )} / ${bytesToSize(flipperStore.info?.storage.sdcard?.totalSpace)}`
   }
 
-  return 'NaN / NaN'
+  return 'No SD card'
 })
 
 const hardwareVersion = computed(() => {
