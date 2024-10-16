@@ -68,7 +68,7 @@
                   </div>
                   <div class="text-caption">
                     Firmware
-                    {{ flipper.info?.firmware.version }}
+                    {{ firmwareVersion(flipper) }}
                   </div>
                 </div>
               </q-item-section>
@@ -248,6 +248,14 @@ const countFlippers = computed(
     flipperStore.availableFlippers.length +
     flipperStore.availableDfuFlippers.length
 )
+
+const firmwareVersion = (flipper: FlipperModel.DataFlipperElectron) => {
+  console.log(flipper)
+  if (flipper.info?.firmware.branch === 'dev') {
+    return `Dev ${flipper.info?.firmware.commit}`
+  }
+  return flipper.info?.firmware.version
+}
 
 const dialogRecovery = ref(false)
 const recoveryError = ref(false)

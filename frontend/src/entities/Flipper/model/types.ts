@@ -237,8 +237,13 @@ export type DataFlipperElectron = {
     enclave: {
       valid: DeviceInfo['enclave']['valid']
     }
-    firmware: DeviceInfo['firmware']
-    hardware: DeviceInfo['hardware']
+    firmware: Omit<DeviceInfo['firmware'], 'commit' | 'branch'> & {
+      commit: string
+      branch: string
+    }
+    hardware: Omit<DeviceInfo['hardware'], 'region'> & {
+      region: string
+    }
     protobuf: DeviceInfo['protobuf']
     radio: DeviceInfo['radio']
     system: DeviceInfo['system']
