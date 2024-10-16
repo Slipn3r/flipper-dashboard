@@ -102,7 +102,12 @@ const radioVersion = computed(() => {
 })
 
 const info = ref({
-  firmwareVersion: computed(() => flipperStore.info?.firmware.version),
+  firmwareVersion: computed(() => {
+    if (flipperStore.info?.firmware.branch.name === 'dev') {
+      return `Dev ${flipperStore.info?.firmware.commit.hash}`
+    }
+    return flipperStore.info?.firmware.version
+  }),
   buildDate: computed(() => flipperStore.info?.firmware.build.date),
   sdCardUsage: computed(() => sdCardUsage.value),
   databaseStatus: computed(() => flipperStore.info?.storage.databases?.status),
