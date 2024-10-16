@@ -30,7 +30,7 @@ export type GetAppParams = {
 }
 
 export type AppFapParams = {
-  versionId: string,
+  versionId: string
   api: string
   target: string
 }
@@ -83,10 +83,11 @@ export type AppVersion = {
   _id: string
 }
 
-export type InstalledApp = FlipperModel.App & Pick<App, 'alias' | 'currentVersion' | 'categoryId' | 'action'> & {
-  installedVersion: AppVersion
-  path: string
-}
+export type InstalledApp = FlipperModel.App &
+  Pick<App, 'alias' | 'currentVersion' | 'categoryId' | 'action'> & {
+    installedVersion: AppVersion
+    path: string
+  }
 
 export type AppDetail = App & {
   currentVersion: {

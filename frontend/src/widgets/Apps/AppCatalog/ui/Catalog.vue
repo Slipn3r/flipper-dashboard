@@ -3,8 +3,33 @@
     <template v-if="categoriesStore.categoriesLoading">
       <Loading label="Loading categories..." />
     </template>
+    <template v-else-if="appsStore.flags.catalogIsUnknownSDK">
+      <q-card flat>
+        <q-card-section class="q-pa-none q-ma-md" align="center">
+          <q-img src="~assets/flipper_alert.svg" width="70px" no-spinner />
+          <div class="text-h6 q-my-sm">Not Compatible with your Firmware</div>
+          <p>
+            To access Apps, install the latest firmware version from
+            <span class="text-positive text-bold">Release</span> Channel on your
+            Flipper
+          </p>
+        </q-card-section>
+        <q-card-actions vertical align="center">
+          <q-btn
+            outline
+            no-caps
+            label="Go to Firmware update"
+            color="blue-6"
+            :to="{ name: 'Device' }"
+          />
+        </q-card-actions>
+      </q-card>
+    </template>
     <div
-      v-show="!categoriesStore.categoriesLoading"
+      v-show="
+        !categoriesStore.categoriesLoading &&
+        !appsStore.flags.catalogIsUnknownSDK
+      "
       class="q-mb-lg"
       :class="{
         row: !$q.screen.lt.md,
@@ -96,6 +121,9 @@
 import { ref, watch, nextTick, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
+import type { AxiosError } from 'axios'
+import type { ApiErrorDetail } from 'shared/types/api'
+
 import { showNotif } from 'shared/lib/utils/useShowNotif'
 
 import { ProgressBar } from 'shared/components/ProgressBar'
@@ -155,21 +183,26 @@ const getApps = async () => {
           fetchEnd.value = true
         }
       })
-      .catch(() => {
+      .catch((error: AxiosError<ApiErrorDetail>) => {
         fetchEnd.value = true
-        showNotif({
-          message: 'Unable to load applications.',
-          color: 'negative',
-          actions: [
-            {
-              label: 'Reload',
-              color: 'white',
-              handler: () => {
-                reLoad()
+
+        if (error.response?.data.detail.code === 1001) {
+          appsStore.flags.catalogIsUnknownSDK = true
+        } else {
+          showNotif({
+            message: 'Unable to load applications.',
+            color: 'negative',
+            actions: [
+              {
+                label: 'Reload',
+                color: 'white',
+                handler: () => {
+                  reLoad()
+                }
               }
-            }
-          ]
-        })
+            ]
+          })
+        }
       })
   }
 
@@ -195,6 +228,8 @@ const getAppAction = (app: AppsModel.App) => {
 }
 
 onMounted(async () => {
+  appsStore.flags.catalogIsUnknownSDK = false
+
   if (flipperStore.flipperReady) {
     if (!flipperStore.rpcActive) {
       if (!flipperStore.isElectron) {

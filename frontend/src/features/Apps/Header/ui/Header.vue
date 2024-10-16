@@ -29,7 +29,8 @@
           type="text"
           label="Search"
           debounce="400"
-          @update:model-value="(val) => search(String(val))"
+          @update:model-value="(val: string | number | null) => search(String(val))"
+          :disable="appsStore.flags.catalogIsUnknownSDK"
         >
           <template v-slot:prepend>
             <q-icon name="mdi-magnify" class="text-grey-7" />
@@ -77,6 +78,7 @@
         icon="flipper:installed"
         label="Installed"
         :to="{ name: 'InstalledApps' }"
+        :disable="appsStore.flags.catalogIsUnknownSDK"
       >
         <q-badge
           v-if="$q.screen.width > 365 && appsStore.appsUpdateCount > 0"

@@ -31,7 +31,8 @@ export const useAppsStore = defineStore('apps', () => {
     catalogChannelProduction: ref(true),
     catalogCanSwitchChannel: ref(isProd && !isDebug ? false : true),
     catalogInstallAllApps: ref(false),
-    catalogCanInstallAllApps: ref(isProd && !isDebug ? false : true)
+    catalogCanInstallAllApps: ref(isProd && !isDebug ? false : true),
+    catalogIsUnknownSDK: false
   })
 
   const dialogs = reactive<{
