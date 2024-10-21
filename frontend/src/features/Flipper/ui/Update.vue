@@ -397,9 +397,14 @@ const loadFirmware = async () => {
         path: '/int/.region_data',
         buffer: encoded
       })
-      .catch((error: Error) =>
-        rpcErrorHandler({ componentName, error, command: 'storageWrite' })
-      )
+      .catch((error: Error) => {
+        const command = 'storageWrite'
+        rpcErrorHandler({ componentName, error, command })
+
+        throw new Error(
+          `${componentName}: RPC error in command '${command}': ${error.toString()}`
+        )
+      })
   }
 
   if (updateError.value) {
@@ -434,9 +439,9 @@ const loadFirmware = async () => {
             })
             return value
           })
-          .catch((error) => {
+          .catch((error: Error) => {
             updateError.value = true
-            updateStage.value = error
+            updateStage.value = error.toString()
             showNotif({
               message: 'Failed to fetch firmware: ' + error.toString(),
               color: 'negative',
@@ -450,11 +455,13 @@ const loadFirmware = async () => {
                 }
               ]
             })
+
+            const message = `${componentName}: Failed to fetch firmware: ${error.toString()}`
             log({
               level: 'error',
-              message: `${componentName}: Failed to fetch firmware: ${error.toString()}`
+              message
             })
-            throw error
+            throw new Error(message)
           })
       }
     }
@@ -470,13 +477,18 @@ const loadFirmware = async () => {
       ?.RPC('storageStat', { path: '/ext/update' })
       .catch(async (error: Error) => {
         if (error.toString() !== 'ERROR_STORAGE_NOT_EXIST') {
-          return rpcErrorHandler({
+          const command = 'storageStat'
+          rpcErrorHandler({
             componentName,
             error,
-            command: 'storageStat'
+            command
           })
+
+          throw new Error(
+            `${componentName}: RPC error in command '${command}': ${error.toString()}`
+          )
         } else {
-          return log({
+          log({
             level: 'debug',
             message: `${componentName}: Storage /ext/update not exist`
           })
@@ -492,9 +504,14 @@ const loadFirmware = async () => {
             message: `${componentName}: storageMkdir: /ext/update`
           })
         )
-        .catch((error: Error) =>
-          rpcErrorHandler({ componentName, error, command: 'storageMkdir' })
-        )
+        .catch((error: Error) => {
+          const command = 'storageMkdir'
+          rpcErrorHandler({ componentName, error, command })
+
+          throw new Error(
+            `${componentName}: RPC error in command '${command}': ${error.toString()}`
+          )
+        })
     }
 
     for (const file of files) {
@@ -506,22 +523,58 @@ const loadFirmware = async () => {
         if (file.name.endsWith('/')) {
           path = path.slice(0, -1)
         }
-        await flipperStore.flipper
-          ?.RPC('storageMkdir', { path })
-          .then(() =>
-            log({
-              level: 'debug',
-              message: `${componentName}: storageMkdir: ${path}`
+
+        const updateVersionDir = await flipperStore.flipper
+          ?.RPC('storageStat', { path })
+          .catch(async (error: Error) => {
+            if (error.toString() !== 'ERROR_STORAGE_NOT_EXIST') {
+              const command = 'storageStat'
+              rpcErrorHandler({
+                componentName,
+                error,
+                command
+              })
+
+              throw new Error(
+                `${componentName}: RPC error in command '${command}': ${error.toString()}`
+              )
+            } else {
+              log({
+                level: 'debug',
+                message: `${componentName}: Storage /ext/update not exist`
+              })
+            }
+          })
+
+        if (!updateVersionDir) {
+          await flipperStore.flipper
+            ?.RPC('storageMkdir', { path })
+            .then(() =>
+              log({
+                level: 'debug',
+                message: `${componentName}: storageMkdir: ${path}`
+              })
+            )
+            .catch((error: Error) => {
+              const command = 'storageMkdir'
+              rpcErrorHandler({ componentName, error, command })
+
+              throw new Error(
+                `${componentName}: RPC error in command '${command}': ${error.toString()}`
+              )
             })
-          )
-          .catch((error: Error) =>
-            rpcErrorHandler({ componentName, error, command: 'storageMkdir' })
-          )
+        }
       } else {
         write.value.filename = file.name.slice(file.name.lastIndexOf('/') + 1)
         const unbind = flipperStore.flipper?.emitter.on(
           'storageWriteRequest/progress',
           (e: { progress: number; total: number }) => {
+            if (!flipperStore.flipper?.connected) {
+              throw new Error(
+                `Flipper ${flipperStore.flipper?.name} not connected`
+              )
+            }
+
             write.value.progress = e.progress / e.total
           }
         )
@@ -536,9 +589,14 @@ const loadFirmware = async () => {
               message: `${componentName}: storageWrite: /ext/update/${file.name}`
             })
           )
-          .catch((error: Error) =>
-            rpcErrorHandler({ componentName, error, command: 'storageWrite' })
-          )
+          .catch((error: Error) => {
+            const command = 'storageWrite'
+            rpcErrorHandler({ componentName, error, command })
+
+            throw new Error(
+              `${componentName}: RPC error in command '${command}': ${error.toString()}`
+            )
+          })
 
         if (unbind) {
           unbind()
@@ -564,17 +622,27 @@ const loadFirmware = async () => {
           message: `${componentName}: systemUpdate: OK`
         })
       )
-      .catch((error: Error) =>
-        rpcErrorHandler({ componentName, error, command: 'systemUpdate' })
-      )
+      .catch((error: Error) => {
+        const command = 'systemUpdate'
+        rpcErrorHandler({ componentName, error, command })
+
+        throw new Error(
+          `${componentName}: RPC error in command '${command}': ${error.toString()}`
+        )
+      })
 
     updateStage.value = 'Update in progress, pay attention to your Flipper'
 
     await flipperStore.flipper
       ?.RPC('systemReboot', { mode: 'UPDATE' })
-      .catch((error: Error) =>
-        rpcErrorHandler({ componentName, error, command: 'systemReboot' })
-      )
+      .catch((error: Error) => {
+        const command = 'systemReboot'
+        rpcErrorHandler({ componentName, error, command })
+
+        throw new Error(
+          `${componentName}: RPC error in command '${command}': ${error.toString()}`
+        )
+      })
 
     flipperStore.flags.waitForReconnect = true
     flipperStore.flags.autoReconnect = true
@@ -596,7 +664,7 @@ const loadFirmware = async () => {
         }
       ]
     })
-    throw updateStage.value
+    throw new Error(updateStage.value)
   }
 }
 
