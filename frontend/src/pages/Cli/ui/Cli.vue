@@ -74,7 +74,7 @@
 import { onMounted, onBeforeUnmount, watch, ref } from 'vue'
 import { Terminal } from '@xterm/xterm'
 import { FitAddon } from '@xterm/addon-fit'
-import { SerializeAddon } from 'xterm-addon-serialize'
+import { SerializeAddon } from '@xterm/addon-serialize'
 import asyncSleep from 'simple-async-sleep'
 
 import { FlipperModel } from 'entities/Flipper'
