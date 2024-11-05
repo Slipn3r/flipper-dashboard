@@ -7,7 +7,10 @@
     "type": "git",
     "url": "https://github.com/flipperdevices/lab.flipper.net.git"
   },
-  "author": "Maxim Lyubimov",
+  "author": {
+    "name": "Maxim Lyubimov",
+    "email": "m.lyubimov@flipperdevices.com"
+  },
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
