@@ -139,6 +139,7 @@ const write = async (data: string) => {
   await flipperStore.flipper?.write(data)
 }
 
+const awaitingInterrupt = ref(false)
 const unbind = ref()
 const init = async () => {
   if (unbind.value) {
@@ -174,9 +175,9 @@ const init = async () => {
 
     await asyncSleep(500)
     if (flipperStore.isElectron) {
-      await write('\x01')
+      await write('\x01') // CTRL-A (SOH, Start of Text)
     } else {
-      await write('\r\n\x01\r\n')
+      await write('\r\n\x01\r\n') // CTRL-A (SOH, Start of Text)
     }
 
     term.value.onData(async (data) => {
@@ -193,8 +194,14 @@ const init = async () => {
 
   unbind.value = flipperStore.flipper?.emitter?.on(
     'cli/output',
-    (data: string | Uint8Array) => {
+    (data: string) => {
       if (term.value) {
+        if (data.includes('>:')) {
+          awaitingInterrupt.value = false
+        } else {
+          awaitingInterrupt.value = true
+        }
+
         term.value.write(data)
       }
     }
@@ -241,7 +248,12 @@ watch(
 //   }
 // )
 
-onBeforeUnmount(() => {
+onBeforeUnmount(async () => {
+  if (awaitingInterrupt.value) {
+    await write('\x03') // CTRL-C (ETX, End of Text)
+    awaitingInterrupt.value = false
+  }
+
   if (serializeAddon.value) {
     localStorage.setItem('cli-dump', serializeAddon.value.serialize())
   }
