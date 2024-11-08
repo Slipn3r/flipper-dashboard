@@ -11,7 +11,7 @@
         :disabled="fullPath === '/'"
         @click="itemClicked({ name: '..' })"
       />
-      <q-breadcrumbs class="col q-px-md" active-color="black" gutter="xs">
+      <q-breadcrumbs class="col q-mx-md" active-color="black" gutter="xs">
         <template v-slot:separator>
           <q-icon size="1.4em" name="chevron_right" />
         </template>
@@ -30,7 +30,7 @@
         </template>
       </q-breadcrumbs>
       <q-btn-dropdown
-        class="col-auto"
+        class="col-auto q-mr-sm"
         color="primary"
         dropdown-icon="add"
         no-icon-animation
@@ -61,7 +61,21 @@
           </q-item>
         </q-list>
       </q-btn-dropdown>
-      <q-toggle v-model="isHiddenFiles" color="primary" label="Hidden files" />
+      <q-btn
+        class="col-auto q-mr-sm"
+        color="primary"
+        icon="mdi-refresh"
+        outline
+        padding="sm"
+        size="sm"
+        @click="refreshList"
+      />
+      <q-toggle
+        class="col-auto"
+        v-model="isHiddenFiles"
+        color="primary"
+        label="Hidden files"
+      />
     </q-toolbar>
     <q-list class="list">
       <template v-for="item in filteredDirs" :key="item.name">
@@ -533,6 +547,11 @@ const list = async ({ path }: { path: string }) => {
   } else {
     dirs.value = list
   }
+}
+const refreshList = () => {
+  list({
+    path: fullPath.value
+  })
 }
 
 const movePath = async ({ item }: { item: PathItem }) => {
