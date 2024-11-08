@@ -61,9 +61,10 @@
           </q-item>
         </q-list>
       </q-btn-dropdown>
+      <q-toggle v-model="isHiddenFiles" color="primary" label="Hidden files" />
     </q-toolbar>
     <q-list class="list">
-      <template v-for="item in dirs" :key="item.name">
+      <template v-for="item in filteredDirs" :key="item.name">
         <q-item
           class="rounded-borders full-width"
           v-bind="item"
@@ -148,7 +149,7 @@
         </q-item>
       </template>
       <q-item
-        v-if="dirs.length === 0 && fullPath !== '/'"
+        v-if="filteredDirs.length === 0 && fullPath !== '/'"
         class="text-grey-7 full-width"
       >
         <q-item-section avatar class="q-ml-xs">
@@ -314,7 +315,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, unref, onMounted, watch } from 'vue'
+import { ref, unref, onMounted, watch, computed } from 'vue'
 import { exportFile } from 'quasar'
 import { type RouteLocationRaw } from 'vue-router'
 
@@ -342,7 +343,16 @@ const pathList = ref<PathItem[]>([
   }
 ])
 
+const isHiddenFiles = ref(false)
+
 const dirs = ref<FlipperModel.File[]>([])
+const filteredDirs = computed(() => {
+  if (!isHiddenFiles.value) {
+    return dirs.value.filter((e: FlipperModel.File) => !e.name.startsWith('.'))
+  }
+
+  return dirs.value
+})
 
 const itemIconSwitcher = (item: FlipperModel.File) => {
   if (fullPath.value === '/' && item.name === 'int') {
