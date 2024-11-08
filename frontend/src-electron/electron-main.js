@@ -1,4 +1,11 @@
-import { app, BrowserWindow, shell, utilityProcess, ipcMain } from 'electron'
+import {
+  app,
+  BrowserWindow,
+  shell,
+  utilityProcess,
+  ipcMain,
+  dialog
+} from 'electron'
 import path from 'path'
 // import os from 'os'
 import fs from 'fs'
@@ -133,6 +140,24 @@ const filesystem = {
       console.error(error)
       return { status: 'error', message: error.message }
     }
+  },
+  async downloadFile(event, args) {
+    try {
+      const { filename, rawData } = args
+      const result = await dialog.showSaveDialog({
+        defaultPath: filename
+      })
+
+      if (!result.canceled && result.filePath) {
+        const filePath = result.filePath
+        fs.writeFileSync(filePath, rawData)
+      }
+
+      return { status: 'ok', path: filePath }
+    } catch (error) {
+      console.error(error)
+      return { status: 'error', message: error.message }
+    }
   }
 }
 
@@ -202,6 +227,7 @@ app.whenReady().then(() => {
   ipcMain.on('bridge:kill', bridge.kill)
   ipcMain.on('bridge:send', bridge.send)
   ipcMain.handle('fs:saveToTemp', filesystem.saveToTemp)
+  ipcMain.handle('fs:downloadFile', filesystem.downloadFile)
 
   createWindow()
 })

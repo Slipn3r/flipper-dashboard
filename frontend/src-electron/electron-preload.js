@@ -23,5 +23,6 @@ contextBridge.exposeInMainWorld('bridge', {
 })
 
 contextBridge.exposeInMainWorld('fs', {
-  saveToTemp: (args) => ipcRenderer.invoke('fs:saveToTemp', args)
+  saveToTemp: (args) => ipcRenderer.invoke('fs:saveToTemp', args),
+  downloadFile: (args) => ipcRenderer.invoke('fs:downloadFile', args)
 })

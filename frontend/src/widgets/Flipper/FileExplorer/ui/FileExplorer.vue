@@ -119,7 +119,11 @@
                 <q-item
                   v-if="item.type === 0"
                   clickable
-                  @click="itemClicked(item)"
+                  @click="
+                    download({
+                      file: item
+                    })
+                  "
                 >
                   <q-item-section avatar>
                     <q-icon name="mdi-download-outline" />
@@ -320,8 +324,11 @@
         <q-card-section>
           <div class="text-h6">File operation in progress</div>
         </q-card-section>
-        <q-card-section v-if="file.name.length > 0">
-          <ProgressBar :title="file.name" :progress="file.progress" />
+        <q-card-section v-if="selectedFile.name.length > 0">
+          <ProgressBar
+            :title="selectedFile.name"
+            :progress="selectedFile.progress"
+          />
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -335,6 +342,7 @@ import { type RouteLocationRaw } from 'vue-router'
 
 import { log } from 'shared/lib/utils/useLog'
 import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
+import { downloadFile } from '@/shared/lib/utils/useFileDownloader'
 
 import { ProgressBar } from 'shared/components/ProgressBar'
 
@@ -415,7 +423,7 @@ const upload = async () => {
   blockingOperationDialog.value = true
   for (const localFile of uploadedFiles.value) {
     if (localFile) {
-      file.value.name = localFile.name
+      selectedFile.value.name = localFile.name
     }
     let dir = fullPath.value
 
@@ -436,7 +444,7 @@ const upload = async () => {
     const unbind = flipperStore.flipper?.emitter.on(
       'storageWriteRequest/progress',
       (e: { progress: number; total: number }) => {
-        file.value.progress = e.progress / e.total
+        selectedFile.value.progress = e.progress / e.total
       }
     )
 
@@ -458,7 +466,7 @@ const upload = async () => {
       unbind()
     }
   }
-  file.value.name = ''
+  selectedFile.value.name = ''
   list({
     path: fullPath.value
   })
@@ -601,26 +609,28 @@ const itemClicked = async (item: FlipperModel.File) => {
     pathList.value.pop()
   } else {
     read({
-      filePath: fullPath.value + '/' + item.name
+      file: item
     })
   }
 }
 
-const file = ref({
+const selectedFile = ref({
   name: '',
   progress: 0
 })
 const read = async ({
-  filePath,
+  file,
   preventDownload
 }: {
-  filePath: string
+  file: FlipperModel.File
   preventDownload?: boolean
 }) => {
   blockingOperationDialog.value = true
-  file.value.name = fullPath.value.slice(fullPath.value.lastIndexOf('/') + 1)
+  selectedFile.value.name = fullPath.value.slice(
+    fullPath.value.lastIndexOf('/') + 1
+  )
   const localFile = dirs.value.find(
-    (e) => e.name === file.value.name && !e.type
+    (e) => e.name === selectedFile.value.name && !e.type
   )
 
   let unbind
@@ -631,11 +641,65 @@ const read = async ({
       unbind = flipperStore.flipper?.emitter.on(
         'storageReadRequest/progress',
         (chunks: number) => {
-          file.value.progress = Math.min(chunks * 512, total) / total
+          selectedFile.value.progress = Math.min(chunks * 512, total) / total
         }
       )
     }
   }
+
+  if (!preventDownload) {
+    download({ file })
+  }
+
+  if (unbind) {
+    unbind()
+  }
+  blockingOperationDialog.value = false
+
+  if (preventDownload) {
+    const filePath = `${unref(fullPath.value)}/${file.name}`
+
+    const res: Uint8Array = await flipperStore.flipper
+      ?.RPC('storageRead', { path: filePath })
+      .then((data: Uint8Array) => {
+        log({
+          level: 'debug',
+          message: `${componentName}: storageRead: ${filePath}`
+        })
+        return data
+      })
+      .catch((error: Error) =>
+        rpcErrorHandler({ componentName, error, command: 'storageRead' })
+      )
+
+    return res
+  }
+}
+const openFileIn = async ({
+  item,
+  destination
+}: {
+  item: FlipperModel.File
+  destination: RouteLocationRaw
+}) => {
+  const res = await read({
+    file: item,
+    preventDownload: true
+  })
+
+  if (res) {
+    flipperStore.openFileIn({
+      path: destination,
+      file: {
+        name: item.name,
+        data: res
+      }
+    })
+  }
+}
+
+const download = async ({ file }: { file: FlipperModel.File }) => {
+  const filePath = `${unref(fullPath.value)}/${file.name}`
 
   const res: Uint8Array = await flipperStore.flipper
     ?.RPC('storageRead', { path: filePath })
@@ -650,39 +714,14 @@ const read = async ({
       rpcErrorHandler({ componentName, error, command: 'storageRead' })
     )
 
-  const s = filePath.split('/')
-  if (!preventDownload) {
-    exportFile(s[s.length - 1], res)
-  }
-  if (unbind) {
-    unbind()
-  }
-  blockingOperationDialog.value = false
-
-  if (preventDownload) {
-    return res
-  }
-}
-const openFileIn = async ({
-  item,
-  destination
-}: {
-  item: FlipperModel.File
-  destination: RouteLocationRaw
-}) => {
-  const res = await read({
-    filePath: fullPath.value + '/' + item.name,
-    preventDownload: true
-  })
-
-  if (res) {
-    flipperStore.openFileIn({
-      path: destination,
-      file: {
-        name: item.name,
-        data: res
-      }
+  if (flipperStore.isElectron) {
+    downloadFile({
+      file: file,
+      rawData: res
     })
+  } else {
+    const s = filePath.split('/')
+    exportFile(s[s.length - 1], res)
   }
 }
 
