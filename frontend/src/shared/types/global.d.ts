@@ -44,5 +44,31 @@ interface Window {
           path?: string
         }
     >
+    downloadFolder(args: {
+      basePath?: string
+      isUserAction: boolean
+      structure: FolderStructure | FileStructure
+      event?: Event
+    }): Promise<
+      | {
+          status: 'error'
+          message: string
+        }
+      | {
+          status: 'ok' | 'warning'
+          path: string
+        }
+    >
   }
+}
+
+interface FileStructure {
+  name: string
+  type: number
+  rawData?: Uint8Array
+}
+interface FolderStructure {
+  name: string
+  type: number
+  data: (FolderStructure | FileStructure)[]
 }

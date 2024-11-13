@@ -8,6 +8,14 @@ export async function downloadFile({
   rawData: Uint8Array
 }) {
   if (file.type === 0 && file.size) {
-    await window.fs.downloadFile({ filename: file.name, rawData })
+    return await window.fs.downloadFile({ filename: file.name, rawData })
   }
+}
+
+export async function downloadFolder({
+  structure
+}: {
+  structure: FolderStructure | FileStructure
+}) {
+  return await window.fs.downloadFolder({ structure, isUserAction: true })
 }

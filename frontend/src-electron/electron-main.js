@@ -158,6 +158,51 @@ const filesystem = {
       console.error(error)
       return { status: 'error', message: error.message }
     }
+  },
+  async downloadFolder(event, args) {
+    try {
+      const { structure, isUserAction } = args
+      let { basePath = '' } = args
+
+      let targetPath = basePath
+      if (isUserAction) {
+        const result = await dialog.showSaveDialog({
+          defaultPath: structure.name
+        })
+
+        if (result.canceled || !result.filePath) {
+          return { status: 'warning', path: structure.path }
+        }
+
+        basePath = targetPath = result.filePath
+
+        fs.mkdirSync(targetPath)
+      }
+
+      for (let index = 0; index < structure.data.length; index++) {
+        const element = structure.data[index]
+        targetPath = `${basePath}/${element.name}`
+
+        if (element.type === 1) {
+          fs.mkdirSync(targetPath)
+
+          await filesystem.downloadFolder(undefined, {
+            isUserAction: false,
+            structure: element,
+            basePath: targetPath
+          })
+        }
+
+        if (element.type === 0) {
+          fs.writeFileSync(targetPath, element.rawData)
+        }
+      }
+
+      return { status: 'ok', path: structure.path }
+    } catch (error) {
+      console.error(error)
+      return { status: 'error', message: error.message }
+    }
   }
 }
 
@@ -228,6 +273,7 @@ app.whenReady().then(() => {
   ipcMain.on('bridge:send', bridge.send)
   ipcMain.handle('fs:saveToTemp', filesystem.saveToTemp)
   ipcMain.handle('fs:downloadFile', filesystem.downloadFile)
+  ipcMain.handle('fs:downloadFolder', filesystem.downloadFolder)
 
   createWindow()
 })

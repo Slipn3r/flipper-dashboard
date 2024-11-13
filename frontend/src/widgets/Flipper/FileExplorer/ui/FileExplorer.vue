@@ -117,7 +117,7 @@
             >
               <q-list style="min-width: 100px">
                 <q-item
-                  v-if="item.type === 0"
+                  v-if="item.type === 0 || flipperStore.isElectron"
                   clickable
                   @click="
                     download({
@@ -330,6 +330,9 @@
             :progress="selectedFile.progress"
           />
         </q-card-section>
+        <q-card-section v-else>
+          <ProgressBar indeterminate />
+        </q-card-section>
       </q-card>
     </q-dialog>
   </div>
@@ -340,9 +343,13 @@ import { ref, unref, onMounted, watch, computed } from 'vue'
 import { exportFile } from 'quasar'
 import { type RouteLocationRaw } from 'vue-router'
 
+import { showNotif } from 'shared/lib/utils/useShowNotif'
 import { log } from 'shared/lib/utils/useLog'
 import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
-import { downloadFile } from '@/shared/lib/utils/useFileDownloader'
+import {
+  downloadFile,
+  downloadFolder
+} from 'shared/lib/utils/useFileDownloader'
 
 import { ProgressBar } from 'shared/components/ProgressBar'
 
@@ -656,6 +663,11 @@ const read = async ({
   }
   blockingOperationDialog.value = false
 
+  selectedFile.value = {
+    name: '',
+    progress: 0
+  }
+
   if (preventDownload) {
     const filePath = `${unref(fullPath.value)}/${file.name}`
 
@@ -698,30 +710,132 @@ const openFileIn = async ({
   }
 }
 
+interface FlipperFile extends FlipperModel.File {
+  type: number
+  path: string
+}
+
+const createStructure = async ({
+  file
+}: {
+  file: FlipperFile
+}): Promise<FolderStructure | FileStructure> => {
+  if (file.type === 0) {
+    const res: Uint8Array = await flipperStore.flipper
+      ?.RPC('storageRead', { path: file.path })
+      .then((data: Uint8Array) => {
+        // log({
+        //   level: 'debug',
+        //   message: `${componentName}: storageRead: ${file.path}`
+        // })
+        return data
+      })
+      .catch((error: Error) =>
+        rpcErrorHandler({
+          componentName: `${componentName} function createStructure`,
+          error,
+          command: 'storageRead'
+        })
+      )
+
+    return {
+      name: file.name,
+      type: file.type,
+      rawData: res
+    }
+  }
+
+  const folderStructure: FolderStructure = {
+    name: file.name,
+    type: file.type,
+    data: []
+  }
+
+  const folderContents = await flipperStore.flipper
+    ?.RPC('storageList', { path: file.path })
+    .then((list: FlipperModel.File[]) => {
+      // log({
+      //   level: 'debug',
+      //   message: `${componentName}: storageList: ${file.path}`
+      // })
+      if (!isHiddenFiles.value) {
+        return list.filter((e: FlipperModel.File) => !e.name.startsWith('.'))
+      }
+
+      return list
+    })
+    .catch((error: Error) =>
+      rpcErrorHandler({
+        componentName: `${componentName} function createStructure`,
+        error,
+        command: 'storageList'
+      })
+    )
+
+  for (const item of folderContents) {
+    const structure = await createStructure({
+      file: {
+        name: item.name,
+        type: item.type,
+        path: file.path + '/' + item.name
+      }
+    })
+    folderStructure.data.push(structure)
+  }
+
+  return folderStructure
+}
+
 const download = async ({ file }: { file: FlipperModel.File }) => {
   const filePath = `${unref(fullPath.value)}/${file.name}`
 
-  const res: Uint8Array = await flipperStore.flipper
-    ?.RPC('storageRead', { path: filePath })
-    .then((data: Uint8Array) => {
-      log({
-        level: 'debug',
-        message: `${componentName}: storageRead: ${filePath}`
-      })
-      return data
-    })
-    .catch((error: Error) =>
-      rpcErrorHandler({ componentName, error, command: 'storageRead' })
-    )
+  if (file.type === 1) {
+    blockingOperationDialog.value = true
 
-  if (flipperStore.isElectron) {
-    downloadFile({
-      file: file,
-      rawData: res
+    const folderStructure = await createStructure({
+      file: {
+        name: file.name,
+        type: file.type,
+        path: filePath
+      }
     })
-  } else {
-    const s = filePath.split('/')
-    exportFile(s[s.length - 1], res)
+
+    await downloadFolder({ structure: folderStructure }).then((res) => {
+      if (res.status === 'error') {
+        showNotif({
+          message: res.message,
+          color: 'negative'
+        })
+      }
+    })
+
+    blockingOperationDialog.value = false
+    return
+  }
+
+  if (file.type === 0) {
+    const res: Uint8Array = await flipperStore.flipper
+      ?.RPC('storageRead', { path: filePath })
+      .then((data: Uint8Array) => {
+        log({
+          level: 'debug',
+          message: `${componentName}: storageRead: ${filePath}`
+        })
+        return data
+      })
+      .catch((error: Error) =>
+        rpcErrorHandler({ componentName, error, command: 'storageRead' })
+      )
+
+    if (flipperStore.isElectron) {
+      downloadFile({
+        file: file,
+        rawData: res
+      })
+    } else {
+      const s = filePath.split('/')
+      exportFile(s[s.length - 1], res)
+    }
   }
 }
 
