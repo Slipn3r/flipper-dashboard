@@ -6,6 +6,7 @@
     :instant-feedback="interpolated"
     :color="color"
     :track-color="trackColor"
+    :indeterminate
   >
     <div
       v-if="title"
@@ -23,9 +24,11 @@
       <template v-else>
         <p
           class="q-mb-none text"
-          :class="{'text-white': !titleColor?.length}"
+          :class="{ 'text-white': !titleColor?.length }"
           :style="`font-size: ${titleSize}`"
-        >{{ title }}</p>
+        >
+          {{ title }}
+        </p>
       </template>
     </div>
   </q-linear-progress>
@@ -40,10 +43,12 @@ type Props = {
   title?: string
   titleSize?: string
   titleColor?: string
-  progress: number
+  progress?: number
   badge?: boolean
   interpolated?: boolean
+  indeterminate?: boolean
 }
+
 withDefaults(defineProps<Props>(), {
   size: '2.25rem',
   color: 'positive',
@@ -51,7 +56,8 @@ withDefaults(defineProps<Props>(), {
   badgeColor: 'white',
   titleSize: '24px',
   badge: false,
-  interpolated: false
+  interpolated: false,
+  indeterminate: false
 })
 </script>
 
