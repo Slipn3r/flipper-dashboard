@@ -831,6 +831,13 @@ const download = async ({ file }: { file: FlipperModel.File }) => {
       downloadFile({
         file: file,
         rawData: res
+      }).then((res) => {
+        if (res?.status === 'error') {
+          showNotif({
+            message: res.message,
+            color: 'negative'
+          })
+        }
       })
     } else {
       const s = filePath.split('/')

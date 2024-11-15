@@ -148,6 +148,10 @@ const filesystem = {
         defaultPath: filename
       })
 
+      if (result.canceled || !result.filePath) {
+        return { status: 'warning', path: structure.path }
+      }
+
       if (!result.canceled && result.filePath) {
         const filePath = result.filePath
         fs.writeFileSync(filePath, rawData)
