@@ -65,6 +65,14 @@ const fetch = async () => {
       return
     }
 
+    if (!newApps.length) {
+      fetchEnd.value = true
+    }
+
+    if (newApps.length < limit.value) {
+      fetchEnd.value = true
+    }
+
     newApps = newApps.filter((app) => {
       if (appsStore.getButtonState(app) === 'installed') {
         return false
@@ -73,14 +81,8 @@ const fetch = async () => {
       return true
     })
 
-    if (!newApps.length) {
-      fetchEnd.value = true
-    } else {
+    if (newApps.length) {
       apps.value.push(...newApps)
-    }
-
-    if (newApps.length < limit.value) {
-      fetchEnd.value = true
     }
 
     offset.value += limit.value
