@@ -78,11 +78,13 @@ export const useFlipperStore = defineStore('flipper', () => {
 
   const api = computed(() => {
     const firmware = info?.value?.firmware
-    return firmware ? `${firmware.api.major}.${firmware.api.minor}` : ''
+    return firmware?.api
+      ? `${firmware.api.major}.${firmware.api.minor}`
+      : undefined
   })
   const target = computed(() => {
     const firmware = info?.value?.firmware
-    return firmware ? `f${firmware.target}` : ''
+    return firmware?.target ? `f${firmware.target}` : undefined
   })
 
   const connect = async ({

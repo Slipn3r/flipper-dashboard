@@ -1,7 +1,18 @@
+<script setup lang="ts">
+type Props = {
+  persistent?: boolean
+}
+
+withDefaults(defineProps<Props>(), {
+  persistent: false
+})
+</script>
+
 <template>
-  <q-dialog>
+  <q-dialog :persistent>
     <q-card class="dialog">
       <q-btn
+        v-if="!persistent"
         icon="close"
         flat
         round
@@ -25,6 +36,7 @@
           color="primary"
           label="Update"
           @click="$router.push({ name: 'Device' })"
+          v-close-popup
         ></q-btn>
       </q-card-section>
     </q-card>

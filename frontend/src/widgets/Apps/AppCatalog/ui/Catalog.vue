@@ -152,6 +152,19 @@ const apps = ref<AppsModel.App[]>([])
 const limit = ref(48)
 const offset = ref(0)
 const getApps = async () => {
+  if (flipperStore.flipperReady) {
+    if (
+      !flipperStore.flipper?.info?.firmware.api ||
+      !flipperStore.flipper?.info?.firmware.target
+    ) {
+      appsStore.dialogs.outdatedFirmwareDialog = true
+      appsStore.dialogs.outdatedFirmwareDialogPersistent = true
+
+      fetchEnd.value = true
+      return
+    }
+  }
+
   appsLoading.value = true
 
   let newApps: AppsModel.App[] = []
@@ -160,8 +173,12 @@ const getApps = async () => {
       limit: limit.value,
       offset: offset.value,
       category_id: categoriesStore.currentCategory?.id,
-      api: flipperStore.api || undefined,
-      target: flipperStore.target || undefined,
+      api:
+        flipperStore.api && flipperStore.target ? flipperStore.api : undefined,
+      target:
+        flipperStore.api && flipperStore.target
+          ? flipperStore.target
+          : undefined,
       sort_by: getAppsShort(sortModel.value).sort_by,
       sort_order: getAppsShort(sortModel.value).sort_order
     })
