@@ -26,6 +26,14 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
+    "@codemirror/highlight": "^0.19.8",
+    "@codemirror/lang-javascript": "^6.2.2",
+    "@codemirror/language": "^6.10.4",
+    "@codemirror/state": "^6.4.1",
+    "@codemirror/view": "^6.35.0",
+    "@lezer/common": "^1.2.3",
+    "@lezer/generator": "^1.7.1",
+    "@lezer/highlight": "^1.2.1",
     "@quasar/extras": "^1.16.4",
     "@types/loglevel": "^1.6.3",
     "@xterm/addon-fit": "^0.10.0",
@@ -33,6 +41,7 @@
     "@xterm/xterm": "^5.5.0",
     "axios": "^1.2.1",
     "base64-arraybuffer": "^1.0.2",
+    "codemirror": "^6.0.1",
     "d3": "^7.9.0",
     "lodash": "^4.17.21",
     "loglevel": "^1.9.1",

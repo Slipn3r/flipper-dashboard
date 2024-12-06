@@ -117,6 +117,24 @@
             >
               <q-list style="min-width: 100px">
                 <q-item
+                  v-if="
+                    item.name.endsWith('.sub') ||
+                    item.name.endsWith('.ir') ||
+                    item.name.endsWith('.nfc') ||
+                    item.name.endsWith('.rfid') ||
+                    item.name.endsWith('.ibtn')
+                  "
+                  clickable
+                  @click="editFile(item)"
+                >
+                  <q-item-section avatar>
+                    <q-icon name="mdi-file-edit-outline" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label>Edit</q-item-label>
+                  </q-item-section>
+                </q-item>
+                <q-item
                   v-if="item.type === 0 || flipperStore.isElectron"
                   clickable
                   @click="
@@ -335,6 +353,13 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+    <FileEditor
+      v-model="showEditor"
+      :file="currentEditFile!"
+      :doc="editFileDoc"
+      :type="editFileType"
+      @save="saveFile"
+    />
   </div>
 </template>
 
@@ -342,6 +367,9 @@
 import { ref, unref, onMounted, watch, computed } from 'vue'
 import { exportFile } from 'quasar'
 import { type RouteLocationRaw } from 'vue-router'
+
+import { FileEditor } from 'features/FileEditor'
+import { FileEditorModel } from 'entities/FileEditor'
 
 import { showNotif } from 'shared/lib/utils/useShowNotif'
 import { log } from 'shared/lib/utils/useLog'
@@ -914,6 +942,58 @@ const remove = async ({
   list({
     path: fullPath.value
   })
+}
+
+const showEditor = ref(false)
+const currentEditFile = ref<FlipperModel.File>()
+const editFileType = ref<FileEditorModel.languageTypes>('sub')
+const editFileDoc = ref('')
+const editFile = async (item: FlipperModel.File) => {
+  try {
+    const res = await read({
+      file: item,
+      preventDownload: true
+    })
+
+    currentEditFile.value = item
+    editFileDoc.value = new TextDecoder().decode(res)
+    editFileType.value = item.name
+      .split('.')
+      .pop() as FileEditorModel.languageTypes
+
+    showEditor.value = true
+  } catch (err) {
+    console.error(err)
+  }
+}
+const saveFile = (doc: string) => {
+  if (currentEditFile.value) {
+    const path = `${fullPath.value}/${currentEditFile.value.name}`
+
+    flipperStore.flipper
+      ?.RPC('storageWrite', {
+        path,
+        buffer: new TextEncoder().encode(doc)
+      })
+      .then(() => {
+        log({
+          level: 'debug',
+          message: `${componentName}: storageWrite: ${path}`
+        })
+
+        showEditor.value = false
+      })
+      .catch((error: Error) => {
+        rpcErrorHandler({ componentName, error, command: 'storageWrite' })
+      })
+      .finally(() => {
+        currentEditFile.value = undefined
+        editFileDoc.value = ''
+        editFileType.value = 'sub'
+
+        refreshList()
+      })
+  }
 }
 </script>
 

@@ -1,0 +1,76 @@
+@top Program { expression* }
+
+expression {
+  _Filetype |
+  _Version |
+  _Protocol |
+  _RomData |
+  _SramData |
+  _EepromData |
+  _Data
+}
+
+_Filetype {
+  kw<"Filetype"> ": " FiletypeValue
+}
+
+_Version {
+  kw<"Version"> ": " Integer
+}
+
+_Protocol {
+  kw<"Protocol"> ": " ProtocolValue
+}
+
+_RomData {
+  RomData ": " DataIButton
+}
+RomData { kw<"Rom">kw<"Data"> }
+
+_SramData {
+  SramData ": " DataIButton
+}
+SramData { kw<"Sram">kw<"Data"> }
+
+_EepromData {
+  EepromData ": " DataIButton
+}
+EepromData { kw<"Eeprom">kw<"Data"> }
+
+_Data {
+  kw<"Data"> ": " DataIButton
+}
+
+kw<term> { @specialize[@name={term}]<String, term> }
+
+@tokens {
+  identifierChar { @asciiLetter | $[_-] }
+  word { identifierChar (identifierChar | @digit)* }
+  String { word }
+
+  Hex { ($[A-F0-9]$[A-F0-9]@whitespace?)+ }
+  Integer { @digit+ }
+  DataIButton { Hex }
+
+  // @precedence { DataIButton, String, Integer }
+
+  FiletypeValue { "Flipper" @whitespace ("iButton") @whitespace "key" }
+  // VersionValue { Integer }
+  ProtocolValue {
+    "DS1990"|
+    "DS1992" |
+    "DS1996" |
+    "DS1971" |
+    "DSGeneric" |
+    "Cyfral" |
+    "Metakom"
+  }
+
+  LineComment {
+    "#" ![\n]*
+  }
+
+  space { @whitespace+ }
+}
+
+@skip { space | LineComment }

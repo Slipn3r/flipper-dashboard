@@ -1,0 +1,64 @@
+@top Program { expression* }
+
+expression {
+  _Filetype |
+  _Version |
+  _Type |
+  _Data
+}
+
+_Filetype {
+  kw<"Filetype"> ": " FiletypeValue
+}
+
+_Version {
+  kw<"Version"> ": " Integer
+}
+
+_Type {
+  KeyType ": " TypeValue
+}
+
+_Data {
+  kw<"Data"> ": " DataRfid
+}
+
+KeyType { kw<"Key">kw<"type"> }
+
+kw<term> { @specialize[@name={term}]<String, term> }
+
+@tokens {
+  identifierChar { @asciiLetter | $[_-] }
+  word { identifierChar (identifierChar | @digit)* }
+  String { word }
+
+  Hex { ($[A-F0-9]$[A-F0-9]@whitespace?)+ }
+  Integer { @digit+ }
+  DataRfid { Hex }
+
+  FiletypeValue { "Flipper" @whitespace ("RFID") @whitespace "key" }
+  TypeValue {
+    "EM4100" |
+    "H10301" |
+    "Idteck" |
+    "Indala26" |
+    "IOProxXSF" |
+    "AWID" |
+    "FDX-A" |
+    "FDX-B" |
+    "HIDProx" |
+    "HIDExt" |
+    "Pyramid" |
+    "Viking" |
+    "Jablotron" |
+    "PAC/Stanley"
+  }
+
+  LineComment {
+    "#" ![\n]*
+  }
+
+  space { @whitespace+ }
+}
+
+@skip { space | LineComment }
