@@ -232,7 +232,7 @@ const winstonLogger = createLogger({
   levels: winstonConfig.npm.levels,
   level: 'info',
   format: winstonFormat.combine(
-    winstonFormat.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    winstonFormat.timestamp({ format: 'YYYY-MM-DDTHH:mm:ss.SSS' }),
     winstonFormat.printf(
       ({ timestamp, level, message }) =>
         `[${timestamp}] [${level.toUpperCase()}] ${message}`
