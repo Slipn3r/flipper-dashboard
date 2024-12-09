@@ -60,6 +60,9 @@ interface Window {
         }
     >
   }
+  logger: {
+    log: (level: string, message: string, context: string) => void
+  }
 }
 
 interface FileStructure {

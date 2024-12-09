@@ -9,6 +9,12 @@ import {
 import path from 'path'
 // import os from 'os'
 import fs from 'fs'
+import {
+  createLogger,
+  config as winstonConfig,
+  format as winstonFormat,
+  transports as winstonTransports
+} from 'winston'
 
 const extraResourcesPath =
   process.env.NODE_ENV === 'production'
@@ -210,6 +216,42 @@ const filesystem = {
   }
 }
 
+const getSessionLogFile = () => {
+  const logDir = path.join(app.getPath('logs'))
+  if (!fs.existsSync(logDir)) {
+    fs.mkdirSync(logDir)
+  }
+
+  return path.join(
+    logDir,
+    `session_${new Date().toISOString().replace(/[:.]/g, '-')}.log`
+  )
+}
+
+const winstonLogger = createLogger({
+  levels: winstonConfig.npm.levels,
+  level: 'info',
+  format: winstonFormat.combine(
+    winstonFormat.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    winstonFormat.printf(
+      ({ timestamp, level, message }) =>
+        `[${timestamp}] [${level.toUpperCase()}] ${message}`
+    )
+  ),
+  transports: [
+    new winstonTransports.File({
+      filename: getSessionLogFile(),
+      level: 'debug'
+    })
+  ]
+})
+
+const logger = {
+  message(event, { level, message, context }) {
+    winstonLogger.log({ level, message: `[${context}] ${message}` })
+  }
+}
+
 // NOTE: needed in case process is undefined under Linux
 // const platform = process.platform || os.platform()
 
@@ -278,6 +320,7 @@ app.whenReady().then(() => {
   ipcMain.handle('fs:saveToTemp', filesystem.saveToTemp)
   ipcMain.handle('fs:downloadFile', filesystem.downloadFile)
   ipcMain.handle('fs:downloadFolder', filesystem.downloadFolder)
+  ipcMain.on('logger:message', logger.message)
 
   createWindow()
 })

@@ -27,3 +27,8 @@ contextBridge.exposeInMainWorld('fs', {
   downloadFile: (args) => ipcRenderer.invoke('fs:downloadFile', args),
   downloadFolder: (args) => ipcRenderer.invoke('fs:downloadFolder', args)
 })
+
+contextBridge.exposeInMainWorld('logger', {
+  log: (level, message, context = 'Renderer') =>
+    ipcRenderer.send('logger:message', { level, message, context })
+})
