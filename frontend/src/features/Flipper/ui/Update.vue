@@ -142,7 +142,7 @@ import { PB } from 'shared/lib/flipperJs/protobufCompiled'
 import { unpack } from 'shared/lib/utils/operation'
 
 import { showNotif } from 'shared/lib/utils/useShowNotif'
-import { log } from 'shared/lib/utils/useLog'
+import { logger } from 'shared/lib/utils/useLog'
 import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
 
 import { ProgressBar } from 'shared/components/ProgressBar'
@@ -214,9 +214,9 @@ onMounted(async () => {
         }
       ]
     })
-    log({
-      level: 'error',
-      message: `${componentName}: failed to fetch update channels`
+    logger.error({
+      context: componentName,
+      message: 'failed to fetch update channels'
     })
     throw error
   })
@@ -307,9 +307,9 @@ const update = async (fromFile = false) => {
       updateStage.value = 'Wrong file format'
       throw new Error(updateStage.value)
     }
-    log({
-      level: 'info',
-      message: `${componentName}: Uploading firmware from file`
+    logger.info({
+      context: componentName,
+      message: 'Uploading firmware from file'
     })
   }
 
@@ -348,9 +348,9 @@ const loadFirmware = async () => {
             }
           ]
         })
-        log({
-          level: 'error',
-          message: `${componentName}: Failed to fetch regional update information: ${error.toString()}`
+        logger.error({
+          context: componentName,
+          message: `Failed to fetch regional update information: ${error.toString()}`
         })
         throw error
       }
@@ -418,9 +418,9 @@ const loadFirmware = async () => {
     if (uploadedFile.value) {
       const buffer = await uploadedFile.value.arrayBuffer()
       files = await unpack(buffer).then((value: object) => {
-        log({
-          level: 'debug',
-          message: `${componentName}: Unpacked firmware`
+        logger.debug({
+          context: componentName,
+          message: 'Unpacked firmware'
         })
         return value
       })
@@ -433,9 +433,9 @@ const loadFirmware = async () => {
       if (file) {
         files = await fetchFirmware(file.url)
           .then((value) => {
-            log({
-              level: 'debug',
-              message: `${componentName}: Downloaded firmware from ${file.url}`
+            logger.debug({
+              context: componentName,
+              message: `Downloaded firmware from ${file.url}`
             })
             return value
           })
@@ -457,8 +457,8 @@ const loadFirmware = async () => {
             })
 
             const message = `${componentName}: Failed to fetch firmware: ${error.toString()}`
-            log({
-              level: 'error',
+            logger.error({
+              context: componentName,
               message
             })
             throw new Error(message)
@@ -488,9 +488,9 @@ const loadFirmware = async () => {
             `${componentName}: RPC error in command '${command}': ${error.toString()}`
           )
         } else {
-          log({
-            level: 'debug',
-            message: `${componentName}: Storage /ext/update not exist`
+          logger.debug({
+            context: componentName,
+            message: 'Storage /ext/update not exist'
           })
         }
       })
@@ -499,9 +499,9 @@ const loadFirmware = async () => {
       await flipperStore.flipper
         ?.RPC('storageMkdir', { path: '/ext/update' })
         .then(() =>
-          log({
-            level: 'debug',
-            message: `${componentName}: storageMkdir: /ext/update`
+          logger.debug({
+            context: componentName,
+            message: 'storageMkdir: /ext/update'
           })
         )
         .catch((error: Error) => {
@@ -539,9 +539,9 @@ const loadFirmware = async () => {
                 `${componentName}: RPC error in command '${command}': ${error.toString()}`
               )
             } else {
-              log({
-                level: 'debug',
-                message: `${componentName}: Storage /ext/update not exist`
+              logger.debug({
+                context: componentName,
+                message: 'Storage /ext/update not exist'
               })
             }
           })
@@ -550,9 +550,9 @@ const loadFirmware = async () => {
           await flipperStore.flipper
             ?.RPC('storageMkdir', { path })
             .then(() =>
-              log({
-                level: 'debug',
-                message: `${componentName}: storageMkdir: ${path}`
+              logger.debug({
+                context: componentName,
+                message: `storageMkdir: ${path}`
               })
             )
             .catch((error: Error) => {
@@ -584,9 +584,9 @@ const loadFirmware = async () => {
             buffer: file.buffer
           })
           .then(() =>
-            log({
-              level: 'debug',
-              message: `${componentName}: storageWrite: /ext/update/${file.name}`
+            logger.debug({
+              context: componentName,
+              message: `storageWrite: /ext/update/${file.name}`
             })
           )
           .catch((error: Error) => {
@@ -617,9 +617,9 @@ const loadFirmware = async () => {
     await flipperStore.flipper
       ?.RPC('systemUpdate', { path: path + '/update.fuf' })
       .then(() =>
-        log({
-          level: 'debug',
-          message: `${componentName}: systemUpdate: OK`
+        logger.debug({
+          context: componentName,
+          message: 'systemUpdate: OK'
         })
       )
       .catch((error: Error) => {

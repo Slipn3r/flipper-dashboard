@@ -4,7 +4,7 @@ import useSetProperty from 'shared/lib/utils/useSetProperty'
 
 // import asyncSleep from 'simple-async-sleep'
 
-import { log } from 'shared/lib/utils/useLog'
+import { logger } from 'shared/lib/utils/useLog'
 import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
 
 const componentName = 'FlipperJS Util ReadInfo'
@@ -76,9 +76,9 @@ export default async function readInfo(this: Flipper) {
   if (await isOldProtobuf.bind(this)()) {
     await this.RPC('systemDeviceInfo')
       .then((devInfo: FlipperModel.DeviceInfo) => {
-        log({
-          level: 'debug',
-          message: `${componentName}: deviceInfo: OK`
+        logger.debug({
+          context: componentName,
+          message: 'deviceInfo: OK'
         })
         setPropertyInfo(devInfo)
       })
@@ -90,9 +90,9 @@ export default async function readInfo(this: Flipper) {
     // await asyncSleep(1000)
     await this.RPC('propertyGet', { key: 'devinfo' })
       .then((devInfo: FlipperModel.DeviceInfo) => {
-        log({
-          level: 'debug',
-          message: `${componentName}: propertyGet devinfo: OK`
+        logger.debug({
+          context: componentName,
+          message: 'propertyGet devinfo: OK'
         })
         setPropertyInfo(devInfo)
       })
@@ -107,9 +107,9 @@ export default async function readInfo(this: Flipper) {
 
     await this.RPC('propertyGet', { key: 'pwrinfo' })
       .then((powerInfo: FlipperModel.PowerInfo) => {
-        log({
-          level: 'debug',
-          message: `${componentName}: propertyGet pwrinfo: OK`
+        logger.debug({
+          context: componentName,
+          message: 'propertyGet pwrinfo: OK'
         })
         setPropertyInfo(powerInfo)
       })
@@ -125,9 +125,9 @@ export default async function readInfo(this: Flipper) {
 
   const ext = await this.RPC('storageList', { path: '/ext' })
     .then((list: FlipperModel.File[]) => {
-      log({
-        level: 'debug',
-        message: `${componentName}: storageList: /ext`
+      logger.debug({
+        context: componentName,
+        message: 'storageList: /ext'
       })
       return list
     })
@@ -156,9 +156,9 @@ export default async function readInfo(this: Flipper) {
 
     await this.RPC('storageInfo', { path: '/ext' })
       .then((extInfo: FlipperModel.SpaceInfo) => {
-        log({
-          level: 'debug',
-          message: `${componentName}: storageInfo: /ext`
+        logger.debug({
+          context: componentName,
+          message: 'storageInfo: /ext'
         })
         setPropertyInfo({
           storage: {
@@ -195,9 +195,9 @@ export default async function readInfo(this: Flipper) {
 
   await this.RPC('storageInfo', { path: '/int' })
     .then((intInfo: FlipperModel.SpaceInfo) => {
-      log({
-        level: 'debug',
-        message: `${componentName}: storageInfo: /int`
+      logger.debug({
+        context: componentName,
+        message: 'storageInfo: /int'
       })
       setPropertyInfo({
         storage: {
@@ -207,9 +207,9 @@ export default async function readInfo(this: Flipper) {
           }
         }
       })
-      log({
-        level: 'info',
-        message: `${componentName}: Fetched device info`
+      logger.info({
+        context: componentName,
+        message: 'Fetched device info'
       })
     })
     .catch((error: Error) => {

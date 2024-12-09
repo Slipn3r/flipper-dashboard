@@ -6,7 +6,7 @@ import { instance } from 'boot/axios'
 
 import type { ActionAppOptions, InstallAppOptions } from '../types'
 
-import { log } from 'shared/lib/utils/useLog'
+import { logger } from 'shared/lib/utils/useLog'
 import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
 
 const componentName = 'FlipperJS Utils AppActions'
@@ -38,9 +38,9 @@ async function installApp(
       target: `f${this.info?.firmware.target}`,
       api: `${this.info?.firmware.api.major}.${this.info?.firmware.api.minor}`
     }).catch((error: Error) => {
-      log({
-        level: 'error',
-        message: `${componentName}: Installing app '${app.currentVersion.name}' (${app.alias}): ${error}`
+      logger.error({
+        context: componentName,
+        message: `Installing app '${app.currentVersion.name}' (${app.alias}): ${error}`
       })
 
       reject(error)
@@ -54,9 +54,9 @@ async function installApp(
 
     app.action.progress = 0.33
     callback(0.33)
-    log({
-      level: 'debug',
-      message: `${componentName}: Installing app '${app.currentVersion.name}' (${app.alias}): fetched .fap`
+    logger.debug({
+      context: componentName,
+      message: `Installing app '${app.currentVersion.name}' (${app.alias}): fetched .fap`
     })
 
     // generate manifest
@@ -102,9 +102,9 @@ async function installApp(
       buffer: manifestFile
     })
       .then(() => {
-        log({
-          level: 'debug',
-          message: `${componentName}: Installing app '${app.currentVersion.name}' (${app.alias}): uploaded manifest (temp)`
+        logger.debug({
+          context: componentName,
+          message: `Installing app '${app.currentVersion.name}' (${app.alias}): uploaded manifest (temp)`
         })
       })
       .catch((error: Error) => {
@@ -121,9 +121,9 @@ async function installApp(
       buffer: fap
     })
       .then(() => {
-        log({
-          level: 'debug',
-          message: `${componentName}: Installing app '${app.currentVersion.name}' (${app.alias}): uploaded .fap (temp)`
+        logger.debug({
+          context: componentName,
+          message: `Installing app '${app.currentVersion.name}' (${app.alias}): uploaded .fap (temp)`
         })
       })
       .catch((error: Error) => {
@@ -158,9 +158,9 @@ async function installApp(
         path: pathOfFim
       })
         .then(() => {
-          log({
-            level: 'debug',
-            message: `${componentName}: Installing app '${app.currentVersion.name}' (${app.alias}): removed old manifest`
+          logger.debug({
+            context: componentName,
+            message: `Installing app '${app.currentVersion.name}' (${app.alias}): removed old manifest`
           })
         })
         .catch((error: Error) => {
@@ -182,9 +182,9 @@ async function installApp(
       newPath: pathOfNewFim
     })
       .then(() => {
-        log({
-          level: 'debug',
-          message: `${componentName}: Installing app '${app.currentVersion.name}' (${app.alias}): moved new manifest`
+        logger.debug({
+          context: componentName,
+          message: `Installing app '${app.currentVersion.name}' (${app.alias}): moved new manifest`
         })
       })
       .catch((error: Error) => {
@@ -221,9 +221,9 @@ async function installApp(
         path: pathOfOldFap
       })
         .then(() => {
-          log({
-            level: 'debug',
-            message: `${componentName}: Installing app '${app.currentVersion.name}' (${app.alias}): removed old .fap`
+          logger.debug({
+            context: componentName,
+            message: `Installing app '${app.currentVersion.name}' (${app.alias}): removed old .fap`
           })
         })
         .catch((error: Error) => {
@@ -245,9 +245,9 @@ async function installApp(
       newPath: pathOfNewFap
     })
       .then(() => {
-        log({
-          level: 'debug',
-          message: `${componentName}: Installing app '${app.currentVersion.name}' (${app.alias}): moved new .fap`
+        logger.debug({
+          context: componentName,
+          message: `Installing app '${app.currentVersion.name}' (${app.alias}): moved new .fap`
         })
       })
       .catch((error: Error) => {
@@ -312,9 +312,9 @@ async function deleteApp(
         path: pathOfFap
       })
         .then(() => {
-          log({
-            level: 'debug',
-            message: `${componentName}: Deleting app '${appName}' (${app.alias}): removed .fap`
+          logger.debug({
+            context: componentName,
+            message: `Deleting app '${appName}' (${app.alias}): removed .fap`
           })
         })
         .catch((error: Error) => {
@@ -348,9 +348,9 @@ async function deleteApp(
         path: `${paths.manifestDir}/${app.alias}.fim`
       })
         .then(() => {
-          log({
-            level: 'debug',
-            message: `${componentName}: Deleting app '${appName}' (${app.alias}): removed manifest`
+          logger.debug({
+            context: componentName,
+            message: `Deleting app '${appName}' (${app.alias}): removed manifest`
           })
         })
         .catch((error: Error) => {

@@ -111,7 +111,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 
-import { log } from 'shared/lib/utils/useLog'
+import { logger } from 'shared/lib/utils/useLog'
 import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
 
 import { FlipperConnectWebBtn } from 'features/Flipper'
@@ -143,9 +143,9 @@ const readNonces = async () => {
   const res = await flipperStore.flipper
     ?.RPC('storageRead', { path: '/ext/nfc/.mfkey32.log' })
     .then((value: Uint8Array) => {
-      log({
-        level: 'debug',
-        message: `${componentName}: storageRead: /ext/nfc/.mfkey32.log`
+      logger.debug({
+        context: componentName,
+        message: 'storageRead: /ext/nfc/.mfkey32.log'
       })
 
       return value
@@ -158,9 +158,9 @@ const readNonces = async () => {
           command: 'storageRead: /ext/nfc/.mfkey32.log'
         })
       } else {
-        log({
-          level: 'warn',
-          message: `${componentName}: storageRead: /ext/nfc/.mfkey32.log: ${error.toString()}`
+        logger.warn({
+          context: componentName,
+          message: `storageRead: /ext/nfc/.mfkey32.log: ${error.toString()}`
         })
       }
 
@@ -254,9 +254,9 @@ const mfkeyFlipperStart = async () => {
         error = String(error)
       }
       errors.push(error)
-      log({
-        level: 'error',
-        message: `${componentName}: error in mfkey32v2: ${error} (args: ${args})`
+      logger.error({
+        context: componentName,
+        message: `error in mfkey32v2: ${error} (args: ${args})`
       })
     }
   }
@@ -268,9 +268,9 @@ const mfkeyFlipperStart = async () => {
       rpcErrorHandler({ componentName, error, command: 'storageRead' })
     )
     .finally(() => {
-      log({
-        level: 'debug',
-        message: `${componentName}: storageRead: /ext/nfc/assets/mf_classic_dict_user.nfc`
+      logger.debug({
+        context: componentName,
+        message: 'storageRead: /ext/nfc/assets/mf_classic_dict_user.nfc'
       })
     })
 
@@ -301,9 +301,9 @@ const mfkeyFlipperStart = async () => {
       rpcErrorHandler({ componentName, error, command: 'storageWrite' })
     )
     .finally(() => {
-      log({
-        level: 'debug',
-        message: `${componentName}: storage.write: ${path}`
+      logger.debug({
+        context: componentName,
+        message: `storage.write: ${path}`
       })
     })
 

@@ -9,7 +9,7 @@ import { CategoryModel } from 'entities/Category'
 import { FlipperJsUtils } from 'shared/lib/flipperJs'
 
 import { showNotif } from 'shared/lib/utils/useShowNotif'
-import { log } from 'shared/lib/utils/useLog'
+import { logger } from 'shared/lib/utils/useLog'
 
 // import { instance } from 'boot/axios'
 import { App, InstalledApp, AppsPostShortParams, ActionType } from './types'
@@ -353,9 +353,9 @@ export const useAppsStore = defineStore('apps', () => {
 
     const action = async (app: App | InstalledApp, actionType: ActionType) => {
       await handleAction(app, actionType).catch((error) => {
-        log({
-          level: 'error',
-          message: `${componentName}: ${error.message}`
+        logger.error({
+          context: componentName,
+          message: error.message
         })
       })
       if (actionAppList.value.length) {

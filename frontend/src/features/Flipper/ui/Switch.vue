@@ -225,10 +225,12 @@ import { emitter as bridgeEmitter } from 'shared/lib/flipperJs/bridgeController'
 import { ProgressBar } from 'shared/components/ProgressBar'
 
 import { showNotif } from 'shared/lib/utils/useShowNotif'
-import { log, type LogLevel } from 'shared/lib/utils/useLog'
+import { logger, type LogLevel } from 'shared/lib/utils/useLog'
 
 import { FlipperModel, FlipperApi } from 'entities/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
+
+const componentName = 'FlipperSwitch'
 
 const onSwitchFlipper = async () => {
   flipperStore.dialogs.multiflipper = true
@@ -321,8 +323,8 @@ const recovery = async (info: FlipperModel.DataDfuFlipperElectron['info']) => {
       message: messageShort,
       color: 'negative'
     })
-    log({
-      level: 'error',
+    logger.error({
+      context: componentName,
       message: messageShort
     })
     unbindLogs()
@@ -368,8 +370,8 @@ const recovery = async (info: FlipperModel.DataDfuFlipperElectron['info']) => {
       } else if (line.includes('[I]')) {
         level = 'info'
       }
-      log({
-        level,
+      logger[level]({
+        context: componentName,
         message: line
       })
     })

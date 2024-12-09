@@ -21,9 +21,9 @@
           <code v-if="!history.length">Logs will appear here...</code>
           <code v-for="line in history" :key="line.timestamp">
             {{
-              `${line.time.padEnd(8)} [${line.level.toUpperCase()}] ${
-                line.message
-              }`
+              `${line.time.padEnd(8)} [${line.level.toUpperCase()}] [${
+                line.context
+              }] ${line.message}`
             }}
             <br />
           </code>

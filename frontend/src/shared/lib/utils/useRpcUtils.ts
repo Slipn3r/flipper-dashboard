@@ -1,5 +1,5 @@
 // import showNotif from 'composables/useShowNotif'
-import { log } from './useLog'
+import { logger } from './useLog'
 
 const rpcErrorHandler = ({
   componentName,
@@ -15,9 +15,9 @@ const rpcErrorHandler = ({
     message: `RPC error in command '${command}': ${errorString}`,
     color: 'negative'
   }) */
-  log({
-    level: 'error',
-    message: `${componentName}: RPC error in command '${command}': ${errorString}`
+  logger.error({
+    context: componentName,
+    message: `RPC error in command '${command}': ${errorString}`
   })
 }
 

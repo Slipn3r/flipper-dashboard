@@ -2,7 +2,7 @@ import { PB } from './protobufCompiled'
 
 import type { Emitter, DefaultEvents } from 'nanoevents'
 
-import { log } from 'shared/lib/utils/useLog'
+import { logger } from 'shared/lib/utils/useLog'
 import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
 import {
   addToQueue,
@@ -188,9 +188,9 @@ export default class Flipper {
             command: `storageStat ${this.config.manifestDir}`
           })
         } else {
-          log({
-            level: 'debug',
-            message: `${componentName}: Storage ${this.config.manifestDir} not exist`
+          logger.debug({
+            context: componentName,
+            message: `Storage ${this.config.manifestDir} not exist`
           })
         }
       })
@@ -199,9 +199,9 @@ export default class Flipper {
           path: this.config.manifestDir
         })
           .then(() =>
-            log({
-              level: 'debug',
-              message: `${componentName}: storageMkdir: ${this.config.manifestDir}`
+            logger.debug({
+              context: componentName,
+              message: `storageMkdir: ${this.config.manifestDir}`
             })
           )
           .catch((error: Error) =>
@@ -223,9 +223,9 @@ export default class Flipper {
             command: `storageStat ${this.config.tempDir}`
           })
         } else {
-          log({
-            level: 'debug',
-            message: `${componentName}: Storage ${this.config.tempDir} not exist`
+          logger.debug({
+            context: componentName,
+            message: `Storage ${this.config.tempDir} not exist`
           })
         }
       })
@@ -234,9 +234,9 @@ export default class Flipper {
           path: this.config.tempDir
         })
           .then(() =>
-            log({
-              level: 'debug',
-              message: `${componentName}: storageMkdir: ${this.config.tempDir}`
+            logger.debug({
+              context: componentName,
+              message: `storageMkdir: ${this.config.tempDir}`
             })
           )
           .catch((error: Error) =>
@@ -258,9 +258,9 @@ export default class Flipper {
             command: `storageStat ${this.config.tempDir}/lab`
           })
         } else {
-          return log({
-            level: 'debug',
-            message: `${componentName}: Storage ${this.config.tempDir}/lab not exist`
+          return logger.debug({
+            context: componentName,
+            message: `Storage ${this.config.tempDir}/lab not exist`
           })
         }
       })
@@ -269,9 +269,9 @@ export default class Flipper {
           path: `${this.config.tempDir}/lab`
         })
           .then(() =>
-            log({
-              level: 'debug',
-              message: `${componentName}: storageMkdir: ${this.config.tempDir}/lab`
+            logger.debug({
+              context: componentName,
+              message: `storageMkdir: ${this.config.tempDir}/lab`
             })
           )
           .catch((error: Error) =>

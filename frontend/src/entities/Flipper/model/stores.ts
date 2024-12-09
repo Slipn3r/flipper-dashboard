@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import { FlipperWeb, FlipperElectron } from 'shared/lib/flipperJs'
 
 import { showNotif } from 'shared/lib/utils/useShowNotif'
-import { log } from 'shared/lib/utils/useLog'
+import { logger } from 'shared/lib/utils/useLog'
 
 import { AppsModel } from 'entities/Apps'
 import {
@@ -208,9 +208,9 @@ export const useFlipperStore = defineStore('flipper', () => {
     path: RouteLocationRaw
     file: PulseFile
   }) => {
-    log({
-      level: 'info',
-      message: `${componentName}: Passing file ${file.name} to ${path}`
+    logger.info({
+      context: componentName,
+      message: `Passing file ${file.name} to ${path}`
     })
     fileToPass.value = file
     router.push(path)

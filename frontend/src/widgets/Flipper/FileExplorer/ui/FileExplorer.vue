@@ -372,7 +372,7 @@ import { FileEditor } from 'features/FileEditor'
 import { FileEditorModel } from 'entities/FileEditor'
 
 import { showNotif } from 'shared/lib/utils/useShowNotif'
-import { log } from 'shared/lib/utils/useLog'
+import { logger } from 'shared/lib/utils/useLog'
 import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
 import {
   downloadFile,
@@ -489,9 +489,9 @@ const upload = async () => {
         buffer: await localFile.arrayBuffer()
       })
       .then(() => {
-        log({
-          level: 'debug',
-          message: `${componentName}: storageWrite: ${dir}/${localFile.name}`
+        logger.debug({
+          context: componentName,
+          message: `storageWrite: ${dir}/${localFile.name}`
         })
       })
       .catch((error: Error) =>
@@ -518,9 +518,9 @@ const mkdir = async ({ path }: { path: string }) => {
   await flipperStore.flipper
     ?.RPC('storageMkdir', { path })
     .then(() => {
-      log({
-        level: 'debug',
-        message: `${componentName}: storageMkdir: ${path}`
+      logger.debug({
+        context: componentName,
+        message: `storageMkdir: ${path}`
       })
     })
     .catch((error: Error) =>
@@ -570,9 +570,9 @@ const list = async ({ path }: { path: string }) => {
   const list = await flipperStore.flipper
     ?.RPC('storageList', { path })
     .then((list: FlipperModel.File[]) => {
-      log({
-        level: 'debug',
-        message: `${componentName}: storageList: ${path}`
+      logger.debug({
+        context: componentName,
+        message: `storageList: ${path}`
       })
       return list
     })
@@ -702,9 +702,9 @@ const read = async ({
     const res: Uint8Array = await flipperStore.flipper
       ?.RPC('storageRead', { path: filePath })
       .then((data: Uint8Array) => {
-        log({
-          level: 'debug',
-          message: `${componentName}: storageRead: ${filePath}`
+        logger.debug({
+          context: componentName,
+          message: `storageRead: ${filePath}`
         })
         return data
       })
@@ -752,10 +752,6 @@ const createStructure = async ({
     const res: Uint8Array = await flipperStore.flipper
       ?.RPC('storageRead', { path: file.path })
       .then((data: Uint8Array) => {
-        // log({
-        //   level: 'debug',
-        //   message: `${componentName}: storageRead: ${file.path}`
-        // })
         return data
       })
       .catch((error: Error) =>
@@ -782,10 +778,6 @@ const createStructure = async ({
   const folderContents = await flipperStore.flipper
     ?.RPC('storageList', { path: file.path })
     .then((list: FlipperModel.File[]) => {
-      // log({
-      //   level: 'debug',
-      //   message: `${componentName}: storageList: ${file.path}`
-      // })
       if (!isHiddenFiles.value) {
         return list.filter((e: FlipperModel.File) => !e.name.startsWith('.'))
       }
@@ -845,9 +837,9 @@ const download = async ({ file }: { file: FlipperModel.File }) => {
     const res: Uint8Array = await flipperStore.flipper
       ?.RPC('storageRead', { path: filePath })
       .then((data: Uint8Array) => {
-        log({
-          level: 'debug',
-          message: `${componentName}: storageRead: ${filePath}`
+        logger.debug({
+          context: componentName,
+          message: `storageRead: ${filePath}`
         })
         return data
       })
@@ -902,9 +894,9 @@ const rename = async ({
       newPath: path + '/' + newName
     })
     .then(() => {
-      log({
-        level: 'debug',
-        message: `${componentName}: storageRename: ${path}, old name: ${oldName}, new name: ${newName}`
+      logger.debug({
+        context: componentName,
+        message: `storageRename: ${path}, old name: ${oldName}, new name: ${newName}`
       })
     })
     .catch((error: Error) =>
@@ -931,9 +923,9 @@ const remove = async ({
   await flipperStore.flipper
     ?.RPC('storageRemove', { path, recursive: isRecursive })
     .then(() => {
-      log({
-        level: 'debug',
-        message: `${componentName}: storageRemove: ${path}, recursive: ${isRecursive}`
+      logger.debug({
+        context: componentName,
+        message: `storageRemove: ${path}, recursive: ${isRecursive}`
       })
     })
     .catch((error: Error) =>
@@ -976,8 +968,8 @@ const saveFile = (doc: string) => {
         buffer: new TextEncoder().encode(doc)
       })
       .then(() => {
-        log({
-          level: 'debug',
+        logger.debug({
+          context: componentName,
           message: `${componentName}: storageWrite: ${path}`
         })
 

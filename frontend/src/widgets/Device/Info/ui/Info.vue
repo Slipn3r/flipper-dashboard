@@ -41,7 +41,7 @@ import {
   watch
 } from 'vue'
 
-import { log } from 'shared/lib/utils/useLog'
+import { logger } from 'shared/lib/utils/useLog'
 import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
 
 import { Loading } from 'shared/components/Loading'
@@ -178,9 +178,9 @@ const startScreenStream = async (attempts = 0) => {
       } */
     })
     .then(() => {
-      log({
-        level: 'debug',
-        message: `${componentName}: guiStartScreenStream: OK`
+      logger.debug({
+        context: componentName,
+        message: 'guiStartScreenStream: OK'
       })
 
       console.log('Started screen streaming')
@@ -219,9 +219,9 @@ const stopScreenStream = async () => {
       throw new Error(`Stop screen stream RPC error: ${error.message || error}`)
     })
     .then((/* value */) => {
-      log({
-        level: 'debug',
-        message: `${componentName}: guiStartScreenStream: OK`
+      logger.debug({
+        context: componentName,
+        message: 'guiStartScreenStream: OK'
       })
       if (unbindFrame.value) {
         unbindFrame.value()
