@@ -155,13 +155,11 @@ const filesystem = {
       })
 
       if (result.canceled || !result.filePath) {
-        return { status: 'warning', path: structure.path }
+        return { status: 'warning', path: result.filePath || filename }
       }
 
-      if (!result.canceled && result.filePath) {
-        const filePath = result.filePath
-        fs.writeFileSync(filePath, rawData)
-      }
+      const filePath = result.filePath
+      fs.writeFileSync(filePath, rawData)
 
       return { status: 'ok', path: filePath }
     } catch (error) {
@@ -208,7 +206,7 @@ const filesystem = {
         }
       }
 
-      return { status: 'ok', path: structure.path }
+      return { status: 'ok', path: basePath }
     } catch (error) {
       console.error(error)
       return { status: 'error', message: error.message }
