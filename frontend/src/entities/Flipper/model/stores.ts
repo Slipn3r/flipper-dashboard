@@ -408,6 +408,9 @@ export const useFlipperStore = defineStore('flipper', () => {
           }
         }
 
+        // HACK: Necessary delay to eliminate flippers that lock up after a reboot
+        await asyncSleep(1000)
+
         if (flags.updateInProgress) {
           if (flags.waitForReconnect) {
             const findFlipper = availableFlippers.value.find(
