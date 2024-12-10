@@ -827,6 +827,14 @@ const download = async ({ file }: { file: FlipperModel.File }) => {
           color: 'negative'
         })
       }
+
+      if (res?.status === 'ok') {
+        showNotif({
+          message: `Folder «${file.name}» save in «${res.path}»`,
+          color: 'positive',
+          timeout: 5000
+        })
+      }
     })
 
     blockingOperationDialog.value = false
@@ -856,6 +864,14 @@ const download = async ({ file }: { file: FlipperModel.File }) => {
           showNotif({
             message: res.message,
             color: 'negative'
+          })
+        }
+
+        if (res?.status === 'ok') {
+          showNotif({
+            message: `File «${file.name}» save in «${res.path}»`,
+            color: 'positive',
+            timeout: 5000
           })
         }
       })
