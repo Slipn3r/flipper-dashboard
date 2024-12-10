@@ -414,6 +414,13 @@ watch(
   }
 )
 
+watch(
+  () => route.params.path,
+  () => {
+    getCurrentApp()
+  }
+)
+
 const isInstalledOrUpdate = computed(() => {
   return (
     currentApp.value &&
