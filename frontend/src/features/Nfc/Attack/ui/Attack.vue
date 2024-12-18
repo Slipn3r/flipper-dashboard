@@ -166,6 +166,8 @@ const readNonces = async () => {
 
       noncesNotFound.value = true
       mfkeyStatus.value = 'Mfkey log file not found'
+    })
+    .finally(() => {
       nfcStore.flags.mfkeyFlipperInProgress = false
     })
 
