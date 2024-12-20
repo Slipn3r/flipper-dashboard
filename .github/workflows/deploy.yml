@@ -23,7 +23,7 @@ jobs:
         id: tag
         run: |
           IMAGE_TAG="0.0.0"
-          IMAGE_TAG_DEV="${GIT_BRANCH}-${GIT_SHA:0:7}-$(date +%s)"
+          IMAGE_TAG_DEV="dev-${GITHUB_SHA:0:7}-$(date +%s)"
           if [[ "${{ github.ref }}" == "refs/tags/"* ]]; then
             REF=${{ github.ref }};
             TAG_FULL=${REF#refs/*/};
