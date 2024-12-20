@@ -31,7 +31,7 @@ jobs:
           fi
           echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
           echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
-          echo "image_tag_dev=${IMAGE_TAG_DEV} >> $GITHUB_OUTPUT
+          echo "image_tag_dev=${IMAGE_TAG_DEV}" >> $GITHUB_OUTPUT
           echo "image_name=${IMAGE_NAME}" >> $GITHUB_OUTPUT
 
 
