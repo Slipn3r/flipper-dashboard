@@ -281,7 +281,7 @@ export default class FlipperElectron extends Flipper {
 
   write(text: string) {
     const encoded = new TextEncoder().encode(text)
-    return this.writeRaw(encoded, 'cli')
+    return this.writeRaw(encoded.buffer as ArrayBuffer, 'cli')
   }
 
   writeRaw(buffer: ArrayBuffer, mode = 'rpc') {
