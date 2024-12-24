@@ -21,6 +21,11 @@
             <Loading label="Switching Flipper..." />
           </q-page>
         </template>
+        <template v-else-if="flipperStore.loadingInfo">
+          <q-page class="flex flex-center" padding>
+            <Loading label="Loading info..." />
+          </q-page>
+        </template>
         <template v-else>
           <router-view />
         </template>
