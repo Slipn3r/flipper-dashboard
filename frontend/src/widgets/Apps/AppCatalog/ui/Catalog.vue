@@ -153,15 +153,17 @@ const limit = ref(48)
 const offset = ref(0)
 const getApps = async () => {
   if (flipperStore.flipperReady) {
-    if (
-      !flipperStore.flipper?.info?.firmware.api ||
-      !flipperStore.flipper?.info?.firmware.target
-    ) {
-      appsStore.dialogs.outdatedFirmwareDialog = true
-      appsStore.dialogs.outdatedFirmwareDialogPersistent = true
+    if (flipperStore.rpcActive) {
+      if (
+        !flipperStore.flipper?.info?.firmware.api ||
+        !flipperStore.flipper?.info?.firmware.target
+      ) {
+        appsStore.dialogs.outdatedFirmwareDialog = true
+        appsStore.dialogs.outdatedFirmwareDialogPersistent = true
 
-      fetchEnd.value = true
-      return
+        fetchEnd.value = true
+        return
+      }
     }
   }
 
@@ -340,6 +342,7 @@ const reLoad = async () => {
   }
 }
 const onLoad = async (index: number, done: (stop?: boolean) => void) => {
+  console.log('onLoad')
   if (index > 1) {
     offset.value += limit.value
   }
