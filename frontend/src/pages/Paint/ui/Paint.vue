@@ -89,7 +89,7 @@ const autoStreaming = ref<{
   interval: undefined,
   delay: 500
 })
-let backlightInterval = ref<NodeJS.Timeout>()
+let backlightInterval: NodeJS.Timeout | undefined = undefined
 const startVirtualDisplay = async () => {
   await flipperStore.flipper
     ?.RPC('guiStartVirtualDisplay')
@@ -110,7 +110,7 @@ const startVirtualDisplay = async () => {
     })
 
   await enableBacklight()
-  backlightInterval.value = setInterval(enableBacklight, 1000)
+  backlightInterval = setInterval(enableBacklight, 1000)
 
   if (autoStreaming.value.enabled) {
     autoStream()
@@ -120,8 +120,8 @@ const stopVirtualDisplay = async () => {
   if (autoStreaming.value.interval) {
     clearInterval(autoStreaming.value.interval)
   }
-  if (backlightInterval.value) {
-    clearInterval(backlightInterval.value)
+  if (backlightInterval) {
+    clearInterval(backlightInterval)
   }
 
   // if (flipperStore.isElectron) {
