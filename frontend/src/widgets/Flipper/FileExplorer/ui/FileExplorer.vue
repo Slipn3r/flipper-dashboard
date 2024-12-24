@@ -382,7 +382,6 @@ import {
 import { ProgressBar } from 'shared/components/ProgressBar'
 
 import { FlipperModel } from 'entities/Flipper'
-import { FlipperWeb } from 'src/shared/lib/flipperJs'
 const flipperStore = FlipperModel.useFlipperStore()
 
 const componentName = 'FlipperFileExplorer'
@@ -534,13 +533,7 @@ const mkdir = async ({ path }: { path: string }) => {
 onMounted(async () => {
   if (flipperStore.flipperReady) {
     if (!flipperStore.rpcActive) {
-      if (!flipperStore.isElectron) {
-        if (flipperStore.flipper instanceof FlipperWeb) {
-          await flipperStore.flipper?.startRPCSession()
-        }
-      } else {
-        flipperStore.flipper?.setReadingMode('rpc')
-      }
+      await flipperStore.flipper?.startRPCSession()
     }
 
     if (flipperStore.flipper?.readingMode.type === 'rpc') {

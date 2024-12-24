@@ -50,7 +50,7 @@ import { FlipperBody, FlipperInfo, FlipperModel } from 'entities/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 
 import { bytesToSize } from 'shared/lib/utils/bytesToSize'
-import { FlipperWeb } from 'src/shared/lib/flipperJs'
+
 // import { FlipperElectron } from 'src/shared/lib/flipperJs'
 
 // onBeforeMount(() => {
@@ -241,13 +241,7 @@ onMounted(async () => {
 
   if (flipperStore.flipperReady) {
     if (!flipperStore.rpcActive) {
-      if (!flipperStore.isElectron) {
-        if (flipperStore.flipper instanceof FlipperWeb) {
-          await flipperStore.flipper?.startRPCSession()
-        }
-      } else {
-        flipperStore.flipper?.setReadingMode('rpc')
-      }
+      await flipperStore.flipper?.startRPCSession()
     }
 
     if (!flipperStore.info) {

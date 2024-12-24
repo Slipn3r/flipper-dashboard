@@ -122,7 +122,6 @@ const flipperStore = FlipperModel.useFlipperStore()
 import { NfcModel } from 'entities/Nfc'
 const nfcStore = NfcModel.useNfcStore()
 import { useNumbersOnly } from 'shared/lib/utils/useNumberOnly'
-import { FlipperWeb } from 'shared/lib/flipperJs'
 
 const componentName = 'NfcAttack'
 
@@ -197,13 +196,7 @@ const readNonces = async () => {
 onMounted(async () => {
   if (flipperStore.flipperReady) {
     if (!flipperStore.rpcActive) {
-      if (!flipperStore.isElectron) {
-        if (flipperStore.flipper instanceof FlipperWeb) {
-          await flipperStore.flipper?.startRPCSession()
-        }
-      } else {
-        flipperStore.flipper?.setReadingMode('rpc')
-      }
+      await flipperStore.flipper?.startRPCSession()
     }
 
     if (flipperStore.rpcActive) {

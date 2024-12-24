@@ -296,7 +296,7 @@ import { CategoryChip, CategoryModel } from 'entities/Category'
 import { bytesToSize } from 'shared/lib/utils/bytesToSize'
 import { FlipperModel } from 'entities/Flipper'
 import { type QScrollArea } from 'quasar'
-import { FlipperWeb } from 'src/shared/lib/flipperJs'
+
 const flipperStore = FlipperModel.useFlipperStore()
 
 const { fetchAppById, submitAppReport } = AppsApi
@@ -353,13 +353,7 @@ const getAppAction = (app: AppsModel.App) => {
 onMounted(async () => {
   if (flipperStore.flipperReady) {
     if (!flipperStore.rpcActive) {
-      if (!flipperStore.isElectron) {
-        if (flipperStore.flipper instanceof FlipperWeb) {
-          await flipperStore.flipper?.startRPCSession()
-        }
-      } else {
-        flipperStore.flipper?.setReadingMode('rpc')
-      }
+      await flipperStore.flipper?.startRPCSession()
     }
 
     if (flipperStore.flipper?.readingMode.type === 'rpc') {

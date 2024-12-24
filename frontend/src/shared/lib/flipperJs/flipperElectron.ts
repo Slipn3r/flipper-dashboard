@@ -172,6 +172,8 @@ export default class FlipperElectron extends Flipper {
     if (mode === 'rpc') {
       this.rpcActive = true
     }
+
+    await Promise.resolve()
   }
 
   setName(name: string) {
@@ -211,6 +213,10 @@ export default class FlipperElectron extends Flipper {
   //     this.emitter?.emit('cli/output', decoded)
   //   })
   // }
+
+  async startRPCSession() {
+    await this.setReadingMode('rpc')
+  }
 
   async readRPC() {
     if (this.readerRPC) {
