@@ -444,7 +444,7 @@ export const useFlipperStore = defineStore('flipper', () => {
             }
           }
         } else {
-          if (availableFlippers.value.length === 1) {
+          if (availableFlippers.value.length) {
             // await asyncSleep(1000)
 
             if (!flipper.value) {
