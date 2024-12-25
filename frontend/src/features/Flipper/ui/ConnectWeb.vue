@@ -1,6 +1,10 @@
 <template>
   <template v-if="type === 'item'">
-    <q-item clickable @click="onClick">
+    <q-item
+      :disable="flipperStore.flags.disableNavigation"
+      clickable
+      @click="onClick"
+    >
       <q-item-section avatar>
         <q-avatar size="md" square>
           <q-icon
@@ -23,6 +27,7 @@
       color="black"
       icon="cable"
       label="Connect"
+      :disabled="flipperStore.flags.disableNavigation"
       @click="onClick"
     />
   </template>
