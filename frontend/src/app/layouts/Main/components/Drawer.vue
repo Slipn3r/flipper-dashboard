@@ -43,6 +43,7 @@
                 v-model="flipperStore.flags.autoReconnect"
                 dense
                 label="Auto reconnect"
+                :disable="flipperStore.flags.disableNavigation"
                 @click="toggleAutoReconnect"
               />
             </q-item>
@@ -51,6 +52,7 @@
                 v-model="appsStore.flags.catalogChannelProduction"
                 dense
                 label="Production Apps"
+                :disable="flipperStore.flags.disableNavigation"
                 @click="toggleCatalogChannel"
               />
             </q-item>
