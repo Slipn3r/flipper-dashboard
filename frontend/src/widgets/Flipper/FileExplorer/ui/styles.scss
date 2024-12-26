@@ -1,0 +1,20 @@
+.toolbar {
+  border: 1px solid $grey-6;
+  border-radius: $generic-border-radius;
+  padding: 12px;
+
+  &__breadcrumb {
+    background-color: $grey-3;
+    padding: 4px;
+    border-radius: $generic-border-radius;
+    min-width: 29px;
+    text-align: center;
+  }
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  justify-items: center;
+  gap: map-get($space-xs, x) map-get($space-lg, y);
+}

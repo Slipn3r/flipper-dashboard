@@ -1,0 +1,136 @@
+@top Program { expression* }
+
+expression {
+  _Filetype |
+  _Version |
+  _Frequency |
+
+  _Preset |
+  _CustomPresetName |
+  _CustomPresetModule |
+  _CustomPresetData |
+
+  _Protocol |
+  _Bit |
+  _Key |
+  _TE |
+
+  _RawData |
+
+  _BitRaw |
+  _DataRaw |
+
+  _Encryption |
+
+  _AddStandardFrequencies |
+  _DefaultFrequency |
+  _HopperFrequency
+}
+
+
+// Header Format
+_Filetype {
+  kw<"Filetype"> ": " FiletypeValue
+}
+_Version {
+  kw<"Version"> ": " Integer
+}
+_Frequency {
+  kw<"Frequency"> ": " Integer
+}
+
+// Preset Information
+_Preset {
+  kw<"Preset"> ": " PresetValue
+}
+_CustomPresetName {
+  kw<"Custom_preset_name"> ": " String
+}
+_CustomPresetModule {
+  kw<"Custom_preset_module"> ": " String
+}
+_CustomPresetData {
+  kw<"Custom_preset_data"> ": " Hex
+}
+
+// File Data
+_Protocol {
+  kw<"Protocol"> ": " ProtocolValue
+}
+_Bit {
+  kw<"Bit"> ": " Integer
+}
+_Key {
+  kw<"Key"> ": " Hex
+}
+_TE {
+  kw<"TE"> ": " Integer
+}
+
+// Raw Files
+_RawData {
+  kw<"RAW_Data"> ": " DataSubGhz
+}
+
+// BIN_RAW Files
+_BitRaw {
+  kw<"Bit_RAW"> ": " Integer
+}
+_DataRaw {
+  kw<"Data_RAW"> ": " Hex
+}
+
+// SubGhz configuration files
+_Encryption {
+  kw<"Encryption"> ": " EncryptionValue
+}
+
+// SubGhz setting_user file
+_AddStandardFrequencies {
+  kw<"Add_standard_frequencies"> ": " AddStandardFrequenciesValue
+}
+_DefaultFrequency {
+  kw<"Default_frequency"> ": " Integer
+}
+_HopperFrequency {
+  kw<"Hopper_frequency"> ": " Integer
+}
+
+kw<term> { @specialize[@name={term}]<String, term> }
+
+@tokens {
+  identifierChar { @asciiLetter | $[_-] }
+  word { identifierChar (identifierChar | @digit)* }
+  String { word }
+
+  Hex { ($[A-F0-9]$[A-F0-9]@whitespace?)+ }
+  Integer { @digit+ }
+  // Float { @digit+($[.]@digit+)? }
+
+  FiletypeValue { "Flipper SubGhz" @whitespace ("RAW"|"Key"|"Keystore"|"Setting") @whitespace "File" }
+
+  PresetValue {
+    "FuriHalSubGhzPresetOok270Async" |
+    "FuriHalSubGhzPresetOok650Async" |
+    "FuriHalSubGhzPreset2FSKDev238Async" |
+    "FuriHalSubGhzPreset2FSKDev476Async" |
+    "FuriHalSubGhzPresetCustom"
+  }
+  ProtocolValue { "Princeton" | "RAW" | "BinRAW" }
+
+  DataSubGhz { ($[-]?@digit+@whitespace?)+ }
+
+  EncryptionValue { $[01234] }
+
+  AddStandardFrequenciesValue { ("true"|"false") }
+
+  LineComment {
+    "#" ![\n]*
+  }
+
+  space { @whitespace+ }
+
+  @precedence { space, String }
+}
+
+@skip { space | LineComment }

@@ -1,0 +1,6 @@
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax($card-width, 1fr));
+  justify-items: center;
+  gap: map-get($space-xs, x) map-get($space-lg, y);
+}

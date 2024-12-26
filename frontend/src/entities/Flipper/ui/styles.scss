@@ -1,0 +1,91 @@
+.flipper {
+  width: 370px;
+  height: 165px;
+  padding: 26px 0 0 97px;
+  background-size: 370px;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  &.body-black {
+    background-image: url(assets/flipper_black.svg);
+  }
+  &.body-transparent {
+    background-image: url(assets/flipper_transparent.svg);
+  }
+  &.body-white {
+    background-image: url(assets/flipper_white.svg);
+  }
+
+  &__image {
+    image-rendering: pixelated;
+    position: absolute;
+    top: 25px;
+    left: 96px;
+  }
+
+  &__display-wrapper {
+    &:hover {
+      .flipper__expand-wrapper {
+        opacity: 1;
+      }
+    }
+  }
+
+  &__expand-wrapper {
+    opacity: 0;
+    width: 103%;
+    height: 113%;
+    border-radius: 5px;
+    z-index: 1;
+
+    transition: opacity 300ms cubic-bezier(0.25, 0.8, 0.5, 1);
+  }
+}
+
+$control: '.control';
+
+@mixin control-active-state($control) {
+  #{$control}--default {
+    display: none;
+  }
+
+  #{$control}--hover {
+    display: none;
+  }
+
+  #{$control}--active {
+    display: block;
+  }
+}
+
+#{$control} {
+  &--hover {
+    display: none;
+  }
+
+  &--active {
+    display: none;
+  }
+
+  &:hover {
+    #{$control}--default {
+      display: none;
+    }
+
+    #{$control}--hover {
+      display: block;
+    }
+
+    #{$control}--active {
+      display: none;
+    }
+  }
+
+  &:active {
+    @include control-active-state($control);
+  }
+
+  &.active {
+    @include control-active-state($control);
+  }
+}

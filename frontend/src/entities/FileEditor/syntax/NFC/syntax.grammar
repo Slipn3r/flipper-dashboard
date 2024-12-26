@@ -1,0 +1,402 @@
+@top Program { expression* }
+
+expression {
+  Filetype |
+  Version |
+  DeviceType |
+  UID |
+  ATQA |
+  SAK |
+  ApplicationData |
+  ProtocolInfo |
+  ATS |
+  DataFormatVersion |
+  NtagUltralightType |
+  Signature |
+  MifareVersion |
+  CounterN |
+  TearingN |
+  PagesTotal |
+  PagesRead |
+  PageN |
+  FailedAuthenticationAttempts |
+  MifareClassicType |
+  BlockN |
+  DSFID |
+  AFI |
+  ICReference |
+  LockDSFID |
+  LockAFI |
+  BlockCount |
+  BlockSize |
+  DataContent |
+  SecurityStatus |
+  Capabilities |
+  PasswordPrivacy |
+  PasswordDestroy |
+  PasswordEAS |
+  PrivacyMode |
+  LockEAS |
+  PICCVersion |
+  PICCFreeMemory |
+  PICCChangeKeyID |
+  PICCConfigChangeable |
+  PICCFreeCreateDelete |
+  PICCFreeDirectoryList |
+  PICCKeyChangeable |
+  PICCMaxKeys |
+  PICCKeyNVersion |
+  ApplicationCount |
+  ApplicationIDs |
+  ApplicationNChangeKeyID |
+  ApplicationNConfigChangeable |
+  ApplicationNFreeCreateDelete |
+  ApplicationNFreeDirectoryList |
+  ApplicationNFreeCreateList |
+  ApplicationNKeyChangeable |
+  ApplicationNMaxKeys |
+  ApplicationNKeyNVersion |
+  ApplicationNFileIDs |
+  ApplicationNFileNType |
+  ApplicationNFileNCommunicationSettings |
+  ApplicationNFileNAccessRights |
+  ApplicationNFileNSize |
+  ApplicationNFileN |
+  EMVCurrency |
+  KeyNMap |
+  KeysMfoc
+}
+
+Filetype {
+  kw<"Filetype:"> FiletypeValue
+}
+
+Version {
+  kw<"Version:"> Integer
+}
+
+DeviceType {
+  kw<"Device">kw<"type:"> DeviceTypeValue
+}
+
+UID {
+  kw<"UID:"> UIDValue
+}
+
+ATQA {
+  kw<"ATQA:"> TwoBytes
+}
+
+SAK {
+  kw<"SAK:"> OneByte
+}
+
+ApplicationData {
+  kw<"Application">kw<"data:"> FourBytes
+}
+
+ProtocolInfo {
+  kw<"Protocol">kw<"info:"> ThreeBytes
+}
+
+ATS {
+  kw<"ATS:"> Hex
+}
+
+DataFormatVersion {
+  kw<"Data">kw<"format">kw<"version:"> Integer
+}
+
+NtagUltralightType {
+  kw<"NTAG/Ultralight">kw<"type:"> NtagUltralightTypeValue
+}
+
+Signature {
+  kw<"Signature:"> Hex
+}
+
+MifareVersion {
+  kw<"Mifare">kw<"version:"> Hex
+}
+
+CounterN {
+  kw<"Counter"> countNumber ":" Integer
+}
+
+TearingN {
+  kw<"Tearing"> countNumber ":" OneByte
+}
+
+PagesTotal {
+  kw<"Pages">kw<"total:"> Integer
+}
+
+PagesRead {
+  kw<"Pages">kw<"read:"> Integer
+}
+
+PageN {
+  kw<"Page"> countNumber ":" FourBytes
+}
+
+FailedAuthenticationAttempts {
+  kw<"Failed">kw<"authentication">kw<"attempts:"> Integer
+}
+
+MifareClassicType {
+  kw<"Mifare">kw<"Classic">kw<"type:"> MifareClassicTypeValue
+}
+
+BlockN {
+  kw<"Block"> countNumber ":" (Hex | UnknownData)
+}
+
+DSFID {
+  kw<"DSFID:"> OneByte
+}
+
+AFI {
+  kw<"AFI:"> OneByte
+}
+
+ICReference {
+  kw<"IC">kw<"Reference:"> OneByte
+}
+
+LockDSFID {
+  kw<"Lock">kw<"DSFID:"> Boolean
+}
+
+LockAFI {
+  kw<"Lock">kw<"AFI:"> Boolean
+}
+
+BlockCount {
+  kw<"Block">kw<"Count:"> Integer
+}
+
+BlockSize {
+  kw<"Block">kw<"Size:"> OneByte
+}
+
+DataContent {
+  kw<"Data">kw<"Content:"> Hex
+}
+
+SecurityStatus {
+  kw<"Security">kw<"Status:"> Hex
+}
+
+Capabilities {
+  kw<"Capabilities:"> CapabilitiesValue
+}
+
+PasswordPrivacy {
+  kw<"Password">kw<"Privacy:"> FourBytes
+}
+
+PasswordDestroy {
+  kw<"Password">kw<"Destroy:"> FourBytes
+}
+
+PasswordEAS {
+  kw<"Password">kw<"EAS:"> FourBytes
+}
+
+PrivacyMode {
+  kw<"Privacy">kw<"Mode:"> Boolean
+}
+
+LockEAS {
+  kw<"Lock">kw<"EAS:"> Boolean
+}
+
+PICCVersion {
+  kw<"PICC">kw<"Version:"> Hex
+}
+
+PICCFreeMemory {
+  kw<"PICC">kw<"Free">kw<"Memory:"> Integer
+}
+
+PICCChangeKeyID {
+  kw<"PICC">kw<"Change">kw<"Key">kw<"ID:"> OneByte
+}
+
+PICCConfigChangeable {
+  kw<"PICC">kw<"Config">kw<"Changeable:"> Boolean
+}
+
+PICCFreeCreateDelete {
+  kw<"PICC">kw<"Free">kw<"Create">kw<"Delete:"> Boolean
+}
+
+PICCFreeDirectoryList {
+  kw<"PICC">kw<"Free">kw<"Directory">kw<"List:"> Boolean
+}
+
+PICCKeyChangeable {
+  kw<"PICC">kw<"Key">kw<"Changeable:"> Boolean
+}
+
+PICCMaxKeys {
+  kw<"PICC">kw<"Max">kw<"Keys:"> Integer
+}
+
+PICCKeyNVersion {
+  kw<"PICC">kwn<"Key">kw<"Version:"> OneByte
+}
+
+ApplicationCount {
+  kw<"Application">kw<"Count:"> Integer
+}
+
+ApplicationIDs {
+  kw<"Application">kw<"IDs:"> ApplicationIDsValue
+}
+
+ApplicationNChangeKeyID {
+  kwn<"Application">kw<"Change">kw<"Key">kw<"ID:"> OneByte
+}
+
+ApplicationNConfigChangeable {
+  kwn<"Application">kw<"Config">kw<"Changeable:"> Boolean
+}
+
+ApplicationNFreeCreateDelete {
+  kwn<"Application">kw<"Free">kw<"Create">kw<"Delete:"> Boolean
+}
+
+ApplicationNFreeDirectoryList {
+  kwn<"Application">kw<"Free">kw<"Directory">kw<"List:"> Boolean
+}
+
+ApplicationNFreeCreateList {
+  kwn<"Application">kw<"Free">kw<"Create">kw<"List:"> ": " Boolean
+}
+
+ApplicationNKeyChangeable {
+  kwn<"Application">kw<"Key">kw<"Changeable:"> Boolean
+}
+
+ApplicationNMaxKeys {
+  kwn<"Application">kw<"Max">kw<"Keys:"> OneByte
+}
+
+ApplicationNKeyNVersion {
+  kwn<"Application">kwn<"Key">kw<"Version:"> Integer
+}
+
+ApplicationNFileIDs {
+  kwn<"Application">kw<"File">kw<"IDs:"> ApplicationIDsValue
+}
+
+ApplicationNFileNType {
+  kwn<"Application">kwn<"File">kw<"Type:"> OneByte
+}
+
+ApplicationNFileNCommunicationSettings {
+  kwn<"Application">kwn<"File">kw<"Communication">kw<"Settings:"> OneByte
+}
+
+ApplicationNFileNAccessRights {
+  kwn<"Application">kwn<"File">kw<"Access">kw<"Rights:"> Hex
+}
+
+ApplicationNFileNSize {
+  kwn<"Application">kwn<"File">kw<"Size:"> Integer
+}
+
+ApplicationNFileN {
+  kwn<"Application">kwn<"File"> countNumber ":" Hex
+}
+
+KeyNMap {
+  kwl<"Key"> kw<"map:"> Hex
+}
+
+KeysMfoc {
+  KeysMfocValue
+}
+
+String { string+ }
+EMVCurrency {
+  _EMVCurrencyCode String
+}
+
+kw<term> { @specialize<string, term> | @specialize<_EMVCurrencyCode, term> }
+kwn<term> { (@specialize<string, term> | @specialize<_EMVCurrencyCode, term>) countNumber}
+kwl<term> { (@specialize<string, term> | @specialize<_EMVCurrencyCode, term>) countLetter}
+
+@tokens {
+  identifierChar { @asciiLetter | $[/)(:_-] }
+  word { identifierChar (identifierChar | @digit)* }
+  string { word }
+
+  UnknownData { "??" }
+  Hex { ($[A-F0-9]$[A-F0-9]@whitespace?)+ }
+  Integer { @digit+ }
+  Boolean { "true" | "false" }
+
+  OneByte { $[A-F0-9]$[A-F0-9] }
+  TwoBytes { OneByte @whitespace OneByte }
+  ThreeBytes { TwoBytes @whitespace OneByte }
+  FourBytes { ThreeBytes @whitespace OneByte }
+  SevenBytes { FourBytes @whitespace ThreeBytes }
+  EightBytes { FourBytes @whitespace FourBytes }
+
+  countNumber { @whitespace? @digit+ }
+  countLetter { @whitespace? $[A-Z]+ }
+
+  FiletypeValue { "Flipper" @whitespace ("NFC" @whitespace "device" | ("EMV" | "NFC") @whitespace "resources") }
+  DeviceTypeValue {
+    "ISO14443-3A"|
+    "ISO14443-3B" |
+    "ISO14443-4A" |
+    "ISO15693-3" |
+    "FeliCa" |
+    "NTAG/Ultralight" |
+    "Mifare Classic" |
+    "Mifare DESFire" |
+    "SLIX" |
+    "ST25TB"
+  }
+  UIDValue { FourBytes | SevenBytes | EightBytes }
+  NtagUltralightTypeValue {
+    "Mifare Ultralight 11" |
+    "Mifare Ultralight 21" |
+    "Mifare Ultralight" |
+    "NTAG203" |
+    "NTAG213" |
+    "NTAG215" |
+    "NTAG216" |
+    "NTAG I2C 1K" |
+    "NTAG I2C 2K" |
+    "NTAG I2C Plus 1K" |
+    "NTAG I2C Plus 2K"
+  }
+  MifareClassicTypeValue {
+    "1K" |
+    "4K"
+  }
+  CapabilitiesValue {
+    "Default" |
+    "AcceptAllPasswords"
+  }
+  ApplicationIDsValue { (Integer @whitespace?)+ }
+  KeysMfocValue { Hex }
+
+  lineBreak { $[\n] }
+  _EMVCurrencyCode { $[A-Z0-9:]+ $[:] }
+
+  @precedence { _EMVCurrencyCode KeysMfocValue string countNumber }
+
+  LineComment {
+    "#" ![\n]*
+  }
+  space { @whitespace+ }
+
+  @precedence { lineBreak countNumber countLetter space }
+}
+
+@skip { space | LineComment | lineBreak }

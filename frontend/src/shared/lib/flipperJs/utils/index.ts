@@ -1,0 +1,1 @@
+export { readManifest } from './readManifest'

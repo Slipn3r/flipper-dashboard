@@ -1,0 +1,32 @@
+.card {
+  width: fit-content;
+  border-radius: 14px;
+  padding: $card-padding;
+  transition-duration: 300ms;
+
+  &:hover {
+    box-shadow: 0 1px 11px rgb(0 0 0 / 13%), 0 3px 6px rgb(0 0 0 / 5%),
+      0 3px 6px -2px rgb(0 0 0 / 8%);
+  }
+
+  &__wrapper {
+    width: calc($card-width);
+  }
+
+  &__image-wrapper {
+    border-radius: 6px;
+    border: 2px solid black;
+  }
+
+  &__image {
+    image-rendering: pixelated;
+  }
+
+  &__description {
+    line-height: 15px;
+  }
+
+  &__button-wrapper {
+    width: 80px;
+  }
+}

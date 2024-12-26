@@ -1,0 +1,14 @@
+body {
+  overscroll-behavior: none;
+}
+
+.dialog {
+  padding: 16px;
+
+  .dialog-close-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 1;
+  }
+}

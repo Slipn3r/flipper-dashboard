@@ -1,0 +1,93 @@
+@top Program { expression* }
+
+expression {
+  _Filetype |
+  _Version |
+  _Name |
+  _Type |
+  _Protocol |
+  _Address |
+  _Command |
+  _Frequency |
+  _DutyCycle |
+  _Data
+}
+
+_Filetype {
+  kw<"Filetype"> ": " FiletypeValue
+}
+
+_Version {
+  kw<"Version"> ": " Integer
+}
+
+_Name {
+  kw<"name"> ": " String
+}
+
+_Type {
+  kw<"type"> ": " TypeValue
+}
+
+_Protocol {
+  kw<"protocol"> ": " ProtocolValue
+}
+
+_Address {
+  kw<"address"> ": " Hex
+}
+
+_Command {
+  kw<"command"> ": " Hex
+}
+
+_Frequency {
+  kw<"frequency"> ": " Integer
+}
+
+_DutyCycle {
+  kw<"duty_cycle"> ": " Float
+}
+
+_Data {
+  kw<"data"> ": " DataIr
+}
+
+kw<term> { @specialize[@name={term}]<String, term> }
+
+@tokens {
+  identifierChar { @asciiLetter | $[_-] }
+  word { identifierChar (identifierChar | @digit)* }
+  String { word }
+
+  Hex { ($[A-F0-9]$[A-F0-9]@whitespace?)+ }
+  Integer { @digit+ }
+  Float { @digit+($[.]@digit+)? }
+  DataIr { (@digit+@whitespace?)+ }
+
+  FiletypeValue { "IR" @whitespace ("library"|"signals") @whitespace "file" }
+  TypeValue { "parsed" | "raw" }
+  ProtocolValue {
+    "NEC42ext" |
+    "NECext" |
+    "NEC42" |
+    "NEC" |
+    "Samsung32" |
+    "RC6" |
+    "RC5" |
+    "RC5X" |
+    "SIRC" |
+    "SIRC15" |
+    "SIRC20" |
+    "Kaseikyo" |
+    "RCA"
+  }
+
+  LineComment {
+    "#" ![\n]*
+  }
+
+  space { @whitespace+ }
+}
+
+@skip { space | LineComment }
