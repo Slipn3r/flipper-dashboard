@@ -1,8 +1,7 @@
 FROM node:16-alpine as frontend
 WORKDIR /app
 
-RUN npm install -g yarn
-RUN yarn global add @quasar/cli
+RUN npm install -g @quasar/cli
 
 COPY frontend/package.json ./
 RUN yarn install
