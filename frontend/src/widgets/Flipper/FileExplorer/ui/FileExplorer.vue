@@ -273,13 +273,19 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <q-dialog v-model="renameDialog">
+    <q-dialog v-model="renameDialog" @hide="hideRenameDialog">
       <q-card>
         <q-card-section>
           <q-input
-            v-model="editableItem.newName"
+            v-model.trim="editableItem.newName"
             :label="'Rename ' + editableItem.oldName"
             :style="$q.screen.width > 380 ? 'width: 300px;' : ''"
+            @update:model-value="
+              (value: string | number | null) => debouncedValidateName(value as string, 'inputRename')
+            "
+            :error-message="validationMessage"
+            :error="!validationStatus['inputRename']"
+            bottom-slots
           ></q-input>
         </q-card-section>
 
@@ -288,6 +294,7 @@
             flat
             label="Save"
             v-close-popup
+            :disable="!validationStatus['inputRename']"
             @click="
               rename({
                 path: fullPath,
@@ -296,23 +303,23 @@
               })
             "
           ></q-btn>
-          <q-btn
-            flat
-            label="Cancel"
-            color="negative"
-            v-close-popup
-            @click="editableItem.newName = ''"
-          ></q-btn>
+          <q-btn flat label="Cancel" color="negative" v-close-popup></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <q-dialog v-model="mkdirDialog">
+    <q-dialog v-model="mkdirDialog" @hide="hideMkdirDialog">
       <q-card>
         <q-card-section>
           <q-input
-            v-model="createdDirName"
+            v-model.trim="createdDirName"
             label="Folder name"
             :style="$q.screen.width > 380 ? 'width: 300px;' : ''"
+            @update:model-value="
+              (value: string | number | null) => debouncedValidateName(value as string, 'inputDirName')
+            "
+            :error-message="validationMessage"
+            :error="!validationStatus['inputDirName']"
+            bottom-slots
           ></q-input>
         </q-card-section>
 
@@ -321,19 +328,14 @@
             flat
             label="Create"
             v-close-popup
+            :disable="!validationStatus['inputDirName']"
             @click="
               mkdir({
                 path: `${fullPath}/${createdDirName}`
               })
             "
           ></q-btn>
-          <q-btn
-            flat
-            label="Cancel"
-            color="negative"
-            v-close-popup
-            @click="createdDirName = ''"
-          ></q-btn>
+          <q-btn flat label="Cancel" color="negative" v-close-popup></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -364,8 +366,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, unref, onMounted, watch, computed } from 'vue'
-import { exportFile } from 'quasar'
+import { ref, unref, onMounted, watch, computed, reactive } from 'vue'
+import { exportFile, debounce } from 'quasar'
 import { type RouteLocationRaw } from 'vue-router'
 
 import { FileEditor } from 'features/FileEditor'
@@ -435,6 +437,28 @@ const itemIconSwitcher = (item: FlipperModel.File) => {
     return 'mdi-file-outline'
   }
 }
+
+const validationMessage =
+  "Invalid characters! Allowed: 0-9, A-Z, a-z, !#\\$%&'()-@^_`{}~., and spaces."
+const validationStatus = reactive({
+  inputRename: true,
+  inputDirName: true
+})
+
+type validateName = (
+  value: string,
+  refName: keyof typeof validationStatus
+) => boolean
+
+const validateName: validateName = (value, refName) => {
+  const pattern = /^[0-9A-Za-z!#\\\$%&'()\-\@^_`\{\}~\. ]*$/
+  const isValid = pattern.test(value)
+
+  validationStatus[refName] = isValid && value !== ''
+
+  return isValid
+}
+const debouncedValidateName = debounce<validateName>(validateName, 300)
 
 const uploadDialog = ref(false)
 const showUploadFileDialog = () => {
@@ -512,6 +536,10 @@ const createdDirName = ref('')
 const showMkdirDialog = () => {
   mkdirDialog.value = true
   createdDirName.value = ''
+}
+const hideMkdirDialog = () => {
+  createdDirName.value = ''
+  validationStatus.inputDirName = true
 }
 const mkdir = async ({ path }: { path: string }) => {
   await flipperStore.flipper
@@ -887,6 +915,15 @@ const renameItem = (item: FlipperModel.File) => {
   editableItem.value.oldName = item.name
   editableItem.value.newName = unref(item.name)
   renameDialog.value = true
+
+  if (editableItem.value.newName) {
+    validateName(editableItem.value.newName, 'inputRename')
+  }
+}
+const hideRenameDialog = () => {
+  editableItem.value.oldName = ''
+  editableItem.value.newName = ''
+  validationStatus.inputRename = true
 }
 const rename = async ({
   path,
