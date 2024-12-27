@@ -66,5 +66,6 @@
     "viebox"
   ],
   "prettier.configPath": "./frontend/.prettierrc.json",
-  "svgPreview.autoOpen": false
+  "svgPreview.autoOpen": false,
+  "typescript.tsdk": "./frontend/node_modules/typescript/lib"
 }
