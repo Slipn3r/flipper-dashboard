@@ -3,8 +3,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN apk add git && \
-    git submodule update --init --remote --merge -- ./frontend/src/shared/lib/flipperzero-protobuf
+RUN apk add git
 
 RUN yarn global add @quasar/cli
 
