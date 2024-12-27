@@ -30,7 +30,7 @@ const compileProtofiles = () => {
 
   return new Promise((resolve, reject) => {
     exec(
-      'git submodule update --remote --merge -- ./src/shared/lib/flipperzero-protobuf && pbjs -t static-module -w es6 --no-comments --lint "eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars, camelcase, default-case-last, no-mixed-operators" -o src/shared/lib/flipperJs/protobufCompiled.js ./src/shared/lib/flipperzero-protobuf/*.proto && npx eslint --fix src/shared/lib/flipperJs/protobufCompiled.js && echo ""',
+      'pbjs -t static-module -w es6 --no-comments --lint "eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars, camelcase, default-case-last, no-mixed-operators" -o src/shared/lib/flipperJs/protobufCompiled.js ./src/shared/lib/flipperzero-protobuf/*.proto && npx eslint --fix src/shared/lib/flipperJs/protobufCompiled.js && echo ""',
       (err, stdout, stderr) => {
         if (err) {
           reject(err)
