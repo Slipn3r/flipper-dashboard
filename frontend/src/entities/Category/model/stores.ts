@@ -54,6 +54,7 @@ export const useCategoriesStore = defineStore('categories', () => {
       if (!currentCategory.value) {
         setCurrentCategory(undefined)
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       showNotif({
         message: 'Unable to load categories.',

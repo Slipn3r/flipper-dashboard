@@ -18,13 +18,13 @@ import { computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
-import { FlipperModel } from 'entities/Flipper'
+import { FlipperModel } from 'entity/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 
-import { AppsModel } from 'src/entities/Apps'
+import { AppsModel } from 'entity/Apps'
 const appsStore = AppsModel.useAppsStore()
 
-import { CategoryModel, CategoryChip } from 'entities/Category'
+import { CategoryModel, CategoryChip } from 'entity/Category'
 const categoriesStore = CategoryModel.useCategoriesStore()
 
 const emit = defineEmits(['categorySelected'])

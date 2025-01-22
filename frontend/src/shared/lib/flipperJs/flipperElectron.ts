@@ -8,7 +8,7 @@ import type { Emitter, DefaultEvents, Unsubscribe } from 'nanoevents'
 
 // import asyncSleep from 'simple-async-sleep'
 
-// import { FlipperModel } from 'entities/Flipper'
+// import { FlipperModel } from 'entity/Flipper'
 
 type ContentValue = {
   hasNext: boolean
@@ -249,7 +249,7 @@ export default class FlipperElectron extends Flipper {
             (c) => c.commandId === value.commandId
           )
 
-          value[value.content].hasNext = value.hasNext
+          value[value.content]!.hasNext = value.hasNext
           if (command) {
             if (!command.commandStatus) {
               command.commandStatus = {
@@ -273,8 +273,8 @@ export default class FlipperElectron extends Flipper {
             typeof error === 'string'
               ? error
               : error instanceof Error
-              ? error.message
-              : String(error)
+                ? error.message
+                : String(error)
 
           if (!errorMessage.includes('Releasing Default reader')) {
             console.error(errorMessage)

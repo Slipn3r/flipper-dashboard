@@ -1,14 +1,18 @@
 <template>
   <div class="col drawing-board fit flex flex-center">
     <div class="pe-container">
-      <div v-if="paintStore.flags.checkerboard" class="checkerboard" :style="`background-size: ${paintStore.zoomLevel * 2}px ${paintStore.zoomLevel * 2}px`"></div>
+      <div
+        v-if="paintStore.flags.checkerboard"
+        class="checkerboard"
+        :style="`background-size: ${paintStore.zoomLevel * 2}px ${paintStore.zoomLevel * 2}px`"
+      ></div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { PaintModel } from 'entities/Paint'
+import { PaintModel } from 'entity/Paint'
 const paintStore = PaintModel.usePaintStore()
 
 onMounted(() => {
@@ -16,10 +20,7 @@ onMounted(() => {
 })
 </script>
 
-
 <style lang="scss" scoped>
-
-
 .drawing-board {
   padding: 78px 8px 80px 8px;
 }
@@ -34,7 +35,10 @@ onMounted(() => {
     top: 1px;
     left: 1px;
     background-position: 0px 0px;
-    background-image: repeating-conic-gradient( #fff0 0deg 90deg, #00000012 0 180deg);
+    background-image: repeating-conic-gradient(
+      #fff0 0deg 90deg,
+      #00000012 0 180deg
+    );
     pointer-events: none;
     z-index: 1;
   }

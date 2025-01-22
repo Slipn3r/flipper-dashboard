@@ -95,11 +95,11 @@ import { FlipperSwitch } from 'features/Flipper'
 
 import { PRODUCTION_NAME, DEVELOP_NAME } from 'shared/config'
 
-import { FlipperModel } from 'entities/Flipper'
+import { FlipperModel } from 'entity/Flipper'
 import { instance, getBaseUrl } from 'boot/axios'
 const flipperStore = FlipperModel.useFlipperStore()
 
-import { AppsModel } from 'src/entities/Apps'
+import { AppsModel } from 'entity/Apps'
 const appsStore = AppsModel.useAppsStore()
 
 const tab = ref('home')

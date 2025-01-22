@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { AppsModel } from 'entities/Apps'
+import { AppsModel } from 'entity/Apps'
 const appsStore = AppsModel.useAppsStore()
 
 interface Props {

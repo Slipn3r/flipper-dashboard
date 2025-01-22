@@ -1,7 +1,6 @@
 // type Primitive = string | number | boolean;
 // type AnyObject = { [key: string]: AnyObject | Primitive };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 // type AnyObject = Record<string, any>;
 
 // const setProperty = (obj: AnyObject, options: AnyObject): AnyObject => {
@@ -31,7 +30,7 @@ function setProperty<T extends object>(target: T, source: Partial<T>): T {
   const result = { ...target }
 
   for (const key in source) {
-    if (source.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(source, key)) {
       const sourceValue = source[key]
       const targetValue = target[key]
 

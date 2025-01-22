@@ -1,8 +1,11 @@
-const { spawn } = require('child_process')
-const path = require('path')
+import { spawn } from 'child_process'
+import path from 'path'
 const decoder = new TextDecoder()
 
-const bridgeProcess = spawn(path.join(__dirname, 'flipper_lab_bridge'))
+import { fileURLToPath } from 'node:url'
+const currentDir = fileURLToPath(new URL('.', import.meta.url))
+
+const bridgeProcess = spawn(path.join(currentDir, 'flipper_lab_bridge'))
 
 bridgeProcess.stdout.on('data', (data) => {
   process.parentPort.postMessage({

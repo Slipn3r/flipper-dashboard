@@ -289,12 +289,12 @@ import {
   AppsModel,
   AppInstalledBtn,
   AppOutdatedAppDialog
-} from 'entities/Apps'
+} from 'entity/Apps'
 const appsStore = AppsModel.useAppsStore()
 
-import { CategoryChip, CategoryModel } from 'entities/Category'
+import { CategoryChip, CategoryModel } from 'entity/Category'
 import { bytesToSize } from 'shared/lib/utils/bytesToSize'
-import { FlipperModel } from 'entities/Flipper'
+import { FlipperModel } from 'entity/Flipper'
 import { type QScrollArea } from 'quasar'
 
 const flipperStore = FlipperModel.useFlipperStore()

@@ -1,9 +1,9 @@
 /*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars, camelcase, default-case-last, no-mixed-operators*/
-import * as $protobuf from 'protobufjs/minimal';
+import * as $protobuf from "protobufjs/minimal";
 
 const $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
 
-const $root = $protobuf.roots['default'] || ($protobuf.roots['default'] = {});
+const $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
 
 export const PB_App = $root.PB_App = (() => {
 
@@ -18,8 +18,8 @@ export const PB_App = $root.PB_App = (() => {
                         this[keys[i]] = properties[keys[i]];
         }
 
-        StartRequest.prototype.name = '';
-        StartRequest.prototype.args = '';
+        StartRequest.prototype.name = "";
+        StartRequest.prototype.args = "";
 
         StartRequest.create = function create(properties) {
             return new StartRequest(properties);
@@ -28,9 +28,9 @@ export const PB_App = $root.PB_App = (() => {
         StartRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.name != null && Object.hasOwnProperty.call(message, 'name'))
+            if (message.name != null && Object.hasOwnProperty.call(message, "name"))
                 writer.uint32(10).string(message.name);
-            if (message.args != null && Object.hasOwnProperty.call(message, 'args'))
+            if (message.args != null && Object.hasOwnProperty.call(message, "args"))
                 writer.uint32(18).string(message.args);
             return writer;
         };
@@ -69,14 +69,14 @@ export const PB_App = $root.PB_App = (() => {
         };
 
         StartRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.name != null && message.hasOwnProperty('name'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.name != null && message.hasOwnProperty("name"))
                 if (!$util.isString(message.name))
-                    return 'name: string expected';
-            if (message.args != null && message.hasOwnProperty('args'))
+                    return "name: string expected";
+            if (message.args != null && message.hasOwnProperty("args"))
                 if (!$util.isString(message.args))
-                    return 'args: string expected';
+                    return "args: string expected";
             return null;
         };
 
@@ -96,12 +96,12 @@ export const PB_App = $root.PB_App = (() => {
                 options = {};
             let object = {};
             if (options.defaults) {
-                object.name = '';
-                object.args = '';
+                object.name = "";
+                object.args = "";
             }
-            if (message.name != null && message.hasOwnProperty('name'))
+            if (message.name != null && message.hasOwnProperty("name"))
                 object.name = message.name;
-            if (message.args != null && message.hasOwnProperty('args'))
+            if (message.args != null && message.hasOwnProperty("args"))
                 object.args = message.args;
             return object;
         };
@@ -112,9 +112,9 @@ export const PB_App = $root.PB_App = (() => {
 
         StartRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_App.StartRequest';
+            return typeUrlPrefix + "/PB_App.StartRequest";
         };
 
         return StartRequest;
@@ -165,8 +165,8 @@ export const PB_App = $root.PB_App = (() => {
         };
 
         LockStatusRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
             return null;
         };
 
@@ -186,9 +186,9 @@ export const PB_App = $root.PB_App = (() => {
 
         LockStatusRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_App.LockStatusRequest';
+            return typeUrlPrefix + "/PB_App.LockStatusRequest";
         };
 
         return LockStatusRequest;
@@ -212,7 +212,7 @@ export const PB_App = $root.PB_App = (() => {
         LockStatusResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.locked != null && Object.hasOwnProperty.call(message, 'locked'))
+            if (message.locked != null && Object.hasOwnProperty.call(message, "locked"))
                 writer.uint32(8).bool(message.locked);
             return writer;
         };
@@ -247,11 +247,11 @@ export const PB_App = $root.PB_App = (() => {
         };
 
         LockStatusResponse.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.locked != null && message.hasOwnProperty('locked'))
-                if (typeof message.locked !== 'boolean')
-                    return 'locked: boolean expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.locked != null && message.hasOwnProperty("locked"))
+                if (typeof message.locked !== "boolean")
+                    return "locked: boolean expected";
             return null;
         };
 
@@ -270,7 +270,7 @@ export const PB_App = $root.PB_App = (() => {
             let object = {};
             if (options.defaults)
                 object.locked = false;
-            if (message.locked != null && message.hasOwnProperty('locked'))
+            if (message.locked != null && message.hasOwnProperty("locked"))
                 object.locked = message.locked;
             return object;
         };
@@ -281,9 +281,9 @@ export const PB_App = $root.PB_App = (() => {
 
         LockStatusResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_App.LockStatusResponse';
+            return typeUrlPrefix + "/PB_App.LockStatusResponse";
         };
 
         return LockStatusResponse;
@@ -334,8 +334,8 @@ export const PB_App = $root.PB_App = (() => {
         };
 
         AppExitRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
             return null;
         };
 
@@ -355,9 +355,9 @@ export const PB_App = $root.PB_App = (() => {
 
         AppExitRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_App.AppExitRequest';
+            return typeUrlPrefix + "/PB_App.AppExitRequest";
         };
 
         return AppExitRequest;
@@ -372,7 +372,7 @@ export const PB_App = $root.PB_App = (() => {
                         this[keys[i]] = properties[keys[i]];
         }
 
-        AppLoadFileRequest.prototype.path = '';
+        AppLoadFileRequest.prototype.path = "";
 
         AppLoadFileRequest.create = function create(properties) {
             return new AppLoadFileRequest(properties);
@@ -381,7 +381,7 @@ export const PB_App = $root.PB_App = (() => {
         AppLoadFileRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.path != null && Object.hasOwnProperty.call(message, 'path'))
+            if (message.path != null && Object.hasOwnProperty.call(message, "path"))
                 writer.uint32(10).string(message.path);
             return writer;
         };
@@ -416,11 +416,11 @@ export const PB_App = $root.PB_App = (() => {
         };
 
         AppLoadFileRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.path != null && message.hasOwnProperty('path'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.path != null && message.hasOwnProperty("path"))
                 if (!$util.isString(message.path))
-                    return 'path: string expected';
+                    return "path: string expected";
             return null;
         };
 
@@ -438,8 +438,8 @@ export const PB_App = $root.PB_App = (() => {
                 options = {};
             let object = {};
             if (options.defaults)
-                object.path = '';
-            if (message.path != null && message.hasOwnProperty('path'))
+                object.path = "";
+            if (message.path != null && message.hasOwnProperty("path"))
                 object.path = message.path;
             return object;
         };
@@ -450,9 +450,9 @@ export const PB_App = $root.PB_App = (() => {
 
         AppLoadFileRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_App.AppLoadFileRequest';
+            return typeUrlPrefix + "/PB_App.AppLoadFileRequest";
         };
 
         return AppLoadFileRequest;
@@ -467,7 +467,7 @@ export const PB_App = $root.PB_App = (() => {
                         this[keys[i]] = properties[keys[i]];
         }
 
-        AppButtonPressRequest.prototype.args = '';
+        AppButtonPressRequest.prototype.args = "";
         AppButtonPressRequest.prototype.index = 0;
 
         AppButtonPressRequest.create = function create(properties) {
@@ -477,9 +477,9 @@ export const PB_App = $root.PB_App = (() => {
         AppButtonPressRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.args != null && Object.hasOwnProperty.call(message, 'args'))
+            if (message.args != null && Object.hasOwnProperty.call(message, "args"))
                 writer.uint32(10).string(message.args);
-            if (message.index != null && Object.hasOwnProperty.call(message, 'index'))
+            if (message.index != null && Object.hasOwnProperty.call(message, "index"))
                 writer.uint32(16).int32(message.index);
             return writer;
         };
@@ -518,14 +518,14 @@ export const PB_App = $root.PB_App = (() => {
         };
 
         AppButtonPressRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.args != null && message.hasOwnProperty('args'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.args != null && message.hasOwnProperty("args"))
                 if (!$util.isString(message.args))
-                    return 'args: string expected';
-            if (message.index != null && message.hasOwnProperty('index'))
+                    return "args: string expected";
+            if (message.index != null && message.hasOwnProperty("index"))
                 if (!$util.isInteger(message.index))
-                    return 'index: integer expected';
+                    return "index: integer expected";
             return null;
         };
 
@@ -545,12 +545,12 @@ export const PB_App = $root.PB_App = (() => {
                 options = {};
             let object = {};
             if (options.defaults) {
-                object.args = '';
+                object.args = "";
                 object.index = 0;
             }
-            if (message.args != null && message.hasOwnProperty('args'))
+            if (message.args != null && message.hasOwnProperty("args"))
                 object.args = message.args;
-            if (message.index != null && message.hasOwnProperty('index'))
+            if (message.index != null && message.hasOwnProperty("index"))
                 object.index = message.index;
             return object;
         };
@@ -561,9 +561,9 @@ export const PB_App = $root.PB_App = (() => {
 
         AppButtonPressRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_App.AppButtonPressRequest';
+            return typeUrlPrefix + "/PB_App.AppButtonPressRequest";
         };
 
         return AppButtonPressRequest;
@@ -614,8 +614,8 @@ export const PB_App = $root.PB_App = (() => {
         };
 
         AppButtonReleaseRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
             return null;
         };
 
@@ -635,18 +635,129 @@ export const PB_App = $root.PB_App = (() => {
 
         AppButtonReleaseRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_App.AppButtonReleaseRequest';
+            return typeUrlPrefix + "/PB_App.AppButtonReleaseRequest";
         };
 
         return AppButtonReleaseRequest;
     })();
 
+    PB_App.AppButtonPressReleaseRequest = (function() {
+
+        function AppButtonPressReleaseRequest(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        AppButtonPressReleaseRequest.prototype.args = "";
+        AppButtonPressReleaseRequest.prototype.index = 0;
+
+        AppButtonPressReleaseRequest.create = function create(properties) {
+            return new AppButtonPressReleaseRequest(properties);
+        };
+
+        AppButtonPressReleaseRequest.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.args != null && Object.hasOwnProperty.call(message, "args"))
+                writer.uint32(10).string(message.args);
+            if (message.index != null && Object.hasOwnProperty.call(message, "index"))
+                writer.uint32(16).int32(message.index);
+            return writer;
+        };
+
+        AppButtonPressReleaseRequest.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        AppButtonPressReleaseRequest.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.PB_App.AppButtonPressReleaseRequest();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1: {
+                        message.args = reader.string();
+                        break;
+                    }
+                case 2: {
+                        message.index = reader.int32();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        AppButtonPressReleaseRequest.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        AppButtonPressReleaseRequest.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.args != null && message.hasOwnProperty("args"))
+                if (!$util.isString(message.args))
+                    return "args: string expected";
+            if (message.index != null && message.hasOwnProperty("index"))
+                if (!$util.isInteger(message.index))
+                    return "index: integer expected";
+            return null;
+        };
+
+        AppButtonPressReleaseRequest.fromObject = function fromObject(object) {
+            if (object instanceof $root.PB_App.AppButtonPressReleaseRequest)
+                return object;
+            let message = new $root.PB_App.AppButtonPressReleaseRequest();
+            if (object.args != null)
+                message.args = String(object.args);
+            if (object.index != null)
+                message.index = object.index | 0;
+            return message;
+        };
+
+        AppButtonPressReleaseRequest.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.args = "";
+                object.index = 0;
+            }
+            if (message.args != null && message.hasOwnProperty("args"))
+                object.args = message.args;
+            if (message.index != null && message.hasOwnProperty("index"))
+                object.index = message.index;
+            return object;
+        };
+
+        AppButtonPressReleaseRequest.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        AppButtonPressReleaseRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/PB_App.AppButtonPressReleaseRequest";
+        };
+
+        return AppButtonPressReleaseRequest;
+    })();
+
     PB_App.AppState = (function() {
         const valuesById = {}, values = Object.create(valuesById);
-        values[valuesById[0] = 'APP_CLOSED'] = 0;
-        values[valuesById[1] = 'APP_STARTED'] = 1;
+        values[valuesById[0] = "APP_CLOSED"] = 0;
+        values[valuesById[1] = "APP_STARTED"] = 1;
         return values;
     })();
 
@@ -668,7 +779,7 @@ export const PB_App = $root.PB_App = (() => {
         AppStateResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.state != null && Object.hasOwnProperty.call(message, 'state'))
+            if (message.state != null && Object.hasOwnProperty.call(message, "state"))
                 writer.uint32(8).int32(message.state);
             return writer;
         };
@@ -703,12 +814,12 @@ export const PB_App = $root.PB_App = (() => {
         };
 
         AppStateResponse.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.state != null && message.hasOwnProperty('state'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.state != null && message.hasOwnProperty("state"))
                 switch (message.state) {
                 default:
-                    return 'state: enum value expected';
+                    return "state: enum value expected";
                 case 0:
                 case 1:
                     break;
@@ -722,16 +833,16 @@ export const PB_App = $root.PB_App = (() => {
             let message = new $root.PB_App.AppStateResponse();
             switch (object.state) {
             default:
-                if (typeof object.state === 'number') {
+                if (typeof object.state === "number") {
                     message.state = object.state;
                     break;
                 }
                 break;
-            case 'APP_CLOSED':
+            case "APP_CLOSED":
             case 0:
                 message.state = 0;
                 break;
-            case 'APP_STARTED':
+            case "APP_STARTED":
             case 1:
                 message.state = 1;
                 break;
@@ -744,8 +855,8 @@ export const PB_App = $root.PB_App = (() => {
                 options = {};
             let object = {};
             if (options.defaults)
-                object.state = options.enums === String ? 'APP_CLOSED' : 0;
-            if (message.state != null && message.hasOwnProperty('state'))
+                object.state = options.enums === String ? "APP_CLOSED" : 0;
+            if (message.state != null && message.hasOwnProperty("state"))
                 object.state = options.enums === String ? $root.PB_App.AppState[message.state] === undefined ? message.state : $root.PB_App.AppState[message.state] : message.state;
             return object;
         };
@@ -756,9 +867,9 @@ export const PB_App = $root.PB_App = (() => {
 
         AppStateResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_App.AppStateResponse';
+            return typeUrlPrefix + "/PB_App.AppStateResponse";
         };
 
         return AppStateResponse;
@@ -809,8 +920,8 @@ export const PB_App = $root.PB_App = (() => {
         };
 
         GetErrorRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
             return null;
         };
 
@@ -830,9 +941,9 @@ export const PB_App = $root.PB_App = (() => {
 
         GetErrorRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_App.GetErrorRequest';
+            return typeUrlPrefix + "/PB_App.GetErrorRequest";
         };
 
         return GetErrorRequest;
@@ -848,7 +959,7 @@ export const PB_App = $root.PB_App = (() => {
         }
 
         GetErrorResponse.prototype.code = 0;
-        GetErrorResponse.prototype.text = '';
+        GetErrorResponse.prototype.text = "";
 
         GetErrorResponse.create = function create(properties) {
             return new GetErrorResponse(properties);
@@ -857,9 +968,9 @@ export const PB_App = $root.PB_App = (() => {
         GetErrorResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.code != null && Object.hasOwnProperty.call(message, 'code'))
+            if (message.code != null && Object.hasOwnProperty.call(message, "code"))
                 writer.uint32(8).uint32(message.code);
-            if (message.text != null && Object.hasOwnProperty.call(message, 'text'))
+            if (message.text != null && Object.hasOwnProperty.call(message, "text"))
                 writer.uint32(18).string(message.text);
             return writer;
         };
@@ -898,14 +1009,14 @@ export const PB_App = $root.PB_App = (() => {
         };
 
         GetErrorResponse.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.code != null && message.hasOwnProperty('code'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.code != null && message.hasOwnProperty("code"))
                 if (!$util.isInteger(message.code))
-                    return 'code: integer expected';
-            if (message.text != null && message.hasOwnProperty('text'))
+                    return "code: integer expected";
+            if (message.text != null && message.hasOwnProperty("text"))
                 if (!$util.isString(message.text))
-                    return 'text: string expected';
+                    return "text: string expected";
             return null;
         };
 
@@ -926,11 +1037,11 @@ export const PB_App = $root.PB_App = (() => {
             let object = {};
             if (options.defaults) {
                 object.code = 0;
-                object.text = '';
+                object.text = "";
             }
-            if (message.code != null && message.hasOwnProperty('code'))
+            if (message.code != null && message.hasOwnProperty("code"))
                 object.code = message.code;
-            if (message.text != null && message.hasOwnProperty('text'))
+            if (message.text != null && message.hasOwnProperty("text"))
                 object.text = message.text;
             return object;
         };
@@ -941,9 +1052,9 @@ export const PB_App = $root.PB_App = (() => {
 
         GetErrorResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_App.GetErrorResponse';
+            return typeUrlPrefix + "/PB_App.GetErrorResponse";
         };
 
         return GetErrorResponse;
@@ -967,7 +1078,7 @@ export const PB_App = $root.PB_App = (() => {
         DataExchangeRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.data != null && Object.hasOwnProperty.call(message, 'data'))
+            if (message.data != null && Object.hasOwnProperty.call(message, "data"))
                 writer.uint32(10).bytes(message.data);
             return writer;
         };
@@ -1002,11 +1113,11 @@ export const PB_App = $root.PB_App = (() => {
         };
 
         DataExchangeRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.data != null && message.hasOwnProperty('data'))
-                if (!(message.data && typeof message.data.length === 'number' || $util.isString(message.data)))
-                    return 'data: buffer expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.data != null && message.hasOwnProperty("data"))
+                if (!(message.data && typeof message.data.length === "number" || $util.isString(message.data)))
+                    return "data: buffer expected";
             return null;
         };
 
@@ -1015,7 +1126,7 @@ export const PB_App = $root.PB_App = (() => {
                 return object;
             let message = new $root.PB_App.DataExchangeRequest();
             if (object.data != null)
-                if (typeof object.data === 'string')
+                if (typeof object.data === "string")
                     $util.base64.decode(object.data, message.data = $util.newBuffer($util.base64.length(object.data)), 0);
                 else if (object.data.length >= 0)
                     message.data = object.data;
@@ -1028,13 +1139,13 @@ export const PB_App = $root.PB_App = (() => {
             let object = {};
             if (options.defaults)
                 if (options.bytes === String)
-                    object.data = '';
+                    object.data = "";
                 else {
                     object.data = [];
                     if (options.bytes !== Array)
                         object.data = $util.newBuffer(object.data);
                 }
-            if (message.data != null && message.hasOwnProperty('data'))
+            if (message.data != null && message.hasOwnProperty("data"))
                 object.data = options.bytes === String ? $util.base64.encode(message.data, 0, message.data.length) : options.bytes === Array ? Array.prototype.slice.call(message.data) : message.data;
             return object;
         };
@@ -1045,9 +1156,9 @@ export const PB_App = $root.PB_App = (() => {
 
         DataExchangeRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_App.DataExchangeRequest';
+            return typeUrlPrefix + "/PB_App.DataExchangeRequest";
         };
 
         return DataExchangeRequest;
@@ -1105,8 +1216,8 @@ export const PB_Desktop = $root.PB_Desktop = (() => {
         };
 
         IsLockedRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
             return null;
         };
 
@@ -1126,9 +1237,9 @@ export const PB_Desktop = $root.PB_Desktop = (() => {
 
         IsLockedRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Desktop.IsLockedRequest';
+            return typeUrlPrefix + "/PB_Desktop.IsLockedRequest";
         };
 
         return IsLockedRequest;
@@ -1179,8 +1290,8 @@ export const PB_Desktop = $root.PB_Desktop = (() => {
         };
 
         UnlockRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
             return null;
         };
 
@@ -1200,9 +1311,9 @@ export const PB_Desktop = $root.PB_Desktop = (() => {
 
         UnlockRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Desktop.UnlockRequest';
+            return typeUrlPrefix + "/PB_Desktop.UnlockRequest";
         };
 
         return UnlockRequest;
@@ -1253,8 +1364,8 @@ export const PB_Desktop = $root.PB_Desktop = (() => {
         };
 
         StatusSubscribeRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
             return null;
         };
 
@@ -1274,9 +1385,9 @@ export const PB_Desktop = $root.PB_Desktop = (() => {
 
         StatusSubscribeRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Desktop.StatusSubscribeRequest';
+            return typeUrlPrefix + "/PB_Desktop.StatusSubscribeRequest";
         };
 
         return StatusSubscribeRequest;
@@ -1327,8 +1438,8 @@ export const PB_Desktop = $root.PB_Desktop = (() => {
         };
 
         StatusUnsubscribeRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
             return null;
         };
 
@@ -1348,9 +1459,9 @@ export const PB_Desktop = $root.PB_Desktop = (() => {
 
         StatusUnsubscribeRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Desktop.StatusUnsubscribeRequest';
+            return typeUrlPrefix + "/PB_Desktop.StatusUnsubscribeRequest";
         };
 
         return StatusUnsubscribeRequest;
@@ -1374,7 +1485,7 @@ export const PB_Desktop = $root.PB_Desktop = (() => {
         Status.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.locked != null && Object.hasOwnProperty.call(message, 'locked'))
+            if (message.locked != null && Object.hasOwnProperty.call(message, "locked"))
                 writer.uint32(8).bool(message.locked);
             return writer;
         };
@@ -1409,11 +1520,11 @@ export const PB_Desktop = $root.PB_Desktop = (() => {
         };
 
         Status.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.locked != null && message.hasOwnProperty('locked'))
-                if (typeof message.locked !== 'boolean')
-                    return 'locked: boolean expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.locked != null && message.hasOwnProperty("locked"))
+                if (typeof message.locked !== "boolean")
+                    return "locked: boolean expected";
             return null;
         };
 
@@ -1432,7 +1543,7 @@ export const PB_Desktop = $root.PB_Desktop = (() => {
             let object = {};
             if (options.defaults)
                 object.locked = false;
-            if (message.locked != null && message.hasOwnProperty('locked'))
+            if (message.locked != null && message.hasOwnProperty("locked"))
                 object.locked = message.locked;
             return object;
         };
@@ -1443,9 +1554,9 @@ export const PB_Desktop = $root.PB_Desktop = (() => {
 
         Status.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Desktop.Status';
+            return typeUrlPrefix + "/PB_Desktop.Status";
         };
 
         return Status;
@@ -1460,31 +1571,31 @@ export const PB = $root.PB = (() => {
 
     PB.CommandStatus = (function() {
         const valuesById = {}, values = Object.create(valuesById);
-        values[valuesById[0] = 'OK'] = 0;
-        values[valuesById[1] = 'ERROR'] = 1;
-        values[valuesById[2] = 'ERROR_DECODE'] = 2;
-        values[valuesById[3] = 'ERROR_NOT_IMPLEMENTED'] = 3;
-        values[valuesById[4] = 'ERROR_BUSY'] = 4;
-        values[valuesById[14] = 'ERROR_CONTINUOUS_COMMAND_INTERRUPTED'] = 14;
-        values[valuesById[15] = 'ERROR_INVALID_PARAMETERS'] = 15;
-        values[valuesById[5] = 'ERROR_STORAGE_NOT_READY'] = 5;
-        values[valuesById[6] = 'ERROR_STORAGE_EXIST'] = 6;
-        values[valuesById[7] = 'ERROR_STORAGE_NOT_EXIST'] = 7;
-        values[valuesById[8] = 'ERROR_STORAGE_INVALID_PARAMETER'] = 8;
-        values[valuesById[9] = 'ERROR_STORAGE_DENIED'] = 9;
-        values[valuesById[10] = 'ERROR_STORAGE_INVALID_NAME'] = 10;
-        values[valuesById[11] = 'ERROR_STORAGE_INTERNAL'] = 11;
-        values[valuesById[12] = 'ERROR_STORAGE_NOT_IMPLEMENTED'] = 12;
-        values[valuesById[13] = 'ERROR_STORAGE_ALREADY_OPEN'] = 13;
-        values[valuesById[18] = 'ERROR_STORAGE_DIR_NOT_EMPTY'] = 18;
-        values[valuesById[16] = 'ERROR_APP_CANT_START'] = 16;
-        values[valuesById[17] = 'ERROR_APP_SYSTEM_LOCKED'] = 17;
-        values[valuesById[21] = 'ERROR_APP_NOT_RUNNING'] = 21;
-        values[valuesById[22] = 'ERROR_APP_CMD_ERROR'] = 22;
-        values[valuesById[19] = 'ERROR_VIRTUAL_DISPLAY_ALREADY_STARTED'] = 19;
-        values[valuesById[20] = 'ERROR_VIRTUAL_DISPLAY_NOT_STARTED'] = 20;
-        values[valuesById[58] = 'ERROR_GPIO_MODE_INCORRECT'] = 58;
-        values[valuesById[59] = 'ERROR_GPIO_UNKNOWN_PIN_MODE'] = 59;
+        values[valuesById[0] = "OK"] = 0;
+        values[valuesById[1] = "ERROR"] = 1;
+        values[valuesById[2] = "ERROR_DECODE"] = 2;
+        values[valuesById[3] = "ERROR_NOT_IMPLEMENTED"] = 3;
+        values[valuesById[4] = "ERROR_BUSY"] = 4;
+        values[valuesById[14] = "ERROR_CONTINUOUS_COMMAND_INTERRUPTED"] = 14;
+        values[valuesById[15] = "ERROR_INVALID_PARAMETERS"] = 15;
+        values[valuesById[5] = "ERROR_STORAGE_NOT_READY"] = 5;
+        values[valuesById[6] = "ERROR_STORAGE_EXIST"] = 6;
+        values[valuesById[7] = "ERROR_STORAGE_NOT_EXIST"] = 7;
+        values[valuesById[8] = "ERROR_STORAGE_INVALID_PARAMETER"] = 8;
+        values[valuesById[9] = "ERROR_STORAGE_DENIED"] = 9;
+        values[valuesById[10] = "ERROR_STORAGE_INVALID_NAME"] = 10;
+        values[valuesById[11] = "ERROR_STORAGE_INTERNAL"] = 11;
+        values[valuesById[12] = "ERROR_STORAGE_NOT_IMPLEMENTED"] = 12;
+        values[valuesById[13] = "ERROR_STORAGE_ALREADY_OPEN"] = 13;
+        values[valuesById[18] = "ERROR_STORAGE_DIR_NOT_EMPTY"] = 18;
+        values[valuesById[16] = "ERROR_APP_CANT_START"] = 16;
+        values[valuesById[17] = "ERROR_APP_SYSTEM_LOCKED"] = 17;
+        values[valuesById[21] = "ERROR_APP_NOT_RUNNING"] = 21;
+        values[valuesById[22] = "ERROR_APP_CMD_ERROR"] = 22;
+        values[valuesById[19] = "ERROR_VIRTUAL_DISPLAY_ALREADY_STARTED"] = 19;
+        values[valuesById[20] = "ERROR_VIRTUAL_DISPLAY_NOT_STARTED"] = 20;
+        values[valuesById[58] = "ERROR_GPIO_MODE_INCORRECT"] = 58;
+        values[valuesById[59] = "ERROR_GPIO_UNKNOWN_PIN_MODE"] = 59;
         return values;
     })();
 
@@ -1533,8 +1644,8 @@ export const PB = $root.PB = (() => {
         };
 
         Empty.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
             return null;
         };
 
@@ -1554,9 +1665,9 @@ export const PB = $root.PB = (() => {
 
         Empty.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB.Empty';
+            return typeUrlPrefix + "/PB.Empty";
         };
 
         return Empty;
@@ -1607,8 +1718,8 @@ export const PB = $root.PB = (() => {
         };
 
         StopSession.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
             return null;
         };
 
@@ -1628,9 +1739,9 @@ export const PB = $root.PB = (() => {
 
         StopSession.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB.StopSession';
+            return typeUrlPrefix + "/PB.StopSession";
         };
 
         return StopSession;
@@ -1692,6 +1803,7 @@ export const PB = $root.PB = (() => {
         Main.prototype.appLoadFileRequest = null;
         Main.prototype.appButtonPressRequest = null;
         Main.prototype.appButtonReleaseRequest = null;
+        Main.prototype.appButtonPressReleaseRequest = null;
         Main.prototype.appGetErrorRequest = null;
         Main.prototype.appGetErrorResponse = null;
         Main.prototype.appDataExchangeRequest = null;
@@ -1722,8 +1834,8 @@ export const PB = $root.PB = (() => {
 
         let $oneOfFields;
 
-        Object.defineProperty(Main.prototype, 'content', {
-            get: $util.oneOfGetter($oneOfFields = ['empty', 'stopSession', 'systemPingRequest', 'systemPingResponse', 'systemRebootRequest', 'systemDeviceInfoRequest', 'systemDeviceInfoResponse', 'systemFactoryResetRequest', 'systemGetDatetimeRequest', 'systemGetDatetimeResponse', 'systemSetDatetimeRequest', 'systemPlayAudiovisualAlertRequest', 'systemProtobufVersionRequest', 'systemProtobufVersionResponse', 'systemUpdateRequest', 'systemUpdateResponse', 'systemPowerInfoRequest', 'systemPowerInfoResponse', 'storageInfoRequest', 'storageInfoResponse', 'storageTimestampRequest', 'storageTimestampResponse', 'storageStatRequest', 'storageStatResponse', 'storageListRequest', 'storageListResponse', 'storageReadRequest', 'storageReadResponse', 'storageWriteRequest', 'storageDeleteRequest', 'storageMkdirRequest', 'storageMd5sumRequest', 'storageMd5sumResponse', 'storageRenameRequest', 'storageBackupCreateRequest', 'storageBackupRestoreRequest', 'storageTarExtractRequest', 'appStartRequest', 'appLockStatusRequest', 'appLockStatusResponse', 'appExitRequest', 'appLoadFileRequest', 'appButtonPressRequest', 'appButtonReleaseRequest', 'appGetErrorRequest', 'appGetErrorResponse', 'appDataExchangeRequest', 'guiStartScreenStreamRequest', 'guiStopScreenStreamRequest', 'guiScreenFrame', 'guiSendInputEventRequest', 'guiStartVirtualDisplayRequest', 'guiStopVirtualDisplayRequest', 'gpioSetPinMode', 'gpioSetInputPull', 'gpioGetPinMode', 'gpioGetPinModeResponse', 'gpioReadPin', 'gpioReadPinResponse', 'gpioWritePin', 'gpioGetOtgMode', 'gpioGetOtgModeResponse', 'gpioSetOtgMode', 'appStateResponse', 'propertyGetRequest', 'propertyGetResponse', 'desktopIsLockedRequest', 'desktopUnlockRequest', 'desktopStatusSubscribeRequest', 'desktopStatusUnsubscribeRequest', 'desktopStatus']),
+        Object.defineProperty(Main.prototype, "content", {
+            get: $util.oneOfGetter($oneOfFields = ["empty", "stopSession", "systemPingRequest", "systemPingResponse", "systemRebootRequest", "systemDeviceInfoRequest", "systemDeviceInfoResponse", "systemFactoryResetRequest", "systemGetDatetimeRequest", "systemGetDatetimeResponse", "systemSetDatetimeRequest", "systemPlayAudiovisualAlertRequest", "systemProtobufVersionRequest", "systemProtobufVersionResponse", "systemUpdateRequest", "systemUpdateResponse", "systemPowerInfoRequest", "systemPowerInfoResponse", "storageInfoRequest", "storageInfoResponse", "storageTimestampRequest", "storageTimestampResponse", "storageStatRequest", "storageStatResponse", "storageListRequest", "storageListResponse", "storageReadRequest", "storageReadResponse", "storageWriteRequest", "storageDeleteRequest", "storageMkdirRequest", "storageMd5sumRequest", "storageMd5sumResponse", "storageRenameRequest", "storageBackupCreateRequest", "storageBackupRestoreRequest", "storageTarExtractRequest", "appStartRequest", "appLockStatusRequest", "appLockStatusResponse", "appExitRequest", "appLoadFileRequest", "appButtonPressRequest", "appButtonReleaseRequest", "appButtonPressReleaseRequest", "appGetErrorRequest", "appGetErrorResponse", "appDataExchangeRequest", "guiStartScreenStreamRequest", "guiStopScreenStreamRequest", "guiScreenFrame", "guiSendInputEventRequest", "guiStartVirtualDisplayRequest", "guiStopVirtualDisplayRequest", "gpioSetPinMode", "gpioSetInputPull", "gpioGetPinMode", "gpioGetPinModeResponse", "gpioReadPin", "gpioReadPinResponse", "gpioWritePin", "gpioGetOtgMode", "gpioGetOtgModeResponse", "gpioSetOtgMode", "appStateResponse", "propertyGetRequest", "propertyGetResponse", "desktopIsLockedRequest", "desktopUnlockRequest", "desktopStatusSubscribeRequest", "desktopStatusUnsubscribeRequest", "desktopStatus"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -1734,154 +1846,156 @@ export const PB = $root.PB = (() => {
         Main.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.commandId != null && Object.hasOwnProperty.call(message, 'commandId'))
+            if (message.commandId != null && Object.hasOwnProperty.call(message, "commandId"))
                 writer.uint32(8).uint32(message.commandId);
-            if (message.commandStatus != null && Object.hasOwnProperty.call(message, 'commandStatus'))
+            if (message.commandStatus != null && Object.hasOwnProperty.call(message, "commandStatus"))
                 writer.uint32(16).int32(message.commandStatus);
-            if (message.hasNext != null && Object.hasOwnProperty.call(message, 'hasNext'))
+            if (message.hasNext != null && Object.hasOwnProperty.call(message, "hasNext"))
                 writer.uint32(24).bool(message.hasNext);
-            if (message.empty != null && Object.hasOwnProperty.call(message, 'empty'))
+            if (message.empty != null && Object.hasOwnProperty.call(message, "empty"))
                 $root.PB.Empty.encode(message.empty, writer.uint32(34).fork()).ldelim();
-            if (message.systemPingRequest != null && Object.hasOwnProperty.call(message, 'systemPingRequest'))
+            if (message.systemPingRequest != null && Object.hasOwnProperty.call(message, "systemPingRequest"))
                 $root.PB_System.PingRequest.encode(message.systemPingRequest, writer.uint32(42).fork()).ldelim();
-            if (message.systemPingResponse != null && Object.hasOwnProperty.call(message, 'systemPingResponse'))
+            if (message.systemPingResponse != null && Object.hasOwnProperty.call(message, "systemPingResponse"))
                 $root.PB_System.PingResponse.encode(message.systemPingResponse, writer.uint32(50).fork()).ldelim();
-            if (message.storageListRequest != null && Object.hasOwnProperty.call(message, 'storageListRequest'))
+            if (message.storageListRequest != null && Object.hasOwnProperty.call(message, "storageListRequest"))
                 $root.PB_Storage.ListRequest.encode(message.storageListRequest, writer.uint32(58).fork()).ldelim();
-            if (message.storageListResponse != null && Object.hasOwnProperty.call(message, 'storageListResponse'))
+            if (message.storageListResponse != null && Object.hasOwnProperty.call(message, "storageListResponse"))
                 $root.PB_Storage.ListResponse.encode(message.storageListResponse, writer.uint32(66).fork()).ldelim();
-            if (message.storageReadRequest != null && Object.hasOwnProperty.call(message, 'storageReadRequest'))
+            if (message.storageReadRequest != null && Object.hasOwnProperty.call(message, "storageReadRequest"))
                 $root.PB_Storage.ReadRequest.encode(message.storageReadRequest, writer.uint32(74).fork()).ldelim();
-            if (message.storageReadResponse != null && Object.hasOwnProperty.call(message, 'storageReadResponse'))
+            if (message.storageReadResponse != null && Object.hasOwnProperty.call(message, "storageReadResponse"))
                 $root.PB_Storage.ReadResponse.encode(message.storageReadResponse, writer.uint32(82).fork()).ldelim();
-            if (message.storageWriteRequest != null && Object.hasOwnProperty.call(message, 'storageWriteRequest'))
+            if (message.storageWriteRequest != null && Object.hasOwnProperty.call(message, "storageWriteRequest"))
                 $root.PB_Storage.WriteRequest.encode(message.storageWriteRequest, writer.uint32(90).fork()).ldelim();
-            if (message.storageDeleteRequest != null && Object.hasOwnProperty.call(message, 'storageDeleteRequest'))
+            if (message.storageDeleteRequest != null && Object.hasOwnProperty.call(message, "storageDeleteRequest"))
                 $root.PB_Storage.DeleteRequest.encode(message.storageDeleteRequest, writer.uint32(98).fork()).ldelim();
-            if (message.storageMkdirRequest != null && Object.hasOwnProperty.call(message, 'storageMkdirRequest'))
+            if (message.storageMkdirRequest != null && Object.hasOwnProperty.call(message, "storageMkdirRequest"))
                 $root.PB_Storage.MkdirRequest.encode(message.storageMkdirRequest, writer.uint32(106).fork()).ldelim();
-            if (message.storageMd5sumRequest != null && Object.hasOwnProperty.call(message, 'storageMd5sumRequest'))
+            if (message.storageMd5sumRequest != null && Object.hasOwnProperty.call(message, "storageMd5sumRequest"))
                 $root.PB_Storage.Md5sumRequest.encode(message.storageMd5sumRequest, writer.uint32(114).fork()).ldelim();
-            if (message.storageMd5sumResponse != null && Object.hasOwnProperty.call(message, 'storageMd5sumResponse'))
+            if (message.storageMd5sumResponse != null && Object.hasOwnProperty.call(message, "storageMd5sumResponse"))
                 $root.PB_Storage.Md5sumResponse.encode(message.storageMd5sumResponse, writer.uint32(122).fork()).ldelim();
-            if (message.appStartRequest != null && Object.hasOwnProperty.call(message, 'appStartRequest'))
+            if (message.appStartRequest != null && Object.hasOwnProperty.call(message, "appStartRequest"))
                 $root.PB_App.StartRequest.encode(message.appStartRequest, writer.uint32(130).fork()).ldelim();
-            if (message.appLockStatusRequest != null && Object.hasOwnProperty.call(message, 'appLockStatusRequest'))
+            if (message.appLockStatusRequest != null && Object.hasOwnProperty.call(message, "appLockStatusRequest"))
                 $root.PB_App.LockStatusRequest.encode(message.appLockStatusRequest, writer.uint32(138).fork()).ldelim();
-            if (message.appLockStatusResponse != null && Object.hasOwnProperty.call(message, 'appLockStatusResponse'))
+            if (message.appLockStatusResponse != null && Object.hasOwnProperty.call(message, "appLockStatusResponse"))
                 $root.PB_App.LockStatusResponse.encode(message.appLockStatusResponse, writer.uint32(146).fork()).ldelim();
-            if (message.stopSession != null && Object.hasOwnProperty.call(message, 'stopSession'))
+            if (message.stopSession != null && Object.hasOwnProperty.call(message, "stopSession"))
                 $root.PB.StopSession.encode(message.stopSession, writer.uint32(154).fork()).ldelim();
-            if (message.guiStartScreenStreamRequest != null && Object.hasOwnProperty.call(message, 'guiStartScreenStreamRequest'))
+            if (message.guiStartScreenStreamRequest != null && Object.hasOwnProperty.call(message, "guiStartScreenStreamRequest"))
                 $root.PB_Gui.StartScreenStreamRequest.encode(message.guiStartScreenStreamRequest, writer.uint32(162).fork()).ldelim();
-            if (message.guiStopScreenStreamRequest != null && Object.hasOwnProperty.call(message, 'guiStopScreenStreamRequest'))
+            if (message.guiStopScreenStreamRequest != null && Object.hasOwnProperty.call(message, "guiStopScreenStreamRequest"))
                 $root.PB_Gui.StopScreenStreamRequest.encode(message.guiStopScreenStreamRequest, writer.uint32(170).fork()).ldelim();
-            if (message.guiScreenFrame != null && Object.hasOwnProperty.call(message, 'guiScreenFrame'))
+            if (message.guiScreenFrame != null && Object.hasOwnProperty.call(message, "guiScreenFrame"))
                 $root.PB_Gui.ScreenFrame.encode(message.guiScreenFrame, writer.uint32(178).fork()).ldelim();
-            if (message.guiSendInputEventRequest != null && Object.hasOwnProperty.call(message, 'guiSendInputEventRequest'))
+            if (message.guiSendInputEventRequest != null && Object.hasOwnProperty.call(message, "guiSendInputEventRequest"))
                 $root.PB_Gui.SendInputEventRequest.encode(message.guiSendInputEventRequest, writer.uint32(186).fork()).ldelim();
-            if (message.storageStatRequest != null && Object.hasOwnProperty.call(message, 'storageStatRequest'))
+            if (message.storageStatRequest != null && Object.hasOwnProperty.call(message, "storageStatRequest"))
                 $root.PB_Storage.StatRequest.encode(message.storageStatRequest, writer.uint32(194).fork()).ldelim();
-            if (message.storageStatResponse != null && Object.hasOwnProperty.call(message, 'storageStatResponse'))
+            if (message.storageStatResponse != null && Object.hasOwnProperty.call(message, "storageStatResponse"))
                 $root.PB_Storage.StatResponse.encode(message.storageStatResponse, writer.uint32(202).fork()).ldelim();
-            if (message.guiStartVirtualDisplayRequest != null && Object.hasOwnProperty.call(message, 'guiStartVirtualDisplayRequest'))
+            if (message.guiStartVirtualDisplayRequest != null && Object.hasOwnProperty.call(message, "guiStartVirtualDisplayRequest"))
                 $root.PB_Gui.StartVirtualDisplayRequest.encode(message.guiStartVirtualDisplayRequest, writer.uint32(210).fork()).ldelim();
-            if (message.guiStopVirtualDisplayRequest != null && Object.hasOwnProperty.call(message, 'guiStopVirtualDisplayRequest'))
+            if (message.guiStopVirtualDisplayRequest != null && Object.hasOwnProperty.call(message, "guiStopVirtualDisplayRequest"))
                 $root.PB_Gui.StopVirtualDisplayRequest.encode(message.guiStopVirtualDisplayRequest, writer.uint32(218).fork()).ldelim();
-            if (message.storageInfoRequest != null && Object.hasOwnProperty.call(message, 'storageInfoRequest'))
+            if (message.storageInfoRequest != null && Object.hasOwnProperty.call(message, "storageInfoRequest"))
                 $root.PB_Storage.InfoRequest.encode(message.storageInfoRequest, writer.uint32(226).fork()).ldelim();
-            if (message.storageInfoResponse != null && Object.hasOwnProperty.call(message, 'storageInfoResponse'))
+            if (message.storageInfoResponse != null && Object.hasOwnProperty.call(message, "storageInfoResponse"))
                 $root.PB_Storage.InfoResponse.encode(message.storageInfoResponse, writer.uint32(234).fork()).ldelim();
-            if (message.storageRenameRequest != null && Object.hasOwnProperty.call(message, 'storageRenameRequest'))
+            if (message.storageRenameRequest != null && Object.hasOwnProperty.call(message, "storageRenameRequest"))
                 $root.PB_Storage.RenameRequest.encode(message.storageRenameRequest, writer.uint32(242).fork()).ldelim();
-            if (message.systemRebootRequest != null && Object.hasOwnProperty.call(message, 'systemRebootRequest'))
+            if (message.systemRebootRequest != null && Object.hasOwnProperty.call(message, "systemRebootRequest"))
                 $root.PB_System.RebootRequest.encode(message.systemRebootRequest, writer.uint32(250).fork()).ldelim();
-            if (message.systemDeviceInfoRequest != null && Object.hasOwnProperty.call(message, 'systemDeviceInfoRequest'))
+            if (message.systemDeviceInfoRequest != null && Object.hasOwnProperty.call(message, "systemDeviceInfoRequest"))
                 $root.PB_System.DeviceInfoRequest.encode(message.systemDeviceInfoRequest, writer.uint32(258).fork()).ldelim();
-            if (message.systemDeviceInfoResponse != null && Object.hasOwnProperty.call(message, 'systemDeviceInfoResponse'))
+            if (message.systemDeviceInfoResponse != null && Object.hasOwnProperty.call(message, "systemDeviceInfoResponse"))
                 $root.PB_System.DeviceInfoResponse.encode(message.systemDeviceInfoResponse, writer.uint32(266).fork()).ldelim();
-            if (message.systemFactoryResetRequest != null && Object.hasOwnProperty.call(message, 'systemFactoryResetRequest'))
+            if (message.systemFactoryResetRequest != null && Object.hasOwnProperty.call(message, "systemFactoryResetRequest"))
                 $root.PB_System.FactoryResetRequest.encode(message.systemFactoryResetRequest, writer.uint32(274).fork()).ldelim();
-            if (message.systemGetDatetimeRequest != null && Object.hasOwnProperty.call(message, 'systemGetDatetimeRequest'))
+            if (message.systemGetDatetimeRequest != null && Object.hasOwnProperty.call(message, "systemGetDatetimeRequest"))
                 $root.PB_System.GetDateTimeRequest.encode(message.systemGetDatetimeRequest, writer.uint32(282).fork()).ldelim();
-            if (message.systemGetDatetimeResponse != null && Object.hasOwnProperty.call(message, 'systemGetDatetimeResponse'))
+            if (message.systemGetDatetimeResponse != null && Object.hasOwnProperty.call(message, "systemGetDatetimeResponse"))
                 $root.PB_System.GetDateTimeResponse.encode(message.systemGetDatetimeResponse, writer.uint32(290).fork()).ldelim();
-            if (message.systemSetDatetimeRequest != null && Object.hasOwnProperty.call(message, 'systemSetDatetimeRequest'))
+            if (message.systemSetDatetimeRequest != null && Object.hasOwnProperty.call(message, "systemSetDatetimeRequest"))
                 $root.PB_System.SetDateTimeRequest.encode(message.systemSetDatetimeRequest, writer.uint32(298).fork()).ldelim();
-            if (message.systemPlayAudiovisualAlertRequest != null && Object.hasOwnProperty.call(message, 'systemPlayAudiovisualAlertRequest'))
+            if (message.systemPlayAudiovisualAlertRequest != null && Object.hasOwnProperty.call(message, "systemPlayAudiovisualAlertRequest"))
                 $root.PB_System.PlayAudiovisualAlertRequest.encode(message.systemPlayAudiovisualAlertRequest, writer.uint32(306).fork()).ldelim();
-            if (message.systemProtobufVersionRequest != null && Object.hasOwnProperty.call(message, 'systemProtobufVersionRequest'))
+            if (message.systemProtobufVersionRequest != null && Object.hasOwnProperty.call(message, "systemProtobufVersionRequest"))
                 $root.PB_System.ProtobufVersionRequest.encode(message.systemProtobufVersionRequest, writer.uint32(314).fork()).ldelim();
-            if (message.systemProtobufVersionResponse != null && Object.hasOwnProperty.call(message, 'systemProtobufVersionResponse'))
+            if (message.systemProtobufVersionResponse != null && Object.hasOwnProperty.call(message, "systemProtobufVersionResponse"))
                 $root.PB_System.ProtobufVersionResponse.encode(message.systemProtobufVersionResponse, writer.uint32(322).fork()).ldelim();
-            if (message.systemUpdateRequest != null && Object.hasOwnProperty.call(message, 'systemUpdateRequest'))
+            if (message.systemUpdateRequest != null && Object.hasOwnProperty.call(message, "systemUpdateRequest"))
                 $root.PB_System.UpdateRequest.encode(message.systemUpdateRequest, writer.uint32(330).fork()).ldelim();
-            if (message.storageBackupCreateRequest != null && Object.hasOwnProperty.call(message, 'storageBackupCreateRequest'))
+            if (message.storageBackupCreateRequest != null && Object.hasOwnProperty.call(message, "storageBackupCreateRequest"))
                 $root.PB_Storage.BackupCreateRequest.encode(message.storageBackupCreateRequest, writer.uint32(338).fork()).ldelim();
-            if (message.storageBackupRestoreRequest != null && Object.hasOwnProperty.call(message, 'storageBackupRestoreRequest'))
+            if (message.storageBackupRestoreRequest != null && Object.hasOwnProperty.call(message, "storageBackupRestoreRequest"))
                 $root.PB_Storage.BackupRestoreRequest.encode(message.storageBackupRestoreRequest, writer.uint32(346).fork()).ldelim();
-            if (message.systemPowerInfoRequest != null && Object.hasOwnProperty.call(message, 'systemPowerInfoRequest'))
+            if (message.systemPowerInfoRequest != null && Object.hasOwnProperty.call(message, "systemPowerInfoRequest"))
                 $root.PB_System.PowerInfoRequest.encode(message.systemPowerInfoRequest, writer.uint32(354).fork()).ldelim();
-            if (message.systemPowerInfoResponse != null && Object.hasOwnProperty.call(message, 'systemPowerInfoResponse'))
+            if (message.systemPowerInfoResponse != null && Object.hasOwnProperty.call(message, "systemPowerInfoResponse"))
                 $root.PB_System.PowerInfoResponse.encode(message.systemPowerInfoResponse, writer.uint32(362).fork()).ldelim();
-            if (message.systemUpdateResponse != null && Object.hasOwnProperty.call(message, 'systemUpdateResponse'))
+            if (message.systemUpdateResponse != null && Object.hasOwnProperty.call(message, "systemUpdateResponse"))
                 $root.PB_System.UpdateResponse.encode(message.systemUpdateResponse, writer.uint32(370).fork()).ldelim();
-            if (message.appExitRequest != null && Object.hasOwnProperty.call(message, 'appExitRequest'))
+            if (message.appExitRequest != null && Object.hasOwnProperty.call(message, "appExitRequest"))
                 $root.PB_App.AppExitRequest.encode(message.appExitRequest, writer.uint32(378).fork()).ldelim();
-            if (message.appLoadFileRequest != null && Object.hasOwnProperty.call(message, 'appLoadFileRequest'))
+            if (message.appLoadFileRequest != null && Object.hasOwnProperty.call(message, "appLoadFileRequest"))
                 $root.PB_App.AppLoadFileRequest.encode(message.appLoadFileRequest, writer.uint32(386).fork()).ldelim();
-            if (message.appButtonPressRequest != null && Object.hasOwnProperty.call(message, 'appButtonPressRequest'))
+            if (message.appButtonPressRequest != null && Object.hasOwnProperty.call(message, "appButtonPressRequest"))
                 $root.PB_App.AppButtonPressRequest.encode(message.appButtonPressRequest, writer.uint32(394).fork()).ldelim();
-            if (message.appButtonReleaseRequest != null && Object.hasOwnProperty.call(message, 'appButtonReleaseRequest'))
+            if (message.appButtonReleaseRequest != null && Object.hasOwnProperty.call(message, "appButtonReleaseRequest"))
                 $root.PB_App.AppButtonReleaseRequest.encode(message.appButtonReleaseRequest, writer.uint32(402).fork()).ldelim();
-            if (message.gpioSetPinMode != null && Object.hasOwnProperty.call(message, 'gpioSetPinMode'))
+            if (message.gpioSetPinMode != null && Object.hasOwnProperty.call(message, "gpioSetPinMode"))
                 $root.PB_Gpio.SetPinMode.encode(message.gpioSetPinMode, writer.uint32(410).fork()).ldelim();
-            if (message.gpioSetInputPull != null && Object.hasOwnProperty.call(message, 'gpioSetInputPull'))
+            if (message.gpioSetInputPull != null && Object.hasOwnProperty.call(message, "gpioSetInputPull"))
                 $root.PB_Gpio.SetInputPull.encode(message.gpioSetInputPull, writer.uint32(418).fork()).ldelim();
-            if (message.gpioGetPinMode != null && Object.hasOwnProperty.call(message, 'gpioGetPinMode'))
+            if (message.gpioGetPinMode != null && Object.hasOwnProperty.call(message, "gpioGetPinMode"))
                 $root.PB_Gpio.GetPinMode.encode(message.gpioGetPinMode, writer.uint32(426).fork()).ldelim();
-            if (message.gpioGetPinModeResponse != null && Object.hasOwnProperty.call(message, 'gpioGetPinModeResponse'))
+            if (message.gpioGetPinModeResponse != null && Object.hasOwnProperty.call(message, "gpioGetPinModeResponse"))
                 $root.PB_Gpio.GetPinModeResponse.encode(message.gpioGetPinModeResponse, writer.uint32(434).fork()).ldelim();
-            if (message.gpioReadPin != null && Object.hasOwnProperty.call(message, 'gpioReadPin'))
+            if (message.gpioReadPin != null && Object.hasOwnProperty.call(message, "gpioReadPin"))
                 $root.PB_Gpio.ReadPin.encode(message.gpioReadPin, writer.uint32(442).fork()).ldelim();
-            if (message.gpioReadPinResponse != null && Object.hasOwnProperty.call(message, 'gpioReadPinResponse'))
+            if (message.gpioReadPinResponse != null && Object.hasOwnProperty.call(message, "gpioReadPinResponse"))
                 $root.PB_Gpio.ReadPinResponse.encode(message.gpioReadPinResponse, writer.uint32(450).fork()).ldelim();
-            if (message.gpioWritePin != null && Object.hasOwnProperty.call(message, 'gpioWritePin'))
+            if (message.gpioWritePin != null && Object.hasOwnProperty.call(message, "gpioWritePin"))
                 $root.PB_Gpio.WritePin.encode(message.gpioWritePin, writer.uint32(458).fork()).ldelim();
-            if (message.appStateResponse != null && Object.hasOwnProperty.call(message, 'appStateResponse'))
+            if (message.appStateResponse != null && Object.hasOwnProperty.call(message, "appStateResponse"))
                 $root.PB_App.AppStateResponse.encode(message.appStateResponse, writer.uint32(466).fork()).ldelim();
-            if (message.storageTimestampRequest != null && Object.hasOwnProperty.call(message, 'storageTimestampRequest'))
+            if (message.storageTimestampRequest != null && Object.hasOwnProperty.call(message, "storageTimestampRequest"))
                 $root.PB_Storage.TimestampRequest.encode(message.storageTimestampRequest, writer.uint32(474).fork()).ldelim();
-            if (message.storageTimestampResponse != null && Object.hasOwnProperty.call(message, 'storageTimestampResponse'))
+            if (message.storageTimestampResponse != null && Object.hasOwnProperty.call(message, "storageTimestampResponse"))
                 $root.PB_Storage.TimestampResponse.encode(message.storageTimestampResponse, writer.uint32(482).fork()).ldelim();
-            if (message.propertyGetRequest != null && Object.hasOwnProperty.call(message, 'propertyGetRequest'))
+            if (message.propertyGetRequest != null && Object.hasOwnProperty.call(message, "propertyGetRequest"))
                 $root.PB_Property.GetRequest.encode(message.propertyGetRequest, writer.uint32(490).fork()).ldelim();
-            if (message.propertyGetResponse != null && Object.hasOwnProperty.call(message, 'propertyGetResponse'))
+            if (message.propertyGetResponse != null && Object.hasOwnProperty.call(message, "propertyGetResponse"))
                 $root.PB_Property.GetResponse.encode(message.propertyGetResponse, writer.uint32(498).fork()).ldelim();
-            if (message.appGetErrorRequest != null && Object.hasOwnProperty.call(message, 'appGetErrorRequest'))
+            if (message.appGetErrorRequest != null && Object.hasOwnProperty.call(message, "appGetErrorRequest"))
                 $root.PB_App.GetErrorRequest.encode(message.appGetErrorRequest, writer.uint32(506).fork()).ldelim();
-            if (message.appGetErrorResponse != null && Object.hasOwnProperty.call(message, 'appGetErrorResponse'))
+            if (message.appGetErrorResponse != null && Object.hasOwnProperty.call(message, "appGetErrorResponse"))
                 $root.PB_App.GetErrorResponse.encode(message.appGetErrorResponse, writer.uint32(514).fork()).ldelim();
-            if (message.appDataExchangeRequest != null && Object.hasOwnProperty.call(message, 'appDataExchangeRequest'))
+            if (message.appDataExchangeRequest != null && Object.hasOwnProperty.call(message, "appDataExchangeRequest"))
                 $root.PB_App.DataExchangeRequest.encode(message.appDataExchangeRequest, writer.uint32(522).fork()).ldelim();
-            if (message.desktopIsLockedRequest != null && Object.hasOwnProperty.call(message, 'desktopIsLockedRequest'))
+            if (message.desktopIsLockedRequest != null && Object.hasOwnProperty.call(message, "desktopIsLockedRequest"))
                 $root.PB_Desktop.IsLockedRequest.encode(message.desktopIsLockedRequest, writer.uint32(530).fork()).ldelim();
-            if (message.desktopUnlockRequest != null && Object.hasOwnProperty.call(message, 'desktopUnlockRequest'))
+            if (message.desktopUnlockRequest != null && Object.hasOwnProperty.call(message, "desktopUnlockRequest"))
                 $root.PB_Desktop.UnlockRequest.encode(message.desktopUnlockRequest, writer.uint32(538).fork()).ldelim();
-            if (message.desktopStatusSubscribeRequest != null && Object.hasOwnProperty.call(message, 'desktopStatusSubscribeRequest'))
+            if (message.desktopStatusSubscribeRequest != null && Object.hasOwnProperty.call(message, "desktopStatusSubscribeRequest"))
                 $root.PB_Desktop.StatusSubscribeRequest.encode(message.desktopStatusSubscribeRequest, writer.uint32(546).fork()).ldelim();
-            if (message.desktopStatusUnsubscribeRequest != null && Object.hasOwnProperty.call(message, 'desktopStatusUnsubscribeRequest'))
+            if (message.desktopStatusUnsubscribeRequest != null && Object.hasOwnProperty.call(message, "desktopStatusUnsubscribeRequest"))
                 $root.PB_Desktop.StatusUnsubscribeRequest.encode(message.desktopStatusUnsubscribeRequest, writer.uint32(554).fork()).ldelim();
-            if (message.desktopStatus != null && Object.hasOwnProperty.call(message, 'desktopStatus'))
+            if (message.desktopStatus != null && Object.hasOwnProperty.call(message, "desktopStatus"))
                 $root.PB_Desktop.Status.encode(message.desktopStatus, writer.uint32(562).fork()).ldelim();
-            if (message.storageTarExtractRequest != null && Object.hasOwnProperty.call(message, 'storageTarExtractRequest'))
+            if (message.storageTarExtractRequest != null && Object.hasOwnProperty.call(message, "storageTarExtractRequest"))
                 $root.PB_Storage.TarExtractRequest.encode(message.storageTarExtractRequest, writer.uint32(570).fork()).ldelim();
-            if (message.gpioGetOtgMode != null && Object.hasOwnProperty.call(message, 'gpioGetOtgMode'))
+            if (message.gpioGetOtgMode != null && Object.hasOwnProperty.call(message, "gpioGetOtgMode"))
                 $root.PB_Gpio.GetOtgMode.encode(message.gpioGetOtgMode, writer.uint32(578).fork()).ldelim();
-            if (message.gpioGetOtgModeResponse != null && Object.hasOwnProperty.call(message, 'gpioGetOtgModeResponse'))
+            if (message.gpioGetOtgModeResponse != null && Object.hasOwnProperty.call(message, "gpioGetOtgModeResponse"))
                 $root.PB_Gpio.GetOtgModeResponse.encode(message.gpioGetOtgModeResponse, writer.uint32(586).fork()).ldelim();
-            if (message.gpioSetOtgMode != null && Object.hasOwnProperty.call(message, 'gpioSetOtgMode'))
+            if (message.gpioSetOtgMode != null && Object.hasOwnProperty.call(message, "gpioSetOtgMode"))
                 $root.PB_Gpio.SetOtgMode.encode(message.gpioSetOtgMode, writer.uint32(594).fork()).ldelim();
+            if (message.appButtonPressReleaseRequest != null && Object.hasOwnProperty.call(message, "appButtonPressReleaseRequest"))
+                $root.PB_App.AppButtonPressReleaseRequest.encode(message.appButtonPressReleaseRequest, writer.uint32(602).fork()).ldelim();
             return writer;
         };
 
@@ -2084,6 +2198,10 @@ export const PB = $root.PB = (() => {
                         message.appButtonReleaseRequest = $root.PB_App.AppButtonReleaseRequest.decode(reader, reader.uint32());
                         break;
                     }
+                case 75: {
+                        message.appButtonPressReleaseRequest = $root.PB_App.AppButtonPressReleaseRequest.decode(reader, reader.uint32());
+                        break;
+                    }
                 case 63: {
                         message.appGetErrorRequest = $root.PB_App.GetErrorRequest.decode(reader, reader.uint32());
                         break;
@@ -2207,16 +2325,16 @@ export const PB = $root.PB = (() => {
         };
 
         Main.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
             let properties = {};
-            if (message.commandId != null && message.hasOwnProperty('commandId'))
+            if (message.commandId != null && message.hasOwnProperty("commandId"))
                 if (!$util.isInteger(message.commandId))
-                    return 'commandId: integer expected';
-            if (message.commandStatus != null && message.hasOwnProperty('commandStatus'))
+                    return "commandId: integer expected";
+            if (message.commandStatus != null && message.hasOwnProperty("commandStatus"))
                 switch (message.commandStatus) {
                 default:
-                    return 'commandStatus: enum value expected';
+                    return "commandStatus: enum value expected";
                 case 0:
                 case 1:
                 case 2:
@@ -2244,715 +2362,725 @@ export const PB = $root.PB = (() => {
                 case 59:
                     break;
                 }
-            if (message.hasNext != null && message.hasOwnProperty('hasNext'))
-                if (typeof message.hasNext !== 'boolean')
-                    return 'hasNext: boolean expected';
-            if (message.empty != null && message.hasOwnProperty('empty')) {
+            if (message.hasNext != null && message.hasOwnProperty("hasNext"))
+                if (typeof message.hasNext !== "boolean")
+                    return "hasNext: boolean expected";
+            if (message.empty != null && message.hasOwnProperty("empty")) {
                 properties.content = 1;
                 {
                     let error = $root.PB.Empty.verify(message.empty);
                     if (error)
-                        return 'empty.' + error;
+                        return "empty." + error;
                 }
             }
-            if (message.stopSession != null && message.hasOwnProperty('stopSession')) {
+            if (message.stopSession != null && message.hasOwnProperty("stopSession")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB.StopSession.verify(message.stopSession);
                     if (error)
-                        return 'stopSession.' + error;
+                        return "stopSession." + error;
                 }
             }
-            if (message.systemPingRequest != null && message.hasOwnProperty('systemPingRequest')) {
+            if (message.systemPingRequest != null && message.hasOwnProperty("systemPingRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_System.PingRequest.verify(message.systemPingRequest);
                     if (error)
-                        return 'systemPingRequest.' + error;
+                        return "systemPingRequest." + error;
                 }
             }
-            if (message.systemPingResponse != null && message.hasOwnProperty('systemPingResponse')) {
+            if (message.systemPingResponse != null && message.hasOwnProperty("systemPingResponse")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_System.PingResponse.verify(message.systemPingResponse);
                     if (error)
-                        return 'systemPingResponse.' + error;
+                        return "systemPingResponse." + error;
                 }
             }
-            if (message.systemRebootRequest != null && message.hasOwnProperty('systemRebootRequest')) {
+            if (message.systemRebootRequest != null && message.hasOwnProperty("systemRebootRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_System.RebootRequest.verify(message.systemRebootRequest);
                     if (error)
-                        return 'systemRebootRequest.' + error;
+                        return "systemRebootRequest." + error;
                 }
             }
-            if (message.systemDeviceInfoRequest != null && message.hasOwnProperty('systemDeviceInfoRequest')) {
+            if (message.systemDeviceInfoRequest != null && message.hasOwnProperty("systemDeviceInfoRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_System.DeviceInfoRequest.verify(message.systemDeviceInfoRequest);
                     if (error)
-                        return 'systemDeviceInfoRequest.' + error;
+                        return "systemDeviceInfoRequest." + error;
                 }
             }
-            if (message.systemDeviceInfoResponse != null && message.hasOwnProperty('systemDeviceInfoResponse')) {
+            if (message.systemDeviceInfoResponse != null && message.hasOwnProperty("systemDeviceInfoResponse")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_System.DeviceInfoResponse.verify(message.systemDeviceInfoResponse);
                     if (error)
-                        return 'systemDeviceInfoResponse.' + error;
+                        return "systemDeviceInfoResponse." + error;
                 }
             }
-            if (message.systemFactoryResetRequest != null && message.hasOwnProperty('systemFactoryResetRequest')) {
+            if (message.systemFactoryResetRequest != null && message.hasOwnProperty("systemFactoryResetRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_System.FactoryResetRequest.verify(message.systemFactoryResetRequest);
                     if (error)
-                        return 'systemFactoryResetRequest.' + error;
+                        return "systemFactoryResetRequest." + error;
                 }
             }
-            if (message.systemGetDatetimeRequest != null && message.hasOwnProperty('systemGetDatetimeRequest')) {
+            if (message.systemGetDatetimeRequest != null && message.hasOwnProperty("systemGetDatetimeRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_System.GetDateTimeRequest.verify(message.systemGetDatetimeRequest);
                     if (error)
-                        return 'systemGetDatetimeRequest.' + error;
+                        return "systemGetDatetimeRequest." + error;
                 }
             }
-            if (message.systemGetDatetimeResponse != null && message.hasOwnProperty('systemGetDatetimeResponse')) {
+            if (message.systemGetDatetimeResponse != null && message.hasOwnProperty("systemGetDatetimeResponse")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_System.GetDateTimeResponse.verify(message.systemGetDatetimeResponse);
                     if (error)
-                        return 'systemGetDatetimeResponse.' + error;
+                        return "systemGetDatetimeResponse." + error;
                 }
             }
-            if (message.systemSetDatetimeRequest != null && message.hasOwnProperty('systemSetDatetimeRequest')) {
+            if (message.systemSetDatetimeRequest != null && message.hasOwnProperty("systemSetDatetimeRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_System.SetDateTimeRequest.verify(message.systemSetDatetimeRequest);
                     if (error)
-                        return 'systemSetDatetimeRequest.' + error;
+                        return "systemSetDatetimeRequest." + error;
                 }
             }
-            if (message.systemPlayAudiovisualAlertRequest != null && message.hasOwnProperty('systemPlayAudiovisualAlertRequest')) {
+            if (message.systemPlayAudiovisualAlertRequest != null && message.hasOwnProperty("systemPlayAudiovisualAlertRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_System.PlayAudiovisualAlertRequest.verify(message.systemPlayAudiovisualAlertRequest);
                     if (error)
-                        return 'systemPlayAudiovisualAlertRequest.' + error;
+                        return "systemPlayAudiovisualAlertRequest." + error;
                 }
             }
-            if (message.systemProtobufVersionRequest != null && message.hasOwnProperty('systemProtobufVersionRequest')) {
+            if (message.systemProtobufVersionRequest != null && message.hasOwnProperty("systemProtobufVersionRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_System.ProtobufVersionRequest.verify(message.systemProtobufVersionRequest);
                     if (error)
-                        return 'systemProtobufVersionRequest.' + error;
+                        return "systemProtobufVersionRequest." + error;
                 }
             }
-            if (message.systemProtobufVersionResponse != null && message.hasOwnProperty('systemProtobufVersionResponse')) {
+            if (message.systemProtobufVersionResponse != null && message.hasOwnProperty("systemProtobufVersionResponse")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_System.ProtobufVersionResponse.verify(message.systemProtobufVersionResponse);
                     if (error)
-                        return 'systemProtobufVersionResponse.' + error;
+                        return "systemProtobufVersionResponse." + error;
                 }
             }
-            if (message.systemUpdateRequest != null && message.hasOwnProperty('systemUpdateRequest')) {
+            if (message.systemUpdateRequest != null && message.hasOwnProperty("systemUpdateRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_System.UpdateRequest.verify(message.systemUpdateRequest);
                     if (error)
-                        return 'systemUpdateRequest.' + error;
+                        return "systemUpdateRequest." + error;
                 }
             }
-            if (message.systemUpdateResponse != null && message.hasOwnProperty('systemUpdateResponse')) {
+            if (message.systemUpdateResponse != null && message.hasOwnProperty("systemUpdateResponse")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_System.UpdateResponse.verify(message.systemUpdateResponse);
                     if (error)
-                        return 'systemUpdateResponse.' + error;
+                        return "systemUpdateResponse." + error;
                 }
             }
-            if (message.systemPowerInfoRequest != null && message.hasOwnProperty('systemPowerInfoRequest')) {
+            if (message.systemPowerInfoRequest != null && message.hasOwnProperty("systemPowerInfoRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_System.PowerInfoRequest.verify(message.systemPowerInfoRequest);
                     if (error)
-                        return 'systemPowerInfoRequest.' + error;
+                        return "systemPowerInfoRequest." + error;
                 }
             }
-            if (message.systemPowerInfoResponse != null && message.hasOwnProperty('systemPowerInfoResponse')) {
+            if (message.systemPowerInfoResponse != null && message.hasOwnProperty("systemPowerInfoResponse")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_System.PowerInfoResponse.verify(message.systemPowerInfoResponse);
                     if (error)
-                        return 'systemPowerInfoResponse.' + error;
+                        return "systemPowerInfoResponse." + error;
                 }
             }
-            if (message.storageInfoRequest != null && message.hasOwnProperty('storageInfoRequest')) {
+            if (message.storageInfoRequest != null && message.hasOwnProperty("storageInfoRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Storage.InfoRequest.verify(message.storageInfoRequest);
                     if (error)
-                        return 'storageInfoRequest.' + error;
+                        return "storageInfoRequest." + error;
                 }
             }
-            if (message.storageInfoResponse != null && message.hasOwnProperty('storageInfoResponse')) {
+            if (message.storageInfoResponse != null && message.hasOwnProperty("storageInfoResponse")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Storage.InfoResponse.verify(message.storageInfoResponse);
                     if (error)
-                        return 'storageInfoResponse.' + error;
+                        return "storageInfoResponse." + error;
                 }
             }
-            if (message.storageTimestampRequest != null && message.hasOwnProperty('storageTimestampRequest')) {
+            if (message.storageTimestampRequest != null && message.hasOwnProperty("storageTimestampRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Storage.TimestampRequest.verify(message.storageTimestampRequest);
                     if (error)
-                        return 'storageTimestampRequest.' + error;
+                        return "storageTimestampRequest." + error;
                 }
             }
-            if (message.storageTimestampResponse != null && message.hasOwnProperty('storageTimestampResponse')) {
+            if (message.storageTimestampResponse != null && message.hasOwnProperty("storageTimestampResponse")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Storage.TimestampResponse.verify(message.storageTimestampResponse);
                     if (error)
-                        return 'storageTimestampResponse.' + error;
+                        return "storageTimestampResponse." + error;
                 }
             }
-            if (message.storageStatRequest != null && message.hasOwnProperty('storageStatRequest')) {
+            if (message.storageStatRequest != null && message.hasOwnProperty("storageStatRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Storage.StatRequest.verify(message.storageStatRequest);
                     if (error)
-                        return 'storageStatRequest.' + error;
+                        return "storageStatRequest." + error;
                 }
             }
-            if (message.storageStatResponse != null && message.hasOwnProperty('storageStatResponse')) {
+            if (message.storageStatResponse != null && message.hasOwnProperty("storageStatResponse")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Storage.StatResponse.verify(message.storageStatResponse);
                     if (error)
-                        return 'storageStatResponse.' + error;
+                        return "storageStatResponse." + error;
                 }
             }
-            if (message.storageListRequest != null && message.hasOwnProperty('storageListRequest')) {
+            if (message.storageListRequest != null && message.hasOwnProperty("storageListRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Storage.ListRequest.verify(message.storageListRequest);
                     if (error)
-                        return 'storageListRequest.' + error;
+                        return "storageListRequest." + error;
                 }
             }
-            if (message.storageListResponse != null && message.hasOwnProperty('storageListResponse')) {
+            if (message.storageListResponse != null && message.hasOwnProperty("storageListResponse")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Storage.ListResponse.verify(message.storageListResponse);
                     if (error)
-                        return 'storageListResponse.' + error;
+                        return "storageListResponse." + error;
                 }
             }
-            if (message.storageReadRequest != null && message.hasOwnProperty('storageReadRequest')) {
+            if (message.storageReadRequest != null && message.hasOwnProperty("storageReadRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Storage.ReadRequest.verify(message.storageReadRequest);
                     if (error)
-                        return 'storageReadRequest.' + error;
+                        return "storageReadRequest." + error;
                 }
             }
-            if (message.storageReadResponse != null && message.hasOwnProperty('storageReadResponse')) {
+            if (message.storageReadResponse != null && message.hasOwnProperty("storageReadResponse")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Storage.ReadResponse.verify(message.storageReadResponse);
                     if (error)
-                        return 'storageReadResponse.' + error;
+                        return "storageReadResponse." + error;
                 }
             }
-            if (message.storageWriteRequest != null && message.hasOwnProperty('storageWriteRequest')) {
+            if (message.storageWriteRequest != null && message.hasOwnProperty("storageWriteRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Storage.WriteRequest.verify(message.storageWriteRequest);
                     if (error)
-                        return 'storageWriteRequest.' + error;
+                        return "storageWriteRequest." + error;
                 }
             }
-            if (message.storageDeleteRequest != null && message.hasOwnProperty('storageDeleteRequest')) {
+            if (message.storageDeleteRequest != null && message.hasOwnProperty("storageDeleteRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Storage.DeleteRequest.verify(message.storageDeleteRequest);
                     if (error)
-                        return 'storageDeleteRequest.' + error;
+                        return "storageDeleteRequest." + error;
                 }
             }
-            if (message.storageMkdirRequest != null && message.hasOwnProperty('storageMkdirRequest')) {
+            if (message.storageMkdirRequest != null && message.hasOwnProperty("storageMkdirRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Storage.MkdirRequest.verify(message.storageMkdirRequest);
                     if (error)
-                        return 'storageMkdirRequest.' + error;
+                        return "storageMkdirRequest." + error;
                 }
             }
-            if (message.storageMd5sumRequest != null && message.hasOwnProperty('storageMd5sumRequest')) {
+            if (message.storageMd5sumRequest != null && message.hasOwnProperty("storageMd5sumRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Storage.Md5sumRequest.verify(message.storageMd5sumRequest);
                     if (error)
-                        return 'storageMd5sumRequest.' + error;
+                        return "storageMd5sumRequest." + error;
                 }
             }
-            if (message.storageMd5sumResponse != null && message.hasOwnProperty('storageMd5sumResponse')) {
+            if (message.storageMd5sumResponse != null && message.hasOwnProperty("storageMd5sumResponse")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Storage.Md5sumResponse.verify(message.storageMd5sumResponse);
                     if (error)
-                        return 'storageMd5sumResponse.' + error;
+                        return "storageMd5sumResponse." + error;
                 }
             }
-            if (message.storageRenameRequest != null && message.hasOwnProperty('storageRenameRequest')) {
+            if (message.storageRenameRequest != null && message.hasOwnProperty("storageRenameRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Storage.RenameRequest.verify(message.storageRenameRequest);
                     if (error)
-                        return 'storageRenameRequest.' + error;
+                        return "storageRenameRequest." + error;
                 }
             }
-            if (message.storageBackupCreateRequest != null && message.hasOwnProperty('storageBackupCreateRequest')) {
+            if (message.storageBackupCreateRequest != null && message.hasOwnProperty("storageBackupCreateRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Storage.BackupCreateRequest.verify(message.storageBackupCreateRequest);
                     if (error)
-                        return 'storageBackupCreateRequest.' + error;
+                        return "storageBackupCreateRequest." + error;
                 }
             }
-            if (message.storageBackupRestoreRequest != null && message.hasOwnProperty('storageBackupRestoreRequest')) {
+            if (message.storageBackupRestoreRequest != null && message.hasOwnProperty("storageBackupRestoreRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Storage.BackupRestoreRequest.verify(message.storageBackupRestoreRequest);
                     if (error)
-                        return 'storageBackupRestoreRequest.' + error;
+                        return "storageBackupRestoreRequest." + error;
                 }
             }
-            if (message.storageTarExtractRequest != null && message.hasOwnProperty('storageTarExtractRequest')) {
+            if (message.storageTarExtractRequest != null && message.hasOwnProperty("storageTarExtractRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Storage.TarExtractRequest.verify(message.storageTarExtractRequest);
                     if (error)
-                        return 'storageTarExtractRequest.' + error;
+                        return "storageTarExtractRequest." + error;
                 }
             }
-            if (message.appStartRequest != null && message.hasOwnProperty('appStartRequest')) {
+            if (message.appStartRequest != null && message.hasOwnProperty("appStartRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_App.StartRequest.verify(message.appStartRequest);
                     if (error)
-                        return 'appStartRequest.' + error;
+                        return "appStartRequest." + error;
                 }
             }
-            if (message.appLockStatusRequest != null && message.hasOwnProperty('appLockStatusRequest')) {
+            if (message.appLockStatusRequest != null && message.hasOwnProperty("appLockStatusRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_App.LockStatusRequest.verify(message.appLockStatusRequest);
                     if (error)
-                        return 'appLockStatusRequest.' + error;
+                        return "appLockStatusRequest." + error;
                 }
             }
-            if (message.appLockStatusResponse != null && message.hasOwnProperty('appLockStatusResponse')) {
+            if (message.appLockStatusResponse != null && message.hasOwnProperty("appLockStatusResponse")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_App.LockStatusResponse.verify(message.appLockStatusResponse);
                     if (error)
-                        return 'appLockStatusResponse.' + error;
+                        return "appLockStatusResponse." + error;
                 }
             }
-            if (message.appExitRequest != null && message.hasOwnProperty('appExitRequest')) {
+            if (message.appExitRequest != null && message.hasOwnProperty("appExitRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_App.AppExitRequest.verify(message.appExitRequest);
                     if (error)
-                        return 'appExitRequest.' + error;
+                        return "appExitRequest." + error;
                 }
             }
-            if (message.appLoadFileRequest != null && message.hasOwnProperty('appLoadFileRequest')) {
+            if (message.appLoadFileRequest != null && message.hasOwnProperty("appLoadFileRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_App.AppLoadFileRequest.verify(message.appLoadFileRequest);
                     if (error)
-                        return 'appLoadFileRequest.' + error;
+                        return "appLoadFileRequest." + error;
                 }
             }
-            if (message.appButtonPressRequest != null && message.hasOwnProperty('appButtonPressRequest')) {
+            if (message.appButtonPressRequest != null && message.hasOwnProperty("appButtonPressRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_App.AppButtonPressRequest.verify(message.appButtonPressRequest);
                     if (error)
-                        return 'appButtonPressRequest.' + error;
+                        return "appButtonPressRequest." + error;
                 }
             }
-            if (message.appButtonReleaseRequest != null && message.hasOwnProperty('appButtonReleaseRequest')) {
+            if (message.appButtonReleaseRequest != null && message.hasOwnProperty("appButtonReleaseRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_App.AppButtonReleaseRequest.verify(message.appButtonReleaseRequest);
                     if (error)
-                        return 'appButtonReleaseRequest.' + error;
+                        return "appButtonReleaseRequest." + error;
                 }
             }
-            if (message.appGetErrorRequest != null && message.hasOwnProperty('appGetErrorRequest')) {
+            if (message.appButtonPressReleaseRequest != null && message.hasOwnProperty("appButtonPressReleaseRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
+                properties.content = 1;
+                {
+                    let error = $root.PB_App.AppButtonPressReleaseRequest.verify(message.appButtonPressReleaseRequest);
+                    if (error)
+                        return "appButtonPressReleaseRequest." + error;
+                }
+            }
+            if (message.appGetErrorRequest != null && message.hasOwnProperty("appGetErrorRequest")) {
+                if (properties.content === 1)
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_App.GetErrorRequest.verify(message.appGetErrorRequest);
                     if (error)
-                        return 'appGetErrorRequest.' + error;
+                        return "appGetErrorRequest." + error;
                 }
             }
-            if (message.appGetErrorResponse != null && message.hasOwnProperty('appGetErrorResponse')) {
+            if (message.appGetErrorResponse != null && message.hasOwnProperty("appGetErrorResponse")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_App.GetErrorResponse.verify(message.appGetErrorResponse);
                     if (error)
-                        return 'appGetErrorResponse.' + error;
+                        return "appGetErrorResponse." + error;
                 }
             }
-            if (message.appDataExchangeRequest != null && message.hasOwnProperty('appDataExchangeRequest')) {
+            if (message.appDataExchangeRequest != null && message.hasOwnProperty("appDataExchangeRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_App.DataExchangeRequest.verify(message.appDataExchangeRequest);
                     if (error)
-                        return 'appDataExchangeRequest.' + error;
+                        return "appDataExchangeRequest." + error;
                 }
             }
-            if (message.guiStartScreenStreamRequest != null && message.hasOwnProperty('guiStartScreenStreamRequest')) {
+            if (message.guiStartScreenStreamRequest != null && message.hasOwnProperty("guiStartScreenStreamRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Gui.StartScreenStreamRequest.verify(message.guiStartScreenStreamRequest);
                     if (error)
-                        return 'guiStartScreenStreamRequest.' + error;
+                        return "guiStartScreenStreamRequest." + error;
                 }
             }
-            if (message.guiStopScreenStreamRequest != null && message.hasOwnProperty('guiStopScreenStreamRequest')) {
+            if (message.guiStopScreenStreamRequest != null && message.hasOwnProperty("guiStopScreenStreamRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Gui.StopScreenStreamRequest.verify(message.guiStopScreenStreamRequest);
                     if (error)
-                        return 'guiStopScreenStreamRequest.' + error;
+                        return "guiStopScreenStreamRequest." + error;
                 }
             }
-            if (message.guiScreenFrame != null && message.hasOwnProperty('guiScreenFrame')) {
+            if (message.guiScreenFrame != null && message.hasOwnProperty("guiScreenFrame")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Gui.ScreenFrame.verify(message.guiScreenFrame);
                     if (error)
-                        return 'guiScreenFrame.' + error;
+                        return "guiScreenFrame." + error;
                 }
             }
-            if (message.guiSendInputEventRequest != null && message.hasOwnProperty('guiSendInputEventRequest')) {
+            if (message.guiSendInputEventRequest != null && message.hasOwnProperty("guiSendInputEventRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Gui.SendInputEventRequest.verify(message.guiSendInputEventRequest);
                     if (error)
-                        return 'guiSendInputEventRequest.' + error;
+                        return "guiSendInputEventRequest." + error;
                 }
             }
-            if (message.guiStartVirtualDisplayRequest != null && message.hasOwnProperty('guiStartVirtualDisplayRequest')) {
+            if (message.guiStartVirtualDisplayRequest != null && message.hasOwnProperty("guiStartVirtualDisplayRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Gui.StartVirtualDisplayRequest.verify(message.guiStartVirtualDisplayRequest);
                     if (error)
-                        return 'guiStartVirtualDisplayRequest.' + error;
+                        return "guiStartVirtualDisplayRequest." + error;
                 }
             }
-            if (message.guiStopVirtualDisplayRequest != null && message.hasOwnProperty('guiStopVirtualDisplayRequest')) {
+            if (message.guiStopVirtualDisplayRequest != null && message.hasOwnProperty("guiStopVirtualDisplayRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Gui.StopVirtualDisplayRequest.verify(message.guiStopVirtualDisplayRequest);
                     if (error)
-                        return 'guiStopVirtualDisplayRequest.' + error;
+                        return "guiStopVirtualDisplayRequest." + error;
                 }
             }
-            if (message.gpioSetPinMode != null && message.hasOwnProperty('gpioSetPinMode')) {
+            if (message.gpioSetPinMode != null && message.hasOwnProperty("gpioSetPinMode")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Gpio.SetPinMode.verify(message.gpioSetPinMode);
                     if (error)
-                        return 'gpioSetPinMode.' + error;
+                        return "gpioSetPinMode." + error;
                 }
             }
-            if (message.gpioSetInputPull != null && message.hasOwnProperty('gpioSetInputPull')) {
+            if (message.gpioSetInputPull != null && message.hasOwnProperty("gpioSetInputPull")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Gpio.SetInputPull.verify(message.gpioSetInputPull);
                     if (error)
-                        return 'gpioSetInputPull.' + error;
+                        return "gpioSetInputPull." + error;
                 }
             }
-            if (message.gpioGetPinMode != null && message.hasOwnProperty('gpioGetPinMode')) {
+            if (message.gpioGetPinMode != null && message.hasOwnProperty("gpioGetPinMode")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Gpio.GetPinMode.verify(message.gpioGetPinMode);
                     if (error)
-                        return 'gpioGetPinMode.' + error;
+                        return "gpioGetPinMode." + error;
                 }
             }
-            if (message.gpioGetPinModeResponse != null && message.hasOwnProperty('gpioGetPinModeResponse')) {
+            if (message.gpioGetPinModeResponse != null && message.hasOwnProperty("gpioGetPinModeResponse")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Gpio.GetPinModeResponse.verify(message.gpioGetPinModeResponse);
                     if (error)
-                        return 'gpioGetPinModeResponse.' + error;
+                        return "gpioGetPinModeResponse." + error;
                 }
             }
-            if (message.gpioReadPin != null && message.hasOwnProperty('gpioReadPin')) {
+            if (message.gpioReadPin != null && message.hasOwnProperty("gpioReadPin")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Gpio.ReadPin.verify(message.gpioReadPin);
                     if (error)
-                        return 'gpioReadPin.' + error;
+                        return "gpioReadPin." + error;
                 }
             }
-            if (message.gpioReadPinResponse != null && message.hasOwnProperty('gpioReadPinResponse')) {
+            if (message.gpioReadPinResponse != null && message.hasOwnProperty("gpioReadPinResponse")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Gpio.ReadPinResponse.verify(message.gpioReadPinResponse);
                     if (error)
-                        return 'gpioReadPinResponse.' + error;
+                        return "gpioReadPinResponse." + error;
                 }
             }
-            if (message.gpioWritePin != null && message.hasOwnProperty('gpioWritePin')) {
+            if (message.gpioWritePin != null && message.hasOwnProperty("gpioWritePin")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Gpio.WritePin.verify(message.gpioWritePin);
                     if (error)
-                        return 'gpioWritePin.' + error;
+                        return "gpioWritePin." + error;
                 }
             }
-            if (message.gpioGetOtgMode != null && message.hasOwnProperty('gpioGetOtgMode')) {
+            if (message.gpioGetOtgMode != null && message.hasOwnProperty("gpioGetOtgMode")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Gpio.GetOtgMode.verify(message.gpioGetOtgMode);
                     if (error)
-                        return 'gpioGetOtgMode.' + error;
+                        return "gpioGetOtgMode." + error;
                 }
             }
-            if (message.gpioGetOtgModeResponse != null && message.hasOwnProperty('gpioGetOtgModeResponse')) {
+            if (message.gpioGetOtgModeResponse != null && message.hasOwnProperty("gpioGetOtgModeResponse")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Gpio.GetOtgModeResponse.verify(message.gpioGetOtgModeResponse);
                     if (error)
-                        return 'gpioGetOtgModeResponse.' + error;
+                        return "gpioGetOtgModeResponse." + error;
                 }
             }
-            if (message.gpioSetOtgMode != null && message.hasOwnProperty('gpioSetOtgMode')) {
+            if (message.gpioSetOtgMode != null && message.hasOwnProperty("gpioSetOtgMode")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Gpio.SetOtgMode.verify(message.gpioSetOtgMode);
                     if (error)
-                        return 'gpioSetOtgMode.' + error;
+                        return "gpioSetOtgMode." + error;
                 }
             }
-            if (message.appStateResponse != null && message.hasOwnProperty('appStateResponse')) {
+            if (message.appStateResponse != null && message.hasOwnProperty("appStateResponse")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_App.AppStateResponse.verify(message.appStateResponse);
                     if (error)
-                        return 'appStateResponse.' + error;
+                        return "appStateResponse." + error;
                 }
             }
-            if (message.propertyGetRequest != null && message.hasOwnProperty('propertyGetRequest')) {
+            if (message.propertyGetRequest != null && message.hasOwnProperty("propertyGetRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Property.GetRequest.verify(message.propertyGetRequest);
                     if (error)
-                        return 'propertyGetRequest.' + error;
+                        return "propertyGetRequest." + error;
                 }
             }
-            if (message.propertyGetResponse != null && message.hasOwnProperty('propertyGetResponse')) {
+            if (message.propertyGetResponse != null && message.hasOwnProperty("propertyGetResponse")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Property.GetResponse.verify(message.propertyGetResponse);
                     if (error)
-                        return 'propertyGetResponse.' + error;
+                        return "propertyGetResponse." + error;
                 }
             }
-            if (message.desktopIsLockedRequest != null && message.hasOwnProperty('desktopIsLockedRequest')) {
+            if (message.desktopIsLockedRequest != null && message.hasOwnProperty("desktopIsLockedRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Desktop.IsLockedRequest.verify(message.desktopIsLockedRequest);
                     if (error)
-                        return 'desktopIsLockedRequest.' + error;
+                        return "desktopIsLockedRequest." + error;
                 }
             }
-            if (message.desktopUnlockRequest != null && message.hasOwnProperty('desktopUnlockRequest')) {
+            if (message.desktopUnlockRequest != null && message.hasOwnProperty("desktopUnlockRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Desktop.UnlockRequest.verify(message.desktopUnlockRequest);
                     if (error)
-                        return 'desktopUnlockRequest.' + error;
+                        return "desktopUnlockRequest." + error;
                 }
             }
-            if (message.desktopStatusSubscribeRequest != null && message.hasOwnProperty('desktopStatusSubscribeRequest')) {
+            if (message.desktopStatusSubscribeRequest != null && message.hasOwnProperty("desktopStatusSubscribeRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Desktop.StatusSubscribeRequest.verify(message.desktopStatusSubscribeRequest);
                     if (error)
-                        return 'desktopStatusSubscribeRequest.' + error;
+                        return "desktopStatusSubscribeRequest." + error;
                 }
             }
-            if (message.desktopStatusUnsubscribeRequest != null && message.hasOwnProperty('desktopStatusUnsubscribeRequest')) {
+            if (message.desktopStatusUnsubscribeRequest != null && message.hasOwnProperty("desktopStatusUnsubscribeRequest")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Desktop.StatusUnsubscribeRequest.verify(message.desktopStatusUnsubscribeRequest);
                     if (error)
-                        return 'desktopStatusUnsubscribeRequest.' + error;
+                        return "desktopStatusUnsubscribeRequest." + error;
                 }
             }
-            if (message.desktopStatus != null && message.hasOwnProperty('desktopStatus')) {
+            if (message.desktopStatus != null && message.hasOwnProperty("desktopStatus")) {
                 if (properties.content === 1)
-                    return 'content: multiple values';
+                    return "content: multiple values";
                 properties.content = 1;
                 {
                     let error = $root.PB_Desktop.Status.verify(message.desktopStatus);
                     if (error)
-                        return 'desktopStatus.' + error;
+                        return "desktopStatus." + error;
                 }
             }
             return null;
@@ -2966,108 +3094,108 @@ export const PB = $root.PB = (() => {
                 message.commandId = object.commandId >>> 0;
             switch (object.commandStatus) {
             default:
-                if (typeof object.commandStatus === 'number') {
+                if (typeof object.commandStatus === "number") {
                     message.commandStatus = object.commandStatus;
                     break;
                 }
                 break;
-            case 'OK':
+            case "OK":
             case 0:
                 message.commandStatus = 0;
                 break;
-            case 'ERROR':
+            case "ERROR":
             case 1:
                 message.commandStatus = 1;
                 break;
-            case 'ERROR_DECODE':
+            case "ERROR_DECODE":
             case 2:
                 message.commandStatus = 2;
                 break;
-            case 'ERROR_NOT_IMPLEMENTED':
+            case "ERROR_NOT_IMPLEMENTED":
             case 3:
                 message.commandStatus = 3;
                 break;
-            case 'ERROR_BUSY':
+            case "ERROR_BUSY":
             case 4:
                 message.commandStatus = 4;
                 break;
-            case 'ERROR_CONTINUOUS_COMMAND_INTERRUPTED':
+            case "ERROR_CONTINUOUS_COMMAND_INTERRUPTED":
             case 14:
                 message.commandStatus = 14;
                 break;
-            case 'ERROR_INVALID_PARAMETERS':
+            case "ERROR_INVALID_PARAMETERS":
             case 15:
                 message.commandStatus = 15;
                 break;
-            case 'ERROR_STORAGE_NOT_READY':
+            case "ERROR_STORAGE_NOT_READY":
             case 5:
                 message.commandStatus = 5;
                 break;
-            case 'ERROR_STORAGE_EXIST':
+            case "ERROR_STORAGE_EXIST":
             case 6:
                 message.commandStatus = 6;
                 break;
-            case 'ERROR_STORAGE_NOT_EXIST':
+            case "ERROR_STORAGE_NOT_EXIST":
             case 7:
                 message.commandStatus = 7;
                 break;
-            case 'ERROR_STORAGE_INVALID_PARAMETER':
+            case "ERROR_STORAGE_INVALID_PARAMETER":
             case 8:
                 message.commandStatus = 8;
                 break;
-            case 'ERROR_STORAGE_DENIED':
+            case "ERROR_STORAGE_DENIED":
             case 9:
                 message.commandStatus = 9;
                 break;
-            case 'ERROR_STORAGE_INVALID_NAME':
+            case "ERROR_STORAGE_INVALID_NAME":
             case 10:
                 message.commandStatus = 10;
                 break;
-            case 'ERROR_STORAGE_INTERNAL':
+            case "ERROR_STORAGE_INTERNAL":
             case 11:
                 message.commandStatus = 11;
                 break;
-            case 'ERROR_STORAGE_NOT_IMPLEMENTED':
+            case "ERROR_STORAGE_NOT_IMPLEMENTED":
             case 12:
                 message.commandStatus = 12;
                 break;
-            case 'ERROR_STORAGE_ALREADY_OPEN':
+            case "ERROR_STORAGE_ALREADY_OPEN":
             case 13:
                 message.commandStatus = 13;
                 break;
-            case 'ERROR_STORAGE_DIR_NOT_EMPTY':
+            case "ERROR_STORAGE_DIR_NOT_EMPTY":
             case 18:
                 message.commandStatus = 18;
                 break;
-            case 'ERROR_APP_CANT_START':
+            case "ERROR_APP_CANT_START":
             case 16:
                 message.commandStatus = 16;
                 break;
-            case 'ERROR_APP_SYSTEM_LOCKED':
+            case "ERROR_APP_SYSTEM_LOCKED":
             case 17:
                 message.commandStatus = 17;
                 break;
-            case 'ERROR_APP_NOT_RUNNING':
+            case "ERROR_APP_NOT_RUNNING":
             case 21:
                 message.commandStatus = 21;
                 break;
-            case 'ERROR_APP_CMD_ERROR':
+            case "ERROR_APP_CMD_ERROR":
             case 22:
                 message.commandStatus = 22;
                 break;
-            case 'ERROR_VIRTUAL_DISPLAY_ALREADY_STARTED':
+            case "ERROR_VIRTUAL_DISPLAY_ALREADY_STARTED":
             case 19:
                 message.commandStatus = 19;
                 break;
-            case 'ERROR_VIRTUAL_DISPLAY_NOT_STARTED':
+            case "ERROR_VIRTUAL_DISPLAY_NOT_STARTED":
             case 20:
                 message.commandStatus = 20;
                 break;
-            case 'ERROR_GPIO_MODE_INCORRECT':
+            case "ERROR_GPIO_MODE_INCORRECT":
             case 58:
                 message.commandStatus = 58;
                 break;
-            case 'ERROR_GPIO_UNKNOWN_PIN_MODE':
+            case "ERROR_GPIO_UNKNOWN_PIN_MODE":
             case 59:
                 message.commandStatus = 59;
                 break;
@@ -3075,358 +3203,363 @@ export const PB = $root.PB = (() => {
             if (object.hasNext != null)
                 message.hasNext = Boolean(object.hasNext);
             if (object.empty != null) {
-                if (typeof object.empty !== 'object')
-                    throw TypeError('.PB.Main.empty: object expected');
+                if (typeof object.empty !== "object")
+                    throw TypeError(".PB.Main.empty: object expected");
                 message.empty = $root.PB.Empty.fromObject(object.empty);
             }
             if (object.stopSession != null) {
-                if (typeof object.stopSession !== 'object')
-                    throw TypeError('.PB.Main.stopSession: object expected');
+                if (typeof object.stopSession !== "object")
+                    throw TypeError(".PB.Main.stopSession: object expected");
                 message.stopSession = $root.PB.StopSession.fromObject(object.stopSession);
             }
             if (object.systemPingRequest != null) {
-                if (typeof object.systemPingRequest !== 'object')
-                    throw TypeError('.PB.Main.systemPingRequest: object expected');
+                if (typeof object.systemPingRequest !== "object")
+                    throw TypeError(".PB.Main.systemPingRequest: object expected");
                 message.systemPingRequest = $root.PB_System.PingRequest.fromObject(object.systemPingRequest);
             }
             if (object.systemPingResponse != null) {
-                if (typeof object.systemPingResponse !== 'object')
-                    throw TypeError('.PB.Main.systemPingResponse: object expected');
+                if (typeof object.systemPingResponse !== "object")
+                    throw TypeError(".PB.Main.systemPingResponse: object expected");
                 message.systemPingResponse = $root.PB_System.PingResponse.fromObject(object.systemPingResponse);
             }
             if (object.systemRebootRequest != null) {
-                if (typeof object.systemRebootRequest !== 'object')
-                    throw TypeError('.PB.Main.systemRebootRequest: object expected');
+                if (typeof object.systemRebootRequest !== "object")
+                    throw TypeError(".PB.Main.systemRebootRequest: object expected");
                 message.systemRebootRequest = $root.PB_System.RebootRequest.fromObject(object.systemRebootRequest);
             }
             if (object.systemDeviceInfoRequest != null) {
-                if (typeof object.systemDeviceInfoRequest !== 'object')
-                    throw TypeError('.PB.Main.systemDeviceInfoRequest: object expected');
+                if (typeof object.systemDeviceInfoRequest !== "object")
+                    throw TypeError(".PB.Main.systemDeviceInfoRequest: object expected");
                 message.systemDeviceInfoRequest = $root.PB_System.DeviceInfoRequest.fromObject(object.systemDeviceInfoRequest);
             }
             if (object.systemDeviceInfoResponse != null) {
-                if (typeof object.systemDeviceInfoResponse !== 'object')
-                    throw TypeError('.PB.Main.systemDeviceInfoResponse: object expected');
+                if (typeof object.systemDeviceInfoResponse !== "object")
+                    throw TypeError(".PB.Main.systemDeviceInfoResponse: object expected");
                 message.systemDeviceInfoResponse = $root.PB_System.DeviceInfoResponse.fromObject(object.systemDeviceInfoResponse);
             }
             if (object.systemFactoryResetRequest != null) {
-                if (typeof object.systemFactoryResetRequest !== 'object')
-                    throw TypeError('.PB.Main.systemFactoryResetRequest: object expected');
+                if (typeof object.systemFactoryResetRequest !== "object")
+                    throw TypeError(".PB.Main.systemFactoryResetRequest: object expected");
                 message.systemFactoryResetRequest = $root.PB_System.FactoryResetRequest.fromObject(object.systemFactoryResetRequest);
             }
             if (object.systemGetDatetimeRequest != null) {
-                if (typeof object.systemGetDatetimeRequest !== 'object')
-                    throw TypeError('.PB.Main.systemGetDatetimeRequest: object expected');
+                if (typeof object.systemGetDatetimeRequest !== "object")
+                    throw TypeError(".PB.Main.systemGetDatetimeRequest: object expected");
                 message.systemGetDatetimeRequest = $root.PB_System.GetDateTimeRequest.fromObject(object.systemGetDatetimeRequest);
             }
             if (object.systemGetDatetimeResponse != null) {
-                if (typeof object.systemGetDatetimeResponse !== 'object')
-                    throw TypeError('.PB.Main.systemGetDatetimeResponse: object expected');
+                if (typeof object.systemGetDatetimeResponse !== "object")
+                    throw TypeError(".PB.Main.systemGetDatetimeResponse: object expected");
                 message.systemGetDatetimeResponse = $root.PB_System.GetDateTimeResponse.fromObject(object.systemGetDatetimeResponse);
             }
             if (object.systemSetDatetimeRequest != null) {
-                if (typeof object.systemSetDatetimeRequest !== 'object')
-                    throw TypeError('.PB.Main.systemSetDatetimeRequest: object expected');
+                if (typeof object.systemSetDatetimeRequest !== "object")
+                    throw TypeError(".PB.Main.systemSetDatetimeRequest: object expected");
                 message.systemSetDatetimeRequest = $root.PB_System.SetDateTimeRequest.fromObject(object.systemSetDatetimeRequest);
             }
             if (object.systemPlayAudiovisualAlertRequest != null) {
-                if (typeof object.systemPlayAudiovisualAlertRequest !== 'object')
-                    throw TypeError('.PB.Main.systemPlayAudiovisualAlertRequest: object expected');
+                if (typeof object.systemPlayAudiovisualAlertRequest !== "object")
+                    throw TypeError(".PB.Main.systemPlayAudiovisualAlertRequest: object expected");
                 message.systemPlayAudiovisualAlertRequest = $root.PB_System.PlayAudiovisualAlertRequest.fromObject(object.systemPlayAudiovisualAlertRequest);
             }
             if (object.systemProtobufVersionRequest != null) {
-                if (typeof object.systemProtobufVersionRequest !== 'object')
-                    throw TypeError('.PB.Main.systemProtobufVersionRequest: object expected');
+                if (typeof object.systemProtobufVersionRequest !== "object")
+                    throw TypeError(".PB.Main.systemProtobufVersionRequest: object expected");
                 message.systemProtobufVersionRequest = $root.PB_System.ProtobufVersionRequest.fromObject(object.systemProtobufVersionRequest);
             }
             if (object.systemProtobufVersionResponse != null) {
-                if (typeof object.systemProtobufVersionResponse !== 'object')
-                    throw TypeError('.PB.Main.systemProtobufVersionResponse: object expected');
+                if (typeof object.systemProtobufVersionResponse !== "object")
+                    throw TypeError(".PB.Main.systemProtobufVersionResponse: object expected");
                 message.systemProtobufVersionResponse = $root.PB_System.ProtobufVersionResponse.fromObject(object.systemProtobufVersionResponse);
             }
             if (object.systemUpdateRequest != null) {
-                if (typeof object.systemUpdateRequest !== 'object')
-                    throw TypeError('.PB.Main.systemUpdateRequest: object expected');
+                if (typeof object.systemUpdateRequest !== "object")
+                    throw TypeError(".PB.Main.systemUpdateRequest: object expected");
                 message.systemUpdateRequest = $root.PB_System.UpdateRequest.fromObject(object.systemUpdateRequest);
             }
             if (object.systemUpdateResponse != null) {
-                if (typeof object.systemUpdateResponse !== 'object')
-                    throw TypeError('.PB.Main.systemUpdateResponse: object expected');
+                if (typeof object.systemUpdateResponse !== "object")
+                    throw TypeError(".PB.Main.systemUpdateResponse: object expected");
                 message.systemUpdateResponse = $root.PB_System.UpdateResponse.fromObject(object.systemUpdateResponse);
             }
             if (object.systemPowerInfoRequest != null) {
-                if (typeof object.systemPowerInfoRequest !== 'object')
-                    throw TypeError('.PB.Main.systemPowerInfoRequest: object expected');
+                if (typeof object.systemPowerInfoRequest !== "object")
+                    throw TypeError(".PB.Main.systemPowerInfoRequest: object expected");
                 message.systemPowerInfoRequest = $root.PB_System.PowerInfoRequest.fromObject(object.systemPowerInfoRequest);
             }
             if (object.systemPowerInfoResponse != null) {
-                if (typeof object.systemPowerInfoResponse !== 'object')
-                    throw TypeError('.PB.Main.systemPowerInfoResponse: object expected');
+                if (typeof object.systemPowerInfoResponse !== "object")
+                    throw TypeError(".PB.Main.systemPowerInfoResponse: object expected");
                 message.systemPowerInfoResponse = $root.PB_System.PowerInfoResponse.fromObject(object.systemPowerInfoResponse);
             }
             if (object.storageInfoRequest != null) {
-                if (typeof object.storageInfoRequest !== 'object')
-                    throw TypeError('.PB.Main.storageInfoRequest: object expected');
+                if (typeof object.storageInfoRequest !== "object")
+                    throw TypeError(".PB.Main.storageInfoRequest: object expected");
                 message.storageInfoRequest = $root.PB_Storage.InfoRequest.fromObject(object.storageInfoRequest);
             }
             if (object.storageInfoResponse != null) {
-                if (typeof object.storageInfoResponse !== 'object')
-                    throw TypeError('.PB.Main.storageInfoResponse: object expected');
+                if (typeof object.storageInfoResponse !== "object")
+                    throw TypeError(".PB.Main.storageInfoResponse: object expected");
                 message.storageInfoResponse = $root.PB_Storage.InfoResponse.fromObject(object.storageInfoResponse);
             }
             if (object.storageTimestampRequest != null) {
-                if (typeof object.storageTimestampRequest !== 'object')
-                    throw TypeError('.PB.Main.storageTimestampRequest: object expected');
+                if (typeof object.storageTimestampRequest !== "object")
+                    throw TypeError(".PB.Main.storageTimestampRequest: object expected");
                 message.storageTimestampRequest = $root.PB_Storage.TimestampRequest.fromObject(object.storageTimestampRequest);
             }
             if (object.storageTimestampResponse != null) {
-                if (typeof object.storageTimestampResponse !== 'object')
-                    throw TypeError('.PB.Main.storageTimestampResponse: object expected');
+                if (typeof object.storageTimestampResponse !== "object")
+                    throw TypeError(".PB.Main.storageTimestampResponse: object expected");
                 message.storageTimestampResponse = $root.PB_Storage.TimestampResponse.fromObject(object.storageTimestampResponse);
             }
             if (object.storageStatRequest != null) {
-                if (typeof object.storageStatRequest !== 'object')
-                    throw TypeError('.PB.Main.storageStatRequest: object expected');
+                if (typeof object.storageStatRequest !== "object")
+                    throw TypeError(".PB.Main.storageStatRequest: object expected");
                 message.storageStatRequest = $root.PB_Storage.StatRequest.fromObject(object.storageStatRequest);
             }
             if (object.storageStatResponse != null) {
-                if (typeof object.storageStatResponse !== 'object')
-                    throw TypeError('.PB.Main.storageStatResponse: object expected');
+                if (typeof object.storageStatResponse !== "object")
+                    throw TypeError(".PB.Main.storageStatResponse: object expected");
                 message.storageStatResponse = $root.PB_Storage.StatResponse.fromObject(object.storageStatResponse);
             }
             if (object.storageListRequest != null) {
-                if (typeof object.storageListRequest !== 'object')
-                    throw TypeError('.PB.Main.storageListRequest: object expected');
+                if (typeof object.storageListRequest !== "object")
+                    throw TypeError(".PB.Main.storageListRequest: object expected");
                 message.storageListRequest = $root.PB_Storage.ListRequest.fromObject(object.storageListRequest);
             }
             if (object.storageListResponse != null) {
-                if (typeof object.storageListResponse !== 'object')
-                    throw TypeError('.PB.Main.storageListResponse: object expected');
+                if (typeof object.storageListResponse !== "object")
+                    throw TypeError(".PB.Main.storageListResponse: object expected");
                 message.storageListResponse = $root.PB_Storage.ListResponse.fromObject(object.storageListResponse);
             }
             if (object.storageReadRequest != null) {
-                if (typeof object.storageReadRequest !== 'object')
-                    throw TypeError('.PB.Main.storageReadRequest: object expected');
+                if (typeof object.storageReadRequest !== "object")
+                    throw TypeError(".PB.Main.storageReadRequest: object expected");
                 message.storageReadRequest = $root.PB_Storage.ReadRequest.fromObject(object.storageReadRequest);
             }
             if (object.storageReadResponse != null) {
-                if (typeof object.storageReadResponse !== 'object')
-                    throw TypeError('.PB.Main.storageReadResponse: object expected');
+                if (typeof object.storageReadResponse !== "object")
+                    throw TypeError(".PB.Main.storageReadResponse: object expected");
                 message.storageReadResponse = $root.PB_Storage.ReadResponse.fromObject(object.storageReadResponse);
             }
             if (object.storageWriteRequest != null) {
-                if (typeof object.storageWriteRequest !== 'object')
-                    throw TypeError('.PB.Main.storageWriteRequest: object expected');
+                if (typeof object.storageWriteRequest !== "object")
+                    throw TypeError(".PB.Main.storageWriteRequest: object expected");
                 message.storageWriteRequest = $root.PB_Storage.WriteRequest.fromObject(object.storageWriteRequest);
             }
             if (object.storageDeleteRequest != null) {
-                if (typeof object.storageDeleteRequest !== 'object')
-                    throw TypeError('.PB.Main.storageDeleteRequest: object expected');
+                if (typeof object.storageDeleteRequest !== "object")
+                    throw TypeError(".PB.Main.storageDeleteRequest: object expected");
                 message.storageDeleteRequest = $root.PB_Storage.DeleteRequest.fromObject(object.storageDeleteRequest);
             }
             if (object.storageMkdirRequest != null) {
-                if (typeof object.storageMkdirRequest !== 'object')
-                    throw TypeError('.PB.Main.storageMkdirRequest: object expected');
+                if (typeof object.storageMkdirRequest !== "object")
+                    throw TypeError(".PB.Main.storageMkdirRequest: object expected");
                 message.storageMkdirRequest = $root.PB_Storage.MkdirRequest.fromObject(object.storageMkdirRequest);
             }
             if (object.storageMd5sumRequest != null) {
-                if (typeof object.storageMd5sumRequest !== 'object')
-                    throw TypeError('.PB.Main.storageMd5sumRequest: object expected');
+                if (typeof object.storageMd5sumRequest !== "object")
+                    throw TypeError(".PB.Main.storageMd5sumRequest: object expected");
                 message.storageMd5sumRequest = $root.PB_Storage.Md5sumRequest.fromObject(object.storageMd5sumRequest);
             }
             if (object.storageMd5sumResponse != null) {
-                if (typeof object.storageMd5sumResponse !== 'object')
-                    throw TypeError('.PB.Main.storageMd5sumResponse: object expected');
+                if (typeof object.storageMd5sumResponse !== "object")
+                    throw TypeError(".PB.Main.storageMd5sumResponse: object expected");
                 message.storageMd5sumResponse = $root.PB_Storage.Md5sumResponse.fromObject(object.storageMd5sumResponse);
             }
             if (object.storageRenameRequest != null) {
-                if (typeof object.storageRenameRequest !== 'object')
-                    throw TypeError('.PB.Main.storageRenameRequest: object expected');
+                if (typeof object.storageRenameRequest !== "object")
+                    throw TypeError(".PB.Main.storageRenameRequest: object expected");
                 message.storageRenameRequest = $root.PB_Storage.RenameRequest.fromObject(object.storageRenameRequest);
             }
             if (object.storageBackupCreateRequest != null) {
-                if (typeof object.storageBackupCreateRequest !== 'object')
-                    throw TypeError('.PB.Main.storageBackupCreateRequest: object expected');
+                if (typeof object.storageBackupCreateRequest !== "object")
+                    throw TypeError(".PB.Main.storageBackupCreateRequest: object expected");
                 message.storageBackupCreateRequest = $root.PB_Storage.BackupCreateRequest.fromObject(object.storageBackupCreateRequest);
             }
             if (object.storageBackupRestoreRequest != null) {
-                if (typeof object.storageBackupRestoreRequest !== 'object')
-                    throw TypeError('.PB.Main.storageBackupRestoreRequest: object expected');
+                if (typeof object.storageBackupRestoreRequest !== "object")
+                    throw TypeError(".PB.Main.storageBackupRestoreRequest: object expected");
                 message.storageBackupRestoreRequest = $root.PB_Storage.BackupRestoreRequest.fromObject(object.storageBackupRestoreRequest);
             }
             if (object.storageTarExtractRequest != null) {
-                if (typeof object.storageTarExtractRequest !== 'object')
-                    throw TypeError('.PB.Main.storageTarExtractRequest: object expected');
+                if (typeof object.storageTarExtractRequest !== "object")
+                    throw TypeError(".PB.Main.storageTarExtractRequest: object expected");
                 message.storageTarExtractRequest = $root.PB_Storage.TarExtractRequest.fromObject(object.storageTarExtractRequest);
             }
             if (object.appStartRequest != null) {
-                if (typeof object.appStartRequest !== 'object')
-                    throw TypeError('.PB.Main.appStartRequest: object expected');
+                if (typeof object.appStartRequest !== "object")
+                    throw TypeError(".PB.Main.appStartRequest: object expected");
                 message.appStartRequest = $root.PB_App.StartRequest.fromObject(object.appStartRequest);
             }
             if (object.appLockStatusRequest != null) {
-                if (typeof object.appLockStatusRequest !== 'object')
-                    throw TypeError('.PB.Main.appLockStatusRequest: object expected');
+                if (typeof object.appLockStatusRequest !== "object")
+                    throw TypeError(".PB.Main.appLockStatusRequest: object expected");
                 message.appLockStatusRequest = $root.PB_App.LockStatusRequest.fromObject(object.appLockStatusRequest);
             }
             if (object.appLockStatusResponse != null) {
-                if (typeof object.appLockStatusResponse !== 'object')
-                    throw TypeError('.PB.Main.appLockStatusResponse: object expected');
+                if (typeof object.appLockStatusResponse !== "object")
+                    throw TypeError(".PB.Main.appLockStatusResponse: object expected");
                 message.appLockStatusResponse = $root.PB_App.LockStatusResponse.fromObject(object.appLockStatusResponse);
             }
             if (object.appExitRequest != null) {
-                if (typeof object.appExitRequest !== 'object')
-                    throw TypeError('.PB.Main.appExitRequest: object expected');
+                if (typeof object.appExitRequest !== "object")
+                    throw TypeError(".PB.Main.appExitRequest: object expected");
                 message.appExitRequest = $root.PB_App.AppExitRequest.fromObject(object.appExitRequest);
             }
             if (object.appLoadFileRequest != null) {
-                if (typeof object.appLoadFileRequest !== 'object')
-                    throw TypeError('.PB.Main.appLoadFileRequest: object expected');
+                if (typeof object.appLoadFileRequest !== "object")
+                    throw TypeError(".PB.Main.appLoadFileRequest: object expected");
                 message.appLoadFileRequest = $root.PB_App.AppLoadFileRequest.fromObject(object.appLoadFileRequest);
             }
             if (object.appButtonPressRequest != null) {
-                if (typeof object.appButtonPressRequest !== 'object')
-                    throw TypeError('.PB.Main.appButtonPressRequest: object expected');
+                if (typeof object.appButtonPressRequest !== "object")
+                    throw TypeError(".PB.Main.appButtonPressRequest: object expected");
                 message.appButtonPressRequest = $root.PB_App.AppButtonPressRequest.fromObject(object.appButtonPressRequest);
             }
             if (object.appButtonReleaseRequest != null) {
-                if (typeof object.appButtonReleaseRequest !== 'object')
-                    throw TypeError('.PB.Main.appButtonReleaseRequest: object expected');
+                if (typeof object.appButtonReleaseRequest !== "object")
+                    throw TypeError(".PB.Main.appButtonReleaseRequest: object expected");
                 message.appButtonReleaseRequest = $root.PB_App.AppButtonReleaseRequest.fromObject(object.appButtonReleaseRequest);
             }
+            if (object.appButtonPressReleaseRequest != null) {
+                if (typeof object.appButtonPressReleaseRequest !== "object")
+                    throw TypeError(".PB.Main.appButtonPressReleaseRequest: object expected");
+                message.appButtonPressReleaseRequest = $root.PB_App.AppButtonPressReleaseRequest.fromObject(object.appButtonPressReleaseRequest);
+            }
             if (object.appGetErrorRequest != null) {
-                if (typeof object.appGetErrorRequest !== 'object')
-                    throw TypeError('.PB.Main.appGetErrorRequest: object expected');
+                if (typeof object.appGetErrorRequest !== "object")
+                    throw TypeError(".PB.Main.appGetErrorRequest: object expected");
                 message.appGetErrorRequest = $root.PB_App.GetErrorRequest.fromObject(object.appGetErrorRequest);
             }
             if (object.appGetErrorResponse != null) {
-                if (typeof object.appGetErrorResponse !== 'object')
-                    throw TypeError('.PB.Main.appGetErrorResponse: object expected');
+                if (typeof object.appGetErrorResponse !== "object")
+                    throw TypeError(".PB.Main.appGetErrorResponse: object expected");
                 message.appGetErrorResponse = $root.PB_App.GetErrorResponse.fromObject(object.appGetErrorResponse);
             }
             if (object.appDataExchangeRequest != null) {
-                if (typeof object.appDataExchangeRequest !== 'object')
-                    throw TypeError('.PB.Main.appDataExchangeRequest: object expected');
+                if (typeof object.appDataExchangeRequest !== "object")
+                    throw TypeError(".PB.Main.appDataExchangeRequest: object expected");
                 message.appDataExchangeRequest = $root.PB_App.DataExchangeRequest.fromObject(object.appDataExchangeRequest);
             }
             if (object.guiStartScreenStreamRequest != null) {
-                if (typeof object.guiStartScreenStreamRequest !== 'object')
-                    throw TypeError('.PB.Main.guiStartScreenStreamRequest: object expected');
+                if (typeof object.guiStartScreenStreamRequest !== "object")
+                    throw TypeError(".PB.Main.guiStartScreenStreamRequest: object expected");
                 message.guiStartScreenStreamRequest = $root.PB_Gui.StartScreenStreamRequest.fromObject(object.guiStartScreenStreamRequest);
             }
             if (object.guiStopScreenStreamRequest != null) {
-                if (typeof object.guiStopScreenStreamRequest !== 'object')
-                    throw TypeError('.PB.Main.guiStopScreenStreamRequest: object expected');
+                if (typeof object.guiStopScreenStreamRequest !== "object")
+                    throw TypeError(".PB.Main.guiStopScreenStreamRequest: object expected");
                 message.guiStopScreenStreamRequest = $root.PB_Gui.StopScreenStreamRequest.fromObject(object.guiStopScreenStreamRequest);
             }
             if (object.guiScreenFrame != null) {
-                if (typeof object.guiScreenFrame !== 'object')
-                    throw TypeError('.PB.Main.guiScreenFrame: object expected');
+                if (typeof object.guiScreenFrame !== "object")
+                    throw TypeError(".PB.Main.guiScreenFrame: object expected");
                 message.guiScreenFrame = $root.PB_Gui.ScreenFrame.fromObject(object.guiScreenFrame);
             }
             if (object.guiSendInputEventRequest != null) {
-                if (typeof object.guiSendInputEventRequest !== 'object')
-                    throw TypeError('.PB.Main.guiSendInputEventRequest: object expected');
+                if (typeof object.guiSendInputEventRequest !== "object")
+                    throw TypeError(".PB.Main.guiSendInputEventRequest: object expected");
                 message.guiSendInputEventRequest = $root.PB_Gui.SendInputEventRequest.fromObject(object.guiSendInputEventRequest);
             }
             if (object.guiStartVirtualDisplayRequest != null) {
-                if (typeof object.guiStartVirtualDisplayRequest !== 'object')
-                    throw TypeError('.PB.Main.guiStartVirtualDisplayRequest: object expected');
+                if (typeof object.guiStartVirtualDisplayRequest !== "object")
+                    throw TypeError(".PB.Main.guiStartVirtualDisplayRequest: object expected");
                 message.guiStartVirtualDisplayRequest = $root.PB_Gui.StartVirtualDisplayRequest.fromObject(object.guiStartVirtualDisplayRequest);
             }
             if (object.guiStopVirtualDisplayRequest != null) {
-                if (typeof object.guiStopVirtualDisplayRequest !== 'object')
-                    throw TypeError('.PB.Main.guiStopVirtualDisplayRequest: object expected');
+                if (typeof object.guiStopVirtualDisplayRequest !== "object")
+                    throw TypeError(".PB.Main.guiStopVirtualDisplayRequest: object expected");
                 message.guiStopVirtualDisplayRequest = $root.PB_Gui.StopVirtualDisplayRequest.fromObject(object.guiStopVirtualDisplayRequest);
             }
             if (object.gpioSetPinMode != null) {
-                if (typeof object.gpioSetPinMode !== 'object')
-                    throw TypeError('.PB.Main.gpioSetPinMode: object expected');
+                if (typeof object.gpioSetPinMode !== "object")
+                    throw TypeError(".PB.Main.gpioSetPinMode: object expected");
                 message.gpioSetPinMode = $root.PB_Gpio.SetPinMode.fromObject(object.gpioSetPinMode);
             }
             if (object.gpioSetInputPull != null) {
-                if (typeof object.gpioSetInputPull !== 'object')
-                    throw TypeError('.PB.Main.gpioSetInputPull: object expected');
+                if (typeof object.gpioSetInputPull !== "object")
+                    throw TypeError(".PB.Main.gpioSetInputPull: object expected");
                 message.gpioSetInputPull = $root.PB_Gpio.SetInputPull.fromObject(object.gpioSetInputPull);
             }
             if (object.gpioGetPinMode != null) {
-                if (typeof object.gpioGetPinMode !== 'object')
-                    throw TypeError('.PB.Main.gpioGetPinMode: object expected');
+                if (typeof object.gpioGetPinMode !== "object")
+                    throw TypeError(".PB.Main.gpioGetPinMode: object expected");
                 message.gpioGetPinMode = $root.PB_Gpio.GetPinMode.fromObject(object.gpioGetPinMode);
             }
             if (object.gpioGetPinModeResponse != null) {
-                if (typeof object.gpioGetPinModeResponse !== 'object')
-                    throw TypeError('.PB.Main.gpioGetPinModeResponse: object expected');
+                if (typeof object.gpioGetPinModeResponse !== "object")
+                    throw TypeError(".PB.Main.gpioGetPinModeResponse: object expected");
                 message.gpioGetPinModeResponse = $root.PB_Gpio.GetPinModeResponse.fromObject(object.gpioGetPinModeResponse);
             }
             if (object.gpioReadPin != null) {
-                if (typeof object.gpioReadPin !== 'object')
-                    throw TypeError('.PB.Main.gpioReadPin: object expected');
+                if (typeof object.gpioReadPin !== "object")
+                    throw TypeError(".PB.Main.gpioReadPin: object expected");
                 message.gpioReadPin = $root.PB_Gpio.ReadPin.fromObject(object.gpioReadPin);
             }
             if (object.gpioReadPinResponse != null) {
-                if (typeof object.gpioReadPinResponse !== 'object')
-                    throw TypeError('.PB.Main.gpioReadPinResponse: object expected');
+                if (typeof object.gpioReadPinResponse !== "object")
+                    throw TypeError(".PB.Main.gpioReadPinResponse: object expected");
                 message.gpioReadPinResponse = $root.PB_Gpio.ReadPinResponse.fromObject(object.gpioReadPinResponse);
             }
             if (object.gpioWritePin != null) {
-                if (typeof object.gpioWritePin !== 'object')
-                    throw TypeError('.PB.Main.gpioWritePin: object expected');
+                if (typeof object.gpioWritePin !== "object")
+                    throw TypeError(".PB.Main.gpioWritePin: object expected");
                 message.gpioWritePin = $root.PB_Gpio.WritePin.fromObject(object.gpioWritePin);
             }
             if (object.gpioGetOtgMode != null) {
-                if (typeof object.gpioGetOtgMode !== 'object')
-                    throw TypeError('.PB.Main.gpioGetOtgMode: object expected');
+                if (typeof object.gpioGetOtgMode !== "object")
+                    throw TypeError(".PB.Main.gpioGetOtgMode: object expected");
                 message.gpioGetOtgMode = $root.PB_Gpio.GetOtgMode.fromObject(object.gpioGetOtgMode);
             }
             if (object.gpioGetOtgModeResponse != null) {
-                if (typeof object.gpioGetOtgModeResponse !== 'object')
-                    throw TypeError('.PB.Main.gpioGetOtgModeResponse: object expected');
+                if (typeof object.gpioGetOtgModeResponse !== "object")
+                    throw TypeError(".PB.Main.gpioGetOtgModeResponse: object expected");
                 message.gpioGetOtgModeResponse = $root.PB_Gpio.GetOtgModeResponse.fromObject(object.gpioGetOtgModeResponse);
             }
             if (object.gpioSetOtgMode != null) {
-                if (typeof object.gpioSetOtgMode !== 'object')
-                    throw TypeError('.PB.Main.gpioSetOtgMode: object expected');
+                if (typeof object.gpioSetOtgMode !== "object")
+                    throw TypeError(".PB.Main.gpioSetOtgMode: object expected");
                 message.gpioSetOtgMode = $root.PB_Gpio.SetOtgMode.fromObject(object.gpioSetOtgMode);
             }
             if (object.appStateResponse != null) {
-                if (typeof object.appStateResponse !== 'object')
-                    throw TypeError('.PB.Main.appStateResponse: object expected');
+                if (typeof object.appStateResponse !== "object")
+                    throw TypeError(".PB.Main.appStateResponse: object expected");
                 message.appStateResponse = $root.PB_App.AppStateResponse.fromObject(object.appStateResponse);
             }
             if (object.propertyGetRequest != null) {
-                if (typeof object.propertyGetRequest !== 'object')
-                    throw TypeError('.PB.Main.propertyGetRequest: object expected');
+                if (typeof object.propertyGetRequest !== "object")
+                    throw TypeError(".PB.Main.propertyGetRequest: object expected");
                 message.propertyGetRequest = $root.PB_Property.GetRequest.fromObject(object.propertyGetRequest);
             }
             if (object.propertyGetResponse != null) {
-                if (typeof object.propertyGetResponse !== 'object')
-                    throw TypeError('.PB.Main.propertyGetResponse: object expected');
+                if (typeof object.propertyGetResponse !== "object")
+                    throw TypeError(".PB.Main.propertyGetResponse: object expected");
                 message.propertyGetResponse = $root.PB_Property.GetResponse.fromObject(object.propertyGetResponse);
             }
             if (object.desktopIsLockedRequest != null) {
-                if (typeof object.desktopIsLockedRequest !== 'object')
-                    throw TypeError('.PB.Main.desktopIsLockedRequest: object expected');
+                if (typeof object.desktopIsLockedRequest !== "object")
+                    throw TypeError(".PB.Main.desktopIsLockedRequest: object expected");
                 message.desktopIsLockedRequest = $root.PB_Desktop.IsLockedRequest.fromObject(object.desktopIsLockedRequest);
             }
             if (object.desktopUnlockRequest != null) {
-                if (typeof object.desktopUnlockRequest !== 'object')
-                    throw TypeError('.PB.Main.desktopUnlockRequest: object expected');
+                if (typeof object.desktopUnlockRequest !== "object")
+                    throw TypeError(".PB.Main.desktopUnlockRequest: object expected");
                 message.desktopUnlockRequest = $root.PB_Desktop.UnlockRequest.fromObject(object.desktopUnlockRequest);
             }
             if (object.desktopStatusSubscribeRequest != null) {
-                if (typeof object.desktopStatusSubscribeRequest !== 'object')
-                    throw TypeError('.PB.Main.desktopStatusSubscribeRequest: object expected');
+                if (typeof object.desktopStatusSubscribeRequest !== "object")
+                    throw TypeError(".PB.Main.desktopStatusSubscribeRequest: object expected");
                 message.desktopStatusSubscribeRequest = $root.PB_Desktop.StatusSubscribeRequest.fromObject(object.desktopStatusSubscribeRequest);
             }
             if (object.desktopStatusUnsubscribeRequest != null) {
-                if (typeof object.desktopStatusUnsubscribeRequest !== 'object')
-                    throw TypeError('.PB.Main.desktopStatusUnsubscribeRequest: object expected');
+                if (typeof object.desktopStatusUnsubscribeRequest !== "object")
+                    throw TypeError(".PB.Main.desktopStatusUnsubscribeRequest: object expected");
                 message.desktopStatusUnsubscribeRequest = $root.PB_Desktop.StatusUnsubscribeRequest.fromObject(object.desktopStatusUnsubscribeRequest);
             }
             if (object.desktopStatus != null) {
-                if (typeof object.desktopStatus !== 'object')
-                    throw TypeError('.PB.Main.desktopStatus: object expected');
+                if (typeof object.desktopStatus !== "object")
+                    throw TypeError(".PB.Main.desktopStatus: object expected");
                 message.desktopStatus = $root.PB_Desktop.Status.fromObject(object.desktopStatus);
             }
             return message;
@@ -3438,369 +3571,374 @@ export const PB = $root.PB = (() => {
             let object = {};
             if (options.defaults) {
                 object.commandId = 0;
-                object.commandStatus = options.enums === String ? 'OK' : 0;
+                object.commandStatus = options.enums === String ? "OK" : 0;
                 object.hasNext = false;
             }
-            if (message.commandId != null && message.hasOwnProperty('commandId'))
+            if (message.commandId != null && message.hasOwnProperty("commandId"))
                 object.commandId = message.commandId;
-            if (message.commandStatus != null && message.hasOwnProperty('commandStatus'))
+            if (message.commandStatus != null && message.hasOwnProperty("commandStatus"))
                 object.commandStatus = options.enums === String ? $root.PB.CommandStatus[message.commandStatus] === undefined ? message.commandStatus : $root.PB.CommandStatus[message.commandStatus] : message.commandStatus;
-            if (message.hasNext != null && message.hasOwnProperty('hasNext'))
+            if (message.hasNext != null && message.hasOwnProperty("hasNext"))
                 object.hasNext = message.hasNext;
-            if (message.empty != null && message.hasOwnProperty('empty')) {
+            if (message.empty != null && message.hasOwnProperty("empty")) {
                 object.empty = $root.PB.Empty.toObject(message.empty, options);
                 if (options.oneofs)
-                    object.content = 'empty';
+                    object.content = "empty";
             }
-            if (message.systemPingRequest != null && message.hasOwnProperty('systemPingRequest')) {
+            if (message.systemPingRequest != null && message.hasOwnProperty("systemPingRequest")) {
                 object.systemPingRequest = $root.PB_System.PingRequest.toObject(message.systemPingRequest, options);
                 if (options.oneofs)
-                    object.content = 'systemPingRequest';
+                    object.content = "systemPingRequest";
             }
-            if (message.systemPingResponse != null && message.hasOwnProperty('systemPingResponse')) {
+            if (message.systemPingResponse != null && message.hasOwnProperty("systemPingResponse")) {
                 object.systemPingResponse = $root.PB_System.PingResponse.toObject(message.systemPingResponse, options);
                 if (options.oneofs)
-                    object.content = 'systemPingResponse';
+                    object.content = "systemPingResponse";
             }
-            if (message.storageListRequest != null && message.hasOwnProperty('storageListRequest')) {
+            if (message.storageListRequest != null && message.hasOwnProperty("storageListRequest")) {
                 object.storageListRequest = $root.PB_Storage.ListRequest.toObject(message.storageListRequest, options);
                 if (options.oneofs)
-                    object.content = 'storageListRequest';
+                    object.content = "storageListRequest";
             }
-            if (message.storageListResponse != null && message.hasOwnProperty('storageListResponse')) {
+            if (message.storageListResponse != null && message.hasOwnProperty("storageListResponse")) {
                 object.storageListResponse = $root.PB_Storage.ListResponse.toObject(message.storageListResponse, options);
                 if (options.oneofs)
-                    object.content = 'storageListResponse';
+                    object.content = "storageListResponse";
             }
-            if (message.storageReadRequest != null && message.hasOwnProperty('storageReadRequest')) {
+            if (message.storageReadRequest != null && message.hasOwnProperty("storageReadRequest")) {
                 object.storageReadRequest = $root.PB_Storage.ReadRequest.toObject(message.storageReadRequest, options);
                 if (options.oneofs)
-                    object.content = 'storageReadRequest';
+                    object.content = "storageReadRequest";
             }
-            if (message.storageReadResponse != null && message.hasOwnProperty('storageReadResponse')) {
+            if (message.storageReadResponse != null && message.hasOwnProperty("storageReadResponse")) {
                 object.storageReadResponse = $root.PB_Storage.ReadResponse.toObject(message.storageReadResponse, options);
                 if (options.oneofs)
-                    object.content = 'storageReadResponse';
+                    object.content = "storageReadResponse";
             }
-            if (message.storageWriteRequest != null && message.hasOwnProperty('storageWriteRequest')) {
+            if (message.storageWriteRequest != null && message.hasOwnProperty("storageWriteRequest")) {
                 object.storageWriteRequest = $root.PB_Storage.WriteRequest.toObject(message.storageWriteRequest, options);
                 if (options.oneofs)
-                    object.content = 'storageWriteRequest';
+                    object.content = "storageWriteRequest";
             }
-            if (message.storageDeleteRequest != null && message.hasOwnProperty('storageDeleteRequest')) {
+            if (message.storageDeleteRequest != null && message.hasOwnProperty("storageDeleteRequest")) {
                 object.storageDeleteRequest = $root.PB_Storage.DeleteRequest.toObject(message.storageDeleteRequest, options);
                 if (options.oneofs)
-                    object.content = 'storageDeleteRequest';
+                    object.content = "storageDeleteRequest";
             }
-            if (message.storageMkdirRequest != null && message.hasOwnProperty('storageMkdirRequest')) {
+            if (message.storageMkdirRequest != null && message.hasOwnProperty("storageMkdirRequest")) {
                 object.storageMkdirRequest = $root.PB_Storage.MkdirRequest.toObject(message.storageMkdirRequest, options);
                 if (options.oneofs)
-                    object.content = 'storageMkdirRequest';
+                    object.content = "storageMkdirRequest";
             }
-            if (message.storageMd5sumRequest != null && message.hasOwnProperty('storageMd5sumRequest')) {
+            if (message.storageMd5sumRequest != null && message.hasOwnProperty("storageMd5sumRequest")) {
                 object.storageMd5sumRequest = $root.PB_Storage.Md5sumRequest.toObject(message.storageMd5sumRequest, options);
                 if (options.oneofs)
-                    object.content = 'storageMd5sumRequest';
+                    object.content = "storageMd5sumRequest";
             }
-            if (message.storageMd5sumResponse != null && message.hasOwnProperty('storageMd5sumResponse')) {
+            if (message.storageMd5sumResponse != null && message.hasOwnProperty("storageMd5sumResponse")) {
                 object.storageMd5sumResponse = $root.PB_Storage.Md5sumResponse.toObject(message.storageMd5sumResponse, options);
                 if (options.oneofs)
-                    object.content = 'storageMd5sumResponse';
+                    object.content = "storageMd5sumResponse";
             }
-            if (message.appStartRequest != null && message.hasOwnProperty('appStartRequest')) {
+            if (message.appStartRequest != null && message.hasOwnProperty("appStartRequest")) {
                 object.appStartRequest = $root.PB_App.StartRequest.toObject(message.appStartRequest, options);
                 if (options.oneofs)
-                    object.content = 'appStartRequest';
+                    object.content = "appStartRequest";
             }
-            if (message.appLockStatusRequest != null && message.hasOwnProperty('appLockStatusRequest')) {
+            if (message.appLockStatusRequest != null && message.hasOwnProperty("appLockStatusRequest")) {
                 object.appLockStatusRequest = $root.PB_App.LockStatusRequest.toObject(message.appLockStatusRequest, options);
                 if (options.oneofs)
-                    object.content = 'appLockStatusRequest';
+                    object.content = "appLockStatusRequest";
             }
-            if (message.appLockStatusResponse != null && message.hasOwnProperty('appLockStatusResponse')) {
+            if (message.appLockStatusResponse != null && message.hasOwnProperty("appLockStatusResponse")) {
                 object.appLockStatusResponse = $root.PB_App.LockStatusResponse.toObject(message.appLockStatusResponse, options);
                 if (options.oneofs)
-                    object.content = 'appLockStatusResponse';
+                    object.content = "appLockStatusResponse";
             }
-            if (message.stopSession != null && message.hasOwnProperty('stopSession')) {
+            if (message.stopSession != null && message.hasOwnProperty("stopSession")) {
                 object.stopSession = $root.PB.StopSession.toObject(message.stopSession, options);
                 if (options.oneofs)
-                    object.content = 'stopSession';
+                    object.content = "stopSession";
             }
-            if (message.guiStartScreenStreamRequest != null && message.hasOwnProperty('guiStartScreenStreamRequest')) {
+            if (message.guiStartScreenStreamRequest != null && message.hasOwnProperty("guiStartScreenStreamRequest")) {
                 object.guiStartScreenStreamRequest = $root.PB_Gui.StartScreenStreamRequest.toObject(message.guiStartScreenStreamRequest, options);
                 if (options.oneofs)
-                    object.content = 'guiStartScreenStreamRequest';
+                    object.content = "guiStartScreenStreamRequest";
             }
-            if (message.guiStopScreenStreamRequest != null && message.hasOwnProperty('guiStopScreenStreamRequest')) {
+            if (message.guiStopScreenStreamRequest != null && message.hasOwnProperty("guiStopScreenStreamRequest")) {
                 object.guiStopScreenStreamRequest = $root.PB_Gui.StopScreenStreamRequest.toObject(message.guiStopScreenStreamRequest, options);
                 if (options.oneofs)
-                    object.content = 'guiStopScreenStreamRequest';
+                    object.content = "guiStopScreenStreamRequest";
             }
-            if (message.guiScreenFrame != null && message.hasOwnProperty('guiScreenFrame')) {
+            if (message.guiScreenFrame != null && message.hasOwnProperty("guiScreenFrame")) {
                 object.guiScreenFrame = $root.PB_Gui.ScreenFrame.toObject(message.guiScreenFrame, options);
                 if (options.oneofs)
-                    object.content = 'guiScreenFrame';
+                    object.content = "guiScreenFrame";
             }
-            if (message.guiSendInputEventRequest != null && message.hasOwnProperty('guiSendInputEventRequest')) {
+            if (message.guiSendInputEventRequest != null && message.hasOwnProperty("guiSendInputEventRequest")) {
                 object.guiSendInputEventRequest = $root.PB_Gui.SendInputEventRequest.toObject(message.guiSendInputEventRequest, options);
                 if (options.oneofs)
-                    object.content = 'guiSendInputEventRequest';
+                    object.content = "guiSendInputEventRequest";
             }
-            if (message.storageStatRequest != null && message.hasOwnProperty('storageStatRequest')) {
+            if (message.storageStatRequest != null && message.hasOwnProperty("storageStatRequest")) {
                 object.storageStatRequest = $root.PB_Storage.StatRequest.toObject(message.storageStatRequest, options);
                 if (options.oneofs)
-                    object.content = 'storageStatRequest';
+                    object.content = "storageStatRequest";
             }
-            if (message.storageStatResponse != null && message.hasOwnProperty('storageStatResponse')) {
+            if (message.storageStatResponse != null && message.hasOwnProperty("storageStatResponse")) {
                 object.storageStatResponse = $root.PB_Storage.StatResponse.toObject(message.storageStatResponse, options);
                 if (options.oneofs)
-                    object.content = 'storageStatResponse';
+                    object.content = "storageStatResponse";
             }
-            if (message.guiStartVirtualDisplayRequest != null && message.hasOwnProperty('guiStartVirtualDisplayRequest')) {
+            if (message.guiStartVirtualDisplayRequest != null && message.hasOwnProperty("guiStartVirtualDisplayRequest")) {
                 object.guiStartVirtualDisplayRequest = $root.PB_Gui.StartVirtualDisplayRequest.toObject(message.guiStartVirtualDisplayRequest, options);
                 if (options.oneofs)
-                    object.content = 'guiStartVirtualDisplayRequest';
+                    object.content = "guiStartVirtualDisplayRequest";
             }
-            if (message.guiStopVirtualDisplayRequest != null && message.hasOwnProperty('guiStopVirtualDisplayRequest')) {
+            if (message.guiStopVirtualDisplayRequest != null && message.hasOwnProperty("guiStopVirtualDisplayRequest")) {
                 object.guiStopVirtualDisplayRequest = $root.PB_Gui.StopVirtualDisplayRequest.toObject(message.guiStopVirtualDisplayRequest, options);
                 if (options.oneofs)
-                    object.content = 'guiStopVirtualDisplayRequest';
+                    object.content = "guiStopVirtualDisplayRequest";
             }
-            if (message.storageInfoRequest != null && message.hasOwnProperty('storageInfoRequest')) {
+            if (message.storageInfoRequest != null && message.hasOwnProperty("storageInfoRequest")) {
                 object.storageInfoRequest = $root.PB_Storage.InfoRequest.toObject(message.storageInfoRequest, options);
                 if (options.oneofs)
-                    object.content = 'storageInfoRequest';
+                    object.content = "storageInfoRequest";
             }
-            if (message.storageInfoResponse != null && message.hasOwnProperty('storageInfoResponse')) {
+            if (message.storageInfoResponse != null && message.hasOwnProperty("storageInfoResponse")) {
                 object.storageInfoResponse = $root.PB_Storage.InfoResponse.toObject(message.storageInfoResponse, options);
                 if (options.oneofs)
-                    object.content = 'storageInfoResponse';
+                    object.content = "storageInfoResponse";
             }
-            if (message.storageRenameRequest != null && message.hasOwnProperty('storageRenameRequest')) {
+            if (message.storageRenameRequest != null && message.hasOwnProperty("storageRenameRequest")) {
                 object.storageRenameRequest = $root.PB_Storage.RenameRequest.toObject(message.storageRenameRequest, options);
                 if (options.oneofs)
-                    object.content = 'storageRenameRequest';
+                    object.content = "storageRenameRequest";
             }
-            if (message.systemRebootRequest != null && message.hasOwnProperty('systemRebootRequest')) {
+            if (message.systemRebootRequest != null && message.hasOwnProperty("systemRebootRequest")) {
                 object.systemRebootRequest = $root.PB_System.RebootRequest.toObject(message.systemRebootRequest, options);
                 if (options.oneofs)
-                    object.content = 'systemRebootRequest';
+                    object.content = "systemRebootRequest";
             }
-            if (message.systemDeviceInfoRequest != null && message.hasOwnProperty('systemDeviceInfoRequest')) {
+            if (message.systemDeviceInfoRequest != null && message.hasOwnProperty("systemDeviceInfoRequest")) {
                 object.systemDeviceInfoRequest = $root.PB_System.DeviceInfoRequest.toObject(message.systemDeviceInfoRequest, options);
                 if (options.oneofs)
-                    object.content = 'systemDeviceInfoRequest';
+                    object.content = "systemDeviceInfoRequest";
             }
-            if (message.systemDeviceInfoResponse != null && message.hasOwnProperty('systemDeviceInfoResponse')) {
+            if (message.systemDeviceInfoResponse != null && message.hasOwnProperty("systemDeviceInfoResponse")) {
                 object.systemDeviceInfoResponse = $root.PB_System.DeviceInfoResponse.toObject(message.systemDeviceInfoResponse, options);
                 if (options.oneofs)
-                    object.content = 'systemDeviceInfoResponse';
+                    object.content = "systemDeviceInfoResponse";
             }
-            if (message.systemFactoryResetRequest != null && message.hasOwnProperty('systemFactoryResetRequest')) {
+            if (message.systemFactoryResetRequest != null && message.hasOwnProperty("systemFactoryResetRequest")) {
                 object.systemFactoryResetRequest = $root.PB_System.FactoryResetRequest.toObject(message.systemFactoryResetRequest, options);
                 if (options.oneofs)
-                    object.content = 'systemFactoryResetRequest';
+                    object.content = "systemFactoryResetRequest";
             }
-            if (message.systemGetDatetimeRequest != null && message.hasOwnProperty('systemGetDatetimeRequest')) {
+            if (message.systemGetDatetimeRequest != null && message.hasOwnProperty("systemGetDatetimeRequest")) {
                 object.systemGetDatetimeRequest = $root.PB_System.GetDateTimeRequest.toObject(message.systemGetDatetimeRequest, options);
                 if (options.oneofs)
-                    object.content = 'systemGetDatetimeRequest';
+                    object.content = "systemGetDatetimeRequest";
             }
-            if (message.systemGetDatetimeResponse != null && message.hasOwnProperty('systemGetDatetimeResponse')) {
+            if (message.systemGetDatetimeResponse != null && message.hasOwnProperty("systemGetDatetimeResponse")) {
                 object.systemGetDatetimeResponse = $root.PB_System.GetDateTimeResponse.toObject(message.systemGetDatetimeResponse, options);
                 if (options.oneofs)
-                    object.content = 'systemGetDatetimeResponse';
+                    object.content = "systemGetDatetimeResponse";
             }
-            if (message.systemSetDatetimeRequest != null && message.hasOwnProperty('systemSetDatetimeRequest')) {
+            if (message.systemSetDatetimeRequest != null && message.hasOwnProperty("systemSetDatetimeRequest")) {
                 object.systemSetDatetimeRequest = $root.PB_System.SetDateTimeRequest.toObject(message.systemSetDatetimeRequest, options);
                 if (options.oneofs)
-                    object.content = 'systemSetDatetimeRequest';
+                    object.content = "systemSetDatetimeRequest";
             }
-            if (message.systemPlayAudiovisualAlertRequest != null && message.hasOwnProperty('systemPlayAudiovisualAlertRequest')) {
+            if (message.systemPlayAudiovisualAlertRequest != null && message.hasOwnProperty("systemPlayAudiovisualAlertRequest")) {
                 object.systemPlayAudiovisualAlertRequest = $root.PB_System.PlayAudiovisualAlertRequest.toObject(message.systemPlayAudiovisualAlertRequest, options);
                 if (options.oneofs)
-                    object.content = 'systemPlayAudiovisualAlertRequest';
+                    object.content = "systemPlayAudiovisualAlertRequest";
             }
-            if (message.systemProtobufVersionRequest != null && message.hasOwnProperty('systemProtobufVersionRequest')) {
+            if (message.systemProtobufVersionRequest != null && message.hasOwnProperty("systemProtobufVersionRequest")) {
                 object.systemProtobufVersionRequest = $root.PB_System.ProtobufVersionRequest.toObject(message.systemProtobufVersionRequest, options);
                 if (options.oneofs)
-                    object.content = 'systemProtobufVersionRequest';
+                    object.content = "systemProtobufVersionRequest";
             }
-            if (message.systemProtobufVersionResponse != null && message.hasOwnProperty('systemProtobufVersionResponse')) {
+            if (message.systemProtobufVersionResponse != null && message.hasOwnProperty("systemProtobufVersionResponse")) {
                 object.systemProtobufVersionResponse = $root.PB_System.ProtobufVersionResponse.toObject(message.systemProtobufVersionResponse, options);
                 if (options.oneofs)
-                    object.content = 'systemProtobufVersionResponse';
+                    object.content = "systemProtobufVersionResponse";
             }
-            if (message.systemUpdateRequest != null && message.hasOwnProperty('systemUpdateRequest')) {
+            if (message.systemUpdateRequest != null && message.hasOwnProperty("systemUpdateRequest")) {
                 object.systemUpdateRequest = $root.PB_System.UpdateRequest.toObject(message.systemUpdateRequest, options);
                 if (options.oneofs)
-                    object.content = 'systemUpdateRequest';
+                    object.content = "systemUpdateRequest";
             }
-            if (message.storageBackupCreateRequest != null && message.hasOwnProperty('storageBackupCreateRequest')) {
+            if (message.storageBackupCreateRequest != null && message.hasOwnProperty("storageBackupCreateRequest")) {
                 object.storageBackupCreateRequest = $root.PB_Storage.BackupCreateRequest.toObject(message.storageBackupCreateRequest, options);
                 if (options.oneofs)
-                    object.content = 'storageBackupCreateRequest';
+                    object.content = "storageBackupCreateRequest";
             }
-            if (message.storageBackupRestoreRequest != null && message.hasOwnProperty('storageBackupRestoreRequest')) {
+            if (message.storageBackupRestoreRequest != null && message.hasOwnProperty("storageBackupRestoreRequest")) {
                 object.storageBackupRestoreRequest = $root.PB_Storage.BackupRestoreRequest.toObject(message.storageBackupRestoreRequest, options);
                 if (options.oneofs)
-                    object.content = 'storageBackupRestoreRequest';
+                    object.content = "storageBackupRestoreRequest";
             }
-            if (message.systemPowerInfoRequest != null && message.hasOwnProperty('systemPowerInfoRequest')) {
+            if (message.systemPowerInfoRequest != null && message.hasOwnProperty("systemPowerInfoRequest")) {
                 object.systemPowerInfoRequest = $root.PB_System.PowerInfoRequest.toObject(message.systemPowerInfoRequest, options);
                 if (options.oneofs)
-                    object.content = 'systemPowerInfoRequest';
+                    object.content = "systemPowerInfoRequest";
             }
-            if (message.systemPowerInfoResponse != null && message.hasOwnProperty('systemPowerInfoResponse')) {
+            if (message.systemPowerInfoResponse != null && message.hasOwnProperty("systemPowerInfoResponse")) {
                 object.systemPowerInfoResponse = $root.PB_System.PowerInfoResponse.toObject(message.systemPowerInfoResponse, options);
                 if (options.oneofs)
-                    object.content = 'systemPowerInfoResponse';
+                    object.content = "systemPowerInfoResponse";
             }
-            if (message.systemUpdateResponse != null && message.hasOwnProperty('systemUpdateResponse')) {
+            if (message.systemUpdateResponse != null && message.hasOwnProperty("systemUpdateResponse")) {
                 object.systemUpdateResponse = $root.PB_System.UpdateResponse.toObject(message.systemUpdateResponse, options);
                 if (options.oneofs)
-                    object.content = 'systemUpdateResponse';
+                    object.content = "systemUpdateResponse";
             }
-            if (message.appExitRequest != null && message.hasOwnProperty('appExitRequest')) {
+            if (message.appExitRequest != null && message.hasOwnProperty("appExitRequest")) {
                 object.appExitRequest = $root.PB_App.AppExitRequest.toObject(message.appExitRequest, options);
                 if (options.oneofs)
-                    object.content = 'appExitRequest';
+                    object.content = "appExitRequest";
             }
-            if (message.appLoadFileRequest != null && message.hasOwnProperty('appLoadFileRequest')) {
+            if (message.appLoadFileRequest != null && message.hasOwnProperty("appLoadFileRequest")) {
                 object.appLoadFileRequest = $root.PB_App.AppLoadFileRequest.toObject(message.appLoadFileRequest, options);
                 if (options.oneofs)
-                    object.content = 'appLoadFileRequest';
+                    object.content = "appLoadFileRequest";
             }
-            if (message.appButtonPressRequest != null && message.hasOwnProperty('appButtonPressRequest')) {
+            if (message.appButtonPressRequest != null && message.hasOwnProperty("appButtonPressRequest")) {
                 object.appButtonPressRequest = $root.PB_App.AppButtonPressRequest.toObject(message.appButtonPressRequest, options);
                 if (options.oneofs)
-                    object.content = 'appButtonPressRequest';
+                    object.content = "appButtonPressRequest";
             }
-            if (message.appButtonReleaseRequest != null && message.hasOwnProperty('appButtonReleaseRequest')) {
+            if (message.appButtonReleaseRequest != null && message.hasOwnProperty("appButtonReleaseRequest")) {
                 object.appButtonReleaseRequest = $root.PB_App.AppButtonReleaseRequest.toObject(message.appButtonReleaseRequest, options);
                 if (options.oneofs)
-                    object.content = 'appButtonReleaseRequest';
+                    object.content = "appButtonReleaseRequest";
             }
-            if (message.gpioSetPinMode != null && message.hasOwnProperty('gpioSetPinMode')) {
+            if (message.gpioSetPinMode != null && message.hasOwnProperty("gpioSetPinMode")) {
                 object.gpioSetPinMode = $root.PB_Gpio.SetPinMode.toObject(message.gpioSetPinMode, options);
                 if (options.oneofs)
-                    object.content = 'gpioSetPinMode';
+                    object.content = "gpioSetPinMode";
             }
-            if (message.gpioSetInputPull != null && message.hasOwnProperty('gpioSetInputPull')) {
+            if (message.gpioSetInputPull != null && message.hasOwnProperty("gpioSetInputPull")) {
                 object.gpioSetInputPull = $root.PB_Gpio.SetInputPull.toObject(message.gpioSetInputPull, options);
                 if (options.oneofs)
-                    object.content = 'gpioSetInputPull';
+                    object.content = "gpioSetInputPull";
             }
-            if (message.gpioGetPinMode != null && message.hasOwnProperty('gpioGetPinMode')) {
+            if (message.gpioGetPinMode != null && message.hasOwnProperty("gpioGetPinMode")) {
                 object.gpioGetPinMode = $root.PB_Gpio.GetPinMode.toObject(message.gpioGetPinMode, options);
                 if (options.oneofs)
-                    object.content = 'gpioGetPinMode';
+                    object.content = "gpioGetPinMode";
             }
-            if (message.gpioGetPinModeResponse != null && message.hasOwnProperty('gpioGetPinModeResponse')) {
+            if (message.gpioGetPinModeResponse != null && message.hasOwnProperty("gpioGetPinModeResponse")) {
                 object.gpioGetPinModeResponse = $root.PB_Gpio.GetPinModeResponse.toObject(message.gpioGetPinModeResponse, options);
                 if (options.oneofs)
-                    object.content = 'gpioGetPinModeResponse';
+                    object.content = "gpioGetPinModeResponse";
             }
-            if (message.gpioReadPin != null && message.hasOwnProperty('gpioReadPin')) {
+            if (message.gpioReadPin != null && message.hasOwnProperty("gpioReadPin")) {
                 object.gpioReadPin = $root.PB_Gpio.ReadPin.toObject(message.gpioReadPin, options);
                 if (options.oneofs)
-                    object.content = 'gpioReadPin';
+                    object.content = "gpioReadPin";
             }
-            if (message.gpioReadPinResponse != null && message.hasOwnProperty('gpioReadPinResponse')) {
+            if (message.gpioReadPinResponse != null && message.hasOwnProperty("gpioReadPinResponse")) {
                 object.gpioReadPinResponse = $root.PB_Gpio.ReadPinResponse.toObject(message.gpioReadPinResponse, options);
                 if (options.oneofs)
-                    object.content = 'gpioReadPinResponse';
+                    object.content = "gpioReadPinResponse";
             }
-            if (message.gpioWritePin != null && message.hasOwnProperty('gpioWritePin')) {
+            if (message.gpioWritePin != null && message.hasOwnProperty("gpioWritePin")) {
                 object.gpioWritePin = $root.PB_Gpio.WritePin.toObject(message.gpioWritePin, options);
                 if (options.oneofs)
-                    object.content = 'gpioWritePin';
+                    object.content = "gpioWritePin";
             }
-            if (message.appStateResponse != null && message.hasOwnProperty('appStateResponse')) {
+            if (message.appStateResponse != null && message.hasOwnProperty("appStateResponse")) {
                 object.appStateResponse = $root.PB_App.AppStateResponse.toObject(message.appStateResponse, options);
                 if (options.oneofs)
-                    object.content = 'appStateResponse';
+                    object.content = "appStateResponse";
             }
-            if (message.storageTimestampRequest != null && message.hasOwnProperty('storageTimestampRequest')) {
+            if (message.storageTimestampRequest != null && message.hasOwnProperty("storageTimestampRequest")) {
                 object.storageTimestampRequest = $root.PB_Storage.TimestampRequest.toObject(message.storageTimestampRequest, options);
                 if (options.oneofs)
-                    object.content = 'storageTimestampRequest';
+                    object.content = "storageTimestampRequest";
             }
-            if (message.storageTimestampResponse != null && message.hasOwnProperty('storageTimestampResponse')) {
+            if (message.storageTimestampResponse != null && message.hasOwnProperty("storageTimestampResponse")) {
                 object.storageTimestampResponse = $root.PB_Storage.TimestampResponse.toObject(message.storageTimestampResponse, options);
                 if (options.oneofs)
-                    object.content = 'storageTimestampResponse';
+                    object.content = "storageTimestampResponse";
             }
-            if (message.propertyGetRequest != null && message.hasOwnProperty('propertyGetRequest')) {
+            if (message.propertyGetRequest != null && message.hasOwnProperty("propertyGetRequest")) {
                 object.propertyGetRequest = $root.PB_Property.GetRequest.toObject(message.propertyGetRequest, options);
                 if (options.oneofs)
-                    object.content = 'propertyGetRequest';
+                    object.content = "propertyGetRequest";
             }
-            if (message.propertyGetResponse != null && message.hasOwnProperty('propertyGetResponse')) {
+            if (message.propertyGetResponse != null && message.hasOwnProperty("propertyGetResponse")) {
                 object.propertyGetResponse = $root.PB_Property.GetResponse.toObject(message.propertyGetResponse, options);
                 if (options.oneofs)
-                    object.content = 'propertyGetResponse';
+                    object.content = "propertyGetResponse";
             }
-            if (message.appGetErrorRequest != null && message.hasOwnProperty('appGetErrorRequest')) {
+            if (message.appGetErrorRequest != null && message.hasOwnProperty("appGetErrorRequest")) {
                 object.appGetErrorRequest = $root.PB_App.GetErrorRequest.toObject(message.appGetErrorRequest, options);
                 if (options.oneofs)
-                    object.content = 'appGetErrorRequest';
+                    object.content = "appGetErrorRequest";
             }
-            if (message.appGetErrorResponse != null && message.hasOwnProperty('appGetErrorResponse')) {
+            if (message.appGetErrorResponse != null && message.hasOwnProperty("appGetErrorResponse")) {
                 object.appGetErrorResponse = $root.PB_App.GetErrorResponse.toObject(message.appGetErrorResponse, options);
                 if (options.oneofs)
-                    object.content = 'appGetErrorResponse';
+                    object.content = "appGetErrorResponse";
             }
-            if (message.appDataExchangeRequest != null && message.hasOwnProperty('appDataExchangeRequest')) {
+            if (message.appDataExchangeRequest != null && message.hasOwnProperty("appDataExchangeRequest")) {
                 object.appDataExchangeRequest = $root.PB_App.DataExchangeRequest.toObject(message.appDataExchangeRequest, options);
                 if (options.oneofs)
-                    object.content = 'appDataExchangeRequest';
+                    object.content = "appDataExchangeRequest";
             }
-            if (message.desktopIsLockedRequest != null && message.hasOwnProperty('desktopIsLockedRequest')) {
+            if (message.desktopIsLockedRequest != null && message.hasOwnProperty("desktopIsLockedRequest")) {
                 object.desktopIsLockedRequest = $root.PB_Desktop.IsLockedRequest.toObject(message.desktopIsLockedRequest, options);
                 if (options.oneofs)
-                    object.content = 'desktopIsLockedRequest';
+                    object.content = "desktopIsLockedRequest";
             }
-            if (message.desktopUnlockRequest != null && message.hasOwnProperty('desktopUnlockRequest')) {
+            if (message.desktopUnlockRequest != null && message.hasOwnProperty("desktopUnlockRequest")) {
                 object.desktopUnlockRequest = $root.PB_Desktop.UnlockRequest.toObject(message.desktopUnlockRequest, options);
                 if (options.oneofs)
-                    object.content = 'desktopUnlockRequest';
+                    object.content = "desktopUnlockRequest";
             }
-            if (message.desktopStatusSubscribeRequest != null && message.hasOwnProperty('desktopStatusSubscribeRequest')) {
+            if (message.desktopStatusSubscribeRequest != null && message.hasOwnProperty("desktopStatusSubscribeRequest")) {
                 object.desktopStatusSubscribeRequest = $root.PB_Desktop.StatusSubscribeRequest.toObject(message.desktopStatusSubscribeRequest, options);
                 if (options.oneofs)
-                    object.content = 'desktopStatusSubscribeRequest';
+                    object.content = "desktopStatusSubscribeRequest";
             }
-            if (message.desktopStatusUnsubscribeRequest != null && message.hasOwnProperty('desktopStatusUnsubscribeRequest')) {
+            if (message.desktopStatusUnsubscribeRequest != null && message.hasOwnProperty("desktopStatusUnsubscribeRequest")) {
                 object.desktopStatusUnsubscribeRequest = $root.PB_Desktop.StatusUnsubscribeRequest.toObject(message.desktopStatusUnsubscribeRequest, options);
                 if (options.oneofs)
-                    object.content = 'desktopStatusUnsubscribeRequest';
+                    object.content = "desktopStatusUnsubscribeRequest";
             }
-            if (message.desktopStatus != null && message.hasOwnProperty('desktopStatus')) {
+            if (message.desktopStatus != null && message.hasOwnProperty("desktopStatus")) {
                 object.desktopStatus = $root.PB_Desktop.Status.toObject(message.desktopStatus, options);
                 if (options.oneofs)
-                    object.content = 'desktopStatus';
+                    object.content = "desktopStatus";
             }
-            if (message.storageTarExtractRequest != null && message.hasOwnProperty('storageTarExtractRequest')) {
+            if (message.storageTarExtractRequest != null && message.hasOwnProperty("storageTarExtractRequest")) {
                 object.storageTarExtractRequest = $root.PB_Storage.TarExtractRequest.toObject(message.storageTarExtractRequest, options);
                 if (options.oneofs)
-                    object.content = 'storageTarExtractRequest';
+                    object.content = "storageTarExtractRequest";
             }
-            if (message.gpioGetOtgMode != null && message.hasOwnProperty('gpioGetOtgMode')) {
+            if (message.gpioGetOtgMode != null && message.hasOwnProperty("gpioGetOtgMode")) {
                 object.gpioGetOtgMode = $root.PB_Gpio.GetOtgMode.toObject(message.gpioGetOtgMode, options);
                 if (options.oneofs)
-                    object.content = 'gpioGetOtgMode';
+                    object.content = "gpioGetOtgMode";
             }
-            if (message.gpioGetOtgModeResponse != null && message.hasOwnProperty('gpioGetOtgModeResponse')) {
+            if (message.gpioGetOtgModeResponse != null && message.hasOwnProperty("gpioGetOtgModeResponse")) {
                 object.gpioGetOtgModeResponse = $root.PB_Gpio.GetOtgModeResponse.toObject(message.gpioGetOtgModeResponse, options);
                 if (options.oneofs)
-                    object.content = 'gpioGetOtgModeResponse';
+                    object.content = "gpioGetOtgModeResponse";
             }
-            if (message.gpioSetOtgMode != null && message.hasOwnProperty('gpioSetOtgMode')) {
+            if (message.gpioSetOtgMode != null && message.hasOwnProperty("gpioSetOtgMode")) {
                 object.gpioSetOtgMode = $root.PB_Gpio.SetOtgMode.toObject(message.gpioSetOtgMode, options);
                 if (options.oneofs)
-                    object.content = 'gpioSetOtgMode';
+                    object.content = "gpioSetOtgMode";
+            }
+            if (message.appButtonPressReleaseRequest != null && message.hasOwnProperty("appButtonPressReleaseRequest")) {
+                object.appButtonPressReleaseRequest = $root.PB_App.AppButtonPressReleaseRequest.toObject(message.appButtonPressReleaseRequest, options);
+                if (options.oneofs)
+                    object.content = "appButtonPressReleaseRequest";
             }
             return object;
         };
@@ -3811,9 +3949,9 @@ export const PB = $root.PB = (() => {
 
         Main.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB.Main';
+            return typeUrlPrefix + "/PB.Main";
         };
 
         return Main;
@@ -3839,7 +3977,7 @@ export const PB = $root.PB = (() => {
         Region.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.countryCode != null && Object.hasOwnProperty.call(message, 'countryCode'))
+            if (message.countryCode != null && Object.hasOwnProperty.call(message, "countryCode"))
                 writer.uint32(10).bytes(message.countryCode);
             if (message.bands != null && message.bands.length)
                 for (let i = 0; i < message.bands.length; ++i)
@@ -3883,18 +4021,18 @@ export const PB = $root.PB = (() => {
         };
 
         Region.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.countryCode != null && message.hasOwnProperty('countryCode'))
-                if (!(message.countryCode && typeof message.countryCode.length === 'number' || $util.isString(message.countryCode)))
-                    return 'countryCode: buffer expected';
-            if (message.bands != null && message.hasOwnProperty('bands')) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.countryCode != null && message.hasOwnProperty("countryCode"))
+                if (!(message.countryCode && typeof message.countryCode.length === "number" || $util.isString(message.countryCode)))
+                    return "countryCode: buffer expected";
+            if (message.bands != null && message.hasOwnProperty("bands")) {
                 if (!Array.isArray(message.bands))
-                    return 'bands: array expected';
+                    return "bands: array expected";
                 for (let i = 0; i < message.bands.length; ++i) {
                     let error = $root.PB.Region.Band.verify(message.bands[i]);
                     if (error)
-                        return 'bands.' + error;
+                        return "bands." + error;
                 }
             }
             return null;
@@ -3905,17 +4043,17 @@ export const PB = $root.PB = (() => {
                 return object;
             let message = new $root.PB.Region();
             if (object.countryCode != null)
-                if (typeof object.countryCode === 'string')
+                if (typeof object.countryCode === "string")
                     $util.base64.decode(object.countryCode, message.countryCode = $util.newBuffer($util.base64.length(object.countryCode)), 0);
                 else if (object.countryCode.length >= 0)
                     message.countryCode = object.countryCode;
             if (object.bands) {
                 if (!Array.isArray(object.bands))
-                    throw TypeError('.PB.Region.bands: array expected');
+                    throw TypeError(".PB.Region.bands: array expected");
                 message.bands = [];
                 for (let i = 0; i < object.bands.length; ++i) {
-                    if (typeof object.bands[i] !== 'object')
-                        throw TypeError('.PB.Region.bands: object expected');
+                    if (typeof object.bands[i] !== "object")
+                        throw TypeError(".PB.Region.bands: object expected");
                     message.bands[i] = $root.PB.Region.Band.fromObject(object.bands[i]);
                 }
             }
@@ -3930,13 +4068,13 @@ export const PB = $root.PB = (() => {
                 object.bands = [];
             if (options.defaults)
                 if (options.bytes === String)
-                    object.countryCode = '';
+                    object.countryCode = "";
                 else {
                     object.countryCode = [];
                     if (options.bytes !== Array)
                         object.countryCode = $util.newBuffer(object.countryCode);
                 }
-            if (message.countryCode != null && message.hasOwnProperty('countryCode'))
+            if (message.countryCode != null && message.hasOwnProperty("countryCode"))
                 object.countryCode = options.bytes === String ? $util.base64.encode(message.countryCode, 0, message.countryCode.length) : options.bytes === Array ? Array.prototype.slice.call(message.countryCode) : message.countryCode;
             if (message.bands && message.bands.length) {
                 object.bands = [];
@@ -3952,9 +4090,9 @@ export const PB = $root.PB = (() => {
 
         Region.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB.Region';
+            return typeUrlPrefix + "/PB.Region";
         };
 
         Region.Band = (function() {
@@ -3978,13 +4116,13 @@ export const PB = $root.PB = (() => {
             Band.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.start != null && Object.hasOwnProperty.call(message, 'start'))
+                if (message.start != null && Object.hasOwnProperty.call(message, "start"))
                     writer.uint32(8).uint32(message.start);
-                if (message.end != null && Object.hasOwnProperty.call(message, 'end'))
+                if (message.end != null && Object.hasOwnProperty.call(message, "end"))
                     writer.uint32(16).uint32(message.end);
-                if (message.powerLimit != null && Object.hasOwnProperty.call(message, 'powerLimit'))
+                if (message.powerLimit != null && Object.hasOwnProperty.call(message, "powerLimit"))
                     writer.uint32(24).int32(message.powerLimit);
-                if (message.dutyCycle != null && Object.hasOwnProperty.call(message, 'dutyCycle'))
+                if (message.dutyCycle != null && Object.hasOwnProperty.call(message, "dutyCycle"))
                     writer.uint32(32).uint32(message.dutyCycle);
                 return writer;
             };
@@ -4031,20 +4169,20 @@ export const PB = $root.PB = (() => {
             };
 
             Band.verify = function verify(message) {
-                if (typeof message !== 'object' || message === null)
-                    return 'object expected';
-                if (message.start != null && message.hasOwnProperty('start'))
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.start != null && message.hasOwnProperty("start"))
                     if (!$util.isInteger(message.start))
-                        return 'start: integer expected';
-                if (message.end != null && message.hasOwnProperty('end'))
+                        return "start: integer expected";
+                if (message.end != null && message.hasOwnProperty("end"))
                     if (!$util.isInteger(message.end))
-                        return 'end: integer expected';
-                if (message.powerLimit != null && message.hasOwnProperty('powerLimit'))
+                        return "end: integer expected";
+                if (message.powerLimit != null && message.hasOwnProperty("powerLimit"))
                     if (!$util.isInteger(message.powerLimit))
-                        return 'powerLimit: integer expected';
-                if (message.dutyCycle != null && message.hasOwnProperty('dutyCycle'))
+                        return "powerLimit: integer expected";
+                if (message.dutyCycle != null && message.hasOwnProperty("dutyCycle"))
                     if (!$util.isInteger(message.dutyCycle))
-                        return 'dutyCycle: integer expected';
+                        return "dutyCycle: integer expected";
                 return null;
             };
 
@@ -4073,13 +4211,13 @@ export const PB = $root.PB = (() => {
                     object.powerLimit = 0;
                     object.dutyCycle = 0;
                 }
-                if (message.start != null && message.hasOwnProperty('start'))
+                if (message.start != null && message.hasOwnProperty("start"))
                     object.start = message.start;
-                if (message.end != null && message.hasOwnProperty('end'))
+                if (message.end != null && message.hasOwnProperty("end"))
                     object.end = message.end;
-                if (message.powerLimit != null && message.hasOwnProperty('powerLimit'))
+                if (message.powerLimit != null && message.hasOwnProperty("powerLimit"))
                     object.powerLimit = message.powerLimit;
-                if (message.dutyCycle != null && message.hasOwnProperty('dutyCycle'))
+                if (message.dutyCycle != null && message.hasOwnProperty("dutyCycle"))
                     object.dutyCycle = message.dutyCycle;
                 return object;
             };
@@ -4090,9 +4228,9 @@ export const PB = $root.PB = (() => {
 
             Band.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
                 if (typeUrlPrefix === undefined) {
-                    typeUrlPrefix = 'type.googleapis.com';
+                    typeUrlPrefix = "type.googleapis.com";
                 }
-                return typeUrlPrefix + '/PB.Region.Band';
+                return typeUrlPrefix + "/PB.Region.Band";
             };
 
             return Band;
@@ -4118,10 +4256,10 @@ export const PB_Storage = $root.PB_Storage = (() => {
         }
 
         File.prototype.type = 0;
-        File.prototype.name = '';
+        File.prototype.name = "";
         File.prototype.size = 0;
         File.prototype.data = $util.newBuffer([]);
-        File.prototype.md5sum = '';
+        File.prototype.md5sum = "";
 
         File.create = function create(properties) {
             return new File(properties);
@@ -4130,15 +4268,15 @@ export const PB_Storage = $root.PB_Storage = (() => {
         File.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.type != null && Object.hasOwnProperty.call(message, 'type'))
+            if (message.type != null && Object.hasOwnProperty.call(message, "type"))
                 writer.uint32(8).int32(message.type);
-            if (message.name != null && Object.hasOwnProperty.call(message, 'name'))
+            if (message.name != null && Object.hasOwnProperty.call(message, "name"))
                 writer.uint32(18).string(message.name);
-            if (message.size != null && Object.hasOwnProperty.call(message, 'size'))
+            if (message.size != null && Object.hasOwnProperty.call(message, "size"))
                 writer.uint32(24).uint32(message.size);
-            if (message.data != null && Object.hasOwnProperty.call(message, 'data'))
+            if (message.data != null && Object.hasOwnProperty.call(message, "data"))
                 writer.uint32(34).bytes(message.data);
-            if (message.md5sum != null && Object.hasOwnProperty.call(message, 'md5sum'))
+            if (message.md5sum != null && Object.hasOwnProperty.call(message, "md5sum"))
                 writer.uint32(42).string(message.md5sum);
             return writer;
         };
@@ -4189,28 +4327,28 @@ export const PB_Storage = $root.PB_Storage = (() => {
         };
 
         File.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.type != null && message.hasOwnProperty('type'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.type != null && message.hasOwnProperty("type"))
                 switch (message.type) {
                 default:
-                    return 'type: enum value expected';
+                    return "type: enum value expected";
                 case 0:
                 case 1:
                     break;
                 }
-            if (message.name != null && message.hasOwnProperty('name'))
+            if (message.name != null && message.hasOwnProperty("name"))
                 if (!$util.isString(message.name))
-                    return 'name: string expected';
-            if (message.size != null && message.hasOwnProperty('size'))
+                    return "name: string expected";
+            if (message.size != null && message.hasOwnProperty("size"))
                 if (!$util.isInteger(message.size))
-                    return 'size: integer expected';
-            if (message.data != null && message.hasOwnProperty('data'))
-                if (!(message.data && typeof message.data.length === 'number' || $util.isString(message.data)))
-                    return 'data: buffer expected';
-            if (message.md5sum != null && message.hasOwnProperty('md5sum'))
+                    return "size: integer expected";
+            if (message.data != null && message.hasOwnProperty("data"))
+                if (!(message.data && typeof message.data.length === "number" || $util.isString(message.data)))
+                    return "data: buffer expected";
+            if (message.md5sum != null && message.hasOwnProperty("md5sum"))
                 if (!$util.isString(message.md5sum))
-                    return 'md5sum: string expected';
+                    return "md5sum: string expected";
             return null;
         };
 
@@ -4220,16 +4358,16 @@ export const PB_Storage = $root.PB_Storage = (() => {
             let message = new $root.PB_Storage.File();
             switch (object.type) {
             default:
-                if (typeof object.type === 'number') {
+                if (typeof object.type === "number") {
                     message.type = object.type;
                     break;
                 }
                 break;
-            case 'FILE':
+            case "FILE":
             case 0:
                 message.type = 0;
                 break;
-            case 'DIR':
+            case "DIR":
             case 1:
                 message.type = 1;
                 break;
@@ -4239,7 +4377,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
             if (object.size != null)
                 message.size = object.size >>> 0;
             if (object.data != null)
-                if (typeof object.data === 'string')
+                if (typeof object.data === "string")
                     $util.base64.decode(object.data, message.data = $util.newBuffer($util.base64.length(object.data)), 0);
                 else if (object.data.length >= 0)
                     message.data = object.data;
@@ -4253,27 +4391,27 @@ export const PB_Storage = $root.PB_Storage = (() => {
                 options = {};
             let object = {};
             if (options.defaults) {
-                object.type = options.enums === String ? 'FILE' : 0;
-                object.name = '';
+                object.type = options.enums === String ? "FILE" : 0;
+                object.name = "";
                 object.size = 0;
                 if (options.bytes === String)
-                    object.data = '';
+                    object.data = "";
                 else {
                     object.data = [];
                     if (options.bytes !== Array)
                         object.data = $util.newBuffer(object.data);
                 }
-                object.md5sum = '';
+                object.md5sum = "";
             }
-            if (message.type != null && message.hasOwnProperty('type'))
+            if (message.type != null && message.hasOwnProperty("type"))
                 object.type = options.enums === String ? $root.PB_Storage.File.FileType[message.type] === undefined ? message.type : $root.PB_Storage.File.FileType[message.type] : message.type;
-            if (message.name != null && message.hasOwnProperty('name'))
+            if (message.name != null && message.hasOwnProperty("name"))
                 object.name = message.name;
-            if (message.size != null && message.hasOwnProperty('size'))
+            if (message.size != null && message.hasOwnProperty("size"))
                 object.size = message.size;
-            if (message.data != null && message.hasOwnProperty('data'))
+            if (message.data != null && message.hasOwnProperty("data"))
                 object.data = options.bytes === String ? $util.base64.encode(message.data, 0, message.data.length) : options.bytes === Array ? Array.prototype.slice.call(message.data) : message.data;
-            if (message.md5sum != null && message.hasOwnProperty('md5sum'))
+            if (message.md5sum != null && message.hasOwnProperty("md5sum"))
                 object.md5sum = message.md5sum;
             return object;
         };
@@ -4284,15 +4422,15 @@ export const PB_Storage = $root.PB_Storage = (() => {
 
         File.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Storage.File';
+            return typeUrlPrefix + "/PB_Storage.File";
         };
 
         File.FileType = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = 'FILE'] = 0;
-            values[valuesById[1] = 'DIR'] = 1;
+            values[valuesById[0] = "FILE"] = 0;
+            values[valuesById[1] = "DIR"] = 1;
             return values;
         })();
 
@@ -4308,7 +4446,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
                         this[keys[i]] = properties[keys[i]];
         }
 
-        InfoRequest.prototype.path = '';
+        InfoRequest.prototype.path = "";
 
         InfoRequest.create = function create(properties) {
             return new InfoRequest(properties);
@@ -4317,7 +4455,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
         InfoRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.path != null && Object.hasOwnProperty.call(message, 'path'))
+            if (message.path != null && Object.hasOwnProperty.call(message, "path"))
                 writer.uint32(10).string(message.path);
             return writer;
         };
@@ -4352,11 +4490,11 @@ export const PB_Storage = $root.PB_Storage = (() => {
         };
 
         InfoRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.path != null && message.hasOwnProperty('path'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.path != null && message.hasOwnProperty("path"))
                 if (!$util.isString(message.path))
-                    return 'path: string expected';
+                    return "path: string expected";
             return null;
         };
 
@@ -4374,8 +4512,8 @@ export const PB_Storage = $root.PB_Storage = (() => {
                 options = {};
             let object = {};
             if (options.defaults)
-                object.path = '';
-            if (message.path != null && message.hasOwnProperty('path'))
+                object.path = "";
+            if (message.path != null && message.hasOwnProperty("path"))
                 object.path = message.path;
             return object;
         };
@@ -4386,9 +4524,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
 
         InfoRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Storage.InfoRequest';
+            return typeUrlPrefix + "/PB_Storage.InfoRequest";
         };
 
         return InfoRequest;
@@ -4413,9 +4551,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
         InfoResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.totalSpace != null && Object.hasOwnProperty.call(message, 'totalSpace'))
+            if (message.totalSpace != null && Object.hasOwnProperty.call(message, "totalSpace"))
                 writer.uint32(8).uint64(message.totalSpace);
-            if (message.freeSpace != null && Object.hasOwnProperty.call(message, 'freeSpace'))
+            if (message.freeSpace != null && Object.hasOwnProperty.call(message, "freeSpace"))
                 writer.uint32(16).uint64(message.freeSpace);
             return writer;
         };
@@ -4454,14 +4592,14 @@ export const PB_Storage = $root.PB_Storage = (() => {
         };
 
         InfoResponse.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.totalSpace != null && message.hasOwnProperty('totalSpace'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.totalSpace != null && message.hasOwnProperty("totalSpace"))
                 if (!$util.isInteger(message.totalSpace) && !(message.totalSpace && $util.isInteger(message.totalSpace.low) && $util.isInteger(message.totalSpace.high)))
-                    return 'totalSpace: integer|Long expected';
-            if (message.freeSpace != null && message.hasOwnProperty('freeSpace'))
+                    return "totalSpace: integer|Long expected";
+            if (message.freeSpace != null && message.hasOwnProperty("freeSpace"))
                 if (!$util.isInteger(message.freeSpace) && !(message.freeSpace && $util.isInteger(message.freeSpace.low) && $util.isInteger(message.freeSpace.high)))
-                    return 'freeSpace: integer|Long expected';
+                    return "freeSpace: integer|Long expected";
             return null;
         };
 
@@ -4472,20 +4610,20 @@ export const PB_Storage = $root.PB_Storage = (() => {
             if (object.totalSpace != null)
                 if ($util.Long)
                     (message.totalSpace = $util.Long.fromValue(object.totalSpace)).unsigned = true;
-                else if (typeof object.totalSpace === 'string')
+                else if (typeof object.totalSpace === "string")
                     message.totalSpace = parseInt(object.totalSpace, 10);
-                else if (typeof object.totalSpace === 'number')
+                else if (typeof object.totalSpace === "number")
                     message.totalSpace = object.totalSpace;
-                else if (typeof object.totalSpace === 'object')
+                else if (typeof object.totalSpace === "object")
                     message.totalSpace = new $util.LongBits(object.totalSpace.low >>> 0, object.totalSpace.high >>> 0).toNumber(true);
             if (object.freeSpace != null)
                 if ($util.Long)
                     (message.freeSpace = $util.Long.fromValue(object.freeSpace)).unsigned = true;
-                else if (typeof object.freeSpace === 'string')
+                else if (typeof object.freeSpace === "string")
                     message.freeSpace = parseInt(object.freeSpace, 10);
-                else if (typeof object.freeSpace === 'number')
+                else if (typeof object.freeSpace === "number")
                     message.freeSpace = object.freeSpace;
-                else if (typeof object.freeSpace === 'object')
+                else if (typeof object.freeSpace === "object")
                     message.freeSpace = new $util.LongBits(object.freeSpace.low >>> 0, object.freeSpace.high >>> 0).toNumber(true);
             return message;
         };
@@ -4499,20 +4637,20 @@ export const PB_Storage = $root.PB_Storage = (() => {
                     let long = new $util.Long(0, 0, true);
                     object.totalSpace = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                 } else
-                    object.totalSpace = options.longs === String ? '0' : 0;
+                    object.totalSpace = options.longs === String ? "0" : 0;
                 if ($util.Long) {
                     let long = new $util.Long(0, 0, true);
                     object.freeSpace = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                 } else
-                    object.freeSpace = options.longs === String ? '0' : 0;
+                    object.freeSpace = options.longs === String ? "0" : 0;
             }
-            if (message.totalSpace != null && message.hasOwnProperty('totalSpace'))
-                if (typeof message.totalSpace === 'number')
+            if (message.totalSpace != null && message.hasOwnProperty("totalSpace"))
+                if (typeof message.totalSpace === "number")
                     object.totalSpace = options.longs === String ? String(message.totalSpace) : message.totalSpace;
                 else
                     object.totalSpace = options.longs === String ? $util.Long.prototype.toString.call(message.totalSpace) : options.longs === Number ? new $util.LongBits(message.totalSpace.low >>> 0, message.totalSpace.high >>> 0).toNumber(true) : message.totalSpace;
-            if (message.freeSpace != null && message.hasOwnProperty('freeSpace'))
-                if (typeof message.freeSpace === 'number')
+            if (message.freeSpace != null && message.hasOwnProperty("freeSpace"))
+                if (typeof message.freeSpace === "number")
                     object.freeSpace = options.longs === String ? String(message.freeSpace) : message.freeSpace;
                 else
                     object.freeSpace = options.longs === String ? $util.Long.prototype.toString.call(message.freeSpace) : options.longs === Number ? new $util.LongBits(message.freeSpace.low >>> 0, message.freeSpace.high >>> 0).toNumber(true) : message.freeSpace;
@@ -4525,9 +4663,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
 
         InfoResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Storage.InfoResponse';
+            return typeUrlPrefix + "/PB_Storage.InfoResponse";
         };
 
         return InfoResponse;
@@ -4542,7 +4680,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
                         this[keys[i]] = properties[keys[i]];
         }
 
-        TimestampRequest.prototype.path = '';
+        TimestampRequest.prototype.path = "";
 
         TimestampRequest.create = function create(properties) {
             return new TimestampRequest(properties);
@@ -4551,7 +4689,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
         TimestampRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.path != null && Object.hasOwnProperty.call(message, 'path'))
+            if (message.path != null && Object.hasOwnProperty.call(message, "path"))
                 writer.uint32(10).string(message.path);
             return writer;
         };
@@ -4586,11 +4724,11 @@ export const PB_Storage = $root.PB_Storage = (() => {
         };
 
         TimestampRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.path != null && message.hasOwnProperty('path'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.path != null && message.hasOwnProperty("path"))
                 if (!$util.isString(message.path))
-                    return 'path: string expected';
+                    return "path: string expected";
             return null;
         };
 
@@ -4608,8 +4746,8 @@ export const PB_Storage = $root.PB_Storage = (() => {
                 options = {};
             let object = {};
             if (options.defaults)
-                object.path = '';
-            if (message.path != null && message.hasOwnProperty('path'))
+                object.path = "";
+            if (message.path != null && message.hasOwnProperty("path"))
                 object.path = message.path;
             return object;
         };
@@ -4620,9 +4758,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
 
         TimestampRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Storage.TimestampRequest';
+            return typeUrlPrefix + "/PB_Storage.TimestampRequest";
         };
 
         return TimestampRequest;
@@ -4646,7 +4784,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
         TimestampResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.timestamp != null && Object.hasOwnProperty.call(message, 'timestamp'))
+            if (message.timestamp != null && Object.hasOwnProperty.call(message, "timestamp"))
                 writer.uint32(8).uint32(message.timestamp);
             return writer;
         };
@@ -4681,11 +4819,11 @@ export const PB_Storage = $root.PB_Storage = (() => {
         };
 
         TimestampResponse.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.timestamp != null && message.hasOwnProperty('timestamp'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.timestamp != null && message.hasOwnProperty("timestamp"))
                 if (!$util.isInteger(message.timestamp))
-                    return 'timestamp: integer expected';
+                    return "timestamp: integer expected";
             return null;
         };
 
@@ -4704,7 +4842,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
             let object = {};
             if (options.defaults)
                 object.timestamp = 0;
-            if (message.timestamp != null && message.hasOwnProperty('timestamp'))
+            if (message.timestamp != null && message.hasOwnProperty("timestamp"))
                 object.timestamp = message.timestamp;
             return object;
         };
@@ -4715,9 +4853,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
 
         TimestampResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Storage.TimestampResponse';
+            return typeUrlPrefix + "/PB_Storage.TimestampResponse";
         };
 
         return TimestampResponse;
@@ -4732,7 +4870,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
                         this[keys[i]] = properties[keys[i]];
         }
 
-        StatRequest.prototype.path = '';
+        StatRequest.prototype.path = "";
 
         StatRequest.create = function create(properties) {
             return new StatRequest(properties);
@@ -4741,7 +4879,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
         StatRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.path != null && Object.hasOwnProperty.call(message, 'path'))
+            if (message.path != null && Object.hasOwnProperty.call(message, "path"))
                 writer.uint32(10).string(message.path);
             return writer;
         };
@@ -4776,11 +4914,11 @@ export const PB_Storage = $root.PB_Storage = (() => {
         };
 
         StatRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.path != null && message.hasOwnProperty('path'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.path != null && message.hasOwnProperty("path"))
                 if (!$util.isString(message.path))
-                    return 'path: string expected';
+                    return "path: string expected";
             return null;
         };
 
@@ -4798,8 +4936,8 @@ export const PB_Storage = $root.PB_Storage = (() => {
                 options = {};
             let object = {};
             if (options.defaults)
-                object.path = '';
-            if (message.path != null && message.hasOwnProperty('path'))
+                object.path = "";
+            if (message.path != null && message.hasOwnProperty("path"))
                 object.path = message.path;
             return object;
         };
@@ -4810,9 +4948,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
 
         StatRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Storage.StatRequest';
+            return typeUrlPrefix + "/PB_Storage.StatRequest";
         };
 
         return StatRequest;
@@ -4836,7 +4974,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
         StatResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.file != null && Object.hasOwnProperty.call(message, 'file'))
+            if (message.file != null && Object.hasOwnProperty.call(message, "file"))
                 $root.PB_Storage.File.encode(message.file, writer.uint32(10).fork()).ldelim();
             return writer;
         };
@@ -4871,12 +5009,12 @@ export const PB_Storage = $root.PB_Storage = (() => {
         };
 
         StatResponse.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.file != null && message.hasOwnProperty('file')) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.file != null && message.hasOwnProperty("file")) {
                 let error = $root.PB_Storage.File.verify(message.file);
                 if (error)
-                    return 'file.' + error;
+                    return "file." + error;
             }
             return null;
         };
@@ -4886,8 +5024,8 @@ export const PB_Storage = $root.PB_Storage = (() => {
                 return object;
             let message = new $root.PB_Storage.StatResponse();
             if (object.file != null) {
-                if (typeof object.file !== 'object')
-                    throw TypeError('.PB_Storage.StatResponse.file: object expected');
+                if (typeof object.file !== "object")
+                    throw TypeError(".PB_Storage.StatResponse.file: object expected");
                 message.file = $root.PB_Storage.File.fromObject(object.file);
             }
             return message;
@@ -4899,7 +5037,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
             let object = {};
             if (options.defaults)
                 object.file = null;
-            if (message.file != null && message.hasOwnProperty('file'))
+            if (message.file != null && message.hasOwnProperty("file"))
                 object.file = $root.PB_Storage.File.toObject(message.file, options);
             return object;
         };
@@ -4910,9 +5048,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
 
         StatResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Storage.StatResponse';
+            return typeUrlPrefix + "/PB_Storage.StatResponse";
         };
 
         return StatResponse;
@@ -4927,7 +5065,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
                         this[keys[i]] = properties[keys[i]];
         }
 
-        ListRequest.prototype.path = '';
+        ListRequest.prototype.path = "";
         ListRequest.prototype.includeMd5 = false;
         ListRequest.prototype.filterMaxSize = 0;
 
@@ -4938,11 +5076,11 @@ export const PB_Storage = $root.PB_Storage = (() => {
         ListRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.path != null && Object.hasOwnProperty.call(message, 'path'))
+            if (message.path != null && Object.hasOwnProperty.call(message, "path"))
                 writer.uint32(10).string(message.path);
-            if (message.includeMd5 != null && Object.hasOwnProperty.call(message, 'includeMd5'))
+            if (message.includeMd5 != null && Object.hasOwnProperty.call(message, "includeMd5"))
                 writer.uint32(16).bool(message.includeMd5);
-            if (message.filterMaxSize != null && Object.hasOwnProperty.call(message, 'filterMaxSize'))
+            if (message.filterMaxSize != null && Object.hasOwnProperty.call(message, "filterMaxSize"))
                 writer.uint32(24).uint32(message.filterMaxSize);
             return writer;
         };
@@ -4985,17 +5123,17 @@ export const PB_Storage = $root.PB_Storage = (() => {
         };
 
         ListRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.path != null && message.hasOwnProperty('path'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.path != null && message.hasOwnProperty("path"))
                 if (!$util.isString(message.path))
-                    return 'path: string expected';
-            if (message.includeMd5 != null && message.hasOwnProperty('includeMd5'))
-                if (typeof message.includeMd5 !== 'boolean')
-                    return 'includeMd5: boolean expected';
-            if (message.filterMaxSize != null && message.hasOwnProperty('filterMaxSize'))
+                    return "path: string expected";
+            if (message.includeMd5 != null && message.hasOwnProperty("includeMd5"))
+                if (typeof message.includeMd5 !== "boolean")
+                    return "includeMd5: boolean expected";
+            if (message.filterMaxSize != null && message.hasOwnProperty("filterMaxSize"))
                 if (!$util.isInteger(message.filterMaxSize))
-                    return 'filterMaxSize: integer expected';
+                    return "filterMaxSize: integer expected";
             return null;
         };
 
@@ -5017,15 +5155,15 @@ export const PB_Storage = $root.PB_Storage = (() => {
                 options = {};
             let object = {};
             if (options.defaults) {
-                object.path = '';
+                object.path = "";
                 object.includeMd5 = false;
                 object.filterMaxSize = 0;
             }
-            if (message.path != null && message.hasOwnProperty('path'))
+            if (message.path != null && message.hasOwnProperty("path"))
                 object.path = message.path;
-            if (message.includeMd5 != null && message.hasOwnProperty('includeMd5'))
+            if (message.includeMd5 != null && message.hasOwnProperty("includeMd5"))
                 object.includeMd5 = message.includeMd5;
-            if (message.filterMaxSize != null && message.hasOwnProperty('filterMaxSize'))
+            if (message.filterMaxSize != null && message.hasOwnProperty("filterMaxSize"))
                 object.filterMaxSize = message.filterMaxSize;
             return object;
         };
@@ -5036,9 +5174,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
 
         ListRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Storage.ListRequest';
+            return typeUrlPrefix + "/PB_Storage.ListRequest";
         };
 
         return ListRequest;
@@ -5101,15 +5239,15 @@ export const PB_Storage = $root.PB_Storage = (() => {
         };
 
         ListResponse.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.file != null && message.hasOwnProperty('file')) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.file != null && message.hasOwnProperty("file")) {
                 if (!Array.isArray(message.file))
-                    return 'file: array expected';
+                    return "file: array expected";
                 for (let i = 0; i < message.file.length; ++i) {
                     let error = $root.PB_Storage.File.verify(message.file[i]);
                     if (error)
-                        return 'file.' + error;
+                        return "file." + error;
                 }
             }
             return null;
@@ -5121,11 +5259,11 @@ export const PB_Storage = $root.PB_Storage = (() => {
             let message = new $root.PB_Storage.ListResponse();
             if (object.file) {
                 if (!Array.isArray(object.file))
-                    throw TypeError('.PB_Storage.ListResponse.file: array expected');
+                    throw TypeError(".PB_Storage.ListResponse.file: array expected");
                 message.file = [];
                 for (let i = 0; i < object.file.length; ++i) {
-                    if (typeof object.file[i] !== 'object')
-                        throw TypeError('.PB_Storage.ListResponse.file: object expected');
+                    if (typeof object.file[i] !== "object")
+                        throw TypeError(".PB_Storage.ListResponse.file: object expected");
                     message.file[i] = $root.PB_Storage.File.fromObject(object.file[i]);
                 }
             }
@@ -5152,9 +5290,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
 
         ListResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Storage.ListResponse';
+            return typeUrlPrefix + "/PB_Storage.ListResponse";
         };
 
         return ListResponse;
@@ -5169,7 +5307,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
                         this[keys[i]] = properties[keys[i]];
         }
 
-        ReadRequest.prototype.path = '';
+        ReadRequest.prototype.path = "";
 
         ReadRequest.create = function create(properties) {
             return new ReadRequest(properties);
@@ -5178,7 +5316,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
         ReadRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.path != null && Object.hasOwnProperty.call(message, 'path'))
+            if (message.path != null && Object.hasOwnProperty.call(message, "path"))
                 writer.uint32(10).string(message.path);
             return writer;
         };
@@ -5213,11 +5351,11 @@ export const PB_Storage = $root.PB_Storage = (() => {
         };
 
         ReadRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.path != null && message.hasOwnProperty('path'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.path != null && message.hasOwnProperty("path"))
                 if (!$util.isString(message.path))
-                    return 'path: string expected';
+                    return "path: string expected";
             return null;
         };
 
@@ -5235,8 +5373,8 @@ export const PB_Storage = $root.PB_Storage = (() => {
                 options = {};
             let object = {};
             if (options.defaults)
-                object.path = '';
-            if (message.path != null && message.hasOwnProperty('path'))
+                object.path = "";
+            if (message.path != null && message.hasOwnProperty("path"))
                 object.path = message.path;
             return object;
         };
@@ -5247,9 +5385,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
 
         ReadRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Storage.ReadRequest';
+            return typeUrlPrefix + "/PB_Storage.ReadRequest";
         };
 
         return ReadRequest;
@@ -5273,7 +5411,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
         ReadResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.file != null && Object.hasOwnProperty.call(message, 'file'))
+            if (message.file != null && Object.hasOwnProperty.call(message, "file"))
                 $root.PB_Storage.File.encode(message.file, writer.uint32(10).fork()).ldelim();
             return writer;
         };
@@ -5308,12 +5446,12 @@ export const PB_Storage = $root.PB_Storage = (() => {
         };
 
         ReadResponse.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.file != null && message.hasOwnProperty('file')) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.file != null && message.hasOwnProperty("file")) {
                 let error = $root.PB_Storage.File.verify(message.file);
                 if (error)
-                    return 'file.' + error;
+                    return "file." + error;
             }
             return null;
         };
@@ -5323,8 +5461,8 @@ export const PB_Storage = $root.PB_Storage = (() => {
                 return object;
             let message = new $root.PB_Storage.ReadResponse();
             if (object.file != null) {
-                if (typeof object.file !== 'object')
-                    throw TypeError('.PB_Storage.ReadResponse.file: object expected');
+                if (typeof object.file !== "object")
+                    throw TypeError(".PB_Storage.ReadResponse.file: object expected");
                 message.file = $root.PB_Storage.File.fromObject(object.file);
             }
             return message;
@@ -5336,7 +5474,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
             let object = {};
             if (options.defaults)
                 object.file = null;
-            if (message.file != null && message.hasOwnProperty('file'))
+            if (message.file != null && message.hasOwnProperty("file"))
                 object.file = $root.PB_Storage.File.toObject(message.file, options);
             return object;
         };
@@ -5347,9 +5485,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
 
         ReadResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Storage.ReadResponse';
+            return typeUrlPrefix + "/PB_Storage.ReadResponse";
         };
 
         return ReadResponse;
@@ -5364,7 +5502,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
                         this[keys[i]] = properties[keys[i]];
         }
 
-        WriteRequest.prototype.path = '';
+        WriteRequest.prototype.path = "";
         WriteRequest.prototype.file = null;
 
         WriteRequest.create = function create(properties) {
@@ -5374,9 +5512,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
         WriteRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.path != null && Object.hasOwnProperty.call(message, 'path'))
+            if (message.path != null && Object.hasOwnProperty.call(message, "path"))
                 writer.uint32(10).string(message.path);
-            if (message.file != null && Object.hasOwnProperty.call(message, 'file'))
+            if (message.file != null && Object.hasOwnProperty.call(message, "file"))
                 $root.PB_Storage.File.encode(message.file, writer.uint32(18).fork()).ldelim();
             return writer;
         };
@@ -5415,15 +5553,15 @@ export const PB_Storage = $root.PB_Storage = (() => {
         };
 
         WriteRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.path != null && message.hasOwnProperty('path'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.path != null && message.hasOwnProperty("path"))
                 if (!$util.isString(message.path))
-                    return 'path: string expected';
-            if (message.file != null && message.hasOwnProperty('file')) {
+                    return "path: string expected";
+            if (message.file != null && message.hasOwnProperty("file")) {
                 let error = $root.PB_Storage.File.verify(message.file);
                 if (error)
-                    return 'file.' + error;
+                    return "file." + error;
             }
             return null;
         };
@@ -5435,8 +5573,8 @@ export const PB_Storage = $root.PB_Storage = (() => {
             if (object.path != null)
                 message.path = String(object.path);
             if (object.file != null) {
-                if (typeof object.file !== 'object')
-                    throw TypeError('.PB_Storage.WriteRequest.file: object expected');
+                if (typeof object.file !== "object")
+                    throw TypeError(".PB_Storage.WriteRequest.file: object expected");
                 message.file = $root.PB_Storage.File.fromObject(object.file);
             }
             return message;
@@ -5447,12 +5585,12 @@ export const PB_Storage = $root.PB_Storage = (() => {
                 options = {};
             let object = {};
             if (options.defaults) {
-                object.path = '';
+                object.path = "";
                 object.file = null;
             }
-            if (message.path != null && message.hasOwnProperty('path'))
+            if (message.path != null && message.hasOwnProperty("path"))
                 object.path = message.path;
-            if (message.file != null && message.hasOwnProperty('file'))
+            if (message.file != null && message.hasOwnProperty("file"))
                 object.file = $root.PB_Storage.File.toObject(message.file, options);
             return object;
         };
@@ -5463,9 +5601,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
 
         WriteRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Storage.WriteRequest';
+            return typeUrlPrefix + "/PB_Storage.WriteRequest";
         };
 
         return WriteRequest;
@@ -5480,7 +5618,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
                         this[keys[i]] = properties[keys[i]];
         }
 
-        DeleteRequest.prototype.path = '';
+        DeleteRequest.prototype.path = "";
         DeleteRequest.prototype.recursive = false;
 
         DeleteRequest.create = function create(properties) {
@@ -5490,9 +5628,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
         DeleteRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.path != null && Object.hasOwnProperty.call(message, 'path'))
+            if (message.path != null && Object.hasOwnProperty.call(message, "path"))
                 writer.uint32(10).string(message.path);
-            if (message.recursive != null && Object.hasOwnProperty.call(message, 'recursive'))
+            if (message.recursive != null && Object.hasOwnProperty.call(message, "recursive"))
                 writer.uint32(16).bool(message.recursive);
             return writer;
         };
@@ -5531,14 +5669,14 @@ export const PB_Storage = $root.PB_Storage = (() => {
         };
 
         DeleteRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.path != null && message.hasOwnProperty('path'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.path != null && message.hasOwnProperty("path"))
                 if (!$util.isString(message.path))
-                    return 'path: string expected';
-            if (message.recursive != null && message.hasOwnProperty('recursive'))
-                if (typeof message.recursive !== 'boolean')
-                    return 'recursive: boolean expected';
+                    return "path: string expected";
+            if (message.recursive != null && message.hasOwnProperty("recursive"))
+                if (typeof message.recursive !== "boolean")
+                    return "recursive: boolean expected";
             return null;
         };
 
@@ -5558,12 +5696,12 @@ export const PB_Storage = $root.PB_Storage = (() => {
                 options = {};
             let object = {};
             if (options.defaults) {
-                object.path = '';
+                object.path = "";
                 object.recursive = false;
             }
-            if (message.path != null && message.hasOwnProperty('path'))
+            if (message.path != null && message.hasOwnProperty("path"))
                 object.path = message.path;
-            if (message.recursive != null && message.hasOwnProperty('recursive'))
+            if (message.recursive != null && message.hasOwnProperty("recursive"))
                 object.recursive = message.recursive;
             return object;
         };
@@ -5574,9 +5712,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
 
         DeleteRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Storage.DeleteRequest';
+            return typeUrlPrefix + "/PB_Storage.DeleteRequest";
         };
 
         return DeleteRequest;
@@ -5591,7 +5729,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
                         this[keys[i]] = properties[keys[i]];
         }
 
-        MkdirRequest.prototype.path = '';
+        MkdirRequest.prototype.path = "";
 
         MkdirRequest.create = function create(properties) {
             return new MkdirRequest(properties);
@@ -5600,7 +5738,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
         MkdirRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.path != null && Object.hasOwnProperty.call(message, 'path'))
+            if (message.path != null && Object.hasOwnProperty.call(message, "path"))
                 writer.uint32(10).string(message.path);
             return writer;
         };
@@ -5635,11 +5773,11 @@ export const PB_Storage = $root.PB_Storage = (() => {
         };
 
         MkdirRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.path != null && message.hasOwnProperty('path'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.path != null && message.hasOwnProperty("path"))
                 if (!$util.isString(message.path))
-                    return 'path: string expected';
+                    return "path: string expected";
             return null;
         };
 
@@ -5657,8 +5795,8 @@ export const PB_Storage = $root.PB_Storage = (() => {
                 options = {};
             let object = {};
             if (options.defaults)
-                object.path = '';
-            if (message.path != null && message.hasOwnProperty('path'))
+                object.path = "";
+            if (message.path != null && message.hasOwnProperty("path"))
                 object.path = message.path;
             return object;
         };
@@ -5669,9 +5807,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
 
         MkdirRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Storage.MkdirRequest';
+            return typeUrlPrefix + "/PB_Storage.MkdirRequest";
         };
 
         return MkdirRequest;
@@ -5686,7 +5824,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
                         this[keys[i]] = properties[keys[i]];
         }
 
-        Md5sumRequest.prototype.path = '';
+        Md5sumRequest.prototype.path = "";
 
         Md5sumRequest.create = function create(properties) {
             return new Md5sumRequest(properties);
@@ -5695,7 +5833,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
         Md5sumRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.path != null && Object.hasOwnProperty.call(message, 'path'))
+            if (message.path != null && Object.hasOwnProperty.call(message, "path"))
                 writer.uint32(10).string(message.path);
             return writer;
         };
@@ -5730,11 +5868,11 @@ export const PB_Storage = $root.PB_Storage = (() => {
         };
 
         Md5sumRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.path != null && message.hasOwnProperty('path'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.path != null && message.hasOwnProperty("path"))
                 if (!$util.isString(message.path))
-                    return 'path: string expected';
+                    return "path: string expected";
             return null;
         };
 
@@ -5752,8 +5890,8 @@ export const PB_Storage = $root.PB_Storage = (() => {
                 options = {};
             let object = {};
             if (options.defaults)
-                object.path = '';
-            if (message.path != null && message.hasOwnProperty('path'))
+                object.path = "";
+            if (message.path != null && message.hasOwnProperty("path"))
                 object.path = message.path;
             return object;
         };
@@ -5764,9 +5902,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
 
         Md5sumRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Storage.Md5sumRequest';
+            return typeUrlPrefix + "/PB_Storage.Md5sumRequest";
         };
 
         return Md5sumRequest;
@@ -5781,7 +5919,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
                         this[keys[i]] = properties[keys[i]];
         }
 
-        Md5sumResponse.prototype.md5sum = '';
+        Md5sumResponse.prototype.md5sum = "";
 
         Md5sumResponse.create = function create(properties) {
             return new Md5sumResponse(properties);
@@ -5790,7 +5928,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
         Md5sumResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.md5sum != null && Object.hasOwnProperty.call(message, 'md5sum'))
+            if (message.md5sum != null && Object.hasOwnProperty.call(message, "md5sum"))
                 writer.uint32(10).string(message.md5sum);
             return writer;
         };
@@ -5825,11 +5963,11 @@ export const PB_Storage = $root.PB_Storage = (() => {
         };
 
         Md5sumResponse.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.md5sum != null && message.hasOwnProperty('md5sum'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.md5sum != null && message.hasOwnProperty("md5sum"))
                 if (!$util.isString(message.md5sum))
-                    return 'md5sum: string expected';
+                    return "md5sum: string expected";
             return null;
         };
 
@@ -5847,8 +5985,8 @@ export const PB_Storage = $root.PB_Storage = (() => {
                 options = {};
             let object = {};
             if (options.defaults)
-                object.md5sum = '';
-            if (message.md5sum != null && message.hasOwnProperty('md5sum'))
+                object.md5sum = "";
+            if (message.md5sum != null && message.hasOwnProperty("md5sum"))
                 object.md5sum = message.md5sum;
             return object;
         };
@@ -5859,9 +5997,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
 
         Md5sumResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Storage.Md5sumResponse';
+            return typeUrlPrefix + "/PB_Storage.Md5sumResponse";
         };
 
         return Md5sumResponse;
@@ -5876,8 +6014,8 @@ export const PB_Storage = $root.PB_Storage = (() => {
                         this[keys[i]] = properties[keys[i]];
         }
 
-        RenameRequest.prototype.oldPath = '';
-        RenameRequest.prototype.newPath = '';
+        RenameRequest.prototype.oldPath = "";
+        RenameRequest.prototype.newPath = "";
 
         RenameRequest.create = function create(properties) {
             return new RenameRequest(properties);
@@ -5886,9 +6024,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
         RenameRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.oldPath != null && Object.hasOwnProperty.call(message, 'oldPath'))
+            if (message.oldPath != null && Object.hasOwnProperty.call(message, "oldPath"))
                 writer.uint32(10).string(message.oldPath);
-            if (message.newPath != null && Object.hasOwnProperty.call(message, 'newPath'))
+            if (message.newPath != null && Object.hasOwnProperty.call(message, "newPath"))
                 writer.uint32(18).string(message.newPath);
             return writer;
         };
@@ -5927,14 +6065,14 @@ export const PB_Storage = $root.PB_Storage = (() => {
         };
 
         RenameRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.oldPath != null && message.hasOwnProperty('oldPath'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.oldPath != null && message.hasOwnProperty("oldPath"))
                 if (!$util.isString(message.oldPath))
-                    return 'oldPath: string expected';
-            if (message.newPath != null && message.hasOwnProperty('newPath'))
+                    return "oldPath: string expected";
+            if (message.newPath != null && message.hasOwnProperty("newPath"))
                 if (!$util.isString(message.newPath))
-                    return 'newPath: string expected';
+                    return "newPath: string expected";
             return null;
         };
 
@@ -5954,12 +6092,12 @@ export const PB_Storage = $root.PB_Storage = (() => {
                 options = {};
             let object = {};
             if (options.defaults) {
-                object.oldPath = '';
-                object.newPath = '';
+                object.oldPath = "";
+                object.newPath = "";
             }
-            if (message.oldPath != null && message.hasOwnProperty('oldPath'))
+            if (message.oldPath != null && message.hasOwnProperty("oldPath"))
                 object.oldPath = message.oldPath;
-            if (message.newPath != null && message.hasOwnProperty('newPath'))
+            if (message.newPath != null && message.hasOwnProperty("newPath"))
                 object.newPath = message.newPath;
             return object;
         };
@@ -5970,9 +6108,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
 
         RenameRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Storage.RenameRequest';
+            return typeUrlPrefix + "/PB_Storage.RenameRequest";
         };
 
         return RenameRequest;
@@ -5987,7 +6125,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
                         this[keys[i]] = properties[keys[i]];
         }
 
-        BackupCreateRequest.prototype.archivePath = '';
+        BackupCreateRequest.prototype.archivePath = "";
 
         BackupCreateRequest.create = function create(properties) {
             return new BackupCreateRequest(properties);
@@ -5996,7 +6134,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
         BackupCreateRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.archivePath != null && Object.hasOwnProperty.call(message, 'archivePath'))
+            if (message.archivePath != null && Object.hasOwnProperty.call(message, "archivePath"))
                 writer.uint32(10).string(message.archivePath);
             return writer;
         };
@@ -6031,11 +6169,11 @@ export const PB_Storage = $root.PB_Storage = (() => {
         };
 
         BackupCreateRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.archivePath != null && message.hasOwnProperty('archivePath'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.archivePath != null && message.hasOwnProperty("archivePath"))
                 if (!$util.isString(message.archivePath))
-                    return 'archivePath: string expected';
+                    return "archivePath: string expected";
             return null;
         };
 
@@ -6053,8 +6191,8 @@ export const PB_Storage = $root.PB_Storage = (() => {
                 options = {};
             let object = {};
             if (options.defaults)
-                object.archivePath = '';
-            if (message.archivePath != null && message.hasOwnProperty('archivePath'))
+                object.archivePath = "";
+            if (message.archivePath != null && message.hasOwnProperty("archivePath"))
                 object.archivePath = message.archivePath;
             return object;
         };
@@ -6065,9 +6203,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
 
         BackupCreateRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Storage.BackupCreateRequest';
+            return typeUrlPrefix + "/PB_Storage.BackupCreateRequest";
         };
 
         return BackupCreateRequest;
@@ -6082,7 +6220,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
                         this[keys[i]] = properties[keys[i]];
         }
 
-        BackupRestoreRequest.prototype.archivePath = '';
+        BackupRestoreRequest.prototype.archivePath = "";
 
         BackupRestoreRequest.create = function create(properties) {
             return new BackupRestoreRequest(properties);
@@ -6091,7 +6229,7 @@ export const PB_Storage = $root.PB_Storage = (() => {
         BackupRestoreRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.archivePath != null && Object.hasOwnProperty.call(message, 'archivePath'))
+            if (message.archivePath != null && Object.hasOwnProperty.call(message, "archivePath"))
                 writer.uint32(10).string(message.archivePath);
             return writer;
         };
@@ -6126,11 +6264,11 @@ export const PB_Storage = $root.PB_Storage = (() => {
         };
 
         BackupRestoreRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.archivePath != null && message.hasOwnProperty('archivePath'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.archivePath != null && message.hasOwnProperty("archivePath"))
                 if (!$util.isString(message.archivePath))
-                    return 'archivePath: string expected';
+                    return "archivePath: string expected";
             return null;
         };
 
@@ -6148,8 +6286,8 @@ export const PB_Storage = $root.PB_Storage = (() => {
                 options = {};
             let object = {};
             if (options.defaults)
-                object.archivePath = '';
-            if (message.archivePath != null && message.hasOwnProperty('archivePath'))
+                object.archivePath = "";
+            if (message.archivePath != null && message.hasOwnProperty("archivePath"))
                 object.archivePath = message.archivePath;
             return object;
         };
@@ -6160,9 +6298,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
 
         BackupRestoreRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Storage.BackupRestoreRequest';
+            return typeUrlPrefix + "/PB_Storage.BackupRestoreRequest";
         };
 
         return BackupRestoreRequest;
@@ -6177,8 +6315,8 @@ export const PB_Storage = $root.PB_Storage = (() => {
                         this[keys[i]] = properties[keys[i]];
         }
 
-        TarExtractRequest.prototype.tarPath = '';
-        TarExtractRequest.prototype.outPath = '';
+        TarExtractRequest.prototype.tarPath = "";
+        TarExtractRequest.prototype.outPath = "";
 
         TarExtractRequest.create = function create(properties) {
             return new TarExtractRequest(properties);
@@ -6187,9 +6325,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
         TarExtractRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.tarPath != null && Object.hasOwnProperty.call(message, 'tarPath'))
+            if (message.tarPath != null && Object.hasOwnProperty.call(message, "tarPath"))
                 writer.uint32(10).string(message.tarPath);
-            if (message.outPath != null && Object.hasOwnProperty.call(message, 'outPath'))
+            if (message.outPath != null && Object.hasOwnProperty.call(message, "outPath"))
                 writer.uint32(18).string(message.outPath);
             return writer;
         };
@@ -6228,14 +6366,14 @@ export const PB_Storage = $root.PB_Storage = (() => {
         };
 
         TarExtractRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.tarPath != null && message.hasOwnProperty('tarPath'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.tarPath != null && message.hasOwnProperty("tarPath"))
                 if (!$util.isString(message.tarPath))
-                    return 'tarPath: string expected';
-            if (message.outPath != null && message.hasOwnProperty('outPath'))
+                    return "tarPath: string expected";
+            if (message.outPath != null && message.hasOwnProperty("outPath"))
                 if (!$util.isString(message.outPath))
-                    return 'outPath: string expected';
+                    return "outPath: string expected";
             return null;
         };
 
@@ -6255,12 +6393,12 @@ export const PB_Storage = $root.PB_Storage = (() => {
                 options = {};
             let object = {};
             if (options.defaults) {
-                object.tarPath = '';
-                object.outPath = '';
+                object.tarPath = "";
+                object.outPath = "";
             }
-            if (message.tarPath != null && message.hasOwnProperty('tarPath'))
+            if (message.tarPath != null && message.hasOwnProperty("tarPath"))
                 object.tarPath = message.tarPath;
-            if (message.outPath != null && message.hasOwnProperty('outPath'))
+            if (message.outPath != null && message.hasOwnProperty("outPath"))
                 object.outPath = message.outPath;
             return object;
         };
@@ -6271,9 +6409,9 @@ export const PB_Storage = $root.PB_Storage = (() => {
 
         TarExtractRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Storage.TarExtractRequest';
+            return typeUrlPrefix + "/PB_Storage.TarExtractRequest";
         };
 
         return TarExtractRequest;
@@ -6304,7 +6442,7 @@ export const PB_System = $root.PB_System = (() => {
         PingRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.data != null && Object.hasOwnProperty.call(message, 'data'))
+            if (message.data != null && Object.hasOwnProperty.call(message, "data"))
                 writer.uint32(10).bytes(message.data);
             return writer;
         };
@@ -6339,11 +6477,11 @@ export const PB_System = $root.PB_System = (() => {
         };
 
         PingRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.data != null && message.hasOwnProperty('data'))
-                if (!(message.data && typeof message.data.length === 'number' || $util.isString(message.data)))
-                    return 'data: buffer expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.data != null && message.hasOwnProperty("data"))
+                if (!(message.data && typeof message.data.length === "number" || $util.isString(message.data)))
+                    return "data: buffer expected";
             return null;
         };
 
@@ -6352,7 +6490,7 @@ export const PB_System = $root.PB_System = (() => {
                 return object;
             let message = new $root.PB_System.PingRequest();
             if (object.data != null)
-                if (typeof object.data === 'string')
+                if (typeof object.data === "string")
                     $util.base64.decode(object.data, message.data = $util.newBuffer($util.base64.length(object.data)), 0);
                 else if (object.data.length >= 0)
                     message.data = object.data;
@@ -6365,13 +6503,13 @@ export const PB_System = $root.PB_System = (() => {
             let object = {};
             if (options.defaults)
                 if (options.bytes === String)
-                    object.data = '';
+                    object.data = "";
                 else {
                     object.data = [];
                     if (options.bytes !== Array)
                         object.data = $util.newBuffer(object.data);
                 }
-            if (message.data != null && message.hasOwnProperty('data'))
+            if (message.data != null && message.hasOwnProperty("data"))
                 object.data = options.bytes === String ? $util.base64.encode(message.data, 0, message.data.length) : options.bytes === Array ? Array.prototype.slice.call(message.data) : message.data;
             return object;
         };
@@ -6382,9 +6520,9 @@ export const PB_System = $root.PB_System = (() => {
 
         PingRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_System.PingRequest';
+            return typeUrlPrefix + "/PB_System.PingRequest";
         };
 
         return PingRequest;
@@ -6408,7 +6546,7 @@ export const PB_System = $root.PB_System = (() => {
         PingResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.data != null && Object.hasOwnProperty.call(message, 'data'))
+            if (message.data != null && Object.hasOwnProperty.call(message, "data"))
                 writer.uint32(10).bytes(message.data);
             return writer;
         };
@@ -6443,11 +6581,11 @@ export const PB_System = $root.PB_System = (() => {
         };
 
         PingResponse.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.data != null && message.hasOwnProperty('data'))
-                if (!(message.data && typeof message.data.length === 'number' || $util.isString(message.data)))
-                    return 'data: buffer expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.data != null && message.hasOwnProperty("data"))
+                if (!(message.data && typeof message.data.length === "number" || $util.isString(message.data)))
+                    return "data: buffer expected";
             return null;
         };
 
@@ -6456,7 +6594,7 @@ export const PB_System = $root.PB_System = (() => {
                 return object;
             let message = new $root.PB_System.PingResponse();
             if (object.data != null)
-                if (typeof object.data === 'string')
+                if (typeof object.data === "string")
                     $util.base64.decode(object.data, message.data = $util.newBuffer($util.base64.length(object.data)), 0);
                 else if (object.data.length >= 0)
                     message.data = object.data;
@@ -6469,13 +6607,13 @@ export const PB_System = $root.PB_System = (() => {
             let object = {};
             if (options.defaults)
                 if (options.bytes === String)
-                    object.data = '';
+                    object.data = "";
                 else {
                     object.data = [];
                     if (options.bytes !== Array)
                         object.data = $util.newBuffer(object.data);
                 }
-            if (message.data != null && message.hasOwnProperty('data'))
+            if (message.data != null && message.hasOwnProperty("data"))
                 object.data = options.bytes === String ? $util.base64.encode(message.data, 0, message.data.length) : options.bytes === Array ? Array.prototype.slice.call(message.data) : message.data;
             return object;
         };
@@ -6486,9 +6624,9 @@ export const PB_System = $root.PB_System = (() => {
 
         PingResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_System.PingResponse';
+            return typeUrlPrefix + "/PB_System.PingResponse";
         };
 
         return PingResponse;
@@ -6512,7 +6650,7 @@ export const PB_System = $root.PB_System = (() => {
         RebootRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.mode != null && Object.hasOwnProperty.call(message, 'mode'))
+            if (message.mode != null && Object.hasOwnProperty.call(message, "mode"))
                 writer.uint32(8).int32(message.mode);
             return writer;
         };
@@ -6547,12 +6685,12 @@ export const PB_System = $root.PB_System = (() => {
         };
 
         RebootRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.mode != null && message.hasOwnProperty('mode'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.mode != null && message.hasOwnProperty("mode"))
                 switch (message.mode) {
                 default:
-                    return 'mode: enum value expected';
+                    return "mode: enum value expected";
                 case 0:
                 case 1:
                 case 2:
@@ -6567,20 +6705,20 @@ export const PB_System = $root.PB_System = (() => {
             let message = new $root.PB_System.RebootRequest();
             switch (object.mode) {
             default:
-                if (typeof object.mode === 'number') {
+                if (typeof object.mode === "number") {
                     message.mode = object.mode;
                     break;
                 }
                 break;
-            case 'OS':
+            case "OS":
             case 0:
                 message.mode = 0;
                 break;
-            case 'DFU':
+            case "DFU":
             case 1:
                 message.mode = 1;
                 break;
-            case 'UPDATE':
+            case "UPDATE":
             case 2:
                 message.mode = 2;
                 break;
@@ -6593,8 +6731,8 @@ export const PB_System = $root.PB_System = (() => {
                 options = {};
             let object = {};
             if (options.defaults)
-                object.mode = options.enums === String ? 'OS' : 0;
-            if (message.mode != null && message.hasOwnProperty('mode'))
+                object.mode = options.enums === String ? "OS" : 0;
+            if (message.mode != null && message.hasOwnProperty("mode"))
                 object.mode = options.enums === String ? $root.PB_System.RebootRequest.RebootMode[message.mode] === undefined ? message.mode : $root.PB_System.RebootRequest.RebootMode[message.mode] : message.mode;
             return object;
         };
@@ -6605,16 +6743,16 @@ export const PB_System = $root.PB_System = (() => {
 
         RebootRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_System.RebootRequest';
+            return typeUrlPrefix + "/PB_System.RebootRequest";
         };
 
         RebootRequest.RebootMode = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = 'OS'] = 0;
-            values[valuesById[1] = 'DFU'] = 1;
-            values[valuesById[2] = 'UPDATE'] = 2;
+            values[valuesById[0] = "OS"] = 0;
+            values[valuesById[1] = "DFU"] = 1;
+            values[valuesById[2] = "UPDATE"] = 2;
             return values;
         })();
 
@@ -6666,8 +6804,8 @@ export const PB_System = $root.PB_System = (() => {
         };
 
         DeviceInfoRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
             return null;
         };
 
@@ -6687,9 +6825,9 @@ export const PB_System = $root.PB_System = (() => {
 
         DeviceInfoRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_System.DeviceInfoRequest';
+            return typeUrlPrefix + "/PB_System.DeviceInfoRequest";
         };
 
         return DeviceInfoRequest;
@@ -6704,8 +6842,8 @@ export const PB_System = $root.PB_System = (() => {
                         this[keys[i]] = properties[keys[i]];
         }
 
-        DeviceInfoResponse.prototype.key = '';
-        DeviceInfoResponse.prototype.value = '';
+        DeviceInfoResponse.prototype.key = "";
+        DeviceInfoResponse.prototype.value = "";
 
         DeviceInfoResponse.create = function create(properties) {
             return new DeviceInfoResponse(properties);
@@ -6714,9 +6852,9 @@ export const PB_System = $root.PB_System = (() => {
         DeviceInfoResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.key != null && Object.hasOwnProperty.call(message, 'key'))
+            if (message.key != null && Object.hasOwnProperty.call(message, "key"))
                 writer.uint32(10).string(message.key);
-            if (message.value != null && Object.hasOwnProperty.call(message, 'value'))
+            if (message.value != null && Object.hasOwnProperty.call(message, "value"))
                 writer.uint32(18).string(message.value);
             return writer;
         };
@@ -6755,14 +6893,14 @@ export const PB_System = $root.PB_System = (() => {
         };
 
         DeviceInfoResponse.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.key != null && message.hasOwnProperty('key'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.key != null && message.hasOwnProperty("key"))
                 if (!$util.isString(message.key))
-                    return 'key: string expected';
-            if (message.value != null && message.hasOwnProperty('value'))
+                    return "key: string expected";
+            if (message.value != null && message.hasOwnProperty("value"))
                 if (!$util.isString(message.value))
-                    return 'value: string expected';
+                    return "value: string expected";
             return null;
         };
 
@@ -6782,12 +6920,12 @@ export const PB_System = $root.PB_System = (() => {
                 options = {};
             let object = {};
             if (options.defaults) {
-                object.key = '';
-                object.value = '';
+                object.key = "";
+                object.value = "";
             }
-            if (message.key != null && message.hasOwnProperty('key'))
+            if (message.key != null && message.hasOwnProperty("key"))
                 object.key = message.key;
-            if (message.value != null && message.hasOwnProperty('value'))
+            if (message.value != null && message.hasOwnProperty("value"))
                 object.value = message.value;
             return object;
         };
@@ -6798,9 +6936,9 @@ export const PB_System = $root.PB_System = (() => {
 
         DeviceInfoResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_System.DeviceInfoResponse';
+            return typeUrlPrefix + "/PB_System.DeviceInfoResponse";
         };
 
         return DeviceInfoResponse;
@@ -6851,8 +6989,8 @@ export const PB_System = $root.PB_System = (() => {
         };
 
         FactoryResetRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
             return null;
         };
 
@@ -6872,9 +7010,9 @@ export const PB_System = $root.PB_System = (() => {
 
         FactoryResetRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_System.FactoryResetRequest';
+            return typeUrlPrefix + "/PB_System.FactoryResetRequest";
         };
 
         return FactoryResetRequest;
@@ -6925,8 +7063,8 @@ export const PB_System = $root.PB_System = (() => {
         };
 
         GetDateTimeRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
             return null;
         };
 
@@ -6946,9 +7084,9 @@ export const PB_System = $root.PB_System = (() => {
 
         GetDateTimeRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_System.GetDateTimeRequest';
+            return typeUrlPrefix + "/PB_System.GetDateTimeRequest";
         };
 
         return GetDateTimeRequest;
@@ -6972,7 +7110,7 @@ export const PB_System = $root.PB_System = (() => {
         GetDateTimeResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.datetime != null && Object.hasOwnProperty.call(message, 'datetime'))
+            if (message.datetime != null && Object.hasOwnProperty.call(message, "datetime"))
                 $root.PB_System.DateTime.encode(message.datetime, writer.uint32(10).fork()).ldelim();
             return writer;
         };
@@ -7007,12 +7145,12 @@ export const PB_System = $root.PB_System = (() => {
         };
 
         GetDateTimeResponse.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.datetime != null && message.hasOwnProperty('datetime')) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.datetime != null && message.hasOwnProperty("datetime")) {
                 let error = $root.PB_System.DateTime.verify(message.datetime);
                 if (error)
-                    return 'datetime.' + error;
+                    return "datetime." + error;
             }
             return null;
         };
@@ -7022,8 +7160,8 @@ export const PB_System = $root.PB_System = (() => {
                 return object;
             let message = new $root.PB_System.GetDateTimeResponse();
             if (object.datetime != null) {
-                if (typeof object.datetime !== 'object')
-                    throw TypeError('.PB_System.GetDateTimeResponse.datetime: object expected');
+                if (typeof object.datetime !== "object")
+                    throw TypeError(".PB_System.GetDateTimeResponse.datetime: object expected");
                 message.datetime = $root.PB_System.DateTime.fromObject(object.datetime);
             }
             return message;
@@ -7035,7 +7173,7 @@ export const PB_System = $root.PB_System = (() => {
             let object = {};
             if (options.defaults)
                 object.datetime = null;
-            if (message.datetime != null && message.hasOwnProperty('datetime'))
+            if (message.datetime != null && message.hasOwnProperty("datetime"))
                 object.datetime = $root.PB_System.DateTime.toObject(message.datetime, options);
             return object;
         };
@@ -7046,9 +7184,9 @@ export const PB_System = $root.PB_System = (() => {
 
         GetDateTimeResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_System.GetDateTimeResponse';
+            return typeUrlPrefix + "/PB_System.GetDateTimeResponse";
         };
 
         return GetDateTimeResponse;
@@ -7072,7 +7210,7 @@ export const PB_System = $root.PB_System = (() => {
         SetDateTimeRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.datetime != null && Object.hasOwnProperty.call(message, 'datetime'))
+            if (message.datetime != null && Object.hasOwnProperty.call(message, "datetime"))
                 $root.PB_System.DateTime.encode(message.datetime, writer.uint32(10).fork()).ldelim();
             return writer;
         };
@@ -7107,12 +7245,12 @@ export const PB_System = $root.PB_System = (() => {
         };
 
         SetDateTimeRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.datetime != null && message.hasOwnProperty('datetime')) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.datetime != null && message.hasOwnProperty("datetime")) {
                 let error = $root.PB_System.DateTime.verify(message.datetime);
                 if (error)
-                    return 'datetime.' + error;
+                    return "datetime." + error;
             }
             return null;
         };
@@ -7122,8 +7260,8 @@ export const PB_System = $root.PB_System = (() => {
                 return object;
             let message = new $root.PB_System.SetDateTimeRequest();
             if (object.datetime != null) {
-                if (typeof object.datetime !== 'object')
-                    throw TypeError('.PB_System.SetDateTimeRequest.datetime: object expected');
+                if (typeof object.datetime !== "object")
+                    throw TypeError(".PB_System.SetDateTimeRequest.datetime: object expected");
                 message.datetime = $root.PB_System.DateTime.fromObject(object.datetime);
             }
             return message;
@@ -7135,7 +7273,7 @@ export const PB_System = $root.PB_System = (() => {
             let object = {};
             if (options.defaults)
                 object.datetime = null;
-            if (message.datetime != null && message.hasOwnProperty('datetime'))
+            if (message.datetime != null && message.hasOwnProperty("datetime"))
                 object.datetime = $root.PB_System.DateTime.toObject(message.datetime, options);
             return object;
         };
@@ -7146,9 +7284,9 @@ export const PB_System = $root.PB_System = (() => {
 
         SetDateTimeRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_System.SetDateTimeRequest';
+            return typeUrlPrefix + "/PB_System.SetDateTimeRequest";
         };
 
         return SetDateTimeRequest;
@@ -7178,19 +7316,19 @@ export const PB_System = $root.PB_System = (() => {
         DateTime.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.hour != null && Object.hasOwnProperty.call(message, 'hour'))
+            if (message.hour != null && Object.hasOwnProperty.call(message, "hour"))
                 writer.uint32(8).uint32(message.hour);
-            if (message.minute != null && Object.hasOwnProperty.call(message, 'minute'))
+            if (message.minute != null && Object.hasOwnProperty.call(message, "minute"))
                 writer.uint32(16).uint32(message.minute);
-            if (message.second != null && Object.hasOwnProperty.call(message, 'second'))
+            if (message.second != null && Object.hasOwnProperty.call(message, "second"))
                 writer.uint32(24).uint32(message.second);
-            if (message.day != null && Object.hasOwnProperty.call(message, 'day'))
+            if (message.day != null && Object.hasOwnProperty.call(message, "day"))
                 writer.uint32(32).uint32(message.day);
-            if (message.month != null && Object.hasOwnProperty.call(message, 'month'))
+            if (message.month != null && Object.hasOwnProperty.call(message, "month"))
                 writer.uint32(40).uint32(message.month);
-            if (message.year != null && Object.hasOwnProperty.call(message, 'year'))
+            if (message.year != null && Object.hasOwnProperty.call(message, "year"))
                 writer.uint32(48).uint32(message.year);
-            if (message.weekday != null && Object.hasOwnProperty.call(message, 'weekday'))
+            if (message.weekday != null && Object.hasOwnProperty.call(message, "weekday"))
                 writer.uint32(56).uint32(message.weekday);
             return writer;
         };
@@ -7249,29 +7387,29 @@ export const PB_System = $root.PB_System = (() => {
         };
 
         DateTime.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.hour != null && message.hasOwnProperty('hour'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.hour != null && message.hasOwnProperty("hour"))
                 if (!$util.isInteger(message.hour))
-                    return 'hour: integer expected';
-            if (message.minute != null && message.hasOwnProperty('minute'))
+                    return "hour: integer expected";
+            if (message.minute != null && message.hasOwnProperty("minute"))
                 if (!$util.isInteger(message.minute))
-                    return 'minute: integer expected';
-            if (message.second != null && message.hasOwnProperty('second'))
+                    return "minute: integer expected";
+            if (message.second != null && message.hasOwnProperty("second"))
                 if (!$util.isInteger(message.second))
-                    return 'second: integer expected';
-            if (message.day != null && message.hasOwnProperty('day'))
+                    return "second: integer expected";
+            if (message.day != null && message.hasOwnProperty("day"))
                 if (!$util.isInteger(message.day))
-                    return 'day: integer expected';
-            if (message.month != null && message.hasOwnProperty('month'))
+                    return "day: integer expected";
+            if (message.month != null && message.hasOwnProperty("month"))
                 if (!$util.isInteger(message.month))
-                    return 'month: integer expected';
-            if (message.year != null && message.hasOwnProperty('year'))
+                    return "month: integer expected";
+            if (message.year != null && message.hasOwnProperty("year"))
                 if (!$util.isInteger(message.year))
-                    return 'year: integer expected';
-            if (message.weekday != null && message.hasOwnProperty('weekday'))
+                    return "year: integer expected";
+            if (message.weekday != null && message.hasOwnProperty("weekday"))
                 if (!$util.isInteger(message.weekday))
-                    return 'weekday: integer expected';
+                    return "weekday: integer expected";
             return null;
         };
 
@@ -7309,19 +7447,19 @@ export const PB_System = $root.PB_System = (() => {
                 object.year = 0;
                 object.weekday = 0;
             }
-            if (message.hour != null && message.hasOwnProperty('hour'))
+            if (message.hour != null && message.hasOwnProperty("hour"))
                 object.hour = message.hour;
-            if (message.minute != null && message.hasOwnProperty('minute'))
+            if (message.minute != null && message.hasOwnProperty("minute"))
                 object.minute = message.minute;
-            if (message.second != null && message.hasOwnProperty('second'))
+            if (message.second != null && message.hasOwnProperty("second"))
                 object.second = message.second;
-            if (message.day != null && message.hasOwnProperty('day'))
+            if (message.day != null && message.hasOwnProperty("day"))
                 object.day = message.day;
-            if (message.month != null && message.hasOwnProperty('month'))
+            if (message.month != null && message.hasOwnProperty("month"))
                 object.month = message.month;
-            if (message.year != null && message.hasOwnProperty('year'))
+            if (message.year != null && message.hasOwnProperty("year"))
                 object.year = message.year;
-            if (message.weekday != null && message.hasOwnProperty('weekday'))
+            if (message.weekday != null && message.hasOwnProperty("weekday"))
                 object.weekday = message.weekday;
             return object;
         };
@@ -7332,9 +7470,9 @@ export const PB_System = $root.PB_System = (() => {
 
         DateTime.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_System.DateTime';
+            return typeUrlPrefix + "/PB_System.DateTime";
         };
 
         return DateTime;
@@ -7385,8 +7523,8 @@ export const PB_System = $root.PB_System = (() => {
         };
 
         PlayAudiovisualAlertRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
             return null;
         };
 
@@ -7406,9 +7544,9 @@ export const PB_System = $root.PB_System = (() => {
 
         PlayAudiovisualAlertRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_System.PlayAudiovisualAlertRequest';
+            return typeUrlPrefix + "/PB_System.PlayAudiovisualAlertRequest";
         };
 
         return PlayAudiovisualAlertRequest;
@@ -7459,8 +7597,8 @@ export const PB_System = $root.PB_System = (() => {
         };
 
         ProtobufVersionRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
             return null;
         };
 
@@ -7480,9 +7618,9 @@ export const PB_System = $root.PB_System = (() => {
 
         ProtobufVersionRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_System.ProtobufVersionRequest';
+            return typeUrlPrefix + "/PB_System.ProtobufVersionRequest";
         };
 
         return ProtobufVersionRequest;
@@ -7507,9 +7645,9 @@ export const PB_System = $root.PB_System = (() => {
         ProtobufVersionResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.major != null && Object.hasOwnProperty.call(message, 'major'))
+            if (message.major != null && Object.hasOwnProperty.call(message, "major"))
                 writer.uint32(8).uint32(message.major);
-            if (message.minor != null && Object.hasOwnProperty.call(message, 'minor'))
+            if (message.minor != null && Object.hasOwnProperty.call(message, "minor"))
                 writer.uint32(16).uint32(message.minor);
             return writer;
         };
@@ -7548,14 +7686,14 @@ export const PB_System = $root.PB_System = (() => {
         };
 
         ProtobufVersionResponse.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.major != null && message.hasOwnProperty('major'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.major != null && message.hasOwnProperty("major"))
                 if (!$util.isInteger(message.major))
-                    return 'major: integer expected';
-            if (message.minor != null && message.hasOwnProperty('minor'))
+                    return "major: integer expected";
+            if (message.minor != null && message.hasOwnProperty("minor"))
                 if (!$util.isInteger(message.minor))
-                    return 'minor: integer expected';
+                    return "minor: integer expected";
             return null;
         };
 
@@ -7578,9 +7716,9 @@ export const PB_System = $root.PB_System = (() => {
                 object.major = 0;
                 object.minor = 0;
             }
-            if (message.major != null && message.hasOwnProperty('major'))
+            if (message.major != null && message.hasOwnProperty("major"))
                 object.major = message.major;
-            if (message.minor != null && message.hasOwnProperty('minor'))
+            if (message.minor != null && message.hasOwnProperty("minor"))
                 object.minor = message.minor;
             return object;
         };
@@ -7591,9 +7729,9 @@ export const PB_System = $root.PB_System = (() => {
 
         ProtobufVersionResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_System.ProtobufVersionResponse';
+            return typeUrlPrefix + "/PB_System.ProtobufVersionResponse";
         };
 
         return ProtobufVersionResponse;
@@ -7608,7 +7746,7 @@ export const PB_System = $root.PB_System = (() => {
                         this[keys[i]] = properties[keys[i]];
         }
 
-        UpdateRequest.prototype.updateManifest = '';
+        UpdateRequest.prototype.updateManifest = "";
 
         UpdateRequest.create = function create(properties) {
             return new UpdateRequest(properties);
@@ -7617,7 +7755,7 @@ export const PB_System = $root.PB_System = (() => {
         UpdateRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.updateManifest != null && Object.hasOwnProperty.call(message, 'updateManifest'))
+            if (message.updateManifest != null && Object.hasOwnProperty.call(message, "updateManifest"))
                 writer.uint32(10).string(message.updateManifest);
             return writer;
         };
@@ -7652,11 +7790,11 @@ export const PB_System = $root.PB_System = (() => {
         };
 
         UpdateRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.updateManifest != null && message.hasOwnProperty('updateManifest'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.updateManifest != null && message.hasOwnProperty("updateManifest"))
                 if (!$util.isString(message.updateManifest))
-                    return 'updateManifest: string expected';
+                    return "updateManifest: string expected";
             return null;
         };
 
@@ -7674,8 +7812,8 @@ export const PB_System = $root.PB_System = (() => {
                 options = {};
             let object = {};
             if (options.defaults)
-                object.updateManifest = '';
-            if (message.updateManifest != null && message.hasOwnProperty('updateManifest'))
+                object.updateManifest = "";
+            if (message.updateManifest != null && message.hasOwnProperty("updateManifest"))
                 object.updateManifest = message.updateManifest;
             return object;
         };
@@ -7686,9 +7824,9 @@ export const PB_System = $root.PB_System = (() => {
 
         UpdateRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_System.UpdateRequest';
+            return typeUrlPrefix + "/PB_System.UpdateRequest";
         };
 
         return UpdateRequest;
@@ -7712,7 +7850,7 @@ export const PB_System = $root.PB_System = (() => {
         UpdateResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.code != null && Object.hasOwnProperty.call(message, 'code'))
+            if (message.code != null && Object.hasOwnProperty.call(message, "code"))
                 writer.uint32(8).int32(message.code);
             return writer;
         };
@@ -7747,12 +7885,12 @@ export const PB_System = $root.PB_System = (() => {
         };
 
         UpdateResponse.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.code != null && message.hasOwnProperty('code'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.code != null && message.hasOwnProperty("code"))
                 switch (message.code) {
                 default:
-                    return 'code: enum value expected';
+                    return "code: enum value expected";
                 case 0:
                 case 1:
                 case 2:
@@ -7775,52 +7913,52 @@ export const PB_System = $root.PB_System = (() => {
             let message = new $root.PB_System.UpdateResponse();
             switch (object.code) {
             default:
-                if (typeof object.code === 'number') {
+                if (typeof object.code === "number") {
                     message.code = object.code;
                     break;
                 }
                 break;
-            case 'OK':
+            case "OK":
             case 0:
                 message.code = 0;
                 break;
-            case 'ManifestPathInvalid':
+            case "ManifestPathInvalid":
             case 1:
                 message.code = 1;
                 break;
-            case 'ManifestFolderNotFound':
+            case "ManifestFolderNotFound":
             case 2:
                 message.code = 2;
                 break;
-            case 'ManifestInvalid':
+            case "ManifestInvalid":
             case 3:
                 message.code = 3;
                 break;
-            case 'StageMissing':
+            case "StageMissing":
             case 4:
                 message.code = 4;
                 break;
-            case 'StageIntegrityError':
+            case "StageIntegrityError":
             case 5:
                 message.code = 5;
                 break;
-            case 'ManifestPointerError':
+            case "ManifestPointerError":
             case 6:
                 message.code = 6;
                 break;
-            case 'TargetMismatch':
+            case "TargetMismatch":
             case 7:
                 message.code = 7;
                 break;
-            case 'OutdatedManifestVersion':
+            case "OutdatedManifestVersion":
             case 8:
                 message.code = 8;
                 break;
-            case 'IntFull':
+            case "IntFull":
             case 9:
                 message.code = 9;
                 break;
-            case 'UnspecifiedError':
+            case "UnspecifiedError":
             case 10:
                 message.code = 10;
                 break;
@@ -7833,8 +7971,8 @@ export const PB_System = $root.PB_System = (() => {
                 options = {};
             let object = {};
             if (options.defaults)
-                object.code = options.enums === String ? 'OK' : 0;
-            if (message.code != null && message.hasOwnProperty('code'))
+                object.code = options.enums === String ? "OK" : 0;
+            if (message.code != null && message.hasOwnProperty("code"))
                 object.code = options.enums === String ? $root.PB_System.UpdateResponse.UpdateResultCode[message.code] === undefined ? message.code : $root.PB_System.UpdateResponse.UpdateResultCode[message.code] : message.code;
             return object;
         };
@@ -7845,24 +7983,24 @@ export const PB_System = $root.PB_System = (() => {
 
         UpdateResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_System.UpdateResponse';
+            return typeUrlPrefix + "/PB_System.UpdateResponse";
         };
 
         UpdateResponse.UpdateResultCode = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = 'OK'] = 0;
-            values[valuesById[1] = 'ManifestPathInvalid'] = 1;
-            values[valuesById[2] = 'ManifestFolderNotFound'] = 2;
-            values[valuesById[3] = 'ManifestInvalid'] = 3;
-            values[valuesById[4] = 'StageMissing'] = 4;
-            values[valuesById[5] = 'StageIntegrityError'] = 5;
-            values[valuesById[6] = 'ManifestPointerError'] = 6;
-            values[valuesById[7] = 'TargetMismatch'] = 7;
-            values[valuesById[8] = 'OutdatedManifestVersion'] = 8;
-            values[valuesById[9] = 'IntFull'] = 9;
-            values[valuesById[10] = 'UnspecifiedError'] = 10;
+            values[valuesById[0] = "OK"] = 0;
+            values[valuesById[1] = "ManifestPathInvalid"] = 1;
+            values[valuesById[2] = "ManifestFolderNotFound"] = 2;
+            values[valuesById[3] = "ManifestInvalid"] = 3;
+            values[valuesById[4] = "StageMissing"] = 4;
+            values[valuesById[5] = "StageIntegrityError"] = 5;
+            values[valuesById[6] = "ManifestPointerError"] = 6;
+            values[valuesById[7] = "TargetMismatch"] = 7;
+            values[valuesById[8] = "OutdatedManifestVersion"] = 8;
+            values[valuesById[9] = "IntFull"] = 9;
+            values[valuesById[10] = "UnspecifiedError"] = 10;
             return values;
         })();
 
@@ -7914,8 +8052,8 @@ export const PB_System = $root.PB_System = (() => {
         };
 
         PowerInfoRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
             return null;
         };
 
@@ -7935,9 +8073,9 @@ export const PB_System = $root.PB_System = (() => {
 
         PowerInfoRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_System.PowerInfoRequest';
+            return typeUrlPrefix + "/PB_System.PowerInfoRequest";
         };
 
         return PowerInfoRequest;
@@ -7952,8 +8090,8 @@ export const PB_System = $root.PB_System = (() => {
                         this[keys[i]] = properties[keys[i]];
         }
 
-        PowerInfoResponse.prototype.key = '';
-        PowerInfoResponse.prototype.value = '';
+        PowerInfoResponse.prototype.key = "";
+        PowerInfoResponse.prototype.value = "";
 
         PowerInfoResponse.create = function create(properties) {
             return new PowerInfoResponse(properties);
@@ -7962,9 +8100,9 @@ export const PB_System = $root.PB_System = (() => {
         PowerInfoResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.key != null && Object.hasOwnProperty.call(message, 'key'))
+            if (message.key != null && Object.hasOwnProperty.call(message, "key"))
                 writer.uint32(10).string(message.key);
-            if (message.value != null && Object.hasOwnProperty.call(message, 'value'))
+            if (message.value != null && Object.hasOwnProperty.call(message, "value"))
                 writer.uint32(18).string(message.value);
             return writer;
         };
@@ -8003,14 +8141,14 @@ export const PB_System = $root.PB_System = (() => {
         };
 
         PowerInfoResponse.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.key != null && message.hasOwnProperty('key'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.key != null && message.hasOwnProperty("key"))
                 if (!$util.isString(message.key))
-                    return 'key: string expected';
-            if (message.value != null && message.hasOwnProperty('value'))
+                    return "key: string expected";
+            if (message.value != null && message.hasOwnProperty("value"))
                 if (!$util.isString(message.value))
-                    return 'value: string expected';
+                    return "value: string expected";
             return null;
         };
 
@@ -8030,12 +8168,12 @@ export const PB_System = $root.PB_System = (() => {
                 options = {};
             let object = {};
             if (options.defaults) {
-                object.key = '';
-                object.value = '';
+                object.key = "";
+                object.value = "";
             }
-            if (message.key != null && message.hasOwnProperty('key'))
+            if (message.key != null && message.hasOwnProperty("key"))
                 object.key = message.key;
-            if (message.value != null && message.hasOwnProperty('value'))
+            if (message.value != null && message.hasOwnProperty("value"))
                 object.value = message.value;
             return object;
         };
@@ -8046,9 +8184,9 @@ export const PB_System = $root.PB_System = (() => {
 
         PowerInfoResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_System.PowerInfoResponse';
+            return typeUrlPrefix + "/PB_System.PowerInfoResponse";
         };
 
         return PowerInfoResponse;
@@ -8063,31 +8201,31 @@ export const PB_Gui = $root.PB_Gui = (() => {
 
     PB_Gui.InputKey = (function() {
         const valuesById = {}, values = Object.create(valuesById);
-        values[valuesById[0] = 'UP'] = 0;
-        values[valuesById[1] = 'DOWN'] = 1;
-        values[valuesById[2] = 'RIGHT'] = 2;
-        values[valuesById[3] = 'LEFT'] = 3;
-        values[valuesById[4] = 'OK'] = 4;
-        values[valuesById[5] = 'BACK'] = 5;
+        values[valuesById[0] = "UP"] = 0;
+        values[valuesById[1] = "DOWN"] = 1;
+        values[valuesById[2] = "RIGHT"] = 2;
+        values[valuesById[3] = "LEFT"] = 3;
+        values[valuesById[4] = "OK"] = 4;
+        values[valuesById[5] = "BACK"] = 5;
         return values;
     })();
 
     PB_Gui.InputType = (function() {
         const valuesById = {}, values = Object.create(valuesById);
-        values[valuesById[0] = 'PRESS'] = 0;
-        values[valuesById[1] = 'RELEASE'] = 1;
-        values[valuesById[2] = 'SHORT'] = 2;
-        values[valuesById[3] = 'LONG'] = 3;
-        values[valuesById[4] = 'REPEAT'] = 4;
+        values[valuesById[0] = "PRESS"] = 0;
+        values[valuesById[1] = "RELEASE"] = 1;
+        values[valuesById[2] = "SHORT"] = 2;
+        values[valuesById[3] = "LONG"] = 3;
+        values[valuesById[4] = "REPEAT"] = 4;
         return values;
     })();
 
     PB_Gui.ScreenOrientation = (function() {
         const valuesById = {}, values = Object.create(valuesById);
-        values[valuesById[0] = 'HORIZONTAL'] = 0;
-        values[valuesById[1] = 'HORIZONTAL_FLIP'] = 1;
-        values[valuesById[2] = 'VERTICAL'] = 2;
-        values[valuesById[3] = 'VERTICAL_FLIP'] = 3;
+        values[valuesById[0] = "HORIZONTAL"] = 0;
+        values[valuesById[1] = "HORIZONTAL_FLIP"] = 1;
+        values[valuesById[2] = "VERTICAL"] = 2;
+        values[valuesById[3] = "VERTICAL_FLIP"] = 3;
         return values;
     })();
 
@@ -8110,9 +8248,9 @@ export const PB_Gui = $root.PB_Gui = (() => {
         ScreenFrame.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.data != null && Object.hasOwnProperty.call(message, 'data'))
+            if (message.data != null && Object.hasOwnProperty.call(message, "data"))
                 writer.uint32(10).bytes(message.data);
-            if (message.orientation != null && Object.hasOwnProperty.call(message, 'orientation'))
+            if (message.orientation != null && Object.hasOwnProperty.call(message, "orientation"))
                 writer.uint32(16).int32(message.orientation);
             return writer;
         };
@@ -8151,15 +8289,15 @@ export const PB_Gui = $root.PB_Gui = (() => {
         };
 
         ScreenFrame.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.data != null && message.hasOwnProperty('data'))
-                if (!(message.data && typeof message.data.length === 'number' || $util.isString(message.data)))
-                    return 'data: buffer expected';
-            if (message.orientation != null && message.hasOwnProperty('orientation'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.data != null && message.hasOwnProperty("data"))
+                if (!(message.data && typeof message.data.length === "number" || $util.isString(message.data)))
+                    return "data: buffer expected";
+            if (message.orientation != null && message.hasOwnProperty("orientation"))
                 switch (message.orientation) {
                 default:
-                    return 'orientation: enum value expected';
+                    return "orientation: enum value expected";
                 case 0:
                 case 1:
                 case 2:
@@ -8174,30 +8312,30 @@ export const PB_Gui = $root.PB_Gui = (() => {
                 return object;
             let message = new $root.PB_Gui.ScreenFrame();
             if (object.data != null)
-                if (typeof object.data === 'string')
+                if (typeof object.data === "string")
                     $util.base64.decode(object.data, message.data = $util.newBuffer($util.base64.length(object.data)), 0);
                 else if (object.data.length >= 0)
                     message.data = object.data;
             switch (object.orientation) {
             default:
-                if (typeof object.orientation === 'number') {
+                if (typeof object.orientation === "number") {
                     message.orientation = object.orientation;
                     break;
                 }
                 break;
-            case 'HORIZONTAL':
+            case "HORIZONTAL":
             case 0:
                 message.orientation = 0;
                 break;
-            case 'HORIZONTAL_FLIP':
+            case "HORIZONTAL_FLIP":
             case 1:
                 message.orientation = 1;
                 break;
-            case 'VERTICAL':
+            case "VERTICAL":
             case 2:
                 message.orientation = 2;
                 break;
-            case 'VERTICAL_FLIP':
+            case "VERTICAL_FLIP":
             case 3:
                 message.orientation = 3;
                 break;
@@ -8211,17 +8349,17 @@ export const PB_Gui = $root.PB_Gui = (() => {
             let object = {};
             if (options.defaults) {
                 if (options.bytes === String)
-                    object.data = '';
+                    object.data = "";
                 else {
                     object.data = [];
                     if (options.bytes !== Array)
                         object.data = $util.newBuffer(object.data);
                 }
-                object.orientation = options.enums === String ? 'HORIZONTAL' : 0;
+                object.orientation = options.enums === String ? "HORIZONTAL" : 0;
             }
-            if (message.data != null && message.hasOwnProperty('data'))
+            if (message.data != null && message.hasOwnProperty("data"))
                 object.data = options.bytes === String ? $util.base64.encode(message.data, 0, message.data.length) : options.bytes === Array ? Array.prototype.slice.call(message.data) : message.data;
-            if (message.orientation != null && message.hasOwnProperty('orientation'))
+            if (message.orientation != null && message.hasOwnProperty("orientation"))
                 object.orientation = options.enums === String ? $root.PB_Gui.ScreenOrientation[message.orientation] === undefined ? message.orientation : $root.PB_Gui.ScreenOrientation[message.orientation] : message.orientation;
             return object;
         };
@@ -8232,9 +8370,9 @@ export const PB_Gui = $root.PB_Gui = (() => {
 
         ScreenFrame.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Gui.ScreenFrame';
+            return typeUrlPrefix + "/PB_Gui.ScreenFrame";
         };
 
         return ScreenFrame;
@@ -8285,8 +8423,8 @@ export const PB_Gui = $root.PB_Gui = (() => {
         };
 
         StartScreenStreamRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
             return null;
         };
 
@@ -8306,9 +8444,9 @@ export const PB_Gui = $root.PB_Gui = (() => {
 
         StartScreenStreamRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Gui.StartScreenStreamRequest';
+            return typeUrlPrefix + "/PB_Gui.StartScreenStreamRequest";
         };
 
         return StartScreenStreamRequest;
@@ -8359,8 +8497,8 @@ export const PB_Gui = $root.PB_Gui = (() => {
         };
 
         StopScreenStreamRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
             return null;
         };
 
@@ -8380,9 +8518,9 @@ export const PB_Gui = $root.PB_Gui = (() => {
 
         StopScreenStreamRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Gui.StopScreenStreamRequest';
+            return typeUrlPrefix + "/PB_Gui.StopScreenStreamRequest";
         };
 
         return StopScreenStreamRequest;
@@ -8407,9 +8545,9 @@ export const PB_Gui = $root.PB_Gui = (() => {
         SendInputEventRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.key != null && Object.hasOwnProperty.call(message, 'key'))
+            if (message.key != null && Object.hasOwnProperty.call(message, "key"))
                 writer.uint32(8).int32(message.key);
-            if (message.type != null && Object.hasOwnProperty.call(message, 'type'))
+            if (message.type != null && Object.hasOwnProperty.call(message, "type"))
                 writer.uint32(16).int32(message.type);
             return writer;
         };
@@ -8448,12 +8586,12 @@ export const PB_Gui = $root.PB_Gui = (() => {
         };
 
         SendInputEventRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.key != null && message.hasOwnProperty('key'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.key != null && message.hasOwnProperty("key"))
                 switch (message.key) {
                 default:
-                    return 'key: enum value expected';
+                    return "key: enum value expected";
                 case 0:
                 case 1:
                 case 2:
@@ -8462,10 +8600,10 @@ export const PB_Gui = $root.PB_Gui = (() => {
                 case 5:
                     break;
                 }
-            if (message.type != null && message.hasOwnProperty('type'))
+            if (message.type != null && message.hasOwnProperty("type"))
                 switch (message.type) {
                 default:
-                    return 'type: enum value expected';
+                    return "type: enum value expected";
                 case 0:
                 case 1:
                 case 2:
@@ -8482,60 +8620,60 @@ export const PB_Gui = $root.PB_Gui = (() => {
             let message = new $root.PB_Gui.SendInputEventRequest();
             switch (object.key) {
             default:
-                if (typeof object.key === 'number') {
+                if (typeof object.key === "number") {
                     message.key = object.key;
                     break;
                 }
                 break;
-            case 'UP':
+            case "UP":
             case 0:
                 message.key = 0;
                 break;
-            case 'DOWN':
+            case "DOWN":
             case 1:
                 message.key = 1;
                 break;
-            case 'RIGHT':
+            case "RIGHT":
             case 2:
                 message.key = 2;
                 break;
-            case 'LEFT':
+            case "LEFT":
             case 3:
                 message.key = 3;
                 break;
-            case 'OK':
+            case "OK":
             case 4:
                 message.key = 4;
                 break;
-            case 'BACK':
+            case "BACK":
             case 5:
                 message.key = 5;
                 break;
             }
             switch (object.type) {
             default:
-                if (typeof object.type === 'number') {
+                if (typeof object.type === "number") {
                     message.type = object.type;
                     break;
                 }
                 break;
-            case 'PRESS':
+            case "PRESS":
             case 0:
                 message.type = 0;
                 break;
-            case 'RELEASE':
+            case "RELEASE":
             case 1:
                 message.type = 1;
                 break;
-            case 'SHORT':
+            case "SHORT":
             case 2:
                 message.type = 2;
                 break;
-            case 'LONG':
+            case "LONG":
             case 3:
                 message.type = 3;
                 break;
-            case 'REPEAT':
+            case "REPEAT":
             case 4:
                 message.type = 4;
                 break;
@@ -8548,12 +8686,12 @@ export const PB_Gui = $root.PB_Gui = (() => {
                 options = {};
             let object = {};
             if (options.defaults) {
-                object.key = options.enums === String ? 'UP' : 0;
-                object.type = options.enums === String ? 'PRESS' : 0;
+                object.key = options.enums === String ? "UP" : 0;
+                object.type = options.enums === String ? "PRESS" : 0;
             }
-            if (message.key != null && message.hasOwnProperty('key'))
+            if (message.key != null && message.hasOwnProperty("key"))
                 object.key = options.enums === String ? $root.PB_Gui.InputKey[message.key] === undefined ? message.key : $root.PB_Gui.InputKey[message.key] : message.key;
-            if (message.type != null && message.hasOwnProperty('type'))
+            if (message.type != null && message.hasOwnProperty("type"))
                 object.type = options.enums === String ? $root.PB_Gui.InputType[message.type] === undefined ? message.type : $root.PB_Gui.InputType[message.type] : message.type;
             return object;
         };
@@ -8564,9 +8702,9 @@ export const PB_Gui = $root.PB_Gui = (() => {
 
         SendInputEventRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Gui.SendInputEventRequest';
+            return typeUrlPrefix + "/PB_Gui.SendInputEventRequest";
         };
 
         return SendInputEventRequest;
@@ -8591,9 +8729,9 @@ export const PB_Gui = $root.PB_Gui = (() => {
         StartVirtualDisplayRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.firstFrame != null && Object.hasOwnProperty.call(message, 'firstFrame'))
+            if (message.firstFrame != null && Object.hasOwnProperty.call(message, "firstFrame"))
                 $root.PB_Gui.ScreenFrame.encode(message.firstFrame, writer.uint32(10).fork()).ldelim();
-            if (message.sendInput != null && Object.hasOwnProperty.call(message, 'sendInput'))
+            if (message.sendInput != null && Object.hasOwnProperty.call(message, "sendInput"))
                 writer.uint32(16).bool(message.sendInput);
             return writer;
         };
@@ -8632,16 +8770,16 @@ export const PB_Gui = $root.PB_Gui = (() => {
         };
 
         StartVirtualDisplayRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.firstFrame != null && message.hasOwnProperty('firstFrame')) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.firstFrame != null && message.hasOwnProperty("firstFrame")) {
                 let error = $root.PB_Gui.ScreenFrame.verify(message.firstFrame);
                 if (error)
-                    return 'firstFrame.' + error;
+                    return "firstFrame." + error;
             }
-            if (message.sendInput != null && message.hasOwnProperty('sendInput'))
-                if (typeof message.sendInput !== 'boolean')
-                    return 'sendInput: boolean expected';
+            if (message.sendInput != null && message.hasOwnProperty("sendInput"))
+                if (typeof message.sendInput !== "boolean")
+                    return "sendInput: boolean expected";
             return null;
         };
 
@@ -8650,8 +8788,8 @@ export const PB_Gui = $root.PB_Gui = (() => {
                 return object;
             let message = new $root.PB_Gui.StartVirtualDisplayRequest();
             if (object.firstFrame != null) {
-                if (typeof object.firstFrame !== 'object')
-                    throw TypeError('.PB_Gui.StartVirtualDisplayRequest.firstFrame: object expected');
+                if (typeof object.firstFrame !== "object")
+                    throw TypeError(".PB_Gui.StartVirtualDisplayRequest.firstFrame: object expected");
                 message.firstFrame = $root.PB_Gui.ScreenFrame.fromObject(object.firstFrame);
             }
             if (object.sendInput != null)
@@ -8667,9 +8805,9 @@ export const PB_Gui = $root.PB_Gui = (() => {
                 object.firstFrame = null;
                 object.sendInput = false;
             }
-            if (message.firstFrame != null && message.hasOwnProperty('firstFrame'))
+            if (message.firstFrame != null && message.hasOwnProperty("firstFrame"))
                 object.firstFrame = $root.PB_Gui.ScreenFrame.toObject(message.firstFrame, options);
-            if (message.sendInput != null && message.hasOwnProperty('sendInput'))
+            if (message.sendInput != null && message.hasOwnProperty("sendInput"))
                 object.sendInput = message.sendInput;
             return object;
         };
@@ -8680,9 +8818,9 @@ export const PB_Gui = $root.PB_Gui = (() => {
 
         StartVirtualDisplayRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Gui.StartVirtualDisplayRequest';
+            return typeUrlPrefix + "/PB_Gui.StartVirtualDisplayRequest";
         };
 
         return StartVirtualDisplayRequest;
@@ -8733,8 +8871,8 @@ export const PB_Gui = $root.PB_Gui = (() => {
         };
 
         StopVirtualDisplayRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
             return null;
         };
 
@@ -8754,9 +8892,9 @@ export const PB_Gui = $root.PB_Gui = (() => {
 
         StopVirtualDisplayRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Gui.StopVirtualDisplayRequest';
+            return typeUrlPrefix + "/PB_Gui.StopVirtualDisplayRequest";
         };
 
         return StopVirtualDisplayRequest;
@@ -8771,36 +8909,36 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
 
     PB_Gpio.GpioPin = (function() {
         const valuesById = {}, values = Object.create(valuesById);
-        values[valuesById[0] = 'PC0'] = 0;
-        values[valuesById[1] = 'PC1'] = 1;
-        values[valuesById[2] = 'PC3'] = 2;
-        values[valuesById[3] = 'PB2'] = 3;
-        values[valuesById[4] = 'PB3'] = 4;
-        values[valuesById[5] = 'PA4'] = 5;
-        values[valuesById[6] = 'PA6'] = 6;
-        values[valuesById[7] = 'PA7'] = 7;
+        values[valuesById[0] = "PC0"] = 0;
+        values[valuesById[1] = "PC1"] = 1;
+        values[valuesById[2] = "PC3"] = 2;
+        values[valuesById[3] = "PB2"] = 3;
+        values[valuesById[4] = "PB3"] = 4;
+        values[valuesById[5] = "PA4"] = 5;
+        values[valuesById[6] = "PA6"] = 6;
+        values[valuesById[7] = "PA7"] = 7;
         return values;
     })();
 
     PB_Gpio.GpioPinMode = (function() {
         const valuesById = {}, values = Object.create(valuesById);
-        values[valuesById[0] = 'OUTPUT'] = 0;
-        values[valuesById[1] = 'INPUT'] = 1;
+        values[valuesById[0] = "OUTPUT"] = 0;
+        values[valuesById[1] = "INPUT"] = 1;
         return values;
     })();
 
     PB_Gpio.GpioInputPull = (function() {
         const valuesById = {}, values = Object.create(valuesById);
-        values[valuesById[0] = 'NO'] = 0;
-        values[valuesById[1] = 'UP'] = 1;
-        values[valuesById[2] = 'DOWN'] = 2;
+        values[valuesById[0] = "NO"] = 0;
+        values[valuesById[1] = "UP"] = 1;
+        values[valuesById[2] = "DOWN"] = 2;
         return values;
     })();
 
     PB_Gpio.GpioOtgMode = (function() {
         const valuesById = {}, values = Object.create(valuesById);
-        values[valuesById[0] = 'OFF'] = 0;
-        values[valuesById[1] = 'ON'] = 1;
+        values[valuesById[0] = "OFF"] = 0;
+        values[valuesById[1] = "ON"] = 1;
         return values;
     })();
 
@@ -8823,9 +8961,9 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
         SetPinMode.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.pin != null && Object.hasOwnProperty.call(message, 'pin'))
+            if (message.pin != null && Object.hasOwnProperty.call(message, "pin"))
                 writer.uint32(8).int32(message.pin);
-            if (message.mode != null && Object.hasOwnProperty.call(message, 'mode'))
+            if (message.mode != null && Object.hasOwnProperty.call(message, "mode"))
                 writer.uint32(16).int32(message.mode);
             return writer;
         };
@@ -8864,12 +9002,12 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
         };
 
         SetPinMode.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.pin != null && message.hasOwnProperty('pin'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.pin != null && message.hasOwnProperty("pin"))
                 switch (message.pin) {
                 default:
-                    return 'pin: enum value expected';
+                    return "pin: enum value expected";
                 case 0:
                 case 1:
                 case 2:
@@ -8880,10 +9018,10 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
                 case 7:
                     break;
                 }
-            if (message.mode != null && message.hasOwnProperty('mode'))
+            if (message.mode != null && message.hasOwnProperty("mode"))
                 switch (message.mode) {
                 default:
-                    return 'mode: enum value expected';
+                    return "mode: enum value expected";
                 case 0:
                 case 1:
                     break;
@@ -8897,56 +9035,56 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
             let message = new $root.PB_Gpio.SetPinMode();
             switch (object.pin) {
             default:
-                if (typeof object.pin === 'number') {
+                if (typeof object.pin === "number") {
                     message.pin = object.pin;
                     break;
                 }
                 break;
-            case 'PC0':
+            case "PC0":
             case 0:
                 message.pin = 0;
                 break;
-            case 'PC1':
+            case "PC1":
             case 1:
                 message.pin = 1;
                 break;
-            case 'PC3':
+            case "PC3":
             case 2:
                 message.pin = 2;
                 break;
-            case 'PB2':
+            case "PB2":
             case 3:
                 message.pin = 3;
                 break;
-            case 'PB3':
+            case "PB3":
             case 4:
                 message.pin = 4;
                 break;
-            case 'PA4':
+            case "PA4":
             case 5:
                 message.pin = 5;
                 break;
-            case 'PA6':
+            case "PA6":
             case 6:
                 message.pin = 6;
                 break;
-            case 'PA7':
+            case "PA7":
             case 7:
                 message.pin = 7;
                 break;
             }
             switch (object.mode) {
             default:
-                if (typeof object.mode === 'number') {
+                if (typeof object.mode === "number") {
                     message.mode = object.mode;
                     break;
                 }
                 break;
-            case 'OUTPUT':
+            case "OUTPUT":
             case 0:
                 message.mode = 0;
                 break;
-            case 'INPUT':
+            case "INPUT":
             case 1:
                 message.mode = 1;
                 break;
@@ -8959,12 +9097,12 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
                 options = {};
             let object = {};
             if (options.defaults) {
-                object.pin = options.enums === String ? 'PC0' : 0;
-                object.mode = options.enums === String ? 'OUTPUT' : 0;
+                object.pin = options.enums === String ? "PC0" : 0;
+                object.mode = options.enums === String ? "OUTPUT" : 0;
             }
-            if (message.pin != null && message.hasOwnProperty('pin'))
+            if (message.pin != null && message.hasOwnProperty("pin"))
                 object.pin = options.enums === String ? $root.PB_Gpio.GpioPin[message.pin] === undefined ? message.pin : $root.PB_Gpio.GpioPin[message.pin] : message.pin;
-            if (message.mode != null && message.hasOwnProperty('mode'))
+            if (message.mode != null && message.hasOwnProperty("mode"))
                 object.mode = options.enums === String ? $root.PB_Gpio.GpioPinMode[message.mode] === undefined ? message.mode : $root.PB_Gpio.GpioPinMode[message.mode] : message.mode;
             return object;
         };
@@ -8975,9 +9113,9 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
 
         SetPinMode.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Gpio.SetPinMode';
+            return typeUrlPrefix + "/PB_Gpio.SetPinMode";
         };
 
         return SetPinMode;
@@ -9002,9 +9140,9 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
         SetInputPull.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.pin != null && Object.hasOwnProperty.call(message, 'pin'))
+            if (message.pin != null && Object.hasOwnProperty.call(message, "pin"))
                 writer.uint32(8).int32(message.pin);
-            if (message.pullMode != null && Object.hasOwnProperty.call(message, 'pullMode'))
+            if (message.pullMode != null && Object.hasOwnProperty.call(message, "pullMode"))
                 writer.uint32(16).int32(message.pullMode);
             return writer;
         };
@@ -9043,12 +9181,12 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
         };
 
         SetInputPull.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.pin != null && message.hasOwnProperty('pin'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.pin != null && message.hasOwnProperty("pin"))
                 switch (message.pin) {
                 default:
-                    return 'pin: enum value expected';
+                    return "pin: enum value expected";
                 case 0:
                 case 1:
                 case 2:
@@ -9059,10 +9197,10 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
                 case 7:
                     break;
                 }
-            if (message.pullMode != null && message.hasOwnProperty('pullMode'))
+            if (message.pullMode != null && message.hasOwnProperty("pullMode"))
                 switch (message.pullMode) {
                 default:
-                    return 'pullMode: enum value expected';
+                    return "pullMode: enum value expected";
                 case 0:
                 case 1:
                 case 2:
@@ -9077,60 +9215,60 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
             let message = new $root.PB_Gpio.SetInputPull();
             switch (object.pin) {
             default:
-                if (typeof object.pin === 'number') {
+                if (typeof object.pin === "number") {
                     message.pin = object.pin;
                     break;
                 }
                 break;
-            case 'PC0':
+            case "PC0":
             case 0:
                 message.pin = 0;
                 break;
-            case 'PC1':
+            case "PC1":
             case 1:
                 message.pin = 1;
                 break;
-            case 'PC3':
+            case "PC3":
             case 2:
                 message.pin = 2;
                 break;
-            case 'PB2':
+            case "PB2":
             case 3:
                 message.pin = 3;
                 break;
-            case 'PB3':
+            case "PB3":
             case 4:
                 message.pin = 4;
                 break;
-            case 'PA4':
+            case "PA4":
             case 5:
                 message.pin = 5;
                 break;
-            case 'PA6':
+            case "PA6":
             case 6:
                 message.pin = 6;
                 break;
-            case 'PA7':
+            case "PA7":
             case 7:
                 message.pin = 7;
                 break;
             }
             switch (object.pullMode) {
             default:
-                if (typeof object.pullMode === 'number') {
+                if (typeof object.pullMode === "number") {
                     message.pullMode = object.pullMode;
                     break;
                 }
                 break;
-            case 'NO':
+            case "NO":
             case 0:
                 message.pullMode = 0;
                 break;
-            case 'UP':
+            case "UP":
             case 1:
                 message.pullMode = 1;
                 break;
-            case 'DOWN':
+            case "DOWN":
             case 2:
                 message.pullMode = 2;
                 break;
@@ -9143,12 +9281,12 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
                 options = {};
             let object = {};
             if (options.defaults) {
-                object.pin = options.enums === String ? 'PC0' : 0;
-                object.pullMode = options.enums === String ? 'NO' : 0;
+                object.pin = options.enums === String ? "PC0" : 0;
+                object.pullMode = options.enums === String ? "NO" : 0;
             }
-            if (message.pin != null && message.hasOwnProperty('pin'))
+            if (message.pin != null && message.hasOwnProperty("pin"))
                 object.pin = options.enums === String ? $root.PB_Gpio.GpioPin[message.pin] === undefined ? message.pin : $root.PB_Gpio.GpioPin[message.pin] : message.pin;
-            if (message.pullMode != null && message.hasOwnProperty('pullMode'))
+            if (message.pullMode != null && message.hasOwnProperty("pullMode"))
                 object.pullMode = options.enums === String ? $root.PB_Gpio.GpioInputPull[message.pullMode] === undefined ? message.pullMode : $root.PB_Gpio.GpioInputPull[message.pullMode] : message.pullMode;
             return object;
         };
@@ -9159,9 +9297,9 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
 
         SetInputPull.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Gpio.SetInputPull';
+            return typeUrlPrefix + "/PB_Gpio.SetInputPull";
         };
 
         return SetInputPull;
@@ -9185,7 +9323,7 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
         GetPinMode.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.pin != null && Object.hasOwnProperty.call(message, 'pin'))
+            if (message.pin != null && Object.hasOwnProperty.call(message, "pin"))
                 writer.uint32(8).int32(message.pin);
             return writer;
         };
@@ -9220,12 +9358,12 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
         };
 
         GetPinMode.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.pin != null && message.hasOwnProperty('pin'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.pin != null && message.hasOwnProperty("pin"))
                 switch (message.pin) {
                 default:
-                    return 'pin: enum value expected';
+                    return "pin: enum value expected";
                 case 0:
                 case 1:
                 case 2:
@@ -9245,40 +9383,40 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
             let message = new $root.PB_Gpio.GetPinMode();
             switch (object.pin) {
             default:
-                if (typeof object.pin === 'number') {
+                if (typeof object.pin === "number") {
                     message.pin = object.pin;
                     break;
                 }
                 break;
-            case 'PC0':
+            case "PC0":
             case 0:
                 message.pin = 0;
                 break;
-            case 'PC1':
+            case "PC1":
             case 1:
                 message.pin = 1;
                 break;
-            case 'PC3':
+            case "PC3":
             case 2:
                 message.pin = 2;
                 break;
-            case 'PB2':
+            case "PB2":
             case 3:
                 message.pin = 3;
                 break;
-            case 'PB3':
+            case "PB3":
             case 4:
                 message.pin = 4;
                 break;
-            case 'PA4':
+            case "PA4":
             case 5:
                 message.pin = 5;
                 break;
-            case 'PA6':
+            case "PA6":
             case 6:
                 message.pin = 6;
                 break;
-            case 'PA7':
+            case "PA7":
             case 7:
                 message.pin = 7;
                 break;
@@ -9291,8 +9429,8 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
                 options = {};
             let object = {};
             if (options.defaults)
-                object.pin = options.enums === String ? 'PC0' : 0;
-            if (message.pin != null && message.hasOwnProperty('pin'))
+                object.pin = options.enums === String ? "PC0" : 0;
+            if (message.pin != null && message.hasOwnProperty("pin"))
                 object.pin = options.enums === String ? $root.PB_Gpio.GpioPin[message.pin] === undefined ? message.pin : $root.PB_Gpio.GpioPin[message.pin] : message.pin;
             return object;
         };
@@ -9303,9 +9441,9 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
 
         GetPinMode.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Gpio.GetPinMode';
+            return typeUrlPrefix + "/PB_Gpio.GetPinMode";
         };
 
         return GetPinMode;
@@ -9329,7 +9467,7 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
         GetPinModeResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.mode != null && Object.hasOwnProperty.call(message, 'mode'))
+            if (message.mode != null && Object.hasOwnProperty.call(message, "mode"))
                 writer.uint32(8).int32(message.mode);
             return writer;
         };
@@ -9364,12 +9502,12 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
         };
 
         GetPinModeResponse.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.mode != null && message.hasOwnProperty('mode'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.mode != null && message.hasOwnProperty("mode"))
                 switch (message.mode) {
                 default:
-                    return 'mode: enum value expected';
+                    return "mode: enum value expected";
                 case 0:
                 case 1:
                     break;
@@ -9383,16 +9521,16 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
             let message = new $root.PB_Gpio.GetPinModeResponse();
             switch (object.mode) {
             default:
-                if (typeof object.mode === 'number') {
+                if (typeof object.mode === "number") {
                     message.mode = object.mode;
                     break;
                 }
                 break;
-            case 'OUTPUT':
+            case "OUTPUT":
             case 0:
                 message.mode = 0;
                 break;
-            case 'INPUT':
+            case "INPUT":
             case 1:
                 message.mode = 1;
                 break;
@@ -9405,8 +9543,8 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
                 options = {};
             let object = {};
             if (options.defaults)
-                object.mode = options.enums === String ? 'OUTPUT' : 0;
-            if (message.mode != null && message.hasOwnProperty('mode'))
+                object.mode = options.enums === String ? "OUTPUT" : 0;
+            if (message.mode != null && message.hasOwnProperty("mode"))
                 object.mode = options.enums === String ? $root.PB_Gpio.GpioPinMode[message.mode] === undefined ? message.mode : $root.PB_Gpio.GpioPinMode[message.mode] : message.mode;
             return object;
         };
@@ -9417,9 +9555,9 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
 
         GetPinModeResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Gpio.GetPinModeResponse';
+            return typeUrlPrefix + "/PB_Gpio.GetPinModeResponse";
         };
 
         return GetPinModeResponse;
@@ -9443,7 +9581,7 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
         ReadPin.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.pin != null && Object.hasOwnProperty.call(message, 'pin'))
+            if (message.pin != null && Object.hasOwnProperty.call(message, "pin"))
                 writer.uint32(8).int32(message.pin);
             return writer;
         };
@@ -9478,12 +9616,12 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
         };
 
         ReadPin.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.pin != null && message.hasOwnProperty('pin'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.pin != null && message.hasOwnProperty("pin"))
                 switch (message.pin) {
                 default:
-                    return 'pin: enum value expected';
+                    return "pin: enum value expected";
                 case 0:
                 case 1:
                 case 2:
@@ -9503,40 +9641,40 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
             let message = new $root.PB_Gpio.ReadPin();
             switch (object.pin) {
             default:
-                if (typeof object.pin === 'number') {
+                if (typeof object.pin === "number") {
                     message.pin = object.pin;
                     break;
                 }
                 break;
-            case 'PC0':
+            case "PC0":
             case 0:
                 message.pin = 0;
                 break;
-            case 'PC1':
+            case "PC1":
             case 1:
                 message.pin = 1;
                 break;
-            case 'PC3':
+            case "PC3":
             case 2:
                 message.pin = 2;
                 break;
-            case 'PB2':
+            case "PB2":
             case 3:
                 message.pin = 3;
                 break;
-            case 'PB3':
+            case "PB3":
             case 4:
                 message.pin = 4;
                 break;
-            case 'PA4':
+            case "PA4":
             case 5:
                 message.pin = 5;
                 break;
-            case 'PA6':
+            case "PA6":
             case 6:
                 message.pin = 6;
                 break;
-            case 'PA7':
+            case "PA7":
             case 7:
                 message.pin = 7;
                 break;
@@ -9549,8 +9687,8 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
                 options = {};
             let object = {};
             if (options.defaults)
-                object.pin = options.enums === String ? 'PC0' : 0;
-            if (message.pin != null && message.hasOwnProperty('pin'))
+                object.pin = options.enums === String ? "PC0" : 0;
+            if (message.pin != null && message.hasOwnProperty("pin"))
                 object.pin = options.enums === String ? $root.PB_Gpio.GpioPin[message.pin] === undefined ? message.pin : $root.PB_Gpio.GpioPin[message.pin] : message.pin;
             return object;
         };
@@ -9561,9 +9699,9 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
 
         ReadPin.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Gpio.ReadPin';
+            return typeUrlPrefix + "/PB_Gpio.ReadPin";
         };
 
         return ReadPin;
@@ -9587,7 +9725,7 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
         ReadPinResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.value != null && Object.hasOwnProperty.call(message, 'value'))
+            if (message.value != null && Object.hasOwnProperty.call(message, "value"))
                 writer.uint32(16).uint32(message.value);
             return writer;
         };
@@ -9622,11 +9760,11 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
         };
 
         ReadPinResponse.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.value != null && message.hasOwnProperty('value'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.value != null && message.hasOwnProperty("value"))
                 if (!$util.isInteger(message.value))
-                    return 'value: integer expected';
+                    return "value: integer expected";
             return null;
         };
 
@@ -9645,7 +9783,7 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
             let object = {};
             if (options.defaults)
                 object.value = 0;
-            if (message.value != null && message.hasOwnProperty('value'))
+            if (message.value != null && message.hasOwnProperty("value"))
                 object.value = message.value;
             return object;
         };
@@ -9656,9 +9794,9 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
 
         ReadPinResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Gpio.ReadPinResponse';
+            return typeUrlPrefix + "/PB_Gpio.ReadPinResponse";
         };
 
         return ReadPinResponse;
@@ -9683,9 +9821,9 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
         WritePin.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.pin != null && Object.hasOwnProperty.call(message, 'pin'))
+            if (message.pin != null && Object.hasOwnProperty.call(message, "pin"))
                 writer.uint32(8).int32(message.pin);
-            if (message.value != null && Object.hasOwnProperty.call(message, 'value'))
+            if (message.value != null && Object.hasOwnProperty.call(message, "value"))
                 writer.uint32(16).uint32(message.value);
             return writer;
         };
@@ -9724,12 +9862,12 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
         };
 
         WritePin.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.pin != null && message.hasOwnProperty('pin'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.pin != null && message.hasOwnProperty("pin"))
                 switch (message.pin) {
                 default:
-                    return 'pin: enum value expected';
+                    return "pin: enum value expected";
                 case 0:
                 case 1:
                 case 2:
@@ -9740,9 +9878,9 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
                 case 7:
                     break;
                 }
-            if (message.value != null && message.hasOwnProperty('value'))
+            if (message.value != null && message.hasOwnProperty("value"))
                 if (!$util.isInteger(message.value))
-                    return 'value: integer expected';
+                    return "value: integer expected";
             return null;
         };
 
@@ -9752,40 +9890,40 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
             let message = new $root.PB_Gpio.WritePin();
             switch (object.pin) {
             default:
-                if (typeof object.pin === 'number') {
+                if (typeof object.pin === "number") {
                     message.pin = object.pin;
                     break;
                 }
                 break;
-            case 'PC0':
+            case "PC0":
             case 0:
                 message.pin = 0;
                 break;
-            case 'PC1':
+            case "PC1":
             case 1:
                 message.pin = 1;
                 break;
-            case 'PC3':
+            case "PC3":
             case 2:
                 message.pin = 2;
                 break;
-            case 'PB2':
+            case "PB2":
             case 3:
                 message.pin = 3;
                 break;
-            case 'PB3':
+            case "PB3":
             case 4:
                 message.pin = 4;
                 break;
-            case 'PA4':
+            case "PA4":
             case 5:
                 message.pin = 5;
                 break;
-            case 'PA6':
+            case "PA6":
             case 6:
                 message.pin = 6;
                 break;
-            case 'PA7':
+            case "PA7":
             case 7:
                 message.pin = 7;
                 break;
@@ -9800,12 +9938,12 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
                 options = {};
             let object = {};
             if (options.defaults) {
-                object.pin = options.enums === String ? 'PC0' : 0;
+                object.pin = options.enums === String ? "PC0" : 0;
                 object.value = 0;
             }
-            if (message.pin != null && message.hasOwnProperty('pin'))
+            if (message.pin != null && message.hasOwnProperty("pin"))
                 object.pin = options.enums === String ? $root.PB_Gpio.GpioPin[message.pin] === undefined ? message.pin : $root.PB_Gpio.GpioPin[message.pin] : message.pin;
-            if (message.value != null && message.hasOwnProperty('value'))
+            if (message.value != null && message.hasOwnProperty("value"))
                 object.value = message.value;
             return object;
         };
@@ -9816,9 +9954,9 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
 
         WritePin.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Gpio.WritePin';
+            return typeUrlPrefix + "/PB_Gpio.WritePin";
         };
 
         return WritePin;
@@ -9869,8 +10007,8 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
         };
 
         GetOtgMode.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
+            if (typeof message !== "object" || message === null)
+                return "object expected";
             return null;
         };
 
@@ -9890,9 +10028,9 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
 
         GetOtgMode.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Gpio.GetOtgMode';
+            return typeUrlPrefix + "/PB_Gpio.GetOtgMode";
         };
 
         return GetOtgMode;
@@ -9916,7 +10054,7 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
         GetOtgModeResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.mode != null && Object.hasOwnProperty.call(message, 'mode'))
+            if (message.mode != null && Object.hasOwnProperty.call(message, "mode"))
                 writer.uint32(8).int32(message.mode);
             return writer;
         };
@@ -9951,12 +10089,12 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
         };
 
         GetOtgModeResponse.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.mode != null && message.hasOwnProperty('mode'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.mode != null && message.hasOwnProperty("mode"))
                 switch (message.mode) {
                 default:
-                    return 'mode: enum value expected';
+                    return "mode: enum value expected";
                 case 0:
                 case 1:
                     break;
@@ -9970,16 +10108,16 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
             let message = new $root.PB_Gpio.GetOtgModeResponse();
             switch (object.mode) {
             default:
-                if (typeof object.mode === 'number') {
+                if (typeof object.mode === "number") {
                     message.mode = object.mode;
                     break;
                 }
                 break;
-            case 'OFF':
+            case "OFF":
             case 0:
                 message.mode = 0;
                 break;
-            case 'ON':
+            case "ON":
             case 1:
                 message.mode = 1;
                 break;
@@ -9992,8 +10130,8 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
                 options = {};
             let object = {};
             if (options.defaults)
-                object.mode = options.enums === String ? 'OFF' : 0;
-            if (message.mode != null && message.hasOwnProperty('mode'))
+                object.mode = options.enums === String ? "OFF" : 0;
+            if (message.mode != null && message.hasOwnProperty("mode"))
                 object.mode = options.enums === String ? $root.PB_Gpio.GpioOtgMode[message.mode] === undefined ? message.mode : $root.PB_Gpio.GpioOtgMode[message.mode] : message.mode;
             return object;
         };
@@ -10004,9 +10142,9 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
 
         GetOtgModeResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Gpio.GetOtgModeResponse';
+            return typeUrlPrefix + "/PB_Gpio.GetOtgModeResponse";
         };
 
         return GetOtgModeResponse;
@@ -10030,7 +10168,7 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
         SetOtgMode.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.mode != null && Object.hasOwnProperty.call(message, 'mode'))
+            if (message.mode != null && Object.hasOwnProperty.call(message, "mode"))
                 writer.uint32(8).int32(message.mode);
             return writer;
         };
@@ -10065,12 +10203,12 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
         };
 
         SetOtgMode.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.mode != null && message.hasOwnProperty('mode'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.mode != null && message.hasOwnProperty("mode"))
                 switch (message.mode) {
                 default:
-                    return 'mode: enum value expected';
+                    return "mode: enum value expected";
                 case 0:
                 case 1:
                     break;
@@ -10084,16 +10222,16 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
             let message = new $root.PB_Gpio.SetOtgMode();
             switch (object.mode) {
             default:
-                if (typeof object.mode === 'number') {
+                if (typeof object.mode === "number") {
                     message.mode = object.mode;
                     break;
                 }
                 break;
-            case 'OFF':
+            case "OFF":
             case 0:
                 message.mode = 0;
                 break;
-            case 'ON':
+            case "ON":
             case 1:
                 message.mode = 1;
                 break;
@@ -10106,8 +10244,8 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
                 options = {};
             let object = {};
             if (options.defaults)
-                object.mode = options.enums === String ? 'OFF' : 0;
-            if (message.mode != null && message.hasOwnProperty('mode'))
+                object.mode = options.enums === String ? "OFF" : 0;
+            if (message.mode != null && message.hasOwnProperty("mode"))
                 object.mode = options.enums === String ? $root.PB_Gpio.GpioOtgMode[message.mode] === undefined ? message.mode : $root.PB_Gpio.GpioOtgMode[message.mode] : message.mode;
             return object;
         };
@@ -10118,9 +10256,9 @@ export const PB_Gpio = $root.PB_Gpio = (() => {
 
         SetOtgMode.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Gpio.SetOtgMode';
+            return typeUrlPrefix + "/PB_Gpio.SetOtgMode";
         };
 
         return SetOtgMode;
@@ -10142,7 +10280,7 @@ export const PB_Property = $root.PB_Property = (() => {
                         this[keys[i]] = properties[keys[i]];
         }
 
-        GetRequest.prototype.key = '';
+        GetRequest.prototype.key = "";
 
         GetRequest.create = function create(properties) {
             return new GetRequest(properties);
@@ -10151,7 +10289,7 @@ export const PB_Property = $root.PB_Property = (() => {
         GetRequest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.key != null && Object.hasOwnProperty.call(message, 'key'))
+            if (message.key != null && Object.hasOwnProperty.call(message, "key"))
                 writer.uint32(10).string(message.key);
             return writer;
         };
@@ -10186,11 +10324,11 @@ export const PB_Property = $root.PB_Property = (() => {
         };
 
         GetRequest.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.key != null && message.hasOwnProperty('key'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.key != null && message.hasOwnProperty("key"))
                 if (!$util.isString(message.key))
-                    return 'key: string expected';
+                    return "key: string expected";
             return null;
         };
 
@@ -10208,8 +10346,8 @@ export const PB_Property = $root.PB_Property = (() => {
                 options = {};
             let object = {};
             if (options.defaults)
-                object.key = '';
-            if (message.key != null && message.hasOwnProperty('key'))
+                object.key = "";
+            if (message.key != null && message.hasOwnProperty("key"))
                 object.key = message.key;
             return object;
         };
@@ -10220,9 +10358,9 @@ export const PB_Property = $root.PB_Property = (() => {
 
         GetRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Property.GetRequest';
+            return typeUrlPrefix + "/PB_Property.GetRequest";
         };
 
         return GetRequest;
@@ -10237,8 +10375,8 @@ export const PB_Property = $root.PB_Property = (() => {
                         this[keys[i]] = properties[keys[i]];
         }
 
-        GetResponse.prototype.key = '';
-        GetResponse.prototype.value = '';
+        GetResponse.prototype.key = "";
+        GetResponse.prototype.value = "";
 
         GetResponse.create = function create(properties) {
             return new GetResponse(properties);
@@ -10247,9 +10385,9 @@ export const PB_Property = $root.PB_Property = (() => {
         GetResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.key != null && Object.hasOwnProperty.call(message, 'key'))
+            if (message.key != null && Object.hasOwnProperty.call(message, "key"))
                 writer.uint32(10).string(message.key);
-            if (message.value != null && Object.hasOwnProperty.call(message, 'value'))
+            if (message.value != null && Object.hasOwnProperty.call(message, "value"))
                 writer.uint32(18).string(message.value);
             return writer;
         };
@@ -10288,14 +10426,14 @@ export const PB_Property = $root.PB_Property = (() => {
         };
 
         GetResponse.verify = function verify(message) {
-            if (typeof message !== 'object' || message === null)
-                return 'object expected';
-            if (message.key != null && message.hasOwnProperty('key'))
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.key != null && message.hasOwnProperty("key"))
                 if (!$util.isString(message.key))
-                    return 'key: string expected';
-            if (message.value != null && message.hasOwnProperty('value'))
+                    return "key: string expected";
+            if (message.value != null && message.hasOwnProperty("value"))
                 if (!$util.isString(message.value))
-                    return 'value: string expected';
+                    return "value: string expected";
             return null;
         };
 
@@ -10315,12 +10453,12 @@ export const PB_Property = $root.PB_Property = (() => {
                 options = {};
             let object = {};
             if (options.defaults) {
-                object.key = '';
-                object.value = '';
+                object.key = "";
+                object.value = "";
             }
-            if (message.key != null && message.hasOwnProperty('key'))
+            if (message.key != null && message.hasOwnProperty("key"))
                 object.key = message.key;
-            if (message.value != null && message.hasOwnProperty('value'))
+            if (message.value != null && message.hasOwnProperty("value"))
                 object.value = message.value;
             return object;
         };
@@ -10331,9 +10469,9 @@ export const PB_Property = $root.PB_Property = (() => {
 
         GetResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = 'type.googleapis.com';
+                typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + '/PB_Property.GetResponse';
+            return typeUrlPrefix + "/PB_Property.GetResponse";
         };
 
         return GetResponse;

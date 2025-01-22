@@ -1,11 +1,9 @@
-// NOTE: Fake import so that this file is considered a module
-import {} from 'worker_threads'
-
-let workerPort: SerialPort | null = null
+let workerPort: SerialPort | undefined = undefined
 
 const workerConnect = async () => {
-  const ports: SerialPort[] = await navigator.serial.getPorts()
-    .catch(error => {
+  const ports: SerialPort[] = await navigator.serial
+    .getPorts()
+    .catch((error) => {
       postMessage({
         message: 'connectionStatus',
         operation: 'connect',
@@ -18,9 +16,7 @@ const workerConnect = async () => {
   await workerOpenPort()
 }
 
-const workerOpenPort = async ({
-  reopen = false
-} = {}) => {
+const workerOpenPort = async ({ reopen = false } = {}) => {
   if (!workerPort) {
     postMessage({
       message: 'connectionStatus',
@@ -30,7 +26,8 @@ const workerOpenPort = async ({
     return
   }
 
-  await workerPort.open({ baudRate: 1 })
+  await workerPort
+    .open({ baudRate: 1 })
     .then(() => {
       postMessage({
         message: 'connectionStatus',
@@ -40,20 +37,26 @@ const workerOpenPort = async ({
 
       if (workerPort) {
         if (workerPort.readable) {
-          postMessage({
-            message: 'getReadableStream',
-            stream: workerPort.readable
+          postMessage(
+            {
+              message: 'getReadableStream',
+              stream: workerPort.readable
+            },
             // eslint-disable-next-line
             // @ts-ignore
-          }, [workerPort.readable])
+            [workerPort.readable]
+          )
         }
         if (workerPort.writable) {
-          postMessage({
-            message: 'getWritableStream',
-            stream: workerPort.writable
+          postMessage(
+            {
+              message: 'getWritableStream',
+              stream: workerPort.writable
+            },
             // eslint-disable-next-line
             // @ts-ignore
-          }, [workerPort.writable])
+            [workerPort.writable]
+          )
         }
 
         // Listen for disconnects
@@ -63,11 +66,11 @@ const workerOpenPort = async ({
             operation: 'portDisconnect',
             status: 'success'
           })
-          workerPort = null
+          workerPort = undefined
         }
       }
     })
-    .catch(error => {
+    .catch((error) => {
       postMessage({
         message: 'connectionStatus',
         operation: reopen ? 'reopenConnect' : 'connect',
@@ -77,9 +80,7 @@ const workerOpenPort = async ({
 }
 
 let attempts = 1
-const workerClosePort = async ({
-  reopen = false
-} = {}) => {
+const workerClosePort = async ({ reopen = false } = {}) => {
   if (!workerPort) {
     postMessage({
       message: 'connectionStatus',
@@ -90,7 +91,8 @@ const workerClosePort = async ({
   }
 
   try {
-    await workerPort.close()
+    await workerPort
+      .close()
       .then(() => {
         attempts = 1
 
@@ -100,13 +102,17 @@ const workerClosePort = async ({
           status: 'success'
         })
       })
-      .catch(error => {
+      .catch((error) => {
         // in case reader and writer don't get unlocked even with the added delay of 1ms
         if (attempts < 3) {
           attempts++
-          return setTimeout(() => workerClosePort({
-            reopen
-          }), 100)
+          return setTimeout(
+            () =>
+              workerClosePort({
+                reopen
+              }),
+            100
+          )
         }
         postMessage({
           message: 'connectionStatus',
@@ -123,7 +129,7 @@ const workerClosePort = async ({
   }
 }
 
-async function workerReopenPort () {
+async function workerReopenPort() {
   await workerClosePort({
     reopen: true
   })

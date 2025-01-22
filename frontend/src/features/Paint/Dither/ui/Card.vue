@@ -5,7 +5,12 @@
     </q-card-section>
 
     <q-card-section class="q-pt-none">
-      <canvas ref="sourceCanvasRef" width="128" height="64" class="q-ml-sm"></canvas>
+      <canvas
+        ref="sourceCanvasRef"
+        width="128"
+        height="64"
+        class="q-ml-sm"
+      ></canvas>
     </q-card-section>
 
     <q-card-section class="q-pt-none" v-if="ditherProcesses.length">
@@ -19,18 +24,21 @@
         class="column flex-center q-ma-sm"
       >
         <div v-if="!p.imageData" class="canvas-placeholder flex flex-center">
-          <q-spinner
-            color="primary"
-            size="3em"
-          />
+          <q-spinner color="primary" size="3em" />
         </div>
-        <canvas v-else :class="p.id" width="128" height="64" @click="select(p.imageData)"></canvas>
+        <canvas
+          v-else
+          :class="p.id"
+          width="128"
+          height="64"
+          @click="select(p.imageData)"
+        ></canvas>
         <q-tooltip :offset="[0, 3]" class="bg-primary">{{ p.title }}</q-tooltip>
       </div>
     </q-card-section>
 
     <q-card-actions align="right">
-      <q-btn flat label="Cancel" @click="cancel"/>
+      <q-btn flat label="Cancel" @click="cancel" />
     </q-card-actions>
   </q-card>
 </template>
@@ -66,13 +74,13 @@ const startDither = () => {
   dither(sourceImageData.value)
 }
 const onDitherStart = ({ id, title }) => {
-  if (ditherProcesses.value.find(e => e.id === id)) {
+  if (ditherProcesses.value.find((e) => e.id === id)) {
     return
   }
   ditherProcesses.value.push({ id, title })
 }
 const onDitherResult = ({ id, imageData }) => {
-  const p = ditherProcesses.value.find(e => e.id === id)
+  const p = ditherProcesses.value.find((e) => e.id === id)
   if (!p) {
     return
   }

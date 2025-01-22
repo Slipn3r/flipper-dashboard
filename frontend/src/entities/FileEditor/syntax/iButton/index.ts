@@ -1,4 +1,4 @@
-import { parser } from './parser.cjs'
+import { parser } from './parser'
 import { LRLanguage, LanguageSupport } from '@codemirror/language'
 import { styleTags, tags as t } from '@lezer/highlight'
 

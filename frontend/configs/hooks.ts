@@ -1,23 +1,56 @@
-const { exec } = require('child_process')
-const {
-  bgGreen,
-  green,
-  inverse,
-  // bgRed,
-  // red,
-  // bgYellow,
-  // yellow,
-  black,
-  // white,
-  underline
-} = require('kolorist')
+import { exec } from 'child_process'
+import { bgGreen, green, inverse, black, underline } from 'kolorist'
 // const fs = require('fs')
 // const path = require('path')
 // const readline = require('readline')
 
+// import { fileURLToPath } from 'node:url'
+// const currentDir = fileURLToPath(new URL('.', import.meta.url))
+
 const dot = '•'
-const banner = 'Before build ' + dot
+const banner = 'Hooks ' + dot
 const greenBanner = green(banner)
+
+const flipperzeroProtobufUpdate = () => {
+  const startTime = Date.now()
+  console.log()
+  console.log(
+    ` ${greenBanner} ${inverse(' WAIT ')} ${dot} Updating of ${underline(
+      green('flipperzero-protobuf')
+    )} in progress...`
+  )
+
+  return new Promise((resolve, reject) => {
+    exec(
+      'git submodule update --init --remote --merge -- ./src/shared/lib/flipperzero-protobuf',
+      (err, stdout, stderr) => {
+        if (err) {
+          reject(err)
+        }
+        if (stdout) {
+          const diffTime = +new Date() - startTime
+          console.log(
+            ` ${greenBanner} ${bgGreen(black(' DONE '))} ${green(
+              dot +
+                ' ' +
+                underline('Flipperzero-protobuf') +
+                ' updated with success ' +
+                dot +
+                ' ' +
+                diffTime +
+                'ms'
+            )}`
+          )
+          console.log()
+        }
+        if (stderr) {
+          console.error('stderr', stderr)
+        }
+        resolve(true)
+      }
+    )
+  })
+}
 
 const compileProtofiles = () => {
   const startTime = Date.now()
@@ -30,7 +63,7 @@ const compileProtofiles = () => {
 
   return new Promise((resolve, reject) => {
     exec(
-      'pbjs -t static-module -w es6 --no-comments --lint "eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars, camelcase, default-case-last, no-mixed-operators" -o src/shared/lib/flipperJs/protobufCompiled.js ./src/shared/lib/flipperzero-protobuf/*.proto && npx eslint --fix src/shared/lib/flipperJs/protobufCompiled.js && echo ""',
+      'pbjs -t static-module -w es6 --no-comments --lint "eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars, camelcase, default-case-last, no-mixed-operators" -o src/shared/lib/flipperJs/protobufCompiled.js ./src/shared/lib/flipperzero-protobuf/*.proto && echo ""',
       (err, stdout, stderr) => {
         if (err) {
           reject(err)
@@ -54,7 +87,7 @@ const compileProtofiles = () => {
         if (stderr) {
           console.error('stderr', stderr)
         }
-        resolve()
+        resolve(true)
       }
     )
   })
@@ -125,7 +158,7 @@ const compileProtofiles = () => {
 // }
 
 // const moveWorkers = async () => {
-//   const result = await walkPromise(path.join(__dirname, 'src'))
+//   const result = await walkPromise(path.join(currentDir, 'src'))
 //   const workersList = result
 //     .filter((e) => e.endsWith('worker.js'))
 //     .map((e) => e.slice(e.indexOf('frontend/src') + 9))
@@ -139,8 +172,8 @@ const compileProtofiles = () => {
 //     const workerDir = workerPath.slice(0, workerPath.lastIndexOf('/'))
 //     const fileName = workerPath.slice(workerPath.lastIndexOf('/') + 1)
 //     const dest = 'src-electron/extraResources/workers/' + fileName
-//     const absolutePath = path.join(__dirname, workerPath)
-//     const absoluteDest = path.join(__dirname, dest)
+//     const absolutePath = path.join(currentDir, workerPath)
+//     const absoluteDest = path.join(currentDir, dest)
 
 //     const firstLine = await getFirstLine(absolutePath)
 //     if (firstLine.startsWith('// dependencies: ')) {
@@ -156,11 +189,12 @@ const compileProtofiles = () => {
 //   for (const dependency of dependencies) {
 //     const fileName = dependency.slice(dependency.lastIndexOf('/') + 1)
 //     const dest = 'src-electron/extraResources/workers/' + fileName
-//     copyPromise(path.join(__dirname, dependency), path.join(__dirname, dest))
+//     copyPromise(path.join(currentDir, dependency), path.join(currentDir, dest))
 //   }
 // }
 
-module.exports = {
+export {
+  flipperzeroProtobufUpdate,
   compileProtofiles
   // moveWorkers,
 }

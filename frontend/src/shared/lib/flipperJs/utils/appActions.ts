@@ -1,6 +1,6 @@
 import Flipper from '../flipper'
-import { FlipperModel } from 'entities/Flipper'
-import { AppsModel, AppsApi } from 'entities/Apps'
+import { FlipperModel } from 'entity/Flipper'
+import { AppsModel, AppsApi } from 'entity/Apps'
 
 import { instance } from 'boot/axios'
 

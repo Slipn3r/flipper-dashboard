@@ -3,8 +3,8 @@ import { defineStore } from 'pinia'
 import { Platform } from 'quasar'
 import { isProd, isDebug } from 'shared/config'
 // import asyncSleep from 'simple-async-sleep'
-import { FlipperModel } from 'entities/Flipper'
-import { CategoryModel } from 'entities/Category'
+import { FlipperModel } from 'entity/Flipper'
+import { CategoryModel } from 'entity/Category'
 
 import { FlipperJsUtils } from 'shared/lib/flipperJs'
 
@@ -518,8 +518,8 @@ export const useAppsStore = defineStore('apps', () => {
               flipper.value.name !== flipperCurrentlyParticipating
                 ? ` because ${flipperCurrentlyParticipating} was not found`
                 : error.message
-                ? ' because ' + error.message
-                : ''
+                  ? ' because ' + error.message
+                  : ''
             }!`
             appNotif.value({
               icon: 'error_outline',
@@ -605,8 +605,8 @@ export const useAppsStore = defineStore('apps', () => {
               flipper.value.name !== flipperCurrentlyParticipating
                 ? ` because ${flipperCurrentlyParticipating} was not found`
                 : error.message
-                ? ' because ' + error.message
-                : ''
+                  ? ' because ' + error.message
+                  : ''
             }!`
             appNotif.value({
               icon: 'error_outline',
@@ -645,11 +645,11 @@ export const useAppsStore = defineStore('apps', () => {
           message: `Deleting ${app?.currentVersion?.name || 'app'}...`
         })
 
-        let deleteCategoryName
+        let deleteCategoryName: string
         if (isInstalledApp(app)) {
           const parts = app.path.split('/').filter(Boolean)
-          deleteCategoryName = parts[parts.length - 2]
-          app.alias = parts[parts.length - 1].split('.')[0]
+          deleteCategoryName = parts[parts.length - 2]!
+          app.alias = parts[parts.length - 1]!.split('.')[0]!
         } else {
           deleteCategoryName = categories.value.find(
             (e) => e.id === app.categoryId
@@ -688,8 +688,8 @@ export const useAppsStore = defineStore('apps', () => {
               flipper.value.name !== flipperCurrentlyParticipating
                 ? ` because ${flipperCurrentlyParticipating} was not found`
                 : error.message
-                ? ' because ' + error.message
-                : ''
+                  ? ' because ' + error.message
+                  : ''
             }!`
 
             appNotif.value({

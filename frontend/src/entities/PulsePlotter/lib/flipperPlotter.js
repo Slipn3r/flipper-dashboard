@@ -1,4 +1,3 @@
-/* eslint-disable-next-line camelcase */
 import { autorange, autorange_time } from './autorange.js'
 import { sliceGuess } from './slicer.js'
 import {
@@ -17,11 +16,11 @@ import { defaults, styles, slicerOptions } from './constants.js'
 import { zoomTransform, select, create, zoom, axisTop, scaleLinear } from 'd3'
 
 export default class FlipperPlotter {
-  get slicerOptions () {
+  get slicerOptions() {
     return slicerOptions
   }
 
-  constructor (options = {}) {
+  constructor(options = {}) {
     if (!options.data) {
       console.error(new Error('Required data missing for flipperPlotter'))
       return
@@ -60,17 +59,17 @@ export default class FlipperPlotter {
     }
   }
 
-  initialPlotter () {
+  initialPlotter() {
     this.createNode()
     this.initialCanvas()
     this.drawCanvas()
   }
 
-  setTheme (options) {
+  setTheme(options) {
     this.theme = { ...defaults.theme, ...options }
   }
 
-  setSlicer (params) {
+  setSlicer(params) {
     if (params && params.modulation) {
       this.slicer = params
     } else if (this.data && this.data.modulation) {
@@ -86,7 +85,7 @@ export default class FlipperPlotter {
     this.redrawHintsCanvas(zoomTransform(this.labelCanvasNode))
   }
 
-  setSlicerData (pulses, slicer) {
+  setSlicerData(pulses, slicer) {
     const slice = sliceGuess(pulses, slicer)
     const timings = this.timingsNode
     const messages = this.messagesNode
@@ -106,7 +105,7 @@ export default class FlipperPlotter {
     }
   }
 
-  getAltHints (hints) {
+  getAltHints(hints) {
     const altHints = []
     if (hints) {
       let prevHint
@@ -125,23 +124,29 @@ export default class FlipperPlotter {
     return altHints
   }
 
-  createNode () {
+  createNode() {
     const flipperPlotter = select(this.parent)
     this.flipperPlotterNode = flipperPlotter.node()
 
     this.axisSvg = create('svg')
     const axisSvgNode = this.axisSvg.node()
 
-    const wrapper = create('div')
-      .attr('style', styles.relativePosition + styles.fullWidth)
+    const wrapper = create('div').attr(
+      'style',
+      styles.relativePosition + styles.fullWidth
+    )
     const wrapperNode = wrapper.node()
 
-    const labelCanvas = create('canvas')
-      .attr('style', styles.absoluteTopLeft + styles.fullWidth)
+    const labelCanvas = create('canvas').attr(
+      'style',
+      styles.absoluteTopLeft + styles.fullWidth
+    )
     this.labelCanvasNode = labelCanvas.node()
 
-    const hintsCanvas = create('canvas')
-      .attr('style', styles.absoluteTopLeft + styles.fullWidth)
+    const hintsCanvas = create('canvas').attr(
+      'style',
+      styles.absoluteTopLeft + styles.fullWidth
+    )
     this.hintsCanvasNode = hintsCanvas.node()
 
     const pulsesCanvas = create('canvas').attr('style', styles.fullWidth)
@@ -177,7 +182,7 @@ export default class FlipperPlotter {
     }
   }
 
-  initialCanvas () {
+  initialCanvas() {
     this.width = this.pulsesCanvasNode.clientWidth
     this.height = defaults.height
 
@@ -198,7 +203,7 @@ export default class FlipperPlotter {
     )
   }
 
-  processData (data) {
+  processData(data) {
     let width = 0
     for (let j = 0; j < this.data.pulses.length; ++j) {
       width += this.data.pulses[j]
@@ -215,7 +220,7 @@ export default class FlipperPlotter {
     this.setSlicerData(data.pulses, this.slicer)
   }
 
-  context2d (canvas, width, height, dpi) {
+  context2d(canvas, width, height, dpi) {
     const context = canvas.getContext('2d', { desynchronized: true })
     if (dpi == null) dpi = window.devicePixelRatio
     canvas.width = Math.floor(width * dpi)
@@ -226,7 +231,7 @@ export default class FlipperPlotter {
     return context
   }
 
-  drawAllHints (transform) {
+  drawAllHints(transform) {
     const { leftPulse, rightPulse } = getBoundaries(
       this.data,
       this.width,
@@ -317,7 +322,7 @@ export default class FlipperPlotter {
     }
   }
 
-  zoomed (transform) {
+  zoomed(transform) {
     if (transform.x > 0) transform.x = 0
     if (transform.x + this.width * transform.k < this.width) {
       transform.x = this.width - this.width * transform.k
@@ -335,7 +340,7 @@ export default class FlipperPlotter {
           (x) =>
             (x / currentRange.scale).toFixed(2).replace(/[.,]00$/, '') +
             `${currentTimeRange.prefix}`
-          )
+        )
     )
 
     this.labelContext.save()
@@ -525,7 +530,7 @@ export default class FlipperPlotter {
     this.context.restore()
   }
 
-  redrawHintsCanvas (transform) {
+  redrawHintsCanvas(transform) {
     this.hintsContext.save()
     this.hintsContext.clearRect(0, 0, this.width, this.height)
 
@@ -534,7 +539,7 @@ export default class FlipperPlotter {
     this.hintsContext.restore()
   }
 
-  drawCanvas () {
+  drawCanvas() {
     this.margin = defaults.margin
     this.barHeight = this.height - this.margin.top - this.margin.bottom
 
@@ -594,7 +599,7 @@ export default class FlipperPlotter {
     this.zoomed(zoomTransform(this.labelCanvasNode))
   }
 
-  destroy () {
+  destroy() {
     this.flipperPlotterNode.innerHTML = ''
   }
 }

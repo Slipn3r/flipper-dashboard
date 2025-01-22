@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 /**
     Determine divisor and SI prefix.
 
@@ -32,7 +31,7 @@ const autoranges = [
 ]
 
 /** Determine divisor and SI prefix. */
-function autorange (num, min_int = 10.0) {
+function autorange(num, min_int = 10.0) {
   if (num === 0.0) {
     return autoranges[8]
   }
@@ -66,7 +65,7 @@ const autoranges_time = [
 ]
 
 /** Determine SI divisor or Sexagesimal multiplier and suffix. */
-function autorange_time (num, min_int = 10.0) {
+function autorange_time(num, min_int = 10.0) {
   if (num === 0.0) {
     return autoranges_time[8]
   }

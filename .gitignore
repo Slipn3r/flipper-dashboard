@@ -1,11 +1,32 @@
 .DS_Store
 
+# Editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
 frontend/node_modules
 frontend/package-lock.json
 
 # Quasar core related directories
 frontend/.quasar
 frontend/dist
+frontend/quasar.config.*.temporary.compiled*
+
+# local .env files
+frontend/.env.local*
+
+# Cordova related directories and files
+frontend/src-cordova/node_modules
+frontend/src-cordova/platforms
+frontend/src-cordova/plugins
+frontend/src-cordova/www
+
+# Capacitor related directories and files
+frontend/src-capacitor/www
+frontend/src-capacitor/node_modules
 
 # Log files
 frontend/npm-debug.log*

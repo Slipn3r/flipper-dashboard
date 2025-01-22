@@ -1,10 +1,9 @@
-/* eslint-disable */
-// https://github.com/michael-ciniawsky/postcss-load-config
+import autoprefixer from 'autoprefixer'
 
-module.exports = {
+export default {
   plugins: [
     // https://github.com/postcss/autoprefixer
-    require('autoprefixer')({
+    autoprefixer({
       overrideBrowserslist: [
         'last 10 Chrome versions',
         'last 10 Firefox versions',

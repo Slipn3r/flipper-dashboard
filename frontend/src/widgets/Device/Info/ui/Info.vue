@@ -46,7 +46,7 @@ import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
 
 import { Loading } from 'shared/components/Loading'
 import { FlipperUpdate, FlipperExpandView } from 'features/Flipper'
-import { FlipperBody, FlipperInfo, FlipperModel } from 'entities/Flipper'
+import { FlipperBody, FlipperInfo, FlipperModel } from 'entity/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 
 import { bytesToSize } from 'shared/lib/utils/bytesToSize'

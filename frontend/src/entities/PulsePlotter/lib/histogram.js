@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 /**
     @file Histogram JS.
 
@@ -19,7 +18,7 @@ const max_hist_bins = 16
 
 /// Histogram data for single bin
 class Bin {
-  constructor (num) {
+  constructor(num) {
     if (typeof num !== 'undefined') {
       this.count = 1
       this.sum = num
@@ -37,7 +36,7 @@ class Bin {
     }
   }
 
-  add (num) {
+  add(num) {
     this.count++
     this.sum += num
     this.mean = this.sum / this.count
@@ -46,7 +45,7 @@ class Bin {
     this.devi = (this.max - this.min) / 2
   }
 
-  fuse (bin) {
+  fuse(bin) {
     this.count += bin.count
     this.sum += bin.sum
     this.mean = this.sum / this.count
@@ -55,24 +54,24 @@ class Bin {
     this.devi = (this.max - this.min) / 2
   }
 
-  contains (num) {
+  contains(num) {
     return num >= this.min && num <= this.max
   }
 }
 
 /// Histogram data for all bins
 export class Histogram {
-  constructor (data, tolerance = 0.2) {
+  constructor(data, tolerance = 0.2) {
     this.bins = []
     this.histogram_sum(data, tolerance)
   }
 
-  get length () {
+  get length() {
     return this.bins.length
   }
 
   /// Generate a histogram (unsorted)
-  histogram_sum (data, tolerance = 0.2) {
+  histogram_sum(data, tolerance = 0.2) {
     const len = data.length
     for (let n = 0; n < len; ++n) {
       // Search for match in existing bins
@@ -93,12 +92,12 @@ export class Histogram {
   }
 
   /// Delete bin from histogram
-  delete_bin (index) {
+  delete_bin(index) {
     this.bins.splice(index, 1)
   }
 
   /// Swap two bins in histogram
-  swap_bins (index1, index2) {
+  swap_bins(index1, index2) {
     if (index1 < this.bins.length && index2 < this.bins.length) {
       // Avoid out of bounds
       const tempbin = this.bins[index1]
@@ -108,7 +107,7 @@ export class Histogram {
   }
 
   /// Sort histogram with mean value (order lowest to highest)
-  sort_mean () {
+  sort_mean() {
     if (this.bins.length < 2) return // Avoid underflow
     // Compare all bins (bubble sort)
     for (let n = 0; n < this.bins.length - 1; ++n) {
@@ -121,7 +120,7 @@ export class Histogram {
   }
 
   /// Sort histogram with count value (order lowest to highest)
-  sort_count () {
+  sort_count() {
     if (this.bins.length < 2) return // Avoid underflow
     // Compare all bins (bubble sort)
     for (let n = 0; n < this.bins.length - 1; ++n) {
@@ -134,7 +133,7 @@ export class Histogram {
   }
 
   /// Fuse histogram bins with means within tolerance
-  fuse_bins (tolerance = 0.2) {
+  fuse_bins(tolerance = 0.2) {
     if (this.bins.length < 2) return // Avoid underflow
     // Compare all bins
     for (let n = 0; n < this.bins.length - 1; ++n) {
@@ -154,7 +153,7 @@ export class Histogram {
   }
 
   /// Trim zero-width bins
-  trim_bins (tolerance = 0) {
+  trim_bins(tolerance = 0) {
     for (let n = 0; n < this.bins.length; ++n) {
       // if within tolerance
       if (this.bins[n].mean <= tolerance) {
@@ -165,7 +164,7 @@ export class Histogram {
   }
 
   /// Find bin index
-  find_bin_index (width) {
+  find_bin_index(width) {
     for (let n = 0; n < this.bins.length; ++n) {
       if (this.bins[n].contains(width)) {
         return n
@@ -175,7 +174,7 @@ export class Histogram {
   }
 
   /// Print a histogram
-  console_print () {
+  console_print() {
     for (let n = 0; n < this.bins.length; ++n) {
       const b = this.bins[n]
       console.log(
@@ -186,7 +185,7 @@ export class Histogram {
     }
   }
 
-  string_print (separator = ', ') {
+  string_print(separator = ', ') {
     const ret = []
     for (let n = 0; n < this.bins.length; ++n) {
       const b = this.bins[n]
@@ -201,13 +200,13 @@ export class Histogram {
 }
 
 export class Analyzer {
-  constructor (data, tolerance = 0.2) {
+  constructor(data, tolerance = 0.2) {
     this.analyse_pulses(data, tolerance)
     this.create_rfraw(data)
   }
 
   /// Create histograms from pulse data
-  analyse_pulses (data, messages, tolerance = 0.2) {
+  analyse_pulses(data, messages, tolerance = 0.2) {
     // Generate pulse/gap/period data
     this.pulses = []
     this.gaps = []
@@ -251,7 +250,7 @@ export class Analyzer {
     this.hist_timings.fuse_bins(tolerance)
   }
 
-  guess () {
+  guess() {
     const pulses = this.hist_pulses
     const gaps = this.hist_gaps
     const periods = this.hist_periods
@@ -377,7 +376,7 @@ export class Analyzer {
     }
   }
 
-  create_rfraw (data) {
+  create_rfraw(data) {
     const timings = this.hist_timings
 
     if (timings.bins.length < 1) {
@@ -423,7 +422,7 @@ export class Analyzer {
     this.rfrawB1 = raw1.line + raw.line
   }
 
-  console_log () {
+  console_log() {
     /* const guess = this.guess()
     console.log('Analyzing pulses...')
     console.log(`Total count: ${this.pulses.length}`)
@@ -440,7 +439,7 @@ export class Analyzer {
     console.log(guess) */
   }
 
-  print_plain (messages) {
+  print_plain(messages) {
     const guess = this.guess()
     messages.innerHTML = `
         <div>Pulses: ${this.hist_pulses.string_print()}</div>
@@ -460,7 +459,7 @@ const formatter = new Intl.NumberFormat(locale, {
 })
 formatter.format(0.5)
 */
-  print (timings, messages) {
+  print(timings, messages) {
     const guess = this.guess()
     if (timings) {
       timings.innerHTML = `<table>

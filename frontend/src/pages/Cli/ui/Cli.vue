@@ -77,7 +77,7 @@ import { FitAddon } from '@xterm/addon-fit'
 import { SerializeAddon } from '@xterm/addon-serialize'
 import asyncSleep from 'simple-async-sleep'
 
-import { FlipperModel } from 'entities/Flipper'
+import { FlipperModel } from 'entity/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 
 import { FlipperWeb } from 'src/shared/lib/flipperJs'

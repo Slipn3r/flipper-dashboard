@@ -36,7 +36,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { PulsePlotter } from 'features/PulsePlotter/Plotter'
 import { Notify } from 'quasar'
 
-import { FlipperModel } from 'entities/Flipper'
+import { FlipperModel } from 'entity/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 
 const fileToPass = computed(() => flipperStore.fileToPass)
@@ -79,7 +79,7 @@ const switchFiletype = async (
     return
   }
 
-  let buffer: ArrayBuffer
+  let buffer: ArrayBuffer | Uint8Array
   if (isBuffer) {
     buffer = file as Uint8Array
   } else if (file instanceof File) {
@@ -89,7 +89,7 @@ const switchFiletype = async (
   }
   const text = new TextDecoder().decode(buffer).split(/\r?\n/)
 
-  if (text[0].startsWith('RIFL')) {
+  if (text[0]!.startsWith('RIFL')) {
     return processRfid(new Uint8Array(buffer))
   }
 
@@ -117,7 +117,7 @@ const processSubGhz = (text: string[]) => {
       if (deviations) {
         for (const match of deviations) {
           const s = match.trim().split(' ')
-          if (s[1].startsWith('-')) {
+          if (s[1]!.startsWith('-')) {
             s.splice(1, 0, '1')
           } else {
             s.splice(1, 0, '-1')
@@ -190,13 +190,13 @@ const processIr = (text: string[]) => {
       i++
       signals[i] = {}
     } else if (line.startsWith('name')) {
-      signals[i].name = line.split(' ')[1]
+      signals[i]!.name = line.split(' ')[1]
     } else if (line.startsWith('type')) {
-      signals[i].type = line.split(' ')[1]
+      signals[i]!.type = line.split(' ')[1]
     } else if (line.startsWith('frequency')) {
-      signals[i].frequency = Number(line.split(' ')[1])
+      signals[i]!.frequency = Number(line.split(' ')[1])
     } else if (line.startsWith('data')) {
-      signals[i].data = line.split(': ')[1]
+      signals[i]!.data = line.split(': ')[1]
     }
   }
 
@@ -253,12 +253,12 @@ const processRfid = (rawData: Uint8Array) => {
 
     while (true) {
       currentByte = buffer[length]
-      value |= (currentByte & 0x7f) << (length * 7)
+      value |= (currentByte! & 0x7f) << (length * 7)
       length += 1
       if (length > 5) {
         throw new Error('VarInt exceeds allowed bounds.')
       }
-      if ((currentByte & 0x80) !== 0x80) break
+      if ((currentByte! & 0x80) !== 0x80) break
     }
     return { value, length }
   }

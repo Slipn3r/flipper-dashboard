@@ -1,4 +1,4 @@
-import { AppsModel } from 'entities/Apps'
+import { AppsModel } from 'entity/Apps'
 
 export type ActionAppOptions = {
   callback: (progress: number) => void

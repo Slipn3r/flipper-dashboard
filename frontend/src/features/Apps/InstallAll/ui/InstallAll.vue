@@ -32,10 +32,10 @@ import { ref } from 'vue'
 
 import { ProgressBar } from 'shared/components/ProgressBar'
 
-import { FlipperModel } from 'entities/Flipper'
+import { FlipperModel } from 'entity/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 
-import { AppsModel, AppsApi } from 'entities/Apps'
+import { AppsModel, AppsApi } from 'entity/Apps'
 const appsStore = AppsModel.useAppsStore()
 const { fetchAppsShort } = AppsApi
 
@@ -108,7 +108,7 @@ const onClick = async () => {
     appsStore.installationBatch.doneCount = 0
 
     for (let index = 0; index < apps.value.length; index++) {
-      const app = apps.value[index]
+      const app = apps.value[index]!
 
       try {
         if (appsStore.getButtonState(app) === 'install') {

@@ -227,7 +227,7 @@ import { ProgressBar } from 'shared/components/ProgressBar'
 import { showNotif } from 'shared/lib/utils/useShowNotif'
 import { logger, type LogLevel } from 'shared/lib/utils/useLog'
 
-import { FlipperModel, FlipperApi } from 'entities/Flipper'
+import { FlipperModel, FlipperApi } from 'entity/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 
 const componentName = 'FlipperSwitch'

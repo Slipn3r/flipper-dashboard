@@ -61,7 +61,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { AppsModel } from 'entities/Apps'
+import { AppsModel } from 'entity/Apps'
 const appsStore = AppsModel.useAppsStore()
 
 const deleteConfirmationDialog = ref(false)

@@ -67,8 +67,8 @@ import {
   FileEditorModel,
   FileEditorThemes,
   FileEditorSyntax
-} from 'entities/FileEditor'
-import { FlipperModel } from 'entities/Flipper'
+} from 'entity/FileEditor'
+import { FlipperModel } from 'entity/Flipper'
 
 const changeLanguage = (language: FileEditorModel.languageTypes) => {
   switch (language) {
@@ -102,7 +102,7 @@ const emit = defineEmits<{
 }>()
 
 const editorContainer = ref<HTMLDivElement>()
-let editorView = ref<EditorView>()
+const editorView = ref<EditorView>()
 
 const showDialog = () => {
   if (editorContainer.value) {

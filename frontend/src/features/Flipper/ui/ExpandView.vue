@@ -183,8 +183,8 @@
 <script setup lang="ts">
 import { ref, nextTick, computed } from 'vue'
 import { exportFile } from 'quasar'
-import { FlipperKeypadButton } from 'entities/Flipper'
-import { FlipperModel } from 'entities/Flipper'
+import { FlipperKeypadButton } from 'entity/Flipper'
+import { FlipperModel } from 'entity/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 
 import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'

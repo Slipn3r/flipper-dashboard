@@ -35,11 +35,11 @@ import {
   PaintPixelControls
 } from 'features/Paint/PixelEditor'
 import { PaintDitherCard } from 'features/Paint/Dither'
-import { PaintMirror, PaintModel } from 'entities/Paint'
+import { PaintMirror, PaintModel } from 'entity/Paint'
 const paintStore = PaintModel.usePaintStore()
 const pe = computed(() => paintStore.pe)
 
-import { FlipperModel } from 'entities/Flipper'
+import { FlipperModel } from 'entity/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 
 const componentName = 'Paint'
@@ -69,7 +69,7 @@ const drawImage = (imageData: ImageData) => {
   const pixelData = []
   for (let i = 0; i < imageData.data.length; i += 4) {
     if (
-      imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2] ===
+      imageData.data[i]! + imageData.data[i + 1]! + imageData.data[i + 2]! ===
       0
     ) {
       pixelData.push(1)

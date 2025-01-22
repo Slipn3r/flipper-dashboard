@@ -6,7 +6,7 @@ import { FlipperWeb, FlipperElectron } from 'shared/lib/flipperJs'
 import { showNotif } from 'shared/lib/utils/useShowNotif'
 import { logger } from 'shared/lib/utils/useLog'
 
-import { AppsModel } from 'entities/Apps'
+import { AppsModel } from 'entity/Apps'
 import {
   FlipperInfo,
   PulseFile,
@@ -342,7 +342,7 @@ export const useFlipperStore = defineStore('flipper', () => {
             index < availableBridgeFlippers.value.length;
             index++
           ) {
-            const bridgeFlipper = availableBridgeFlippers.value[index]
+            const bridgeFlipper = availableBridgeFlippers.value[index]!
 
             if (
               data.findIndex((flipper) => {
@@ -386,7 +386,7 @@ export const useFlipperStore = defineStore('flipper', () => {
         }
 
         for (let index = 0; index < data.length; index++) {
-          const flipper = data[index]
+          const flipper = data[index]!
 
           if (
             availableBridgeFlippers.value.findIndex((availableFlipper) => {
@@ -449,7 +449,7 @@ export const useFlipperStore = defineStore('flipper', () => {
 
             if (!flipper.value) {
               if (!flags.flipperIsInitialized) {
-                connectFlipper(availableFlippers.value[0])
+                connectFlipper(availableFlippers.value[0]!)
               }
               // console.log('flipper.value', flipper.value.name)
               // if (flipper.value.name !== availableFlippers.value[0].name) {

@@ -16,6 +16,9 @@ import {
   transports as winstonTransports
 } from 'winston'
 
+import { fileURLToPath } from 'node:url'
+const currentDir = fileURLToPath(new URL('.', import.meta.url))
+
 const extraResourcesPath =
   process.env.NODE_ENV === 'production'
     ? '../../extraResources'
@@ -37,7 +40,7 @@ const bridge = {
       bridge.webContents = event.sender
       bridge.process = utilityProcess.fork(
         path.resolve(
-          __dirname,
+          currentDir,
           extraResourcesPath,
           'serial-bridge/bridgeProcess.js'
         )
@@ -261,7 +264,7 @@ function createWindow() {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    icon: path.resolve(__dirname, 'icons/icon.png'), // tray icon
+    icon: path.resolve(currentDir, 'icons/icon.png'), // tray icon
     width: 1150,
     minWidth: 1150,
     height: 700,
@@ -272,15 +275,29 @@ function createWindow() {
     webPreferences: {
       contextIsolation: true,
       // More info: https://v2.quasar.dev/quasar-cli-vite/developing-electron-apps/electron-preload-script
-      preload: path.resolve(__dirname, process.env.QUASAR_ELECTRON_PRELOAD)
+      preload: path.resolve(
+        currentDir,
+        path.join(
+          process.env.QUASAR_ELECTRON_PRELOAD_FOLDER,
+          'electron-preload' + process.env.QUASAR_ELECTRON_PRELOAD_EXTENSION
+        )
+      )
     }
   })
 
-  mainWindow.loadURL(process.env.APP_URL).then(() => {
-    if (process.env.DEBUGGING && process.env.NODE_ENV === 'production') {
-      mainWindow.title = `${app.getName()} v.${app.getVersion()}`
-    }
-  })
+  if (process.env.DEV) {
+    mainWindow.loadURL(process.env.APP_URL).then(() => {
+      if (process.env.DEBUGGING && process.env.NODE_ENV === 'production') {
+        mainWindow.title = `${app.getName()} v.${app.getVersion()}`
+      }
+    })
+  } else {
+    mainWindow.loadFile('index.html').then(() => {
+      if (process.env.DEBUGGING && process.env.NODE_ENV === 'production') {
+        mainWindow.title = `${app.getName()} v.${app.getVersion()}`
+      }
+    })
+  }
 
   if (process.env.DEBUGGING) {
     // if on DEV or Production with debug enabled

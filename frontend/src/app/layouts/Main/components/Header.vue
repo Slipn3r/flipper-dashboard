@@ -57,7 +57,7 @@
   </q-header>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { EssentialLink } from 'shared/components/EssentialLink'
 

@@ -1,4 +1,4 @@
-import { App, InstalledApp, ActionType } from 'entities/Apps/model'
+import { App, InstalledApp, ActionType } from 'entity/Apps/model'
 import { beforeunloadActive, beforeunloadDeactivate } from './useBeforeunload'
 
 export type QueueItem = {

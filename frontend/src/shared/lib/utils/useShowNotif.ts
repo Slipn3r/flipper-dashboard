@@ -1,6 +1,6 @@
 import { Notify, type QNotifyOptions } from 'quasar'
 import { computed, unref } from 'vue'
-import { FlipperModel } from 'entities/Flipper'
+import { FlipperModel } from 'entity/Flipper'
 
 type Options = {
   isStayOpen?: boolean

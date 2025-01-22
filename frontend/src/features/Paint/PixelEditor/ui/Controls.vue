@@ -138,7 +138,7 @@ import { exportFile } from 'quasar'
 
 import { showNotif } from 'shared/lib/utils/useShowNotif'
 
-import { PaintModel } from 'entities/Paint'
+import { PaintModel } from 'entity/Paint'
 const paintStore = PaintModel.usePaintStore()
 const pe = computed(() => paintStore.pe)
 
@@ -277,7 +277,7 @@ const upload = (event: Event): void => {
 }
 
 const download = async () => {
-  const blob = await pe.value?.toBlob()
+  const blob = (await pe.value?.toBlob()) as Blob
   const status = exportFile(`Paint_${new Date().toISOString()}.png`, blob)
   if (!status) {
     showNotif({

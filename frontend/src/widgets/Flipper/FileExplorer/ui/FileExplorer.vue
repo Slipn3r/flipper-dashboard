@@ -281,7 +281,8 @@
             :label="'Rename ' + editableItem.oldName"
             :style="$q.screen.width > 380 ? 'width: 300px;' : ''"
             @update:model-value="
-              (value: string | number | null) => debouncedValidateName(value as string, 'inputRename')
+              (value: string | number | null) =>
+                debouncedValidateName(value as string, 'inputRename')
             "
             :error-message="validationMessage"
             :error="!validationStatus['inputRename']"
@@ -315,7 +316,8 @@
             label="Folder name"
             :style="$q.screen.width > 380 ? 'width: 300px;' : ''"
             @update:model-value="
-              (value: string | number | null) => debouncedValidateName(value as string, 'inputDirName')
+              (value: string | number | null) =>
+                debouncedValidateName(value as string, 'inputDirName')
             "
             :error-message="validationMessage"
             :error="!validationStatus['inputDirName']"
@@ -371,7 +373,7 @@ import { exportFile, debounce } from 'quasar'
 import { type RouteLocationRaw } from 'vue-router'
 
 import { FileEditor } from 'features/FileEditor'
-import { FileEditorModel } from 'entities/FileEditor'
+import { FileEditorModel } from 'entity/FileEditor'
 
 import { showNotif } from 'shared/lib/utils/useShowNotif'
 import { logger } from 'shared/lib/utils/useLog'
@@ -383,7 +385,7 @@ import {
 
 import { ProgressBar } from 'shared/components/ProgressBar'
 
-import { FlipperModel } from 'entities/Flipper'
+import { FlipperModel } from 'entity/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 
 const componentName = 'FlipperFileExplorer'
@@ -898,7 +900,7 @@ const download = async ({ file }: { file: FlipperModel.File }) => {
       })
     } else {
       const s = filePath.split('/')
-      exportFile(s[s.length - 1], res)
+      exportFile(s[s.length - 1]!, res)
     }
   }
 }

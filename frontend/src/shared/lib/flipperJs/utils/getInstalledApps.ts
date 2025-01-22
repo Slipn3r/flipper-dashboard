@@ -1,5 +1,5 @@
 import Flipper from '../flipper'
-import { FlipperModel } from 'entities/Flipper'
+import { FlipperModel } from 'entity/Flipper'
 
 import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
 import { readManifest } from './readManifest'
@@ -39,9 +39,8 @@ async function getInstalledApps(this: Flipper) {
             }
           )
 
-          const app: FlipperModel.App | undefined = await readManifest.bind(
-            this
-          )(file)
+          const app: FlipperModel.App | undefined =
+            await readManifest.bind(this)(file)
 
           if (app) {
             installedApps.push(app)

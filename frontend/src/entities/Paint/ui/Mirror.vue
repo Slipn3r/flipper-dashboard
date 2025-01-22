@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { PaintModel } from 'entities/Paint'
+import { PaintModel } from 'entity/Paint'
 const paintStore = PaintModel.usePaintStore()
 
 const mirror = ref()

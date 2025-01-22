@@ -114,12 +114,12 @@ import {
   FlipperConnectFlipperDialog,
   FlipperMobileDetectedDialog,
   FlipperUnsupportedBrowserDialog
-} from 'entities/Flipper'
-import { AppsModel, AppOutdatedFirmwareDialog } from 'entities/Apps'
+} from 'entity/Flipper'
+import { AppsModel, AppOutdatedFirmwareDialog } from 'entity/Apps'
 const appsStore = AppsModel.useAppsStore()
 
 import { FlipperConnectWebBtn, FlipperLogCard } from 'features/Flipper'
-import { FlipperModel } from 'entities/Flipper'
+import { FlipperModel } from 'entity/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 
 defineOptions({

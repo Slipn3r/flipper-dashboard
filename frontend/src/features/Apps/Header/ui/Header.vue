@@ -29,7 +29,9 @@
           type="text"
           label="Search"
           debounce="400"
-          @update:model-value="(val: string | number | null) => search(String(val))"
+          @update:model-value="
+            (val: string | number | null) => search(String(val))
+          "
           :disable="appsStore.flags.catalogIsUnknownSDK"
         >
           <template v-slot:prepend>
@@ -106,15 +108,15 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { AppsModel, AppsApi } from 'entities/Apps'
+import { AppsModel, AppsApi } from 'entity/Apps'
 const appsStore = AppsModel.useAppsStore()
 
 const { fetchAppsShort } = AppsApi
 
-import { FlipperModel } from 'entities/Flipper'
+import { FlipperModel } from 'entity/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 
-import { CategoryModel } from 'entities/Category'
+import { CategoryModel } from 'entity/Category'
 const categoriesStore = CategoryModel.useCategoriesStore()
 
 const searchText = ref('')

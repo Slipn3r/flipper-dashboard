@@ -1,4 +1,4 @@
-import { boot } from 'quasar/wrappers'
+import { defineBoot } from '#q-app/wrappers'
 import axios, { AxiosInstance } from 'axios'
 import {
   // ARCHIVARIUS_API_ENDPOINT,
@@ -37,7 +37,7 @@ const instance = axios.create({
   }
 })
 
-export default boot(({ app }) => {
+export default defineBoot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 
   app.config.globalProperties.$axios = axios

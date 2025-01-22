@@ -8,13 +8,13 @@
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
 
-const { configure } = require('quasar/wrappers')
+import { defineConfig } from '#q-app/wrappers'
 
-const path = require('path')
+import path from 'path'
 
-const { compileProtofiles } = require('./beforeBuild.js')
+import { flipperzeroProtobufUpdate, compileProtofiles } from './configs/hooks'
 
-module.exports = configure(function (ctx) {
+export default defineConfig((ctx) => {
   return {
     // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
     // preFetch: true,
@@ -44,22 +44,34 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
     build: {
       alias: {
-        // app: path.join(__dirname, './src/app'),
+        '@': path.join(__dirname, './src'),
         assets: path.join(__dirname, './src/shared/assets'),
-        boot: path.join(__dirname, './src/app/boot')
-        // stores: path.join(__dirname, './src/app/stores'),
-        // pages: path.join(__dirname, './src/pages'),
-        // widgets: path.join(__dirname, './src/widgets'),
-        // features: path.join(__dirname, './src/features'),
-        // entities: path.join(__dirname, './src/entities'),
-        // shared: path.join(__dirname, './src/shared')
+        boot: path.join(__dirname, './src/app/boot'),
+        stores: path.join(__dirname, './src/app/stores'),
+        // app: path.join(__dirname, './src/app'),
+        pages: path.join(__dirname, './src/pages'),
+        widgets: path.join(__dirname, './src/widgets'),
+        features: path.join(__dirname, './src/features'),
+        entity: path.join(__dirname, './src/entities'),
+        shared: path.join(__dirname, './src/shared'),
+        layouts: path.join(__dirname, './src/app/layouts'),
+        components: path.join(__dirname, './src/shared/ui')
       },
       target: {
         browser: ['es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1'],
         node: 'node20'
       },
 
+      beforeDev: async () => {
+        await flipperzeroProtobufUpdate()
+        await compileProtofiles()
+      },
+
       beforeBuild: async () => {
+        // NOTE: REQUIRED_PROTOBUF_UPDATE must be added to .env.local
+        if (process.env.REQUIRED_PROTOBUF_UPDATE === 'true') {
+          await flipperzeroProtobufUpdate()
+        }
         await compileProtofiles()
       },
 
@@ -82,25 +94,46 @@ module.exports = configure(function (ctx) {
       // polyfillModulePreload: true,
       // distDir
 
+      // useFilenameHashes: true,
+
       // extendViteConf (viteConf) {},
       // viteVuePluginOptions: {},
 
       assets: '~/src/app/styles',
 
+      eslint: {
+        // fix: true,
+        // include: [],
+        // exclude: [],
+        // cache: false,
+        // rawEsbuildEslintOptions: {},
+        // rawWebpackEslintPluginOptions: {},
+        warnings: true,
+        errors: true
+      },
+
+      typescript: {
+        strict: true, // (recommended) enables strict settings for TypeScript
+        vueShim: true // required when using ESLint with type-checked rules, will generate a shim file for `*.vue` files
+        // extendTsConfig(tsConfig) {
+        //   // You can use this hook to extend tsConfig dynamically
+        //   // For basic use cases, you can still update the usual tsconfig.json file to override some settings
+        // }
+      },
+
       vitePlugins: [
         [
           'vite-plugin-checker',
           {
-            vueTsc: {
-              tsconfigPath: 'tsconfig.vue-tsc.json'
-            },
+            vueTsc: true,
             eslint: {
-              lintCommand: 'eslint "./**/*.{js,ts,mjs,cjs,vue}"'
+              lintCommand:
+                'eslint -c ./eslint.config.js "./src*/**/*.{ts,js,mjs,cjs,vue}"',
+              useFlatConfig: true
             }
           },
           { server: false }
-        ],
-        ['vite-tsconfig-paths']
+        ]
       ]
     },
 
@@ -139,12 +172,12 @@ module.exports = configure(function (ctx) {
     sourceFiles: {
       rootComponent: 'src/app/App.vue',
       router: 'src/app/router/index',
-      store: 'src/app/stores/index'
+      store: 'src/app/stores/index',
       // registerServiceWorker: 'src-pwa/register-service-worker',
       // serviceWorker: 'src-pwa/custom-service-worker',
       // pwaManifestFile: 'src-pwa/manifest.json',
       // electronMain: 'src-electron/electron-main',
-      // electronPreload: 'src-electron/electron-preload'
+      preloadScripts: ['electron-preload']
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/developing-ssr/configuring-ssr
@@ -170,12 +203,11 @@ module.exports = configure(function (ctx) {
 
     // https://v2.quasar.dev/quasar-cli-vite/developing-pwa/configuring-pwa
     pwa: {
-      workboxMode: 'generateSW', // or 'injectManifest'
+      workboxMode: 'GenerateSW', // or 'InjectManifest'
       injectPwaMetaTags: true,
       swFilename: 'sw.js',
       manifestFilename: 'manifest.json',
       useCredentialsForManifestTag: false
-      // useFilenameHashes: true,
       // extendGenerateSWOptions (cfg) {}
       // extendInjectManifestOptions (cfg) {},
       // extendManifestJson (json) {}
@@ -244,7 +276,7 @@ module.exports = configure(function (ctx) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-browser-extensions/configuring-bex
     bex: {
-      contentScripts: ['my-content-script']
+      extraScripts: ['my-content-script']
 
       // extendBexScriptsConf (esbuildConf) {}
       // extendBexManifestJson (json) {}

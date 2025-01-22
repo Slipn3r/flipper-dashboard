@@ -84,13 +84,13 @@ import { onMounted, watch } from 'vue'
 import { ProgressBar } from 'shared/components/ProgressBar'
 import { AppUpdateBtn } from 'features/Apps/UpdateButton'
 import { AppInstalledCard } from 'features/Apps/InstalledCard'
-import { AppInstalledBtn, AppsModel } from 'entities/Apps'
+import { AppInstalledBtn, AppsModel } from 'entity/Apps'
 const appsStore = AppsModel.useAppsStore()
 
-import { FlipperModel } from 'entities/Flipper'
+import { FlipperModel } from 'entity/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 
-import { CategoryModel } from 'entities/Category'
+import { CategoryModel } from 'entity/Category'
 const categoriesStore = CategoryModel.useCategoriesStore()
 
 const getCategories = async () => {

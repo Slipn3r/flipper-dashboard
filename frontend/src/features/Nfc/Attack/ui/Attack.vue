@@ -116,10 +116,10 @@ import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
 
 import { FlipperConnectWebBtn } from 'features/Flipper'
 
-import { FlipperModel } from 'entities/Flipper'
+import { FlipperModel } from 'entity/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 
-import { NfcModel } from 'entities/Nfc'
+import { NfcModel } from 'entity/Nfc'
 const nfcStore = NfcModel.useNfcStore()
 import { useNumbersOnly } from 'shared/lib/utils/useNumberOnly'
 
@@ -175,7 +175,7 @@ const readNonces = async () => {
   }
 
   nonces.value = new TextDecoder().decode(res).split('\n')
-  if (nonces.value[nonces.value.length - 1].length === 0) {
+  if (nonces.value[nonces.value.length - 1]!.length === 0) {
     nonces.value.pop()
   }
 
@@ -227,8 +227,7 @@ const mfkeyFlipperStart = async () => {
   const keys = new Set<string>()
   const errors = []
   for (let i = 0; i < nonces.value.length; i++) {
-    const args = nonces.value[i]
-      .slice(nonces.value[i].indexOf('cuid'))
+    const args = nonces.value[i]!.slice(nonces.value[i]!.indexOf('cuid'))
       .split(' ')
       .filter((e, i) => i % 2 === 1)
     mfkeyStatus.value = `Cracking nonce ${i + 1} of ${nonces.value.length}`
@@ -273,7 +272,7 @@ const mfkeyFlipperStart = async () => {
   if (res) {
     mfkeyStatus.value = 'Processing user dictionary'
     dictionary = new TextDecoder().decode(res).split('\n')
-    if (dictionary[dictionary.length - 1].length === 0) {
+    if (dictionary[dictionary.length - 1]!.length === 0) {
       dictionary.pop()
     }
   }

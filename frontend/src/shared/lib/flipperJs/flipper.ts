@@ -11,8 +11,8 @@ import {
   type QueueItem
 } from 'shared/lib/utils/usePromiseQueue'
 
-import { FlipperModel } from 'entities/Flipper'
-import { CategoryModel } from 'entities/Category'
+import { FlipperModel } from 'entity/Flipper'
+import { CategoryModel } from 'entity/Category'
 import type { ActionAppOptions, InstallAppOptions } from './types'
 
 import readInfo from './utils/readInfo'
@@ -42,7 +42,7 @@ const RPCSubSystems: RPCSubSystemsType = {
   property
 }
 
-RPCSubSystems['storage']['info']
+RPCSubSystems['storage']!['info']
 
 const componentName = 'FlipperJS'
 export default class Flipper {
@@ -169,8 +169,8 @@ export default class Flipper {
 
   RPC(requestType: string, args?: Args) {
     try {
-      const [subSystem, command] = splitRequestType(requestType)
-      return RPCSubSystems[subSystem][command].bind(this)(args)
+      const [subSystem, command] = splitRequestType(requestType) ?? []
+      return RPCSubSystems[subSystem]![command]!.bind(this)(args)
     } catch (e) {
       console.error(e)
     }
@@ -336,11 +336,11 @@ type Args = {
   [key: string]: any // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
-function splitRequestType(requestType: string) {
+function splitRequestType(requestType: string): [string, string] {
   const index = requestType.search(/[A-Z]/g)
   const command = requestType.slice(index)
   return [
     requestType.slice(0, index),
-    command[0].toLowerCase() + command.slice(1)
+    command[0]!.toLowerCase() + command.slice(1)
   ]
 }

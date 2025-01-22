@@ -1,7 +1,7 @@
 import Flipper from '../flipper'
 import FlipperWeb from '../flipperWeb'
 import FlipperElectron from '../flipperElectron'
-import { FlipperModel } from 'entities/Flipper'
+import { FlipperModel } from 'entity/Flipper'
 
 import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
 

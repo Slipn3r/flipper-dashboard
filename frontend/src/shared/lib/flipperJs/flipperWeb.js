@@ -213,7 +213,6 @@ export default class FlipperWeb extends Flipper {
         await this.reader.cancel()
       }
       if (this.readableStreamClosed) {
-        // eslint-disable-next-line
         await this.readableStreamClosed.catch(() => {})
       }
 

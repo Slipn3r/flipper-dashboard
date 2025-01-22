@@ -10,6 +10,6 @@
 
 <script setup lang="ts">
 import { AppsHeader } from 'features/Apps/Header'
-import { AppsModel, AppNoFreeSpaceDialog } from 'entities/Apps'
+import { AppsModel, AppNoFreeSpaceDialog } from 'entity/Apps'
 const appsStore = AppsModel.useAppsStore()
 </script>

@@ -7,7 +7,7 @@
         <template v-if="outdated !== undefined">
           <p class="q-mb-sm" v-if="outdated">
             Your firmware is out of date, newest release is
-            {{ getChannel('release')?.versions[0].version }}.
+            {{ getChannel('release')?.versions[0]!.version }}.
           </p>
           <p class="q-mb-sm" v-else-if="aheadOfRelease">
             Your firmware is ahead of current release.
@@ -146,7 +146,7 @@ import { logger } from 'shared/lib/utils/useLog'
 import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
 
 import { ProgressBar } from 'shared/components/ProgressBar'
-import { FlipperModel, FlipperApi } from 'entities/Flipper'
+import { FlipperModel, FlipperApi } from 'entity/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 const { fetchChannels, fetchRegions, fetchFirmware } = FlipperApi
 
@@ -195,7 +195,7 @@ const fwOptions = ref([
   //   label: 'Custom', value: 'custom', version: '', color: 'dark'
   // }
 ])
-const fwModel = ref(fwOptions.value[0])
+const fwModel = ref(fwOptions.value[0]!)
 
 const emit = defineEmits<{ (event: 'updateInProgress'): Promise<void> }>()
 
@@ -222,12 +222,12 @@ onMounted(async () => {
   })
 
   if (channels.value.length) {
-    fwOptions.value[0].version =
-      getChannel('release')?.versions[0].version || ''
-    fwOptions.value[1].version =
-      getChannel('release-candidate')?.versions[0].version || ''
-    fwOptions.value[2].version =
-      getChannel('development')?.versions[0].version || ''
+    fwOptions.value[0]!.version =
+      getChannel('release')?.versions[0]!.version || ''
+    fwOptions.value[1]!.version =
+      getChannel('release-candidate')?.versions[0]!.version || ''
+    fwOptions.value[2]!.version =
+      getChannel('development')?.versions[0]!.version || ''
   }
 
   compareVersions()
@@ -256,7 +256,7 @@ const compareVersions = () => {
       flipperStore.info.firmware.version !== 'unknown' &&
       semver.valid(flipperStore.info.firmware.version)
     ) {
-      const releaseVersion = getChannel('release')?.versions[0].version
+      const releaseVersion = getChannel('release')?.versions[0]!.version
 
       if (releaseVersion) {
         if (semver.eq(flipperStore.info.firmware.version, releaseVersion)) {
@@ -358,7 +358,7 @@ const loadFirmware = async () => {
 
     let bands
     if (regions.countries[regions.country]) {
-      bands = regions.countries[regions.country].map((e) => regions.bands[e])
+      bands = regions.countries[regions.country]!.map((e) => regions.bands[e])
     } else {
       bands = regions.default.map((e) => regions.bands[e])
       regions.country = 'JP'
@@ -373,10 +373,10 @@ const loadFirmware = async () => {
 
     for (const band of bands) {
       const bandOptions = {
-        start: band.start,
-        end: band.end,
-        powerLimit: band.max_power,
-        dutyCycle: band.duty_cycle
+        start: band!.start,
+        end: band!.end,
+        powerLimit: band!.max_power,
+        dutyCycle: band!.duty_cycle
       }
       const message = PB.Region.Band.create(bandOptions)
       options.bands.push(message)
@@ -425,7 +425,7 @@ const loadFirmware = async () => {
         return value
       })
     } else {
-      const file = channel?.versions[0].files.find(
+      const file = channel?.versions[0]!.files.find(
         (_file) =>
           _file.target === flipperStore.target && _file.type === 'update_tgz'
       )

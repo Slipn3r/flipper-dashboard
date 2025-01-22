@@ -1,4 +1,4 @@
-import { FlipperModel } from 'entities/Flipper'
+import { FlipperModel } from 'entity/Flipper'
 
 export type AppsShortParams = {
   limit: number

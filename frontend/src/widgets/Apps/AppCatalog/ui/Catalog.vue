@@ -130,16 +130,16 @@ import { ProgressBar } from 'shared/components/ProgressBar'
 import { Loading } from 'shared/components/Loading'
 
 import { CategoriesList } from 'features/Category/Filter'
-import { CategoryModel } from 'entities/Category'
+import { CategoryModel } from 'entity/Category'
 const categoriesStore = CategoryModel.useCategoriesStore()
 
-import { AppCard, AppInstalledBtn, AppsApi, AppsModel } from 'entities/Apps'
+import { AppCard, AppInstalledBtn, AppsApi, AppsModel } from 'entity/Apps'
 const appsStore = AppsModel.useAppsStore()
 
 import { AppInstallBtn } from 'features/Apps/InstallButton'
 import { AppUpdateBtn } from 'features/Apps/UpdateButton'
 import { AppInstallAll } from 'features/Apps/InstallAll'
-import { FlipperModel } from 'entities/Flipper'
+import { FlipperModel } from 'entity/Flipper'
 import { type QInfiniteScroll } from 'quasar'
 
 const flipperStore = FlipperModel.useFlipperStore()

@@ -1,18 +1,25 @@
-/* eslint-disable-next-line camelcase */
 import { autorange, autorange_time } from './autorange.js'
 import { sliceGuess } from './slicer.js'
 import { selector } from './utils.js'
 import { Analyzer } from './histogram.js'
 import { defaults, styles, slicerOptions } from './constants.js'
 // import * as d3 from 'd3'
-import { zoomTransform, zoomIdentity, select, create, zoom, axisTop, scaleLinear } from 'd3'
+import {
+  zoomTransform,
+  zoomIdentity,
+  select,
+  create,
+  zoom,
+  axisTop,
+  scaleLinear
+} from 'd3'
 
 export default class FlipperPlotterOffscreen {
-  get slicerOptions () {
+  get slicerOptions() {
     return slicerOptions
   }
 
-  constructor (options = {}) {
+  constructor(options = {}) {
     if (!options.data) {
       console.error(new Error('Required data missing for flipperPlotter'))
       return
@@ -48,7 +55,7 @@ export default class FlipperPlotterOffscreen {
     }
   }
 
-  initialPlotter (options) {
+  initialPlotter(options) {
     this.createWorker()
     this.setTheme(options.theme)
     this.createNode()
@@ -57,17 +64,19 @@ export default class FlipperPlotterOffscreen {
     this.drawCanvas()
   }
 
-  createWorker () {
-    this.worker = new Worker(new URL('./worker.js', import.meta.url), { type: 'module' })
+  createWorker() {
+    this.worker = new Worker(new URL('./worker.js', import.meta.url), {
+      type: 'module'
+    })
   }
 
-  setTheme (options) {
+  setTheme(options) {
     this.theme = { ...defaults.theme, ...options }
 
     this.worker.postMessage({ message: 'setTheme', theme: this.theme })
   }
 
-  setSlicer (params) {
+  setSlicer(params) {
     if (params && params.modulation) {
       this.slicer = params
     } else if (this.data && this.data.modulation) {
@@ -83,7 +92,7 @@ export default class FlipperPlotterOffscreen {
     this.redrawHintsCanvas(zoomTransform(this.labelCanvasNode))
   }
 
-  setSlicerData (pulses, slicer) {
+  setSlicerData(pulses, slicer) {
     const slice = sliceGuess(pulses, slicer)
     const timings = this.timingsNode
     const messages = this.messagesNode
@@ -107,7 +116,7 @@ export default class FlipperPlotterOffscreen {
     }
   }
 
-  getAltHints (hints) {
+  getAltHints(hints) {
     const altHints = []
     if (hints) {
       let prevHint
@@ -126,23 +135,29 @@ export default class FlipperPlotterOffscreen {
     return altHints
   }
 
-  createNode () {
+  createNode() {
     const flipperPlotter = select(this.parent)
     this.flipperPlotterNode = flipperPlotter.node()
 
     this.axisSvg = create('svg')
     const axisSvgNode = this.axisSvg.node()
 
-    const wrapper = create('div')
-      .attr('style', styles.relativePosition + styles.fullWidth)
+    const wrapper = create('div').attr(
+      'style',
+      styles.relativePosition + styles.fullWidth
+    )
     const wrapperNode = wrapper.node()
 
-    const labelCanvas = create('canvas')
-      .attr('style', styles.absoluteTopLeft + styles.fullWidth)
+    const labelCanvas = create('canvas').attr(
+      'style',
+      styles.absoluteTopLeft + styles.fullWidth
+    )
     this.labelCanvasNode = labelCanvas.node()
 
-    const hintsCanvas = create('canvas')
-      .attr('style', styles.absoluteTopLeft + styles.fullWidth)
+    const hintsCanvas = create('canvas').attr(
+      'style',
+      styles.absoluteTopLeft + styles.fullWidth
+    )
     this.hintsCanvasNode = hintsCanvas.node()
 
     const pulsesCanvas = create('canvas').attr('style', styles.fullWidth)
@@ -178,7 +193,7 @@ export default class FlipperPlotterOffscreen {
     }
   }
 
-  initialCanvas () {
+  initialCanvas() {
     this.width = this.pulsesCanvasNode.clientWidth
     this.height = defaults.height
 
@@ -208,7 +223,7 @@ export default class FlipperPlotterOffscreen {
     )
   }
 
-  processData (data) {
+  processData(data) {
     let width = 0
     for (let j = 0; j < this.data.pulses.length; ++j) {
       width += this.data.pulses[j]
@@ -232,7 +247,7 @@ export default class FlipperPlotterOffscreen {
     })
   }
 
-  zoomed (transform) {
+  zoomed(transform) {
     if (transform.x > 0) transform.x = 0
     if (transform.x + this.width * transform.k < this.width) {
       transform.x = this.width - this.width * transform.k
@@ -256,11 +271,11 @@ export default class FlipperPlotterOffscreen {
     this.worker.postMessage({ message: 'zoomed', transform })
   }
 
-  redrawHintsCanvas (transform) {
+  redrawHintsCanvas(transform) {
     this.worker.postMessage({ message: 'redrawHintsCanvas', transform })
   }
 
-  drawCanvas () {
+  drawCanvas() {
     this.margin = defaults.margin
 
     this.barHeight = this.height - this.margin.top - this.margin.bottom
@@ -325,7 +340,7 @@ export default class FlipperPlotterOffscreen {
     this.zoomed(zoomIdentity)
   }
 
-  destroy () {
+  destroy() {
     this.worker.terminate()
     this.flipperPlotterNode.innerHTML = ''
   }

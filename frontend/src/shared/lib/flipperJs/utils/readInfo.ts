@@ -1,5 +1,5 @@
 import Flipper from '../flipper'
-import { FlipperModel } from 'entities/Flipper'
+import { FlipperModel } from 'entity/Flipper'
 import useSetProperty from 'shared/lib/utils/useSetProperty'
 
 // import asyncSleep from 'simple-async-sleep'

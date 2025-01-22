@@ -56,7 +56,7 @@
 <script setup lang="ts">
 import { AppDeleteBtn } from 'features/Apps/DeleteButton'
 import { ProgressBar } from 'shared/components/ProgressBar'
-import { AppsModel } from 'entities/Apps'
+import { AppsModel } from 'entity/Apps'
 const appsStore = AppsModel.useAppsStore()
 
 interface Props {

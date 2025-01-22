@@ -59,7 +59,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch, onBeforeUnmount } from 'vue'
-import { PulsePlotterLib } from 'entities/PulsePlotter'
+import { PulsePlotterLib } from 'entity/PulsePlotter'
 const { FlipperPlotter, FlipperPlotterOffscreen } = PulsePlotterLib
 import { useNumbersOnly } from 'shared/lib/utils/useNumberOnly'
 
@@ -67,7 +67,9 @@ const props = defineProps(['data', 'offscreen'])
 const timings = ref(null)
 const bits = ref(null)
 
-const plot = ref<PulsePlotterLib.FlipperPlotter | PulsePlotterLib.FlipperPlotterOffscreen>()
+const plot = ref<
+  PulsePlotterLib.FlipperPlotter | PulsePlotterLib.FlipperPlotterOffscreen
+>()
 const slicerOptions = ref<typeof PulsePlotterLib.Constants.slicerOptions>()
 const currentSlicer = ref({
   modulation: '',

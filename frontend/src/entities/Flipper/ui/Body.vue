@@ -44,7 +44,7 @@ import { ref, computed } from 'vue'
 
 type Props = {
   flipperName?: string
-  flipperColor: string
+  flipperColor?: string
   showScreenUpdating: boolean
   isScreenStream?: boolean
   screenScale?: number

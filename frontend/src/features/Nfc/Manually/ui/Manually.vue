@@ -38,7 +38,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-import { NfcModel } from 'entities/Nfc'
+import { NfcModel } from 'entity/Nfc'
 const nfcStore = NfcModel.useNfcStore()
 
 const args = ref({

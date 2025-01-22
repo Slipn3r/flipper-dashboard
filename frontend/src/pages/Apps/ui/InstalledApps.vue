@@ -42,11 +42,11 @@
 
 <script setup lang="ts">
 import { Loading } from 'shared/components/Loading'
-import { FlipperMicroSDCard } from 'entities/Flipper'
+import { FlipperMicroSDCard } from 'entity/Flipper'
 import { InstalledList } from 'widgets/Apps/InstalledList'
-import { AppsModel } from 'entities/Apps'
+import { AppsModel } from 'entity/Apps'
 const appsStore = AppsModel.useAppsStore()
 
-import { FlipperModel } from 'entities/Flipper'
+import { FlipperModel } from 'entity/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 </script>

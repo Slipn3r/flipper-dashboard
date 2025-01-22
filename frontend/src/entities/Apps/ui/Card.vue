@@ -47,7 +47,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import { CategoryModel } from 'entities/Category'
+import { CategoryModel } from 'entity/Category'
 import { App } from '../model/types'
 
 type Props = Pick<App, 'alias' | 'currentVersion' | 'categoryId'>
