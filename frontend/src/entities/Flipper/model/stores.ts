@@ -143,14 +143,6 @@ export const useFlipperStore = defineStore('flipper', () => {
           if (flags.updateInProgress) {
             onUpdateStage('end')
           }
-
-          if (mode !== 'CLI' && route.fullPath.split('/')[1] === 'apps') {
-            if (!appsStore.flipperInstalledApps?.length) {
-              await appsStore.getInstalledApps({
-                refreshInstalledApps: true
-              })
-            }
-          }
         })
         .catch(() => {
           // flags.connected = false
@@ -299,16 +291,6 @@ export const useFlipperStore = defineStore('flipper', () => {
     // await asyncSleep(1000)
 
     // flipper.value = _flipper
-    if (
-      localFlipper.readingMode.type === 'rpc' &&
-      route.fullPath.split('/')[1] === 'apps'
-    ) {
-      if (!appsStore.flipperInstalledApps?.length) {
-        await appsStore.getInstalledApps({
-          refreshInstalledApps: true
-        })
-      }
-    }
   }
 
   const isDataFlipperElectron = (
