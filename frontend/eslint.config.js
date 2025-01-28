@@ -135,5 +135,12 @@ export default eslintConfig([
     }
   },
 
+  {
+    files: ['**/*.cjs'],
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off'
+    }
+  },
+
   prettierSkipFormatting // optional, if you want prettier
 ])

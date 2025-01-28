@@ -42,7 +42,7 @@ const bridge = {
         path.resolve(
           currentDir,
           extraResourcesPath,
-          'serial-bridge/bridgeProcess.js'
+          'serial-bridge/bridgeProcess.cjs'
         )
       )
       bridge.process.on('message', (message) => {
