@@ -1,11 +1,18 @@
 @font-face {
   font-family: 'Born2bSportyV2';
-  src: url('https://cdn.flipperzero.one/Born2bSportyV2.ttf') format('truetype');
+  src:
+    local('Born2bSportyV2') format('truetype'),
+    url('https://cdn.flipperzero.one/Born2bSportyV2.ttf') format('truetype'),
+    url('./fonts/Born2bSportyV2.ttf') format('truetype');
   font-display: swap;
 }
+
 @font-face {
   font-family: 'HaxrCorp';
-  src: url('https://cdn.flipperzero.one/haxrcorp-4089.ttf') format('truetype');
+  src:
+    local('HaxrCorp 4089') format('truetype'),
+    url('https://cdn.flipperzero.one/haxrcorp-4089.ttf') format('truetype'),
+    url('./fonts/haxrcorp-4089.ttf') format('truetype');
   font-display: swap;
 }
 
