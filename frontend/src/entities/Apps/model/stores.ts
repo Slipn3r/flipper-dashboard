@@ -77,9 +77,13 @@ export const useAppsStore = defineStore('apps', () => {
       loadingInstalledApps.value = true
     }
 
+    if (!flipper.value) {
+      return
+    }
+
     if (refreshInstalledApps) {
       // onClearInstalledAppsList()
-      await flipper.value?.getInstalledApps().catch((/* error: Error */) => {
+      await flipper.value.getInstalledApps().catch((/* error: Error */) => {
         loadingInstalledApps.value = false
         // throw error
         return
@@ -87,8 +91,8 @@ export const useAppsStore = defineStore('apps', () => {
     }
 
     try {
-      let installed: InstalledApp[] = (installedApps.value = flipperStore
-        .flipper?.installedApps as InstalledApp[])
+      let installed: InstalledApp[] = (installedApps.value = flipper.value
+        .installedApps as InstalledApp[])
 
       if (!installed.length) {
         noApplicationsInstalled.value = true
@@ -668,7 +672,12 @@ export const useAppsStore = defineStore('apps', () => {
           })
           .then(() => {
             findAndRemoveApp(
-              [updatableApps.value, upToDateApps.value, unsupportedApps.value],
+              [
+                updatableApps.value,
+                upToDateApps.value,
+                unsupportedApps.value,
+                installedApps.value
+              ],
               app
             )
 
@@ -718,6 +727,7 @@ export const useAppsStore = defineStore('apps', () => {
     getButtonState,
     progressColors,
     flipperInstalledApps,
+    installedApps,
     updatableApps,
     upToDateApps,
     unsupportedApps,

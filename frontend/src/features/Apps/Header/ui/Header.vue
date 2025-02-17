@@ -16,7 +16,10 @@
       </div>
       <h4 class="q-ma-none text-h4">Apps</h4>
       <q-space />
-      <div class="column relative-position justify-center">
+      <div
+        v-if="globalStore.isOnline"
+        class="column relative-position justify-center"
+      >
         <q-input
           class="q-mr-md text-black"
           style="width: 300px"
@@ -83,7 +86,11 @@
         :disable="appsStore.flags.catalogIsUnknownSDK"
       >
         <q-badge
-          v-if="$q.screen.width > 365 && appsStore.appsUpdateCount > 0"
+          v-if="
+            $q.screen.width > 365 &&
+            appsStore.appsUpdateCount > 0 &&
+            globalStore.isOnline
+          "
           color="positive"
           floating
           class="outdated-badge"
@@ -118,6 +125,9 @@ const flipperStore = FlipperModel.useFlipperStore()
 
 import { CategoryModel } from 'entity/Category'
 const categoriesStore = CategoryModel.useCategoriesStore()
+
+import { useGlobalStore } from 'shared/stores/global-store'
+const globalStore = useGlobalStore()
 
 const searchText = ref('')
 const searchLoading = ref(false)

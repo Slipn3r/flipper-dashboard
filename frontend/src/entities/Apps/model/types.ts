@@ -1,4 +1,4 @@
-import { FlipperModel } from 'entity/Flipper'
+import type { FlipperModel } from 'entity/Flipper'
 
 export type AppsShortParams = {
   limit: number
@@ -69,6 +69,8 @@ export type App = {
     progress: number
     type: ActionType | ''
   }
+  icon?: FlipperModel.App['icon']
+  name?: FlipperModel.App['name']
 }
 
 export type AppVersion = {

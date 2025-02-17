@@ -18,7 +18,11 @@
           <div class="flex no-wrap items-center">
             <div class="app-icon q-mr-md">
               <q-img
-                :src="app.currentVersion.iconUri"
+                :src="
+                  app.currentVersion?.iconUri ??
+                  `data:image/png;base64,${app.icon}`
+                "
+                :error-src="`data:image/png;base64,${app.icon}`"
                 width="50px"
                 style="image-rendering: pixelated"
               />
@@ -28,9 +32,12 @@
                 class="q-ma-none"
                 style="line-height: 1.5em; margin-bottom: 0.25rem"
               >
-                {{ app.currentVersion.name }}
+                {{ app.currentVersion?.name ?? app.name }}
               </h6>
-              <p class="text-grey-7 q-ma-none">
+              <p
+                v-if="app.currentVersion?.version"
+                class="text-grey-7 q-ma-none"
+              >
                 <b>v{{ app.currentVersion.version }}</b>
               </p>
             </div>

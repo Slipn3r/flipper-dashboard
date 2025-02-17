@@ -15,11 +15,9 @@ declare module '@vue/runtime-core' {
 }
 
 const getBaseUrl = (catalogChanel: string) => {
-  if (catalogChanel === PRODUCTION_NAME) {
-    return API_PROD_ENDPOINT
-  } else {
-    return API_DEV_ENDPOINT
-  }
+  return catalogChanel === PRODUCTION_NAME
+    ? API_PROD_ENDPOINT
+    : API_DEV_ENDPOINT
 }
 
 // Be careful when using SSR for cross-request state pollution
@@ -36,6 +34,26 @@ const instance = axios.create({
     'Content-Type': 'application/json'
   }
 })
+
+instance.interceptors.request.use(
+  (config) => {
+    if (!navigator.onLine) {
+      return Promise.reject(new Error('No internet connection'))
+    }
+    return config
+  },
+  (error) => Promise.reject(error)
+)
+
+instance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.code === 'ERR_NETWORK') {
+      return Promise.reject(new Error('No internet connection'))
+    }
+    return Promise.reject(error)
+  }
+)
 
 export default defineBoot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
