@@ -248,7 +248,8 @@ export default defineConfig((ctx) => {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'lab.flipper.net',
+        appId: 'com.flipperdevices.flipper-lab',
+        compression: ctx.dev ? 'store' : 'maximum',
         dmg: {
           sign: false
         },
@@ -263,7 +264,16 @@ export default defineConfig((ctx) => {
             filter: ['**/*']
           }
         ],
+        linux: {
+          icon: 'src-electron/icons/icon.png'
+        },
+        win: {
+          publisherName: 'Flipper Devices Inc.'
+        },
         mac: {
+          category: 'public.app-category.utilities',
+
+          notarize: false,
           target: [
             {
               target: 'dmg',

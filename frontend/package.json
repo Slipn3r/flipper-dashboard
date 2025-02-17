@@ -8,9 +8,19 @@
     "url": "https://github.com/flipperdevices/lab.flipper.net.git"
   },
   "author": {
-    "name": "Maxim Lyubimov",
-    "email": "m.lyubimov@flipperdevices.com"
+    "name": "Flipper Devices Inc.",
+    "url": "https://flipperdevices.com/"
   },
+  "maintainers": [
+    {
+      "name": "Slipn3r",
+      "email": "61992469+Slipn3r@users.noreply.github.com"
+    },
+    {
+      "name": "Maxim Lyubimov",
+      "email": "m.lyubimov@flipperdevices.com"
+    }
+  ],
   "type": "module",
   "private": true,
   "scripts": {

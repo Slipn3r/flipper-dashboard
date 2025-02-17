@@ -5,17 +5,21 @@ const global = window || this
 /**
 Returns a ProgressivePromise.
 */
-export function untar (arrayBuffer) {
+export function untar(arrayBuffer) {
   if (!(arrayBuffer instanceof ArrayBuffer)) {
     throw new TypeError('arrayBuffer is not an instance of ArrayBuffer.')
   }
 
   if (!global.Worker) {
-    throw new Error('Worker implementation is not available in this environment.')
+    throw new Error(
+      'Worker implementation is not available in this environment.'
+    )
   }
 
   return new ProgressivePromise(function (resolve, reject, progress) {
-    const worker = new Worker(new URL('./untar-worker.js', import.meta.url))
+    const worker = new Worker(new URL('./untar-worker.js', import.meta.url), {
+      type: 'module'
+    })
 
     const files = []
 
@@ -93,7 +97,7 @@ const decoratedFileProps = {
   }
 }
 
-function decorateExtractedFile (file) {
+function decorateExtractedFile(file) {
   Object.defineProperties(file, decoratedFileProps)
   return file
 }

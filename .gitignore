@@ -8,7 +8,7 @@
 *.sln
 
 frontend/node_modules
-frontend/package-lock.json
+frontend/certificates
 
 # Quasar core related directories
 frontend/.quasar
