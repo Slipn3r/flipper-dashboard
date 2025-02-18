@@ -187,6 +187,9 @@ const filesystem = {
 
         basePath = targetPath = result.filePath
 
+        if (fs.existsSync(targetPath)) {
+          fs.rmSync(targetPath, { recursive: true, force: true })
+        }
         fs.mkdirSync(targetPath)
       }
 
