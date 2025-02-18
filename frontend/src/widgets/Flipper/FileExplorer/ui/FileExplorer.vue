@@ -511,12 +511,15 @@ const upload = async () => {
       path.pop()
       while (path.length > 0) {
         dir += '/' + path.shift()
-        const stat = await flipperStore.flipper?.RPC('storageStat', {
-          path: dir
-        })
-        if (!stat) {
-          await flipperStore.flipper?.RPC('storageMkdir', { path: dir })
-        }
+        await flipperStore.flipper
+          ?.RPC('storageStat', {
+            path: dir
+          })
+          .catch(async (error: Error) => {
+            if (error.toString() === 'ERROR_STORAGE_NOT_EXIST') {
+              await flipperStore.flipper?.RPC('storageMkdir', { path: dir })
+            }
+          })
       }
     }
 
