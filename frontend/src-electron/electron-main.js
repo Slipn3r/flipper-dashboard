@@ -15,6 +15,7 @@ import {
   format as winstonFormat,
   transports as winstonTransports
 } from 'winston'
+import 'winston-daily-rotate-file'
 
 import { fileURLToPath } from 'node:url'
 const currentDir = fileURLToPath(new URL('.', import.meta.url))
@@ -220,17 +221,12 @@ const filesystem = {
   }
 }
 
-const getSessionLogFile = () => {
-  const logDir = path.join(app.getPath('logs'))
-  if (!fs.existsSync(logDir)) {
-    fs.mkdirSync(logDir)
-  }
-
-  return path.join(
-    logDir,
-    `session_${new Date().toISOString().replace(/[:.]/g, '-')}.log`
-  )
-}
+const fileRotateTransport = new winstonTransports.DailyRotateFile({
+  filename: path.join(app.getPath('logs')) + '/' + 'session_%DATE%.log',
+  datePattern: 'YYYY-MM-DD',
+  maxFiles: '30d',
+  level: 'debug'
+})
 
 const winstonLogger = createLogger({
   levels: winstonConfig.npm.levels,
@@ -242,12 +238,7 @@ const winstonLogger = createLogger({
         `[${timestamp}] [${level.toUpperCase()}] ${message}`
     )
   ),
-  transports: [
-    new winstonTransports.File({
-      filename: getSessionLogFile(),
-      level: 'debug'
-    })
-  ]
+  transports: [fileRotateTransport]
 })
 
 const logger = {
