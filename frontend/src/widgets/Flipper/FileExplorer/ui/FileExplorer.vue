@@ -145,7 +145,6 @@
                   </q-item-section>
                 </q-item>
                 <q-item
-                  v-if="item.type === 0 || flipperStore.isElectron"
                   clickable
                   @click="
                     download({
@@ -949,7 +948,7 @@ const download = async ({ file }: { file: FlipperModel.File }) => {
 
       if (res?.status === 'ok') {
         showNotif({
-          message: `Folder «${file.name}» save in «${res.path}»`,
+          message: `Folder «${file.name}» is saved${res.path ? ` to «${res.path}»` : ''}`,
           color: 'positive',
           timeout: 5000
         })
