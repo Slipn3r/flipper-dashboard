@@ -75,13 +75,23 @@
         v-model="isHiddenFiles"
         color="primary"
         label="Hidden files"
+        @update:model-value="() => navigator?.setItems(filteredDirs)"
       />
     </q-toolbar>
-    <q-list class="list">
-      <template v-for="item in filteredDirs" :key="item.name">
+    <q-list
+      class="list no-outline"
+      tabindex="0"
+      ref="container"
+      @keydown="onKeydown"
+      @blur="onBlur"
+    >
+      <template v-for="(item, index) in filteredDirs" :key="Symbol(item.name)">
         <q-item
+          ref="containerItem"
           class="rounded-borders full-width"
           v-bind="item"
+          manual-focus
+          :focused="focusedIndex === index"
           clickable
           v-ripple
           @click="itemClicked(item)"
@@ -368,8 +378,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, unref, onMounted, watch, computed, reactive } from 'vue'
-import { exportFile, debounce } from 'quasar'
+import {
+  ref,
+  unref,
+  onMounted,
+  onBeforeUnmount,
+  watch,
+  computed,
+  reactive,
+  useTemplateRef
+} from 'vue'
+import { exportFile, debounce, type QList, type QItem } from 'quasar'
 import { type RouteLocationRaw } from 'vue-router'
 
 import { FileEditor } from 'features/FileEditor'
@@ -385,7 +404,7 @@ import {
 
 import { ProgressBar } from 'shared/components/ProgressBar'
 
-import { FlipperModel } from 'entity/Flipper'
+import { FlipperModel, FlipperLib } from 'entity/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 
 const componentName = 'FlipperFileExplorer'
@@ -560,22 +579,94 @@ const mkdir = async ({ path }: { path: string }) => {
   })
 }
 
-onMounted(async () => {
-  if (flipperStore.flipperReady) {
-    if (!flipperStore.rpcActive) {
-      await flipperStore.flipper?.startRPCSession()
-    }
+const { FileNavigator } = FlipperLib
+const navigator = ref<InstanceType<typeof FileNavigator>>()
 
-    if (flipperStore.flipper?.readingMode.type === 'rpc') {
-      if (!flipperStore.info) {
-        await flipperStore.flipper?.getInfo()
+const container = useTemplateRef<QList>('container')
+const containerItem = useTemplateRef<QItem[]>('containerItem')
+
+const focusedIndex = ref<number | null>(null)
+const onKeydown = async (e: KeyboardEvent) => {
+  if (['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp'].includes(e.key)) {
+    focusedIndex.value = navigator.value!.navigate(
+      e.key as 'ArrowRight' | 'ArrowLeft' | 'ArrowDown' | 'ArrowUp'
+    )
+  }
+
+  if (e.key === 'Enter') {
+    if (containerItem.value?.length && focusedIndex.value !== null) {
+      // HACK For some reason the containerItem is reversed
+      const list = [...containerItem.value].reverse()
+      const item = list[focusedIndex.value]
+
+      if (item?.focused) {
+        item.$el.click()
+
+        focusedIndex.value = 0
+        navigator.value?.setCurrentIndex(focusedIndex.value)
       }
-
-      list({
-        path: fullPath.value
-      })
     }
   }
+
+  if (e.key === 'Backspace') {
+    if (fullPath.value !== '/') {
+      itemClicked({ name: '..' })
+    }
+  }
+}
+
+const handleGlobalKeydown = (e: KeyboardEvent) => {
+  if (['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp'].includes(e.key)) {
+    if (container.value && document.activeElement !== container.value.$el) {
+      container.value.$el.focus()
+      focusedIndex.value = navigator.value!.navigate(
+        e.key as 'ArrowRight' | 'ArrowLeft' | 'ArrowDown' | 'ArrowUp'
+      )
+
+      e.preventDefault()
+    }
+  }
+}
+
+const onBlur = () => {
+  focusedIndex.value = null
+  navigator.value?.setCurrentIndex(focusedIndex.value)
+}
+
+onMounted(async () => {
+  try {
+    if (flipperStore.flipperReady) {
+      if (!flipperStore.rpcActive) {
+        await flipperStore.flipper?.startRPCSession()
+      }
+
+      if (flipperStore.flipper?.readingMode.type === 'rpc') {
+        if (!flipperStore.info) {
+          await flipperStore.flipper?.getInfo()
+        }
+
+        await list({
+          path: fullPath.value
+        })
+
+        window.addEventListener('keydown', handleGlobalKeydown)
+        if (container.value) {
+          container.value.$el.focus()
+
+          navigator.value = new FileNavigator(
+            filteredDirs.value,
+            container.value.$el
+          )
+        }
+      }
+    }
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleGlobalKeydown)
 })
 
 watch(
@@ -613,6 +704,8 @@ const list = async ({ path }: { path: string }) => {
   } else {
     dirs.value = list
   }
+
+  navigator.value?.setItems(filteredDirs.value)
 }
 const refreshList = () => {
   list({
