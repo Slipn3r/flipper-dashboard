@@ -32,8 +32,8 @@
     "dev/electron/devtools": "quasar dev -m electron --devtools",
     "build/web": "PRODUCTION=TRUE quasar build -m spa",
     "build/web/dev": "DEV=TRUE quasar build -m spa",
-    "build/electron": "PRODUCTION=TRUE quasar build -m electron",
-    "build/electron/dev": "DEV=TRUE quasar build -m electron --debug",
+    "build/electron": "quasar build -m electron",
+    "build/electron/dev": "quasar build -m electron --debug",
     "postinstall": "quasar prepare && electron-builder install-app-deps"
   },
   "dependencies": {

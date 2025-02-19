@@ -11,8 +11,93 @@ env:
   IMAGE_NAME: "ghcr.io/flipperdevices/lab.flipper.net"
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+
+  build-electron:
+    name: ${{ matrix.config.description }} build
+    runs-on: ${{ matrix.config.runner_os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - {
+            description: "linux/arm64",
+            runner_os: ubuntu-24.04-arm
+          }
+        - {
+            description: "linux/amd64",
+            runner_os: ubuntu-24.04
+          }
+        - {
+            description: "mac/amd64",
+            runner_os: macos-13
+          }
+        - {
+            description: "mac/arm64",
+            runner_os: macos-14
+          }
+        - {
+            description: "win/amd64",
+            runner_os: windows-2022
+          }
+
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          submodules: true
+
+      - name: 'Set image tag and name'
+        id: tag
+        shell: bash
+        run: |
+          IMAGE_TAG="0.0.0"
+          IMAGE_TAG_DEV="dev-${GITHUB_SHA:0:7}-$(date +%s)"
+          if [[ "${{ github.ref }}" == "refs/tags/"* ]]; then
+            REF=${{ github.ref }};
+            TAG_FULL=${REF#refs/*/};
+            IMAGE_TAG=${TAG_FULL//\//_};
+          fi
+          echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
+          echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
+          echo "image_tag_dev=${IMAGE_TAG_DEV}" >> $GITHUB_OUTPUT
+          echo "image_name=${IMAGE_NAME}" >> $GITHUB_OUTPUT
+
+      - name: yarn install
+        shell: bash
+        working-directory: ./frontend
+        run: yarn install
+
+      - name: Build
+        shell: bash
+        working-directory: ./frontend
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_LINK: ${{ secrets.MAC_CERT_P12_BASE64 }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CERT_P12_PASSWORD }}
+          WIN_CSC_LINK: ${{ secrets.WIN_CERT_P12_BASE64 }}
+          WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CERT_P12_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+        run: |
+          if [ -z "$CSC_LINK" ] ; then unset CSC_LINK ; fi
+          if [ -z "$CSC_KEY_PASSWORD" ] ; then unset CSC_KEY_PASSWORD ; fi
+          if [ -z "$WIN_CSC_LINK" ] ; then unset WIN_CSC_LINK ; fi
+          if [ -z "$WIN_CSC_KEY_PASSWORD" ] ; then unset WIN_CSC_KEY_PASSWORD ; fi
+          if [ -z "$APPLE_ID" ] ; then unset APPLE_ID ; fi
+          if [ -z "$APPLE_APP_SPECIFIC_PASSWORD" ] ; then unset APPLE_APP_SPECIFIC_PASSWORD ; fi
+
+          if [ "$IMAGE_TAG" == "0.0.0" ] ; then
+            DEV=TRUE yarn run build/electron/dev
+          else
+            PRODUCTION=TRUE yarn run build/electron
+          fi
+
+
+  build-docker:
+    runs-on: ubuntu-24.04
     steps:
       - name: 'Checkout code'
         uses: actions/checkout@v4
