@@ -9,6 +9,7 @@ on:
 
 env:
   IMAGE_NAME: "ghcr.io/flipperdevices/lab.flipper.net"
+  USE_SYSTEM_FPM: true
 
 jobs:
 
@@ -48,6 +49,12 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
           submodules: true
+
+      - name: install fpm & bsdtar
+        if: startsWith(matrix.config.runner_os,'ubuntu-')
+        run: |
+            sudo gem install fpm
+            sudo apt update && sudo apt install libarchive-tools
 
       - name: 'Set image tag and name'
         id: tag
