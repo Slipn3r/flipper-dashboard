@@ -14,6 +14,18 @@ import path from 'path'
 
 import { flipperzeroProtobufUpdate, compileProtofiles } from './configs/hooks'
 
+const removeInvalidEnvKeys = (env: NodeJS.ProcessEnv) => {
+  const validKeyRE = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/
+
+  Object.keys(env).forEach((key) => {
+    if (!validKeyRE.test(key)) {
+      delete env[key]
+    }
+  })
+}
+
+removeInvalidEnvKeys(process.env)
+
 export default defineConfig((ctx) => {
   return {
     // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
