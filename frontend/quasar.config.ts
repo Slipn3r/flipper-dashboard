@@ -285,7 +285,7 @@ export default defineConfig((ctx) => {
         mac: {
           category: 'public.app-category.utilities',
 
-          notarize: false,
+          notarize: process.env.MACOS_NOTARIZATION_SKIP ? false : true,
           target: [
             {
               target: 'dmg',
