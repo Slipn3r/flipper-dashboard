@@ -261,6 +261,7 @@ export default defineConfig((ctx) => {
         // https://www.electron.build/configuration/configuration
 
         appId: 'com.flipperdevices.flipper-lab',
+        artifactName: '${productName}-${version}-${arch}.${ext}',
         compression: ctx.dev ? 'store' : 'maximum',
         dmg: {
           sign: false
@@ -277,21 +278,20 @@ export default defineConfig((ctx) => {
           }
         ],
         linux: {
-          icon: 'src-electron/icons/icon.png'
+          icon: 'src-electron/icons/icon.png',
+
+          target: ['AppImage', 'deb', 'rpm', 'pacman']
         },
         win: {
-          publisherName: 'Flipper Devices Inc.'
+          publisherName: 'Flipper Devices Inc.',
+
+          target: ['portable']
         },
         mac: {
           category: 'public.app-category.utilities',
-
           notarize: process.env.MACOS_NOTARIZATION_SKIP ? false : true,
-          target: [
-            {
-              target: 'dmg',
-              arch: ['arm64', 'x64']
-            }
-          ]
+
+          target: ['dmg']
         }
       }
     },

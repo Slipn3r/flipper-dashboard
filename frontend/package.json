@@ -9,7 +9,8 @@
   },
   "author": {
     "name": "Flipper Devices Inc.",
-    "url": "https://flipperdevices.com/"
+    "url": "https://flipperdevices.com/",
+    "email": "support@flipperdevices.com"
   },
   "maintainers": [
     {
