@@ -3,7 +3,6 @@
     title="Mfkey32"
     icon="flipper:nfc"
     description="Retreive MF Classic keys from gathered nonces using the mfkey32 attack"
-    :has-info="true"
   >
     <NfcMfkey32 />
 

@@ -5,7 +5,7 @@
       <h4 class="q-ma-none text-h4">{{ props.title }}</h4>
       <q-space />
       <q-btn
-        v-if="props.hasInfo"
+        v-if="slots.info"
         class="text-weight-regular"
         flat
         no-caps
@@ -33,13 +33,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, defineSlots } from 'vue'
+import type { VNode } from 'vue'
+const slots = defineSlots<{
+  default: () => VNode[]
+  info: () => VNode[]
+}>()
 
 const props = defineProps<{
   title: string
   icon: string
   description?: string
-  hasInfo?: boolean
 }>()
 
 const infoDialog = ref(false)
