@@ -1,5 +1,5 @@
 <template>
-  <div class="column items-center">
+  <div class="column items-start">
     <NfcAttack class="q-mb-lg" />
     <NfcManually />
   </div>

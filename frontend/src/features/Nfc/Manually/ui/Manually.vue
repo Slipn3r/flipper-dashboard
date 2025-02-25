@@ -1,9 +1,9 @@
 <template>
-  <q-card flat bordered>
-    <q-card-section>
-      <h6 class="full-width text-center q-ma-none">Run mfkey32v2 manually</h6>
+  <q-card flat>
+    <q-card-section class="q-px-none">
+      <h6 class="full-width text-left q-ma-none">Enter the nonce manually</h6>
     </q-card-section>
-    <q-card-section>
+    <q-card-section class="q-px-none">
       <q-form @submit="mfkeyManualStart">
         <div class="flex q-gutter-md args-inputs-container">
           <q-input v-model="args.cuid" label="cuid" />
@@ -14,13 +14,13 @@
           <q-input v-model="args.nr1" label="nr1" />
           <q-input v-model="args.ar1" label="ar1" />
         </div>
-        <div class="row justify-center q-mt-lg">
+        <div class="row justify-start q-mt-lg">
           <q-btn
             type="submit"
             color="primary"
             :loading="nfcStore.flags.mfkeyManualInProgress"
             :disable="nfcStore.flags.mfkeyFlipperInProgress"
-            label="Run"
+            label="Run mfkey32"
             unelevated
           />
         </div>

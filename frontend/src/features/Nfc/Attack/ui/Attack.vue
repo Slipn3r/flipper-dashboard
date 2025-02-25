@@ -1,10 +1,9 @@
 <template>
-  <q-card flat bordered>
-    <q-card-section>
-      <h6 class="full-width text-center q-ma-none">Mfkey32v2 NFC attack</h6>
+  <q-card flat>
+    <q-card-section class="q-px-none">
+      <h6 class="full-width text-left q-ma-none">Crack nonces on Flipper</h6>
     </q-card-section>
-    <q-card-section>
-      <div class="text-h6">Crack nonces on Flipper</div>
+    <q-card-section class="q-px-none">
       <div class="q-mb-md">
         Captured nonces are stored in the log file
         (<code>/ext/nfc/.mfkey32.log</code>).<br />
@@ -25,9 +24,9 @@
     </q-card-section>
     <q-card-section
       v-if="flipperStore.flags.connected && flipperStore.rpcActive"
-      class="column item-center"
+      class="column items-start q-px-none"
     >
-      <div class="row justify-center">
+      <div class="row justify-start">
         <q-btn
           color="primary"
           label="Give me the keys"
@@ -53,7 +52,7 @@
       <div v-if="mfkeyStatus" class="q-pt-sm text-subtitle-1 text-center">
         {{ mfkeyStatus }}
       </div>
-      <div class="row justify-center">
+      <div class="row justify-start">
         <q-btn
           v-if="
             (flipperStore.info?.doneReading &&
@@ -97,7 +96,7 @@
         </template>
       </div>
     </q-card-section>
-    <q-card-section v-else class="row justify-center">
+    <q-card-section v-else class="row justify-start q-px-none">
       <template v-if="flipperStore.isElectron">
         <p>Plug in your Flipper and and wait for initialization</p>
       </template>
