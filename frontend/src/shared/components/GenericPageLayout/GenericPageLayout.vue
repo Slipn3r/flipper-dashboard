@@ -23,7 +23,7 @@
     <slot></slot>
 
     <q-dialog v-model="infoDialog">
-      <q-card style="max-width: calc(100vw - 16px); width: 800px;">
+      <q-card style="max-width: calc(100vw - 16px); width: 800px">
         <q-card-section>
           <slot name="info"></slot>
         </q-card-section>
@@ -36,11 +36,11 @@
 import { ref } from 'vue'
 
 const props = defineProps<{
-  title: string,
-  icon: string,
-  description?: string,
+  title: string
+  icon: string
+  description?: string
   hasInfo?: boolean
 }>()
 
-const infoDialog = ref(false);
+const infoDialog = ref(false)
 </script>
