@@ -1,45 +1,66 @@
 <template>
-  <div class="column flex-center text-center full-width">
-    <template v-if="!flipperStore.flags.updateInProgress">
-      <template
-        v-if="ableToUpdate && flipperStore.info?.storage.sdcard?.status"
-      >
-        <template v-if="outdated !== undefined">
-          <p class="q-mb-sm" v-if="outdated">
+  <div class="column flex-center text-center">
+    <div class="flex justify-between items-center full-width q-mt-xs q-pb-md">
+      <p class="q-mb-none text-bold text-body1">Firmware Update</p>
+      <q-btn
+        v-if="fwModel.changelog.trim().length"
+        @click="
+          () => {
+            changelogDialog = true
+          }
+        "
+        outline
+        size="sm"
+        padding="xs md"
+        label="What's New"
+        icon="mdi-information-outline"
+        no-caps
+      />
+    </div>
+    <template v-if="ableToUpdate && flipperStore.info?.storage.sdcard?.status">
+      <template v-if="outdated !== undefined">
+        <p class="q-mb-sm">
+          <span v-if="outdated">
             Your firmware is out of date, newest release is
             {{ getChannel('release')?.versions[0]!.version }}.
-          </p>
-          <p class="q-mb-sm" v-else-if="aheadOfRelease">
+          </span>
+          <span v-else-if="aheadOfRelease">
             Your firmware is ahead of current release.
-          </p>
-          <p
-            class="q-mb-sm"
-            v-else-if="flipperStore.info.firmware.version !== 'unknown'"
-          >
+          </span>
+          <span v-else-if="flipperStore.info.firmware.version !== 'unknown'">
             Your firmware is up to date.
-          </p>
-        </template>
-        <!-- <p v-if="channels.custom">
-          Detected custom firmware <b>"{{ channels.custom.channel }}"</b>
-          <span v-if="!channels.custom.url.endsWith('tgz')"> with <b>unsupported</b> filetype</span>
-        </p> -->
-        <div class="flex q-mt-sm">
+          </span>
+        </p>
+      </template>
+      <!-- <p v-if="channels.custom">
+        Detected custom firmware <b>"{{ channels.custom.channel }}"</b>
+        <span v-if="!channels.custom.url.endsWith('tgz')"> with <b>unsupported</b> filetype</span>
+      </p> -->
+      <div class="column full-width">
+        <div class="flex no-wrap justify-between items-center">
+          <p class="q-mb-none">Update Channel</p>
           <q-select
             v-model="fwModel"
             :options="fwOptions"
-            label="Choose firmware"
-            :suffix="
-              fwOptions.find(({ label }) => label === fwModel.label)
-                ? fwOptions.find(({ label }) => label === fwModel.label)
-                    ?.version
-                : ''
-            "
-            :style="!$q.screen.xs ? 'width: 320px;' : 'width: 290px;'"
+            borderless
+            dense
+            :disable="flipperStore.flags.updateInProgress"
           >
+            <!-- :style="!$q.screen.xs ? 'width: 320px;' : 'width: 290px;'" -->
+            <template v-slot:selected>
+              <p class="q-mb-none" :class="`text-${fwModel.color}`">
+                {{ fwModel.label }}
+                {{ fwModel.version }}
+              </p>
+            </template>
+
             <template v-slot:option="scope">
               <q-item v-bind="scope.itemProps">
-                <q-item-section class="items-start">
-                  <q-item-label>{{ scope.opt.label }}</q-item-label>
+                <q-item-section class="items-start q-mr-md">
+                  <q-item-label>{{ scope.opt.selectLabel }}</q-item-label>
+                  <q-item-label class="text-no-wrap" caption>{{
+                    scope.opt.selectDescription
+                  }}</q-item-label>
                 </q-item-section>
                 <q-item-section class="items-end">
                   <q-chip
@@ -51,55 +72,67 @@
               </q-item>
             </template>
           </q-select>
-          <q-btn
-            v-if="fwModel"
-            @click="update()"
-            unelevated
-            color="positive"
-            padding="12px 30px"
-            :class="!$q.screen.xs ? 'q-ml-lg' : 'q-mt-sm'"
-            >{{ getTextButton }}</q-btn
-          >
         </div>
-        <q-btn
-          v-if="installFromFile"
-          @click="
-            () => {
-              uploadPopup = true
-              uploadedFile = undefined
-            }
-          "
-          class="q-mt-lg"
-          outline
-          color="grey-8"
-        >
-          Install from file
-        </q-btn>
-      </template>
-      <template v-else>
+        <div class="flex center">
+          <template v-if="!flipperStore.flags.updateInProgress">
+            <q-btn
+              v-if="fwModel"
+              @click="update()"
+              class="full-width q-mt-sm text-pixelated text-h5"
+              unelevated
+              color="positive"
+              padding="12px 30px"
+              >{{ getTextButton }}</q-btn
+            >
+          </template>
+          <template v-else>
+            <div class="column flex-center text-center full-width">
+              <p>{{ updateStage }}</p>
+              <q-btn
+                v-if="updateError"
+                outline
+                class="q-mt-md"
+                @click="cancelUpdate()"
+                >Cancel</q-btn
+              >
+              <ProgressBar
+                v-else-if="write.filename.length > 0"
+                class="full-width"
+                :title="write.filename"
+                :progress="write.progress"
+                color="positive"
+                trackColor="green-4"
+                size="56px"
+                interpolated
+              />
+            </div>
+          </template>
+        </div>
+      </div>
+      <q-btn
+        v-if="installFromFile"
+        @click="
+          () => {
+            uploadPopup = true
+            uploadedFile = undefined
+          }
+        "
+        :disable="flipperStore.flags.updateInProgress"
+        class="q-mt-lg"
+        outline
+        color="grey-8"
+      >
+        Install from file
+      </q-btn>
+    </template>
+    <template v-else>
+      <div class="flex center">
         <span v-if="flipperStore.info?.storage.sdcard?.status"
           >Your firmware doesn't support self-update. Install latest release
           using <b>repair mode</b>.</span
         >
         <span v-else>Self-update is impossible without an SD card.</span>
-      </template>
-    </template>
-
-    <template v-else>
-      <p>{{ updateStage }}</p>
-      <q-btn v-if="updateError" outline class="q-mt-md" @click="cancelUpdate()"
-        >Cancel</q-btn
-      >
-      <ProgressBar
-        v-else-if="write.filename.length > 0"
-        class="full-width"
-        :title="write.filename"
-        :progress="write.progress"
-        color="positive"
-        trackColor="green-4"
-        size="56px"
-        interpolated
-      />
+      </div>
     </template>
 
     <q-dialog v-model="uploadPopup">
@@ -130,6 +163,41 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <q-dialog v-model="changelogDialog">
+      <q-layout view="HHH lpr FFF" container class="bg-white">
+        <q-header class="column flex-center q-py-sm bg-white text-black" reveal>
+          <p class="q-mb-none text-h5 text-bold">What's New</p>
+          <p class="q-mb-none" :class="`text-${fwModel.color}`">
+            {{ fwModel.label }}
+            {{ fwModel.version }}
+          </p>
+        </q-header>
+        <q-page-container>
+          <q-page padding>
+            <q-markdown
+              no-heading-anchor-links
+              no-html
+              no-linkify
+              no-typographer
+              :src="fwModel.changelog"
+            />
+          </q-page>
+        </q-page-container>
+        <q-footer class="bg-transparent">
+          <q-btn
+            class="full-width q-mt-sm text-pixelated text-h5"
+            v-close-popup
+            @click="update()"
+            :disable="flipperStore.flags.updateInProgress"
+            color="positive"
+            padding="12px 30px"
+            unelevated
+            >{{ getTextButton }}</q-btn
+          >
+        </q-footer>
+      </q-layout>
+    </q-dialog>
   </div>
 </template>
 
@@ -144,6 +212,7 @@ import { unpack } from 'shared/lib/utils/operation'
 import { showNotif } from 'shared/lib/utils/useShowNotif'
 import { logger } from 'shared/lib/utils/useLog'
 import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
+import { replaceGitHubLinksInMarkdown } from 'shared/lib/utils/useFormatUrl'
 
 import { ProgressBar } from 'shared/components/ProgressBar'
 import { FlipperModel, FlipperApi } from 'entity/Flipper'
@@ -159,6 +228,7 @@ const aheadOfRelease = ref(false)
 const installFromFile = ref(true)
 const uploadedFile = ref<File>()
 const uploadPopup = ref(false)
+const changelogDialog = ref(false)
 
 const overrideDevRegion = ref(false)
 const updateError = ref(false)
@@ -175,20 +245,29 @@ const getChannel = (channelId: string) => {
 const fwOptions = ref([
   {
     label: 'Release',
+    selectLabel: 'Release',
+    selectDescription: 'Stable release (recommended)',
     value: 'release',
     version: '',
+    changelog: '',
     color: 'positive'
   },
   {
-    label: 'Release-candidate',
+    label: 'RC',
+    selectLabel: 'Release-Candidate',
+    selectDescription: 'Pre-release under testing',
     value: 'release-candidate',
     version: '',
+    changelog: '',
     color: 'accent'
   },
   {
-    label: 'Dev (unstable)',
+    label: 'Dev',
+    selectLabel: 'Development',
+    selectDescription: 'Daily unstable build, lots of bugs',
     value: 'development',
     version: '',
+    changelog: '',
     color: 'negative'
   }
   // {
@@ -228,6 +307,16 @@ onMounted(async () => {
       getChannel('release-candidate')?.versions[0]!.version || ''
     fwOptions.value[2]!.version =
       getChannel('development')?.versions[0]!.version || ''
+
+    fwOptions.value[0]!.changelog = replaceGitHubLinksInMarkdown(
+      getChannel('release')?.versions[0]!.changelog || ''
+    )
+    fwOptions.value[1]!.changelog = replaceGitHubLinksInMarkdown(
+      getChannel('release-candidate')?.versions[0]!.changelog || ''
+    )
+    fwOptions.value[2]!.changelog = replaceGitHubLinksInMarkdown(
+      getChannel('development')?.versions[0]!.changelog || ''
+    )
   }
 
   compareVersions()
@@ -282,6 +371,11 @@ const getTextButton = computed(() => {
   if (fwModel.value.version === flipperStore.info?.firmware.version) {
     return 'Reinstall'
   }
+
+  if (outdated.value) {
+    return 'Update'
+  }
+
   return 'Install'
 })
 
