@@ -1,10 +1,10 @@
 <template>
-  <template v-if="!flipperStore.loadingInfo">
-    <template v-if="flipperStore.info">
-      <div class="column items-center">
-        <div class="flex items-start q-gutter-x-xl q-mb-md">
-          <FlipperInfo class="q-mt-sm" v-bind="info" />
+  <div class="full-width" style="max-width: 700px">
+    <template v-if="!flipperStore.loadingInfo">
+      <template v-if="flipperStore.info">
+        <div class="column items-center full-width">
           <FlipperBody
+            class="q-mb-xl"
             ref="refFlipperBody"
             v-bind="flipperBody"
             :showScreenUpdating="flipperStore.flags.updateInProgress"
@@ -12,24 +12,49 @@
             :orientation="orientation"
             @expandView="expandView"
           />
+          <div
+            class="q-mb-md q-mt-sm full-width"
+            :class="{
+              'row items-start': $q.screen.gt.xs,
+              'column items-center': $q.screen.lt.sm
+            }"
+          >
+            <div
+              class="col"
+              :class="{
+                'q-mr-xl': $q.screen.gt.xs,
+                'full-width q-mb-md': $q.screen.lt.sm
+              }"
+            >
+              <FlipperDetailInfo />
+              <FlipperInfo class="q-px-xs q-pr-sm" v-bind="info" />
+            </div>
+            <div
+              class="col"
+              :class="{
+                'full-height': $q.screen.gt.xs,
+                'full-width': $q.screen.lt.sm
+              }"
+            >
+              <FlipperUpdate @updateInProgress="stopScreenStream" />
+            </div>
+          </div>
         </div>
 
-        <FlipperUpdate @updateInProgress="stopScreenStream" />
-      </div>
-
-      <FlipperExpandView
-        v-model="expand"
-        ref="refFlipperExpandView"
-        :isScreenStream="isScreenStream"
-        :orientation="orientation"
-      />
+        <FlipperExpandView
+          v-model="expand"
+          ref="refFlipperExpandView"
+          :isScreenStream="isScreenStream"
+          :orientation="orientation"
+        />
+      </template>
     </template>
-  </template>
-  <template v-else>
-    <div class="row justify-center q-my-md">
-      <Loading label="Loading info..." />
-    </div>
-  </template>
+    <template v-else>
+      <div class="row justify-center q-my-md">
+        <Loading label="Loading info..." />
+      </div>
+    </template>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -45,7 +70,11 @@ import { logger } from 'shared/lib/utils/useLog'
 import { rpcErrorHandler } from 'shared/lib/utils/useRpcUtils'
 
 import { Loading } from 'shared/components/Loading'
-import { FlipperUpdate, FlipperExpandView } from 'features/Flipper'
+import {
+  FlipperUpdate,
+  FlipperExpandView,
+  FlipperDetailInfo
+} from 'features/Flipper'
 import { FlipperBody, FlipperInfo, FlipperModel } from 'entity/Flipper'
 const flipperStore = FlipperModel.useFlipperStore()
 
