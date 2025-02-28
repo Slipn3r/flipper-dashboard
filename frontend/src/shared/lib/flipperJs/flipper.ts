@@ -107,8 +107,10 @@ export default class Flipper {
     this.emitter = emitter
   }
 
-  async getInfo() {
-    this.loadingInfo = true
+  async getInfo({ ignoreLoading = false } = {}) {
+    if (!ignoreLoading) {
+      this.loadingInfo = true
+    }
     await readInfo
       .bind(this)()
       .then((data: Partial<FlipperModel.FlipperInfo>) => {

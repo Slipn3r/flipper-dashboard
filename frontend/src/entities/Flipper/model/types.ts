@@ -1,4 +1,9 @@
-export type DeviceInfo = {
+export type DetailRegion = {
+  builtin: string
+  provisioned: string
+}
+
+export interface DeviceInfo {
   doneReading: boolean
   format: {
     major: string
@@ -17,12 +22,7 @@ export type DeviceInfo = {
     connect: string
     display: string
     color: string
-    region:
-      | {
-          builtin: string
-          provisioned: string
-        }
-      | '0'
+    region: DetailRegion | '0'
     name: string
   }
   firmware: {
